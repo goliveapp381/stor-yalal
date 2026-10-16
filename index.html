@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sotr Yalal - متجر الملابس العصرية</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f8fafc;
+            color: #0f172a;
+        }
+
+        /* Navbar */
+        header {
+            background-color: #0f172a;
+            color: #ffffff;
+            padding: 1.2rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #38bdf8;
+            text-decoration: none;
+            letter-spacing: 0.5px;
+        }
+
+        nav a {
+            color: #e2e8f0;
+            text-decoration: none;
+            margin-right: 1.5rem;
+            font-weight: 500;
+            transition: color 0.2s ease;
+        }
+
+        nav a:hover {
+            color: #38bdf8;
+        }
+
+        /* Hero Banner */
+        .hero {
+            background: linear-gradient(rgba(15, 23, 42, 0.75), rgba(15, 23, 42, 0.75)), 
+                        url('https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=1200&q=80') center/cover no-repeat;
+            height: 40vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: #ffffff;
+            padding: 0 1rem;
+        }
+
+        .hero h1 {
+            font-size: 2.8rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: #cbd5e1;
+        }
+
+        /* Container & Grid */
+        .container {
+            max-width: 1280px;
+            margin: 3rem auto;
+            padding: 0 1.5rem;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 2.5rem;
+            color: #0f172a;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            width: 70px;
+            height: 4px;
+            background-color: #0284c7;
+            display: block;
+            margin: 8px auto 0;
+            border-radius: 2px;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+            gap: 2rem;
+        }
+
+        /* Card Style */
+        .product-card {
+            background: #ffffff;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .product-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        .product-image {
+            width: 100%;
+            height: 320px;
+            object-fit: cover;
+            background-color: #f1f5f9;
+        }
+
+        .product-info {
+            padding: 1.2rem;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        .product-title {
+            font-size: 1.15rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 0.75rem;
+        }
+
+        .product-details {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.2rem;
+        }
+
+        .product-price {
+            color: #0284c7;
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+
+        .product-sizes {
+            font-size: 0.8rem;
+            background-color: #f1f5f9;
+            color: #475569;
+            padding: 0.35rem 0.65rem;
+            border-radius: 6px;
+            font-weight: 600;
+        }
+
+        .btn-whatsapp {
+            margin-top: auto;
+            background-color: #25d366;
+            color: #ffffff;
+            text-align: center;
+            padding: 0.8rem;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: background-color 0.2s ease;
+        }
+
+        .btn-whatsapp:hover {
+            background-color: #1eb954;
+        }
+
+        /* Loading Status */
+        .loading {
+            text-align: center;
+            font-size: 1.2rem;
+            color: #64748b;
+            padding: 3rem;
+            grid-column: 1 / -1;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #0f172a;
+            color: #94a3b8;
+            text-align: center;
+            padding: 2rem;
+            margin-top: 5rem;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <header>
+        <a href="#" class="logo">Sotr Yalal</a>
+        <nav>
+            <a href="#products">المنتجات</a>
+            <a href="#contact">تواصل معنا</a>
+        </nav>
+    </header>
+
+    <!-- Hero Banner -->
+    <section class="hero">
+        <h1>Sotr Yalal - تشكيلة الموسم</h1>
+        <p>أحدث أزياء الملابس العصرية بأجود أنواع الأقمشة</p>
+    </section>
+
+    <!-- Main Container -->
+    <div class="container" id="products">
+        <h2 class="section-title">المنتجات المتاحة</h2>
+        <div class="products-grid" id="products-container">
+            <div class="loading">جاري تحميل المنتجات...</div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer id="contact">
+        <p>جميع الحقوق محفوظة &copy; 2026 Sotr Yalal</p>
+    </footer>
+
+    <script>
+        // رقم الواتساب الخاص بك (بدون علامة +)
+        const WHATSAPP_NUMBER = "212600000000";
+
+        // رابط الـ Raw المباشر لملف JSON في GitHub
+        const GITHUB_JSON_URL = "https://raw.githubusercontent.com/goliveapp381/stor-yalal/refs/heads/main/products.json";
+
+        // المسار الثابت لمجلد الصور داخل GitHub
+        const IMAGES_BASE_URL = "https://raw.githubusercontent.com/goliveapp381/stor-yalal/refs/heads/main/images/";
+
+        async function fetchProducts() {
+            const container = document.getElementById('products-container');
+            
+            try {
+                const response = await fetch(GITHUB_JSON_URL);
+                if (!response.ok) {
+                    throw new Error('تعذر جلب البيانات من GitHub');
+                }
+                
+                const products = await response.json();
+                container.innerHTML = '';
+
+                products.forEach(product => {
+                    const sizesText = product.sizes ? product.sizes.join(' / ') : '';
+                    const message = encodeURIComponent(`السلام عليكم، أريد طلب: ${product.title}`);
+                    const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${message}`;
+
+                    // دمج مسار المجلد الثابت مع اسم الصورة المكتوب في الـ JSON
+                    const fullImageUrl = IMAGES_BASE_URL + product.image;
+
+                    const productCard = document.createElement('div');
+                    productCard.className = 'product-card';
+                    productCard.innerHTML = `
+                        <img src="${fullImageUrl}" alt="${product.title}" class="product-image" loading="lazy">
+                        <div class="product-info">
+                            <h3 class="product-title">${product.title}</h3>
+                            <div class="product-details">
+                                <span class="product-price">${product.price}</span>
+                                <span class="product-sizes">${sizesText}</span>
+                            </div>
+                            <a href="${whatsappUrl}" class="btn-whatsapp" target="_blank">طلب عبر الواتساب</a>
+                        </div>
+                    `;
+                    container.appendChild(productCard);
+                });
+
+            } catch (error) {
+                console.error(error);
+                container.innerHTML = '<div class="loading" style="color: #ef4444;">حدث خطأ أثناء تحميل المنتجات. تأكد من وجود ملف products.json ومجلد images!</div>';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', fetchProducts);
+    </script>
+
+</body>
+</html>
