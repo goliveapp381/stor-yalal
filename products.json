@@ -1,11 +1,5 @@
 [
-  {
-    "id": 1,
-    "title": "تيشيرت قطني أسود Oversize",
-    "price": "149 د.م.",
-    "sizes": ["S", "M", "L", "
-  },
-  {
+{
     "id": 2,
     "title": "هودي رمادي رياضي بقلنسوة",
     "price": "289 د.م.",
@@ -18,54 +12,5 @@
     "price": "249 د.م.",
     "sizes": ["30", "32", "34", "36"],
     "image": "https://images.unsplash.com/photo-1542272604-780c36856d64?auto=format&fit=crop&w=600&q=80"
-  },
-  {
-    "id": 4,
-    "title": "جاكيت جلد أسود أنيق",
-    "price": "450 د.م.",
-    "sizes": ["M", "L", "XL", "XXL"],
-    "image": "https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&w=600&q=80"
-  },
-  {
-    "id": 5,
-    "title": "قميص كاروهات كاجوال",
-    "price": "199 د.م.",
-    "sizes": ["S", "M", "L"],
-    "image": "https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?auto=format&fit=crop&w=600&q=80"
-  },
-  {
-    "id": 6,
-    "title": "سروال رياضي Sweatpants رمادي",
-    "price": "179 د.م.",
-    "sizes": ["M", "L", "XL"],
-    "image": "https://images.unsplash.com/photo-1552902865-b72c031ac5ea?auto=format&fit=crop&w=600&q=80"
-  },
-  {
-    "id": 7,
-    "title": "سويتشيرت زيتوني شتوي",
-    "price": "220 د.م.",
-    "sizes": ["S", "M", "L", "XL"],
-    "image": "https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?auto=format&fit=crop&w=600&q=80"
-  },
-  {
-    "id": 8,
-    "title": "جاكيت جينز شبابي عصري",
-    "price": "320 د.م.",
-    "sizes": ["M", "L", "XL"],
-    "image": "https://images.unsplash.com/photo-1576995853123-5a10305d93c0?auto=format&fit=crop&w=600&q=80"
-  },
-  {
-    "id": 9,
-    "title": "تيشيرت مطبوع Design",
-    "price": "169 د.م.",
-    "sizes": ["S", "M", "L"],
-    "image": "https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?auto=format&fit=crop&w=600&q=80"
-  },
-  {
-    "id": 10,
-    "title": "معطف شتوي طويل فاخر",
-    "price": "590 د.م.",
-    "sizes": ["M", "L", "XL"],
-    "image": "https://images.unsplash.com/photo-1539533018447-63fcce2678e3?auto=format&fit=crop&w=600&q=80"
   }
 ]
