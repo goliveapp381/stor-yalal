@@ -8,16 +8,33 @@
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
     body { font-family: 'Cairo', sans-serif; }
-    /* خلفية متدرجة مع تأثير شبكي احترافي */
-    .mesh-gradient-bg {
-      background-color: #0f172a;
+
+    /* أنيميشن الخلفية المتموجة والمشبكية */
+    .animated-mesh-bg {
+      background: linear-gradient(-45deg, #0f172a, #1e1b4b, #311042, #075985);
+      background-size: 400% 400%;
+      animation: waveGradient 10s ease infinite;
+      position: relative;
+    }
+
+    /* طبقة الشبكة والتدرج الدائري المتموج */
+    .animated-mesh-bg::before {
+      content: "";
+      position: absolute;
+      inset: 0;
       background-image: 
-        radial-gradient(at 90% 10%, rgba(79, 70, 229, 0.5) 0px, transparent 50%),
-        radial-gradient(at 10% 90%, rgba(147, 51, 234, 0.4) 0px, transparent 50%),
-        radial-gradient(at 50% 50%, rgba(14, 165, 233, 0.3) 0px, transparent 50%),
+        radial-gradient(at 20% 20%, rgba(99, 102, 241, 0.35) 0px, transparent 50%),
+        radial-gradient(at 80% 80%, rgba(168, 85, 247, 0.35) 0px, transparent 50%),
         linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
         linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
-      background-size: 100% 100%, 100% 100%, 100% 100%, 40px 40px, 40px 40px;
+      background-size: 100% 100%, 100% 100%, 40px 40px, 40px 40px;
+      pointer-events: none;
+    }
+
+    @keyframes waveGradient {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
     }
   </style>
 </head>
@@ -31,8 +48,8 @@
     </div>
   </header>
 
-  <!-- Hero Section with Mesh Gradient & Grid Background -->
-  <section class="mesh-gradient-bg text-white py-20 text-center relative overflow-hidden">
+  <!-- Animated Wave Hero Section -->
+  <section class="animated-mesh-bg text-white py-24 text-center relative overflow-hidden">
     <div class="max-w-4xl mx-auto px-4 relative z-10">
       <span class="bg-indigo-500/30 text-indigo-200 border border-indigo-400/30 text-xs font-bold px-3 py-1.5 rounded-full uppercase tracking-wider mb-4 inline-block">مُصممة للمحترفين</span>
       <h2 class="text-4xl md:text-5xl font-bold mb-4 leading-tight">اكتشف أفضل القوالب التجارية الجاهزة</h2>
