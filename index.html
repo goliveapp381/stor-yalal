@@ -1,295 +1,1057 @@
+```html
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar" dir="rtl" class="scroll-smooth">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sotr Yalal - متجر الملابس العصرية</title>
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TemplateCraft Pro | منصة القوالب التجارية والمتاجر الإلكترونية</title>
 
-        body {
-            background-color: #f8fafc;
-            color: #0f172a;
-        }
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Google Fonts: Cairo & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
 
-        /* Navbar */
-        header {
-            background-color: #0f172a;
-            color: #ffffff;
-            padding: 1.2rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Cairo', 'Inter', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              50: '#eff6ff',
+              100: '#dbeafe',
+              500: '#3b82f6',
+              600: '#2563eb',
+              700: '#1d4ed8',
+              900: '#1e3a8a',
+            }
+          }
         }
+      }
+    }
+  </script>
 
-        .logo {
-            font-size: 1.8rem;
-            font-weight: 800;
-            color: #38bdf8;
-            text-decoration: none;
-            letter-spacing: 0.5px;
-        }
-
-        nav a {
-            color: #e2e8f0;
-            text-decoration: none;
-            margin-right: 1.5rem;
-            font-weight: 500;
-            transition: color 0.2s ease;
-        }
-
-        nav a:hover {
-            color: #38bdf8;
-        }
-
-        /* Hero Banner */
-        .hero {
-            background: linear-gradient(rgba(15, 23, 42, 0.75), rgba(15, 23, 42, 0.75)), 
-                        url('https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=1200&q=80') center/cover no-repeat;
-            height: 40vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            color: #ffffff;
-            padding: 0 1rem;
-        }
-
-        .hero h1 {
-            font-size: 2.8rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-        }
-
-        .hero p {
-            font-size: 1.2rem;
-            color: #cbd5e1;
-        }
-
-        /* Container & Grid */
-        .container {
-            max-width: 1280px;
-            margin: 3rem auto;
-            padding: 0 1.5rem;
-        }
-
-        .section-title {
-            text-align: center;
-            font-size: 2rem;
-            margin-bottom: 2.5rem;
-            color: #0f172a;
-            position: relative;
-        }
-
-        .section-title::after {
-            content: '';
-            width: 70px;
-            height: 4px;
-            background-color: #0284c7;
-            display: block;
-            margin: 8px auto 0;
-            border-radius: 2px;
-        }
-
-        .products-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
-            gap: 2rem;
-        }
-
-        /* Card Style */
-        .product-card {
-            background: #ffffff;
-            border-radius: 12px;
-            overflow: hidden;
-            border: 1px solid #e2e8f0;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .product-card:hover {
-            transform: translateY(-6px);
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
-        }
-
-        .product-image {
-            width: 100%;
-            height: 320px;
-            object-fit: cover;
-            background-color: #f1f5f9;
-        }
-
-        .product-info {
-            padding: 1.2rem;
-            display: flex;
-            flex-direction: column;
-            flex-grow: 1;
-        }
-
-        .product-title {
-            font-size: 1.15rem;
-            font-weight: 600;
-            color: #1e293b;
-            margin-bottom: 0.75rem;
-        }
-
-        .product-details {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.2rem;
-        }
-
-        .product-price {
-            color: #0284c7;
-            font-size: 1.3rem;
-            font-weight: 700;
-        }
-
-        .product-sizes {
-            font-size: 0.8rem;
-            background-color: #f1f5f9;
-            color: #475569;
-            padding: 0.35rem 0.65rem;
-            border-radius: 6px;
-            font-weight: 600;
-        }
-
-        .btn-whatsapp {
-            margin-top: auto;
-            background-color: #25d366;
-            color: #ffffff;
-            text-align: center;
-            padding: 0.8rem;
-            text-decoration: none;
-            border-radius: 8px;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            transition: background-color 0.2s ease;
-        }
-
-        .btn-whatsapp:hover {
-            background-color: #1eb954;
-        }
-
-        /* Loading Status */
-        .loading {
-            text-align: center;
-            font-size: 1.2rem;
-            color: #64748b;
-            padding: 3rem;
-            grid-column: 1 / -1;
-        }
-
-        /* Footer */
-        footer {
-            background-color: #0f172a;
-            color: #94a3b8;
-            text-align: center;
-            padding: 2rem;
-            margin-top: 5rem;
-        }
-    </style>
+  <style>
+    body {
+      font-family: 'Cairo', sans-serif;
+    }
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f1f5f9;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+    /* Responsive Preview Iframe Containers */
+    .device-desktop { width: 100%; height: 100%; }
+    .device-tablet { width: 768px; height: 90%; margin: 0 auto; border-radius: 12px; border: 8px solid #334155; }
+    .device-mobile { width: 375px; height: 85%; margin: 0 auto; border-radius: 24px; border: 10px solid #1e293b; }
+  </style>
 </head>
-<body>
+<body class="bg-slate-50 text-slate-800 dark:bg-slate-900 dark:text-slate-100 min-h-screen flex flex-col justify-between transition-colors duration-300">
 
-    <!-- Navbar -->
-    <header>
-        <a href="#" class="logo">Sotr Yalal</a>
-        <nav>
-            <a href="#products">المنتجات</a>
-            <a href="#contact">تواصل معنا</a>
-        </nav>
-    </header>
-
-    <!-- Hero Banner -->
-    <section class="hero">
-        <h1>Sotr Yalal - تشكيلة الموسم</h1>
-        <p>أحدث أزياء الملابس العصرية بأجود أنواع الأقمشة</p>
-    </section>
-
-    <!-- Main Container -->
-    <div class="container" id="products">
-        <h2 class="section-title">المنتجات المتاحة</h2>
-        <div class="products-grid" id="products-container">
-            <div class="loading">جاري تحميل المنتجات...</div>
+  <!-- ==================== HEADER / NAVIGATION ==================== -->
+  <header class="sticky top-0 z-40 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 transition-colors">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-20 gap-4">
+        
+        <!-- Logo -->
+        <div class="flex items-center gap-3 cursor-pointer" onclick="resetFilters()">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-indigo-600 flex items-center justify-center text-white shadow-lg shadow-brand-500/30">
+            <i data-lucide="layout-template" class="w-6 h-6"></i>
+          </div>
+          <div>
+            <span class="text-xl font-extrabold tracking-tight bg-gradient-to-r from-brand-600 to-indigo-600 bg-clip-text text-transparent">TemplateCraft</span>
+            <span class="text-xs font-bold text-amber-500 bg-amber-50 dark:bg-amber-950/50 px-1.5 py-0.5 rounded mr-1">PRO</span>
+          </div>
         </div>
+
+        <!-- Search Bar (Live Search) -->
+        <div class="flex-1 max-w-xl mx-4 hidden md:block">
+          <div class="relative">
+            <input type="text" id="searchInput" oninput="handleSearch()" placeholder="ابحث عن قالب (مثال: متجر مطعم، شركة، سيرة ذاتية)..." 
+                   class="w-full pr-11 pl-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-100/70 dark:bg-slate-800/70 focus:bg-white dark:focus:bg-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 transition-all">
+            <i data-lucide="search" class="w-5 h-5 absolute right-3.5 top-3 text-slate-400"></i>
+          </div>
+        </div>
+
+        <!-- Navigation Actions -->
+        <div class="flex items-center gap-2 sm:gap-3">
+          
+          <!-- Wishlist Button -->
+          <button onclick="toggleWishlistModal()" class="relative p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+            <i data-lucide="heart" class="w-5 h-5"></i>
+            <span id="wishlistCount" class="absolute -top-1.5 -left-1.5 bg-rose-500 text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center hidden">0</span>
+          </button>
+
+          <!-- Notification Toast Trigger / Cart Info -->
+          <button onclick="showToast('مرحباً بك في منصة القوالب البرمجية الجاهزة!')" class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+            <i data-lucide="bell" class="w-5 h-5"></i>
+          </button>
+
+          <!-- Theme Toggle -->
+          <button onclick="toggleDarkMode()" class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+            <i data-lucide="sun" class="w-5 h-5 hidden dark:block"></i>
+            <i data-lucide="moon" class="w-5 h-5 block dark:hidden"></i>
+          </button>
+
+          <!-- User CTA Button -->
+          <button onclick="openModal('loginModal')" class="hidden sm:flex items-center gap-2 bg-brand-600 hover:bg-brand-700 text-white px-4 py-2.5 rounded-xl text-sm font-bold transition shadow-md shadow-brand-500/20">
+            <i data-lucide="user" class="w-4 h-4"></i>
+            <span>حسابي</span>
+          </button>
+        </div>
+      </div>
+      
+      <!-- Mobile Search Input -->
+      <div class="pb-3 md:hidden">
+        <div class="relative">
+          <input type="text" id="mobileSearchInput" oninput="handleMobileSearch()" placeholder="ابحث عن قالب..." 
+                 class="w-full pr-10 pl-4 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+          <i data-lucide="search" class="w-4 h-4 absolute right-3 top-2.5 text-slate-400"></i>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ==================== HERO SECTION ==================== -->
+  <section class="relative bg-gradient-to-b from-brand-50/50 via-slate-50 to-white dark:from-slate-900/80 dark:via-slate-900 dark:to-slate-900 py-12 md:py-16 border-b border-slate-200/60 dark:border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      
+      <span class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-brand-100 text-brand-700 dark:bg-brand-950/60 dark:text-brand-300 mb-4 border border-brand-200 dark:border-brand-800">
+        <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
+        قوالب احترافية تجارية جاهزة للتخصيص والاستخدام الفوري
+      </span>
+
+      <h1 class="text-3xl sm:text-5xl lg:text-6xl font-black text-slate-900 dark:text-white tracking-tight leading-tight mb-4">
+        ابنِ مشروعك التجاري <span class="bg-gradient-to-r from-brand-600 to-indigo-600 bg-clip-text text-transparent">في دقائق معدودة</span>
+      </h1>
+
+      <p class="max-w-2xl mx-auto text-base sm:text-lg text-slate-600 dark:text-slate-400 mb-8 leading-relaxed">
+        استكشف أرقى قوالب المواقع والمتاجر الإلكترونية المصممة بأحدث التقنيات. عاين الكود مباشرة، جربه على جميع الشاشات، وقم بتنزيله مجاناً أو بشراء الترخيص التجاري.
+      </p>
+
+      <!-- Stats Quick Bar -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto bg-white dark:bg-slate-800/80 p-4 rounded-2xl shadow-xl shadow-slate-200/50 dark:shadow-none border border-slate-100 dark:border-slate-700">
+        <div class="p-2 border-l border-slate-100 dark:border-slate-700/50 last:border-0">
+          <div class="text-2xl font-black text-brand-600 dark:text-brand-400">+50</div>
+          <div class="text-xs text-slate-500 dark:text-slate-400 font-medium">قالب تجاري متكامل</div>
+        </div>
+        <div class="p-2 border-l border-slate-100 dark:border-slate-700/50 last:border-0">
+          <div class="text-2xl font-black text-emerald-600 dark:text-emerald-400">100%</div>
+          <div class="text-xs text-slate-500 dark:text-slate-400 font-medium">متجاوب مع الجوال</div>
+        </div>
+        <div class="p-2 border-l border-slate-100 dark:border-slate-700/50 last:border-0">
+          <div class="text-2xl font-black text-indigo-600 dark:text-indigo-400">0.02s</div>
+          <div class="text-xs text-slate-500 dark:text-slate-400 font-medium">سرعة التحميل والتصفح</div>
+        </div>
+        <div class="p-2">
+          <div class="text-2xl font-black text-amber-500">4.9/5</div>
+          <div class="text-xs text-slate-500 dark:text-slate-400 font-medium">تقييم المطورين</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ==================== MAIN CATALOG & FILTERS ==================== -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 flex-1">
+    
+    <!-- Controls Section: Categories & Filter Toolbar -->
+    <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 mb-8 border-b border-slate-200 dark:border-slate-800 pb-6">
+      
+      <!-- Category Tabs -->
+      <div class="flex items-center gap-2 overflow-x-auto pb-2 lg:pb-0 no-scrollbar">
+        <button onclick="setCategory('all')" id="cat-all" class="cat-btn bg-brand-600 text-white px-4 py-2 rounded-xl text-sm font-bold whitespace-nowrap shadow-sm transition">
+          الكل (12)
+        </button>
+        <button onclick="setCategory('ecommerce')" id="cat-ecommerce" class="cat-btn bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 px-4 py-2 rounded-xl text-sm font-semibold whitespace-nowrap border border-slate-200 dark:border-slate-700 transition">
+          <i data-lucide="shopping-bag" class="w-4 h-4 inline ml-1"></i> متاجر إلكترونية
+        </button>
+        <button onclick="setCategory('corporate')" id="cat-corporate" class="cat-btn bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 px-4 py-2 rounded-xl text-sm font-semibold whitespace-nowrap border border-slate-200 dark:border-slate-700 transition">
+          <i data-lucide="building-2" class="w-4 h-4 inline ml-1"></i> شركات وخدمات
+        </button>
+        <button onclick="setCategory('restaurant')" id="cat-restaurant" class="cat-btn bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 px-4 py-2 rounded-xl text-sm font-semibold whitespace-nowrap border border-slate-200 dark:border-slate-700 transition">
+          <i data-lucide="utensils" class="w-4 h-4 inline ml-1"></i> مطاعم ومقاهي
+        </button>
+        <button onclick="setCategory('resume')" id="cat-resume" class="cat-btn bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 px-4 py-2 rounded-xl text-sm font-semibold whitespace-nowrap border border-slate-200 dark:border-slate-700 transition">
+          <i data-lucide="file-text" class="w-4 h-4 inline ml-1"></i> سيرة ذاتية وبورتفوليو
+        </button>
+      </div>
+
+      <!-- Secondary Filter Controls -->
+      <div class="flex items-center gap-3">
+        
+        <!-- Price Filter Dropdown -->
+        <select id="priceFilter" onchange="applyFilters()" class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-sm rounded-xl px-3 py-2 outline-none focus:ring-2 focus:ring-brand-500">
+          <option value="all">كل الأسعار</option>
+          <option value="free">المجانية فقط</option>
+          <option value="paid">المدفوعة فقط</option>
+        </select>
+
+        <!-- Sort By Dropdown -->
+        <select id="sortBy" onchange="applyFilters()" class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-sm rounded-xl px-3 py-2 outline-none focus:ring-2 focus:ring-brand-500">
+          <option value="popular">الأكثر شعبية</option>
+          <option value="newest">الأحدث إضافة</option>
+          <option value="price-asc">السعر: من الأقل للأعلى</option>
+          <option value="price-desc">السعر: من الأعلى للأقل</option>
+        </select>
+
+      </div>
     </div>
 
-    <!-- Footer -->
-    <footer id="contact">
-        <p>جميع الحقوق محفوظة &copy; 2026 Sotr Yalal</p>
-    </footer>
+    <!-- Active Filter Counter & Search Notice -->
+    <div class="flex justify-between items-center mb-6">
+      <h2 class="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
+        <span>القوالب المتاحة</span>
+        <span id="templatesCountBadge" class="bg-brand-100 text-brand-700 dark:bg-brand-950 dark:text-brand-300 text-xs px-2.5 py-0.5 rounded-full font-bold">12</span>
+      </h2>
+      <button onclick="resetFilters()" class="text-xs text-slate-500 hover:text-brand-600 underline hidden" id="resetBtn">إعادة ضبط التصفية</button>
+    </div>
 
-    <script>
-        // رقم الواتساب الخاص بك (بدون علامة +)
-        const WHATSAPP_NUMBER = "212600000000";
+    <!-- TEMPLATES GRID CONTAINER -->
+    <div id="templatesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <!-- Generated via JS -->
+    </div>
 
-        // رابط الـ Raw المباشر لملف JSON في GitHub
-        const GITHUB_JSON_URL = "https://raw.githubusercontent.com/goliveapp381/stor-yalal/refs/heads/main/products.json";
+    <!-- Empty Search State -->
+    <div id="emptyState" class="hidden text-center py-16 bg-white dark:bg-slate-800/50 rounded-3xl border border-dashed border-slate-300 dark:border-slate-700 my-8">
+      <i data-lucide="folder-search" class="w-16 h-16 text-slate-400 mx-auto mb-4 stroke-1"></i>
+      <h3 class="text-lg font-bold text-slate-800 dark:text-slate-200">لم نجد أي قوالب تطابق بحثك</h3>
+      <p class="text-sm text-slate-500 dark:text-slate-400 mt-1 mb-4">جرب البحث بكلمات مختلفة أو غيّر خيارات التصفية.</p>
+      <button onclick="resetFilters()" class="bg-brand-600 text-white px-5 py-2 rounded-xl text-sm font-bold hover:bg-brand-700 transition">عرض كافة القوالب</button>
+    </div>
 
-        // المسار الثابت لمجلد الصور داخل GitHub
-        const IMAGES_BASE_URL = "https://raw.githubusercontent.com/goliveapp381/stor-yalal/refs/heads/main/images/";
+  </main>
 
-        async function fetchProducts() {
-            const container = document.getElementById('products-container');
-            
-            try {
-                const response = await fetch(GITHUB_JSON_URL);
-                if (!response.ok) {
-                    throw new Error('تعذر جلب البيانات من GitHub');
-                }
+  <!-- ==================== FOOTER ==================== -->
+  <footer class="bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 mt-16 transition-colors">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+        <div class="md:col-span-2">
+          <div class="flex items-center gap-3 mb-4">
+            <div class="w-8 h-8 rounded-lg bg-brand-600 flex items-center justify-center text-white">
+              <i data-lucide="layout-template" class="w-5 h-5"></i>
+            </div>
+            <span class="text-lg font-bold text-slate-900 dark:text-white">TemplateCraft Pro</span>
+          </div>
+          <p class="text-sm text-slate-500 dark:text-slate-400 max-w-sm leading-relaxed mb-4">
+            منصتك الأولى للحصول على قوالب وتصميمات مواقع وتطبيقات جاهزة، مصممة بعناية لمساعدة رواد الأعمال والمطورين على إطلاق مشاريعهم بسرعة واحترافية.
+          </p>
+        </div>
+
+        <div>
+          <h4 class="font-bold text-slate-900 dark:text-white mb-3 text-sm">روابط سريعة</h4>
+          <ul class="space-y-2 text-sm text-slate-600 dark:text-slate-400">
+            <li><a href="#" onclick="setCategory('ecommerce')" class="hover:text-brand-600 transition">متاجر إلكترونية</a></li>
+            <li><a href="#" onclick="setCategory('corporate')" class="hover:text-brand-600 transition">قوالب الشركات</a></li>
+            <li><a href="#" onclick="setCategory('restaurant')" class="hover:text-brand-600 transition">مطاعم وحجوزات</a></li>
+            <li><a href="#" onclick="setCategory('resume')" class="hover:text-brand-600 transition">سير ذاتية</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="font-bold text-slate-900 dark:text-white mb-3 text-sm">الدعم والتحميل</h4>
+          <ul class="space-y-2 text-sm text-slate-600 dark:text-slate-400">
+            <li><a href="#" onclick="showToast('شروط الترخيص: الاستخدام الشخصي والتجاري المباشر مسموح.')" class="hover:text-brand-600 transition">سياسة التراخيص</a></li>
+            <li><a href="#" onclick="showToast('يمكنك استخدام الكود وتعديله بحرية كاملة.')" class="hover:text-brand-600 transition">توثيق الكود</a></li>
+            <li><a href="#" onclick="showToast('للدعم الفني تواصل عبر البريد: support@templatecraft.pro')" class="hover:text-brand-600 transition">الدعم الفني</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="border-t border-slate-100 dark:border-slate-800 pt-6 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 dark:text-slate-400 gap-4">
+        <p>© 2026 TemplateCraft Pro. جميع الحقوق محفوظة.</p>
+        <div class="flex gap-4">
+          <a href="#" class="hover:text-brand-600">سياسة الخصوصية</a>
+          <a href="#" class="hover:text-brand-600">الشروط والأحكام</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ==================== LIVE RESPONSIVE PREVIEW MODAL ==================== -->
+  <div id="previewModal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex flex-col hidden transition-opacity duration-300">
+    
+    <!-- Modal Bar Controls -->
+    <div class="bg-slate-900 border-b border-slate-800 px-4 py-3 flex items-center justify-between text-white">
+      
+      <!-- Template Info Header -->
+      <div class="flex items-center gap-3">
+        <span id="modalTemplateCategory" class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-brand-500/20 text-brand-300 border border-brand-500/30">متجر</span>
+        <h3 id="modalTemplateTitle" class="font-bold text-base truncate max-w-xs sm:max-w-md">اسم القالب هنا</h3>
+      </div>
+
+      <!-- Viewport Device Switcher -->
+      <div class="flex items-center gap-1 bg-slate-800 p-1 rounded-xl border border-slate-700">
+        <button onclick="changeDevice('desktop')" id="dev-desktop" class="device-btn p-2 rounded-lg bg-brand-600 text-white transition text-xs flex items-center gap-1">
+          <i data-lucide="monitor" class="w-4 h-4"></i>
+          <span class="hidden sm:inline">كمبيوتر</span>
+        </button>
+        <button onclick="changeDevice('tablet')" id="dev-tablet" class="device-btn p-2 rounded-lg text-slate-400 hover:text-white transition text-xs flex items-center gap-1">
+          <i data-lucide="tablet" class="w-4 h-4"></i>
+          <span class="hidden sm:inline">تابلت</span>
+        </button>
+        <button onclick="changeDevice('mobile')" id="dev-mobile" class="device-btn p-2 rounded-lg text-slate-400 hover:text-white transition text-xs flex items-center gap-1">
+          <i data-lucide="smartphone" class="w-4 h-4"></i>
+          <span class="hidden sm:inline">جوال</span>
+        </button>
+      </div>
+
+      <!-- Actions -->
+      <div class="flex items-center gap-2">
+        <button onclick="openCodeModalFromPreview()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-3.5 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition">
+          <i data-lucide="code" class="w-4 h-4"></i>
+          <span>جلب الكود</span>
+        </button>
+        <button onclick="closeModal('previewModal')" class="p-1.5 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800 transition">
+          <i data-lucide="x" class="w-6 h-6"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Preview Canvas Area -->
+    <div class="flex-1 bg-slate-900/50 p-2 sm:p-4 overflow-hidden flex items-center justify-center relative">
+      <div id="iframeContainer" class="device-desktop transition-all duration-300 w-full h-full bg-white rounded-lg shadow-2xl overflow-hidden">
+        <iframe id="previewIframe" class="w-full h-full border-0" title="Live Template Preview"></iframe>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== SOURCE CODE & DOWNLOAD MODAL ==================== -->
+  <div id="codeModal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 hidden">
+    <div class="bg-white dark:bg-slate-900 rounded-2xl w-full max-w-4xl max-h-[90vh] flex flex-col shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden">
+      
+      <!-- Code Header -->
+      <div class="px-6 py-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+        <div>
+          <h3 id="codeModalTitle" class="text-lg font-bold text-slate-900 dark:text-white">شفرة المصدر للقالب</h3>
+          <p class="text-xs text-slate-500">ملف واحد جاهز للتشغيل مباشرة (HTML / Tailwind CSS)</p>
+        </div>
+        <div class="flex items-center gap-2">
+          <button onclick="copyCode()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 transition">
+            <i data-lucide="copy" class="w-4 h-4"></i>
+            <span id="copyBtnText">نسخ الكود</span>
+          </button>
+          <button onclick="downloadCodeFile()" class="bg-brand-600 hover:bg-brand-700 text-white px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 transition">
+            <i data-lucide="download" class="w-4 h-4"></i>
+            <span>تحميل index.html</span>
+          </button>
+          <button onclick="closeModal('codeModal')" class="text-slate-400 hover:text-slate-600 dark:hover:text-white p-2">
+            <i data-lucide="x" class="w-5 h-5"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Code Box -->
+      <div class="flex-1 bg-slate-950 p-4 overflow-auto font-mono text-xs text-slate-200 leading-relaxed dir-ltr text-left">
+        <pre><code id="codeTextarea" class="whitespace-pre-wrap break-all"><!-- سيظهر الكود هنا --></code></pre>
+      </div>
+
+      <!-- Footer Info -->
+      <div class="px-6 py-3 bg-slate-50 dark:bg-slate-800/50 border-t border-slate-200 dark:border-slate-800 text-xs text-slate-500 flex justify-between items-center">
+        <span><i data-lucide="check-circle" class="w-3.5 h-3.5 inline text-emerald-500 ml-1"></i> كود نظيف ومجهز للاستخدام بدون مكتبات خارجية معقدة</span>
+        <span>Tailwind CDN Included</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== WISHLIST MODAL ==================== -->
+  <div id="wishlistModal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 hidden">
+    <div class="bg-white dark:bg-slate-900 rounded-2xl w-full max-w-2xl max-h-[85vh] flex flex-col shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden">
+      <div class="px-6 py-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+        <h3 class="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+          <i data-lucide="heart" class="w-5 h-5 text-rose-500 fill-rose-500"></i>
+          <span>القوالب المفضلة</span>
+        </h3>
+        <button onclick="toggleWishlistModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-white p-2">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <div id="wishlistItemsContainer" class="flex-1 overflow-y-auto p-6 space-y-4">
+        <!-- Wishlist items dynamically populated -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== SIMPLE LOGIN MODAL ==================== -->
+  <div id="loginModal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 hidden">
+    <div class="bg-white dark:bg-slate-900 rounded-2xl w-full max-w-md p-6 shadow-2xl border border-slate-200 dark:border-slate-800">
+      <div class="flex justify-between items-center mb-6">
+        <h3 class="text-xl font-bold text-slate-900 dark:text-white">تسجيل الدخول للمنصة</h3>
+        <button onclick="closeModal('loginModal')" class="text-slate-400 hover:text-slate-600">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form onsubmit="handleLogin(event)" class="space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">البريد الإلكتروني</label>
+          <input type="email" required placeholder="name@company.com" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm outline-none focus:ring-2 focus:ring-brand-500">
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">كلمة المرور</label>
+          <input type="password" required placeholder="••••••••" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm outline-none focus:ring-2 focus:ring-brand-500">
+        </div>
+        <button type="submit" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-bold py-3 rounded-xl text-sm transition shadow-md shadow-brand-500/20">
+          دخول إلى الحساب
+        </button>
+      </form>
+
+      <p class="text-xs text-center text-slate-500 mt-4">ليس لديك حساب؟ <a href="#" onclick="showToast('التسجيل مفتوح مجاناً الآن!')" class="text-brand-600 hover:underline">أنشئ حساباً جديداً</a></p>
+    </div>
+  </div>
+
+  <!-- ==================== TOAST NOTIFICATION CONTAINER ==================== -->
+  <div id="toast" class="fixed bottom-6 left-6 z-50 bg-slate-900 text-white px-5 py-3 rounded-2xl shadow-2xl flex items-center gap-3 translate-y-20 opacity-0 transition-all duration-300 border border-slate-800 pointer-events-none">
+    <i data-lucide="check-circle-2" class="w-5 h-5 text-emerald-400"></i>
+    <span id="toastMessage" class="text-sm font-semibold">تمت العملية بنجاح!</span>
+  </div>
+
+  <!-- ==================== JAVASCRIPT APPLICATION LOGIC ==================== -->
+  <script>
+    // ------------------------------------------------------------------
+    // TEMPLATE DATA DATABASE (Self-Contained Functional Commercial Templates)
+    // ------------------------------------------------------------------
+    const templatesData = [
+      {
+        id: "tpl-1",
+        title: "متجر أزياء وإكسسوارات عصرى (Luxe Store)",
+        category: "ecommerce",
+        categoryLabel: "متجر إلكتروني",
+        price: 29,
+        isFree: false,
+        rating: 4.9,
+        reviewsCount: 38,
+        downloads: 1420,
+        image: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=700&q=80",
+        description: "واجهة متجر أزياء راقية ومتجاوبة بالكامل تشتمل على معرض منتجات، فلترة ألوان، وسلة شراء تفاعلية.",
+        code: `<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8"><script src="https://cdn.tailwindcss.com"><\/script>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body class="bg-slate-50 font-['Cairo'] p-6">
+  <header class="flex justify-between items-center py-4 border-b border-slate-200 mb-8">
+    <h1 class="text-2xl font-black text-rose-600">LUXE LUXURY</h1>
+    <div class="space-x-4 space-x-reverse text-sm font-bold">
+      <a href="#" class="text-slate-800">الرئيسية</a>
+      <a href="#" class="text-slate-500">المنتجات</a>
+      <a href="#" class="text-slate-500">العروض</a>
+    </div>
+  </header>
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <div class="bg-white rounded-2xl p-4 shadow-sm border">
+      <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400" class="rounded-xl w-full h-48 object-cover mb-3">
+      <h3 class="font-bold">ساعة يد كلاسيكية</h3>
+      <p class="text-xs text-slate-500 my-1">تصميم سويسري فاخر مقاوم للمطر.</p>
+      <div class="flex justify-between items-center mt-3">
+        <span class="font-black text-emerald-600">$199</span>
+        <button onclick="alert('تمت الإضافة للسلة!')" class="bg-rose-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold">إضافة للسلة</button>
+      </div>
+    </div>
+    <div class="bg-white rounded-2xl p-4 shadow-sm border">
+      <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400" class="rounded-xl w-full h-48 object-cover mb-3">
+      <h3 class="font-bold">سماعات لاسلكية احترافية</h3>
+      <p class="text-xs text-slate-500 my-1">عزل ضوضاء فائق وصوت عالي النقاء.</p>
+      <div class="flex justify-between items-center mt-3">
+        <span class="font-black text-emerald-600">$89</span>
+        <button onclick="alert('تمت الإضافة للسلة!')" class="bg-rose-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold">إضافة للسلة</button>
+      </div>
+    </div>
+  </div>
+</body>
+</html>`
+      },
+      {
+        id: "tpl-2",
+        title: "قالب شركة استشارات واستثمارات (Apex Corporate)",
+        category: "corporate",
+        categoryLabel: "شركات وخدمات",
+        price: 0,
+        isFree: true,
+        rating: 4.8,
+        reviewsCount: 52,
+        downloads: 2890,
+        image: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=700&q=80",
+        description: "تصميم أنيق وقوي لعرض خدمات الشركات والمؤسسات مع أقسام عن الشركة، الخدمات، وحجز الاستشارات.",
+        code: `<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8"><script src="https://cdn.tailwindcss.com"><\/script>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body class="bg-white font-['Cairo']">
+  <section class="bg-slate-900 text-white py-20 px-8 text-center">
+    <h1 class="text-4xl font-extrabold mb-4">نلهم نجاح عملك وتوسعك التجاري</h1>
+    <p class="text-slate-300 max-w-xl mx-auto mb-6 text-sm">نقدم حلولاً استشارية ومالية مدروسة لمساعدة شركتك على النمو والريادة.</p>
+    <button class="bg-blue-600 px-6 py-3 rounded-xl font-bold hover:bg-blue-700">احجز استشارة مجانية</button>
+  </section>
+  <section class="py-12 px-8 max-w-5xl mx-auto grid md:grid-cols-3 gap-6">
+    <div class="p-6 border rounded-2xl bg-slate-50">
+      <h3 class="font-bold text-lg mb-2">استشارات مالية</h3>
+      <p class="text-xs text-slate-600">تخطيط استراتيجي لتحسين الإيرادات وتقليل التكاليف.</p>
+    </div>
+    <div class="p-6 border rounded-2xl bg-slate-50">
+      <h3 class="font-bold text-lg mb-2">التحول الرقمي</h3>
+      <p class="text-xs text-slate-600">تطوير بنيتك البرمجية بأحدث تقنيات السحاب.</p>
+    </div>
+    <div class="p-6 border rounded-2xl bg-slate-50">
+      <h3 class="font-bold text-lg mb-2">إدارة المخاطر</h3>
+      <p class="text-xs text-slate-600">حماية أصول المؤسسة وضمان استمراريتها النمو.</p>
+    </div>
+  </section>
+</body>
+</html>`
+      },
+      {
+        id: "tpl-3",
+        title: "قالب مطعم ومقهى إيطالي (Bella Gusto)",
+        category: "restaurant",
+        categoryLabel: "مطاعم ومقاهي",
+        price: 19,
+        isFree: false,
+        rating: 4.9,
+        reviewsCount: 24,
+        downloads: 870,
+        image: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=700&q=80",
+        description: "منيو تفاعلي وأنيق للمطاعم مع إمكانية استعراض الوجبات وحجز الطاولات أونلاين بصورة عصرية.",
+        code: `<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8"><script src="https://cdn.tailwindcss.com"><\/script>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body class="bg-amber-50/40 font-['Cairo'] p-6">
+  <div class="max-w-3xl mx-auto text-center py-8">
+    <h1 class="text-3xl font-black text-amber-800">مطعم وجبات بيلا غوستو</h1>
+    <p class="text-amber-600 text-sm mt-1">أصالة المذاق الإيطالي بين يديك</p>
+  </div>
+  <div class="max-w-3xl mx-auto space-y-4">
+    <div class="bg-white p-4 rounded-2xl border flex justify-between items-center shadow-sm">
+      <div>
+        <h4 class="font-bold text-amber-900">بيتزا مارجريتا طازجة</h4>
+        <p class="text-xs text-slate-500">صلصة طماطم إيطالية، جبن موزاريلا، وحبق طازج</p>
+      </div>
+      <span class="font-black text-amber-700">$14</span>
+    </div>
+    <div class="bg-white p-4 rounded-2xl border flex justify-between items-center shadow-sm">
+      <div>
+        <h4 class="font-bold text-amber-900">باستا باستو دجاج</h4>
+        <p class="text-xs text-slate-500">صلصة البستو الخضراء مع قطع الدجاج المشوي</p>
+      </div>
+      <span class="font-black text-amber-700">$18</span>
+    </div>
+  </div>
+</body>
+</html>`
+      },
+      {
+        id: "tpl-4",
+        title: "سيرة ذاتية تفاعلية ومحفظة أعمال (DevPortfolio)",
+        category: "resume",
+        categoryLabel: "سيرة ذاتية",
+        price: 0,
+        isFree: true,
+        rating: 5.0,
+        reviewsCount: 94,
+        downloads: 4120,
+        image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=700&q=80",
+        description: "قالب سير ذاتية مخصص للمطورين والمصممين يتيح استعراض مهاراتك ومشاريعك السابقة بجاذبية عالية.",
+        code: `<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8"><script src="https://cdn.tailwindcss.com"><\/script>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body class="bg-slate-900 text-white font-['Cairo'] p-8 max-w-4xl mx-auto">
+  <div class="flex flex-col md:flex-row items-center gap-6 mb-10 pb-8 border-b border-slate-800">
+    <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200" class="w-28 h-28 rounded-full border-4 border-indigo-500 object-cover">
+    <div>
+      <h1 class="text-2xl font-black">أحمد المنصوري</h1>
+      <p class="text-indigo-400 text-sm font-semibold">مطور واجهات ومصمم تجربة مستخدم (UI/UX)</p>
+      <p class="text-xs text-slate-400 mt-2">خبير في بناء تطبيقات ويب متجاوبة وسريعة باستخدام React & Tailwind.</p>
+    </div>
+  </div>
+  <h2 class="text-lg font-bold mb-4 text-indigo-300">أبرز المهارات التقنية</h2>
+  <div class="flex flex-wrap gap-2">
+    <span class="bg-slate-800 px-3 py-1 rounded-lg text-xs">JavaScript (ES6+)</span>
+    <span class="bg-slate-800 px-3 py-1 rounded-lg text-xs">Tailwind CSS</span>
+    <span class="bg-slate-800 px-3 py-1 rounded-lg text-xs">React.js / Next.js</span>
+  </div>
+</body>
+</html>`
+      },
+      {
+        id: "tpl-5",
+        title: "متجر إلكترونيات وأجهزة ذكية (TechGadget Pro)",
+        category: "ecommerce",
+        categoryLabel: "متجر إلكتروني",
+        price: 35,
+        isFree: false,
+        rating: 4.7,
+        reviewsCount: 19,
+        downloads: 640,
+        image: "https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=700&q=80",
+        description: "متجر متكامل لبيع المنتجات التقنية مع تقييم المراجعات ونظام فرز عالي السرعة.",
+        code: `<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8"><script src="https://cdn.tailwindcss.com"><\/script>
+</head>
+<body class="bg-slate-100 p-6 font-sans">
+  <h1 class="text-2xl font-bold text-blue-900 mb-6">عالم الإلكترونيات الذكية</h1>
+  <div class="bg-white p-6 rounded-2xl border shadow-sm flex items-center justify-between">
+    <div>
+      <span class="text-xs font-bold text-red-500 bg-red-50 px-2 py-0.5 rounded">خصم 20%</span>
+      <h3 class="text-lg font-bold mt-1">حاسوب محمول UltraBook Pro</h3>
+      <p class="text-xs text-slate-500">معالج M2، ذاكرة 16GB، سعة 512GB SSD</p>
+    </div>
+    <div class="text-left">
+      <div class="text-xl font-bold text-slate-900">$1,199</div>
+      <button onclick="alert('تم الطلب!')" class="mt-2 bg-blue-600 text-white px-4 py-2 rounded-xl text-xs font-bold">شراء الآن</button>
+    </div>
+  </div>
+</body>
+</html>`
+      },
+      {
+        id: "tpl-6",
+        title: "قالب منصة تعليمية ودورات تدريبية (EduSphere)",
+        category: "corporate",
+        categoryLabel: "شركات وخدمات",
+        price: 24,
+        isFree: false,
+        rating: 4.8,
+        reviewsCount: 45,
+        downloads: 1120,
+        image: "https://images.unsplash.com/photo-1501504905252-473c47e087f8?w=700&q=80",
+        description: "تصميم جذاب للمنصات التعليمية واستعراض الكورسات وتتبع تقدم الطلاب عبر الإنترنت.",
+        code: `<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8"><script src="https://cdn.tailwindcss.com"><\/script>
+</head>
+<body class="bg-indigo-50/50 p-6 font-sans">
+  <div class="max-w-4xl mx-auto">
+    <h2 class="text-2xl font-bold text-indigo-900 mb-4">مساراتك التعليمية الموصى بها</h2>
+    <div class="bg-white p-5 rounded-2xl shadow-sm border border-indigo-100 flex gap-4 items-center">
+      <div class="w-16 h-16 bg-indigo-600 text-white rounded-xl flex items-center justify-center font-bold text-xl">JS</div>
+      <div class="flex-1">
+        <h3 class="font-bold text-slate-900">دورة البرمجة بلغة JavaScript من الصفر</h3>
+        <p class="text-xs text-slate-500">45 درس • 12 ساعة تعليمية مكثفة</p>
+      </div>
+      <button class="bg-emerald-600 text-white px-4 py-2 rounded-xl text-xs font-bold">تسجيل بالدورة</button>
+    </div>
+  </div>
+</body>
+</html>`
+      }
+    ];
+
+    // ------------------------------------------------------------------
+    // APP STATE MANAGEMENT
+    // ------------------------------------------------------------------
+    let state = {
+      category: 'all',
+      price: 'all',
+      searchQuery: '',
+      sortBy: 'popular',
+      wishlist: JSON.parse(localStorage.getItem('tc_wishlist') || '[]'),
+      currentPreviewId: null,
+      currentDevice: 'desktop'
+    };
+
+    // Initialize App
+    window.addEventListener('DOMContentLoaded', () => {
+      lucide.createIcons();
+      renderTemplates();
+      updateWishlistBadge();
+    });
+
+    // ------------------------------------------------------------------
+    // RENDER TEMPLATES GALLERY
+    // ------------------------------------------------------------------
+    function renderTemplates() {
+      const grid = document.getElementById('templatesGrid');
+      const emptyState = document.getElementById('emptyState');
+      
+      // Filter Logic
+      let filtered = templatesData.filter(item => {
+        const matchesCategory = state.category === 'all' || item.category === state.category;
+        const matchesPrice = state.price === 'all' || 
+                             (state.price === 'free' && item.isFree) || 
+                             (state.price === 'paid' && !item.isFree);
+        const matchesSearch = item.title.toLowerCase().includes(state.searchQuery.toLowerCase()) ||
+                              item.description.toLowerCase().includes(state.searchQuery.toLowerCase()) ||
+                              item.categoryLabel.toLowerCase().includes(state.searchQuery.toLowerCase());
+
+        return matchesCategory && matchesPrice && matchesSearch;
+      });
+
+      // Sorting Logic
+      if (state.sortBy === 'price-asc') {
+        filtered.sort((a, b) => a.price - b.price);
+      } else if (state.sortBy === 'price-desc') {
+        filtered.sort((a, b) => b.price - a.price);
+      } else if (state.sortBy === 'newest') {
+        filtered.sort((a, b) => b.downloads - a.downloads);
+      }
+
+      // Update Badge Counter
+      document.getElementById('templatesCountBadge').innerText = filtered.length;
+
+      // Handle Empty State
+      if (filtered.length === 0) {
+        grid.innerHTML = '';
+        emptyState.classList.remove('hidden');
+        return;
+      } else {
+        emptyState.classList.add('hidden');
+      }
+
+      // Render Cards
+      grid.innerHTML = filtered.map(tpl => {
+        const isWished = state.wishlist.includes(tpl.id);
+        
+        return `
+          <div class="group bg-white dark:bg-slate-800 rounded-3xl overflow-hidden border border-slate-200/80 dark:border-slate-700/60 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between">
+            <div>
+              <!-- Template Image & Floating Badges -->
+              <div class="relative overflow-hidden h-52 bg-slate-100 dark:bg-slate-900">
+                <img src="${tpl.image}" alt="${tpl.title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
                 
-                const products = await response.json();
-                container.innerHTML = '';
+                <div class="absolute top-3 right-3 flex gap-2">
+                  <span class="bg-white/90 dark:bg-slate-900/90 backdrop-blur-md text-slate-800 dark:text-slate-200 text-xs font-bold px-3 py-1 rounded-full shadow-sm">
+                    ${tpl.categoryLabel}
+                  </span>
+                </div>
 
-                products.forEach(product => {
-                    const sizesText = product.sizes ? product.sizes.join(' / ') : '';
-                    const message = encodeURIComponent(`السلام عليكم، أريد طلب: ${product.title}`);
-                    const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${message}`;
+                <div class="absolute top-3 left-3">
+                  <button onclick="toggleWishlist('${tpl.id}', event)" class="w-9 h-9 rounded-full bg-white/90 dark:bg-slate-900/90 backdrop-blur-md flex items-center justify-center text-slate-600 dark:text-slate-300 hover:text-rose-500 transition shadow-sm">
+                    <i data-lucide="heart" class="w-4 h-4 ${isWished ? 'fill-rose-500 text-rose-500' : ''}"></i>
+                  </button>
+                </div>
 
-                    // دمج مسار المجلد الثابت مع اسم الصورة المكتوب في الـ JSON
-                    const fullImageUrl = IMAGES_BASE_URL + product.image;
+                <!-- Price Tag Overlay -->
+                <div class="absolute bottom-3 right-3">
+                  ${tpl.isFree 
+                    ? '<span class="bg-emerald-500 text-white font-extrabold text-xs px-3 py-1 rounded-full shadow">مجاني</span>'
+                    : `<span class="bg-slate-900/90 text-white font-extrabold text-xs px-3 py-1 rounded-full shadow">$${tpl.price}</span>`
+                  }
+                </div>
+              </div>
 
-                    const productCard = document.createElement('div');
-                    productCard.className = 'product-card';
-                    productCard.innerHTML = `
-                        <img src="${fullImageUrl}" alt="${product.title}" class="product-image" loading="lazy">
-                        <div class="product-info">
-                            <h3 class="product-title">${product.title}</h3>
-                            <div class="product-details">
-                                <span class="product-price">${product.price}</span>
-                                <span class="product-sizes">${sizesText}</span>
-                            </div>
-                            <a href="${whatsappUrl}" class="btn-whatsapp" target="_blank">طلب عبر الواتساب</a>
-                        </div>
-                    `;
-                    container.appendChild(productCard);
-                });
+              <!-- Template Card Details -->
+              <div class="p-5">
+                <div class="flex items-center gap-2 text-xs text-amber-500 font-bold mb-1.5">
+                  <i data-lucide="star" class="w-3.5 h-3.5 fill-amber-400"></i>
+                  <span>${tpl.rating}</span>
+                  <span class="text-slate-400 font-normal">(${tpl.reviewsCount} تقييم)</span>
+                  <span class="text-slate-300 dark:text-slate-700">•</span>
+                  <span class="text-slate-500 dark:text-slate-400 font-normal">${tpl.downloads} تحميل</span>
+                </div>
 
-            } catch (error) {
-                console.error(error);
-                container.innerHTML = '<div class="loading" style="color: #ef4444;">حدث خطأ أثناء تحميل المنتجات. تأكد من وجود ملف products.json ومجلد images!</div>';
-            }
-        }
+                <h3 class="font-extrabold text-slate-900 dark:text-white text-lg group-hover:text-brand-600 transition line-clamp-1 mb-2">
+                  ${tpl.title}
+                </h3>
+                
+                <p class="text-xs text-slate-500 dark:text-slate-400 line-clamp-2 leading-relaxed mb-4">
+                  ${tpl.description}
+                </p>
+              </div>
+            </div>
 
-        document.addEventListener('DOMContentLoaded', fetchProducts);
-    </script>
+            <!-- Card Bottom Action Toolbar -->
+            <div class="px-5 pb-5 pt-0 flex items-center gap-2">
+              <button onclick="openLivePreview('${tpl.id}')" class="flex-1 bg-slate-100 hover:bg-slate-200 dark:bg-slate-700/60 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-100 font-bold py-2.5 rounded-xl text-xs flex items-center justify-center gap-1.5 transition">
+                <i data-lucide="eye" class="w-4 h-4"></i>
+                <span>معاينة مقاسات</span>
+              </button>
 
+              <button onclick="openCodeModal('${tpl.id}')" class="flex-1 bg-brand-600 hover:bg-brand-700 text-white font-bold py-2.5 rounded-xl text-xs flex items-center justify-center gap-1.5 transition shadow-sm">
+                <i data-lucide="code" class="w-4 h-4"></i>
+                <span>الكود والتحميل</span>
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      lucide.createIcons();
+    }
+
+    // ------------------------------------------------------------------
+    // FILTER & SEARCH HANDLERS
+    // ------------------------------------------------------------------
+    function setCategory(cat) {
+      state.category = cat;
+      document.querySelectorAll('.cat-btn').forEach(btn => {
+        btn.className = 'cat-btn bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 px-4 py-2 rounded-xl text-sm font-semibold whitespace-nowrap border border-slate-200 dark:border-slate-700 transition';
+      });
+      const activeBtn = document.getElementById(`cat-${cat}`);
+      if(activeBtn) {
+        activeBtn.className = 'cat-btn bg-brand-600 text-white px-4 py-2 rounded-xl text-sm font-bold whitespace-nowrap shadow-sm transition';
+      }
+      checkResetState();
+      renderTemplates();
+    }
+
+    function applyFilters() {
+      state.price = document.getElementById('priceFilter').value;
+      state.sortBy = document.getElementById('sortBy').value;
+      checkResetState();
+      renderTemplates();
+    }
+
+    function handleSearch() {
+      state.searchQuery = document.getElementById('searchInput').value;
+      checkResetState();
+      renderTemplates();
+    }
+
+    function handleMobileSearch() {
+      state.searchQuery = document.getElementById('mobileSearchInput').value;
+      checkResetState();
+      renderTemplates();
+    }
+
+    function resetFilters() {
+      state.category = 'all';
+      state.price = 'all';
+      state.searchQuery = '';
+      state.sortBy = 'popular';
+      document.getElementById('searchInput').value = '';
+      document.getElementById('mobileSearchInput').value = '';
+      document.getElementById('priceFilter').value = 'all';
+      document.getElementById('sortBy').value = 'popular';
+      setCategory('all');
+    }
+
+    function checkResetState() {
+      const isFiltered = state.category !== 'all' || state.price !== 'all' || state.searchQuery !== '';
+      document.getElementById('resetBtn').classList.toggle('hidden', !isFiltered);
+    }
+
+    // ------------------------------------------------------------------
+    // LIVE PREVIEW MODAL & DEVICE SWITCHER
+    // ------------------------------------------------------------------
+    function openLivePreview(templateId) {
+      const template = templatesData.find(t => t.id === templateId);
+      if (!template) return;
+
+      state.currentPreviewId = templateId;
+      document.getElementById('modalTemplateTitle').innerText = template.title;
+      document.getElementById('modalTemplateCategory').innerText = template.categoryLabel;
+
+      const iframe = document.getElementById('previewIframe');
+      iframe.srcdoc = template.code;
+
+      changeDevice('desktop');
+      openModal('previewModal');
+    }
+
+    function changeDevice(device) {
+      state.currentDevice = device;
+      const container = document.getElementById('iframeContainer');
+      
+      // Update Buttons UI
+      document.querySelectorAll('.device-btn').forEach(btn => {
+        btn.classList.remove('bg-brand-600', 'text-white');
+        btn.classList.add('text-slate-400');
+      });
+      document.getElementById(`dev-${device}`).classList.add('bg-brand-600', 'text-white');
+
+      // Update Device Frame Dimensions
+      container.className = `transition-all duration-300 ${
+        device === 'desktop' ? 'device-desktop' : device === 'tablet' ? 'device-tablet' : 'device-mobile'
+      }`;
+    }
+
+    function openCodeModalFromPreview() {
+      closeModal('previewModal');
+      if (state.currentPreviewId) {
+        openCodeModal(state.currentPreviewId);
+      }
+    }
+
+    // ------------------------------------------------------------------
+    // SOURCE CODE & DOWNLOAD MODAL
+    // ------------------------------------------------------------------
+    function openCodeModal(templateId) {
+      const template = templatesData.find(t => t.id === templateId);
+      if (!template) return;
+
+      state.currentPreviewId = templateId;
+      document.getElementById('codeModalTitle').innerText = template.title;
+      document.getElementById('codeTextarea').innerText = template.code;
+      
+      openModal('codeModal');
+    }
+
+    function copyCode() {
+      const code = document.getElementById('codeTextarea').innerText;
+      
+      // Use fallback textarea for guaranteed copying inside iframe environments
+      const el = document.createElement('textarea');
+      el.value = code;
+      document.body.appendChild(el);
+      el.select();
+      document.execCommand('copy');
+      document.body.removeChild(el);
+
+      const copyBtnText = document.getElementById('copyBtnText');
+      copyBtnText.innerText = 'تم النسخ!';
+      showToast('تم نسخ كود القالب إلى الحافظة بنجاح!');
+      setTimeout(() => { copyBtnText.innerText = 'نسخ الكود'; }, 2000);
+    }
+
+    function downloadCodeFile() {
+      const template = templatesData.find(t => t.id === state.currentPreviewId);
+      const code = document.getElementById('codeTextarea').innerText;
+      
+      const blob = new Blob([code], { type: 'text/html;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${template ? template.id : 'template'}-index.html`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+
+      showToast('جاري تنزيل ملف index.html الخاص بالقالب...');
+    }
+
+    // ------------------------------------------------------------------
+    // WISHLIST LOGIC
+    // ------------------------------------------------------------------
+    function toggleWishlist(templateId, event) {
+      if (event) event.stopPropagation();
+      
+      const index = state.wishlist.indexOf(templateId);
+      if (index === -1) {
+        state.wishlist.push(templateId);
+        showToast('تمت إضافة القالب إلى المفضلات');
+      } else {
+        state.wishlist.splice(index, 1);
+        showToast('تمت إزالة القالب من المفضلات');
+      }
+
+      localStorage.setItem('tc_wishlist', JSON.stringify(state.wishlist));
+      updateWishlistBadge();
+      renderTemplates();
+      if (!document.getElementById('wishlistModal').classList.contains('hidden')) {
+        renderWishlistModalItems();
+      }
+    }
+
+    function updateWishlistBadge() {
+      const badge = document.getElementById('wishlistCount');
+      if (state.wishlist.length > 0) {
+        badge.innerText = state.wishlist.length;
+        badge.classList.remove('hidden');
+      } else {
+        badge.classList.add('hidden');
+      }
+    }
+
+    function toggleWishlistModal() {
+      const modal = document.getElementById('wishlistModal');
+      if (modal.classList.contains('hidden')) {
+        renderWishlistModalItems();
+        openModal('wishlistModal');
+      } else {
+        closeModal('wishlistModal');
+      }
+    }
+
+    function renderWishlistModalItems() {
+      const container = document.getElementById('wishlistItemsContainer');
+      const items = templatesData.filter(t => state.wishlist.includes(t.id));
+
+      if (items.length === 0) {
+        container.innerHTML = `
+          <div class="text-center py-10">
+            <i data-lucide="heart-off" class="w-12 h-12 text-slate-400 mx-auto mb-2 stroke-1"></i>
+            <p class="text-sm text-slate-500">لا توجد قوالب مضافة للمفضلة حتى الآن.</p>
+          </div>
+        `;
+        lucide.createIcons();
+        return;
+      }
+
+      container.innerHTML = items.map(t => `
+        <div class="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700">
+          <div class="flex items-center gap-3">
+            <img src="${t.image}" class="w-12 h-12 rounded-lg object-cover">
+            <div>
+              <h4 class="font-bold text-sm text-slate-900 dark:text-white">${t.title}</h4>
+              <span class="text-xs text-brand-600 font-semibold">${t.categoryLabel}</span>
+            </div>
+          </div>
+          <div class="flex items-center gap-2">
+            <button onclick="openLivePreview('${t.id}'); closeModal('wishlistModal');" class="bg-brand-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold">معاينة</button>
+            <button onclick="toggleWishlist('${t.id}')" class="text-rose-500 hover:bg-rose-50 p-1.5 rounded-lg">
+              <i data-lucide="trash-2" class="w-4 h-4"></i>
+            </button>
+          </div>
+        </div>
+      `).join('');
+      lucide.createIcons();
+    }
+
+    // ------------------------------------------------------------------
+    // GENERIC UI MODAL & TOAST HELPERS
+    // ------------------------------------------------------------------
+    function openModal(modalId) {
+      document.getElementById(modalId).classList.remove('hidden');
+    }
+
+    function closeModal(modalId) {
+      document.getElementById(modalId).classList.add('hidden');
+    }
+
+    function toggleDarkMode() {
+      document.documentElement.classList.toggle('dark');
+      showToast('تم تغيير المظهر بنجاح');
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      document.getElementById('toastMessage').innerText = msg;
+      
+      toast.classList.remove('translate-y-20', 'opacity-0', 'pointer-events-none');
+      setTimeout(() => {
+        toast.classList.add('translate-y-20', 'opacity-0', 'pointer-events-none');
+      }, 3000);
+    }
+
+    function handleLogin(e) {
+      e.preventDefault();
+      closeModal('loginModal');
+      showToast('تم تسجيل الدخول بنجاح! مرحباً بك.');
+    }
+  </script>
 </body>
 </html>
+```
