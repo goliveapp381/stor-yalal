@@ -3,19 +3,134 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>قوالب المدونات الشخصية | TemplateCraft Pro</title>
+  <title>قوالب المدونات الشخصية والمقالات | TemplateCraft Pro</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
   <style>body { font-family: 'Cairo', sans-serif; }</style>
 </head>
 <body class="bg-gray-50 text-gray-800">
-  <header class="bg-white shadow-sm border-b py-4 px-6 flex justify-between items-center">
-    <h1 class="text-xl font-bold text-purple-600">قسم المدونات الشخصية</h1>
-    <a href="../../index.html" class="text-sm bg-purple-100 text-purple-700 px-3 py-1.5 rounded-lg font-semibold hover:bg-purple-200 transition">الرئيسية</a>
+
+  <!-- Header -->
+  <header class="bg-white shadow-sm border-b sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+      <div class="flex items-center gap-3">
+        <h1 class="text-xl font-bold text-purple-600">قسم المدونات والمقالات</h1>
+        <span class="text-xs bg-purple-100 text-purple-700 font-bold px-2.5 py-1 rounded-full">6 قوالب متاحة</span>
+      </div>
+      <a href="../../index.html" class="text-sm bg-gray-100 text-gray-700 hover:bg-purple-50 hover:text-purple-600 px-4 py-2 rounded-lg font-semibold transition">الرجوع للرئيسية</a>
+    </div>
   </header>
-  <main class="max-w-7xl mx-auto px-4 py-16 text-center">
-    <h2 class="text-3xl font-bold mb-4">قريباً: تجميعة قوالب المدونات والمقالات</h2>
-    <p class="text-gray-500">هذه الصفحة ستضم جميع قوالب المدونات الخاصة بنا.</p>
+
+  <!-- Title Banner -->
+  <section class="bg-slate-900 text-white py-12 text-center relative">
+    <div class="max-w-4xl mx-auto px-4">
+      <h2 class="text-3xl font-bold mb-2">استعرض قوالب المدونات الشخصية والمقالات</h2>
+      <p class="text-slate-400 text-sm">اختر القالب المناسب لمجالك وابدأ في نشر محتواك بتصميم جذاب ومتجاوب.</p>
+    </div>
+  </section>
+
+  <!-- Templates Grid -->
+  <main class="max-w-7xl mx-auto px-4 py-12">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      
+      <!-- Template 1 -->
+      <div class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100 flex flex-col justify-between">
+        <div>
+          <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?w=500" class="w-full h-48 object-cover">
+          <div class="p-5">
+            <span class="text-xs bg-indigo-50 text-indigo-600 font-bold px-2.5 py-1 rounded">تقنية وذكاء اصطناعي</span>
+            <h3 class="text-lg font-bold mt-2 text-gray-800">قالب TechPulse التقني</h3>
+            <p class="text-gray-500 text-sm mt-2">تصميم عصري مظلم مخصص لمدونات التقنية الأخبارية والأجهزة الذكية.</p>
+          </div>
+        </div>
+        <div class="p-5 pt-0 flex justify-between items-center border-t border-gray-50 mt-4">
+          <span class="font-bold text-purple-600 text-sm">مجاني</span>
+          <a href="./template-1/index.html" target="_blank" class="bg-purple-600 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-purple-700 transition">معاينة القالب</a>
+        </div>
+      </div>
+
+      <!-- Template 2 -->
+      <div class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100 flex flex-col justify-between">
+        <div>
+          <img src="https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=500" class="w-full h-48 object-cover">
+          <div class="p-5">
+            <span class="text-xs bg-amber-50 text-amber-700 font-bold px-2.5 py-1 rounded">سفر ومغامرات</span>
+            <h3 class="text-lg font-bold mt-2 text-gray-800">قالب رحّال للسياحة</h3>
+            <p class="text-gray-500 text-sm mt-2">قالب دافئ جذاب لعرض صور الرحلات واليوميات وأدب السفر.</p>
+          </div>
+        </div>
+        <div class="p-5 pt-0 flex justify-between items-center border-t border-gray-50 mt-4">
+          <span class="font-bold text-purple-600 text-sm">مجاني</span>
+          <a href="./template-2/index.html" target="_blank" class="bg-purple-600 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-purple-700 transition">معاينة القالب</a>
+        </div>
+      </div>
+
+      <!-- Template 3 -->
+      <div class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100 flex flex-col justify-between">
+        <div>
+          <img src="https://images.unsplash.com/photo-1498837167922-ddd27525d352?w=500" class="w-full h-48 object-cover">
+          <div class="p-5">
+            <span class="text-xs bg-emerald-50 text-emerald-600 font-bold px-2.5 py-1 rounded">صحة ولياقة</span>
+            <h3 class="text-lg font-bold mt-2 text-gray-800">قالب توازن الصحي</h3>
+            <p class="text-gray-500 text-sm mt-2">أسلوب مريح وهادئ ونظيف ومناسب للتغذية واللياقة البدنية.</p>
+          </div>
+        </div>
+        <div class="p-5 pt-0 flex justify-between items-center border-t border-gray-50 mt-4">
+          <span class="font-bold text-purple-600 text-sm">مجاني</span>
+          <a href="./template-3/index.html" target="_blank" class="bg-purple-600 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-purple-700 transition">معاينة القالب</a>
+        </div>
+      </div>
+
+      <!-- Template 4 -->
+      <div class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100 flex flex-col justify-between">
+        <div>
+          <img src="https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?w=500" class="w-full h-48 object-cover">
+          <div class="p-5">
+            <span class="text-xs bg-blue-50 text-blue-600 font-bold px-2.5 py-1 rounded">مال وأعمال</span>
+            <h3 class="text-lg font-bold mt-2 text-gray-800">قالب المستثمر الذكي</h3>
+            <p class="text-gray-500 text-sm mt-2">تصميم رصين واحترافي للتحليلات الاقتصادية والنصائح المالية.</p>
+          </div>
+        </div>
+        <div class="p-5 pt-0 flex justify-between items-center border-t border-gray-50 mt-4">
+          <span class="font-bold text-purple-600 text-sm">مجاني</span>
+          <a href="./template-4/index.html" target="_blank" class="bg-purple-600 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-purple-700 transition">معاينة القالب</a>
+        </div>
+      </div>
+
+      <!-- Template 5 -->
+      <div class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100 flex flex-col justify-between">
+        <div>
+          <img src="https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?w=500" class="w-full h-48 object-cover">
+          <div class="p-5">
+            <span class="text-xs bg-rose-50 text-rose-600 font-bold px-2.5 py-1 rounded">تصميم وفنون</span>
+            <h3 class="text-lg font-bold mt-2 text-gray-800">قالب رؤية للتصميم</h3>
+            <p class="text-gray-500 text-sm mt-2">ستايل فني عالي التباين لمدونات الواجهات والبصريات.</p>
+          </div>
+        </div>
+        <div class="p-5 pt-0 flex justify-between items-center border-t border-gray-50 mt-4">
+          <span class="font-bold text-purple-600 text-sm">مجاني</span>
+          <a href="./template-5/index.html" target="_blank" class="bg-purple-600 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-purple-700 transition">معاينة القالب</a>
+        </div>
+      </div>
+
+      <!-- Template 6 -->
+      <div class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100 flex flex-col justify-between">
+        <div>
+          <img src="https://images.unsplash.com/photo-1455390582262-044cdead277a?w=500" class="w-full h-48 object-cover">
+          <div class="p-5">
+            <span class="text-xs bg-gray-100 text-gray-800 font-bold px-2.5 py-1 rounded">يوميات شخصية</span>
+            <h3 class="text-lg font-bold mt-2 text-gray-800">قالب أفكار مبعثرة</h3>
+            <p class="text-gray-500 text-sm mt-2">تصميم بسيط ونظيف (Minimalist) يركز على المحتوى والنصوص.</p>
+          </div>
+        </div>
+        <div class="p-5 pt-0 flex justify-between items-center border-t border-gray-50 mt-4">
+          <span class="font-bold text-purple-600 text-sm">مجاني</span>
+          <a href="./template-6/index.html" target="_blank" class="bg-purple-600 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-purple-700 transition">معاينة القالب</a>
+        </div>
+      </div>
+
+    </div>
   </main>
+
 </body>
 </html>
