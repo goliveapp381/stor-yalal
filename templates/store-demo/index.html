@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>معاينة قالب متجر ملابس عصري</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>body { font-family: 'Cairo', sans-serif; }</style>
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+  <!-- Header -->
+  <header class="bg-white shadow">
+    <div class="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
+      <h1 class="text-2xl font-bold text-indigo-600">متجر الأناقة العصري</h1>
+      <nav class="space-x-4 space-x-reverse text-sm font-semibold">
+        <a href="#" class="text-gray-600 hover:text-indigo-600">الرئيسية</a>
+        <a href="#" class="text-gray-600 hover:text-indigo-600">المنتجات</a>
+        <a href="#" class="text-gray-600 hover:text-indigo-600">اتصل بنا</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="bg-indigo-600 text-white py-16 text-center">
+    <h2 class="text-4xl font-bold mb-3">أحدث صيحات الموضة لعام 2026</h2>
+    <p class="mb-6 text-indigo-100">تخفيضات كبرى على تشكيلة الملابس الشتوية والصيفية</p>
+    <a href="#products" class="bg-white text-indigo-600 px-6 py-3 rounded-lg font-bold shadow hover:bg-gray-100 transition">تسوق الآن</a>
+  </section>
+
+  <!-- Products Section -->
+  <main id="products" class="max-w-6xl mx-auto px-4 py-12">
+    <h3 class="text-2xl font-bold mb-6 border-r-4 border-indigo-600 pr-3">منتجات المتجر</h3>
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+      
+      <!-- Item 1 -->
+      <div class="bg-white rounded-lg shadow overflow-hidden">
+        <img src="https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=500" alt="قميص" class="w-full h-48 object-cover">
+        <div class="p-4">
+          <h4 class="font-bold text-lg">قميص قطني أنيق</h4>
+          <p class="text-indigo-600 font-bold mt-2">$29.00</p>
+          <button class="mt-4 w-full bg-indigo-600 text-white py-2 rounded font-semibold hover:bg-indigo-700 transition">إضافة للسلة</button>
+        </div>
+      </div>
+
+      <!-- Item 2 -->
+      <div class="bg-white rounded-lg shadow overflow-hidden">
+        <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500" alt="حذاء" class="w-full h-48 object-cover">
+        <div class="p-4">
+          <h4 class="font-bold text-lg">حذاء رياضي عصري</h4>
+          <p class="text-indigo-600 font-bold mt-2">$59.00</p>
+          <button class="mt-4 w-full bg-indigo-600 text-white py-2 rounded font-semibold hover:bg-indigo-700 transition">إضافة للسلة</button>
+        </div>
+      </div>
+
+      <!-- Item 3 -->
+      <div class="bg-white rounded-lg shadow overflow-hidden">
+        <img src="https://images.unsplash.com/photo-1551028719-00167b16eac5?w=500" alt="جاكيت" class="w-full h-48 object-cover">
+        <div class="p-4">
+          <h4 class="font-bold text-lg">جاكيت جلد فاخر</h4>
+          <p class="text-indigo-600 font-bold mt-2">$89.00</p>
+          <button class="mt-4 w-full bg-indigo-600 text-white py-2 rounded font-semibold hover:bg-indigo-700 transition">إضافة للسلة</button>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="bg-white text-center py-6 text-gray-500 border-t mt-12 text-sm">
+    جميع الحقوق محفوظة - متجر الأناقة 2026
+  </footer>
+
+</body>
+</html>
