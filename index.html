@@ -48,7 +48,7 @@
       
       <!-- منطقة الحساب وزر تسجيل الدخول -->
       <div id="auth-section" class="flex items-center space-x-3 space-x-reverse">
-        <!-- سيتم تعبئتها ديناميكياً عبر الجافاسكريبت بناءً على حالة تسجيل الدخول -->
+        <!-- يتم تعبئتها ديناميكياً عبر الجافاسكريبت -->
         <a href="login.html" class="bg-purple-600 hover:bg-purple-700 text-white px-5 py-2 rounded-xl text-sm font-bold shadow transition flex items-center gap-2">
           تسجيل الدخول / حساب جديد
         </a>
@@ -153,9 +153,10 @@
         const user = JSON.parse(storedUser);
         authSection.innerHTML = `
           <div class="flex items-center gap-3">
-            <span class="text-sm font-bold text-purple-700 bg-purple-50 px-4 py-2 rounded-xl border border-purple-100">
-              👤 ${user.username}
-            </span>
+            <a href="profile.html" class="flex items-center gap-2 text-sm font-bold text-purple-700 bg-purple-50 hover:bg-purple-100 px-4 py-2 rounded-xl border border-purple-100 transition shadow-xs">
+              <span>👤</span>
+              <span>${user.username}</span>
+            </a>
             <button onclick="logout()" class="bg-red-50 hover:bg-red-100 text-red-600 px-3 py-2 rounded-xl text-sm font-bold transition">
               خروج
             </button>

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>الملف الشخصي | TemplateCraft Pro</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Cairo', sans-serif; }
+    .animated-mesh-bg {
+      background: linear-gradient(-45deg, #0f172a, #2e1065, #4c1d95, #3b0764);
+      background-size: 400% 400%;
+      animation: waveGradient 12s ease infinite;
+    }
+    @keyframes waveGradient {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-800 min-h-screen flex flex-col justify-between">
+
+  <!-- Header -->
+  <header class="bg-white/90 backdrop-blur-md shadow-sm border-b sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+      <h1 class="text-2xl font-bold text-purple-600">TemplateCraft Pro</h1>
+      <a href="index.html" class="bg-purple-50 hover:bg-purple-100 text-purple-700 px-4 py-2 rounded-xl text-sm font-bold transition">
+        العودة للرئيسية ➔
+      </a>
+    </div>
+  </header>
+
+  <!-- Profile Content -->
+  <main class="max-w-4xl mx-auto px-4 py-12 w-full flex-grow">
+    <div class="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
+      
+      <!-- Top Banner -->
+      <div class="animated-mesh-bg h-40 flex items-end justify-center pb-4 relative">
+        <div class="absolute -bottom-10 bg-white p-2 rounded-full shadow-lg border-4 border-white">
+          <div class="w-20 h-20 bg-purple-600 text-white rounded-full flex items-center justify-center text-3xl font-bold" id="user-avatar">
+            👤
+          </div>
+        </div>
+      </div>
+
+      <!-- User Info Details -->
+      <div class="pt-14 pb-8 px-8 text-center">
+        <h2 id="profile-username" class="text-2xl font-bold text-gray-800">جاري التحميل...</h2>
+        <p id="profile-email" class="text-gray-500 text-sm mt-1">---</p>
+        
+        <div class="mt-6 inline-block bg-purple-50 border border-purple-100 px-6 py-3 rounded-2xl text-purple-700 text-sm font-bold">
+          حالة الحساب: <span class="text-green-600">نشط وموثق ✅</span>
+        </div>
+      </div>
+
+      <!-- User Dashboard / Stats -->
+      <div class="border-t border-gray-100 p-6 bg-gray-50/50">
+        <h3 class="text-lg font-bold text-gray-800 mb-4">إحصائيات ومشاريع المستخدم</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="bg-white p-5 rounded-xl border shadow-xs flex justify-between items-center">
+            <div>
+              <p class="text-gray-500 text-sm">المواقع المنشأة</p>
+              <h4 class="text-2xl font-bold text-purple-600 mt-1">0</h4>
+            </div>
+            <span class="text-3xl">🌐</span>
+          </div>
+
+          <div class="bg-white p-5 rounded-xl border shadow-xs flex justify-between items-center">
+            <div>
+              <p class="text-gray-500 text-sm">نوع العضوية</p>
+              <h4 class="text-xl font-bold text-purple-600 mt-1">مطور / محترف</h4>
+            </div>
+            <span class="text-3xl">⭐</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="bg-white border-t py-6 text-center text-gray-500 text-sm">
+    جميع الحقوق محفوظة © 2026 - منصة TemplateCraft Pro
+  </footer>
+
+  <!-- Script to load user info -->
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      const storedUser = localStorage.getItem('user');
+      if (!storedUser) {
+        // إذا لم يكن مسجلاً، أعده لصفحة الدخول
+        window.location.href = 'login.html';
+        return;
+      }
+
+      const user = JSON.parse(storedUser);
+      document.getElementById('profile-username').innerText = user.username;
+      document.getElementById('profile-email').innerText = user.email;
+      document.getElementById('user-avatar').innerText = user.username.charAt(0).toUpperCase();
+    });
+  </script>
+
+</body>
+</html>
