@@ -9,7 +9,6 @@
   <style>
     body { font-family: 'Cairo', sans-serif; }
 
-    /* أنيميشن خلفية متدرجة بلمسات بنفسجية هادئة وتصميم شبكي */
     .animated-mesh-bg {
       background: linear-gradient(-45deg, #0f172a, #2e1065, #4c1d95, #3b0764);
       background-size: 400% 400%;
@@ -42,8 +41,18 @@
   <!-- Header -->
   <header class="bg-white/90 backdrop-blur-md shadow-sm border-b sticky top-0 z-50">
     <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
-      <h1 class="text-2xl font-bold text-purple-600">TemplateCraft Pro</h1>
-      <span class="text-sm bg-purple-50 text-purple-700 px-3 py-1 rounded-full font-semibold">منصة القوالب الرقمية</span>
+      <div class="flex items-center space-x-4 space-x-reverse">
+        <h1 class="text-2xl font-bold text-purple-600">TemplateCraft Pro</h1>
+        <span class="text-sm bg-purple-50 text-purple-700 px-3 py-1 rounded-full font-semibold hidden md:inline-block">منصة القوالب الرقمية</span>
+      </div>
+      
+      <!-- منطقة الحساب وزر تسجيل الدخول -->
+      <div id="auth-section" class="flex items-center space-x-3 space-x-reverse">
+        <!-- سيتم تعبئتها ديناميكياً عبر الجافاسكريبت بناءً على حالة تسجيل الدخول -->
+        <a href="login.html" class="bg-purple-600 hover:bg-purple-700 text-white px-5 py-2 rounded-xl text-sm font-bold shadow transition flex items-center gap-2">
+          تسجيل الدخول / حساب جديد
+        </a>
+      </div>
     </div>
   </header>
 
@@ -56,7 +65,7 @@
     </div>
   </section>
 
-  <!-- Horizontal Categories Bar (شريط الأصناف الأفقي المضبوط) -->
+  <!-- Horizontal Categories Bar -->
   <nav class="bg-white border-b shadow-xs py-4 overflow-x-auto">
     <div class="max-w-7xl mx-auto px-4 flex space-x-4 space-x-reverse min-w-max">
       <a href="index.html" class="bg-purple-600 text-white px-5 py-2 rounded-full text-sm font-bold shadow transition">الكل</a>
@@ -68,7 +77,7 @@
     </div>
   </nav>
 
-  <!-- Latest Releases Section (أحدث الإصدارات) -->
+  <!-- Latest Releases Section -->
   <main class="max-w-7xl mx-auto px-4 py-12">
     <div class="flex justify-between items-center mb-8">
       <h3 class="text-2xl font-bold text-gray-900 border-r-4 border-purple-600 pr-3">أحدث الإصدارات والقوالب</h3>
@@ -131,6 +140,35 @@
   <footer class="bg-white border-t py-6 text-center text-gray-500 text-sm mt-12">
     جميع الحقوق محفوظة © 2026 - منصة TemplateCraft Pro
   </footer>
+
+  <!-- استدعاء ملف الإنديكس المركزي -->
+  <script src="./client-api.js"></script>
+  <script>
+    // التحقق واش المستخدم مسجل الدخول عن طريق LocalStorage
+    window.addEventListener('DOMContentLoaded', () => {
+      const storedUser = localStorage.getItem('user');
+      const authSection = document.getElementById('auth-section');
+
+      if (storedUser) {
+        const user = JSON.parse(storedUser);
+        authSection.innerHTML = `
+          <div class="flex items-center gap-3">
+            <span class="text-sm font-bold text-purple-700 bg-purple-50 px-4 py-2 rounded-xl border border-purple-100">
+              👤 ${user.username}
+            </span>
+            <button onclick="logout()" class="bg-red-50 hover:bg-red-100 text-red-600 px-3 py-2 rounded-xl text-sm font-bold transition">
+              خروج
+            </button>
+          </div>
+        `;
+      }
+    });
+
+    function logout() {
+      localStorage.removeItem('user');
+      window.location.reload();
+    }
+  </script>
 
 </body>
 </html>
