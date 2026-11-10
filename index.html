@@ -46,9 +46,8 @@
         <span class="text-sm bg-purple-50 text-purple-700 px-3 py-1 rounded-full font-semibold hidden md:inline-block">منصة القوالب الرقمية</span>
       </div>
       
-      <!-- منطقة الحساب وأزرار التحكم -->
+      <!-- منطقة الحساب وزر تسجيل الدخول -->
       <div id="auth-section" class="flex items-center space-x-3 space-x-reverse">
-        <!-- يتم تعبئتها ديناميكياً عبر الجافاسكريبت -->
         <a href="login.html" class="bg-purple-600 hover:bg-purple-700 text-white px-5 py-2 rounded-xl text-sm font-bold shadow transition flex items-center gap-2">
           تسجيل الدخول / حساب جديد
         </a>
@@ -65,15 +64,28 @@
     </div>
   </section>
 
-  <!-- Horizontal Categories Bar -->
+  <!-- Horizontal Categories Bar (مع زر إنشاء مشروع بالأخضر في أقصى اليسار) -->
   <nav class="bg-white border-b shadow-xs py-4 overflow-x-auto">
-    <div class="max-w-7xl mx-auto px-4 flex space-x-4 space-x-reverse min-w-max">
-      <a href="index.html" class="bg-purple-600 text-white px-5 py-2 rounded-full text-sm font-bold shadow transition">الكل</a>
-      <a href="templates/ecommerce/index.html" class="bg-gray-100 text-gray-700 hover:bg-purple-50 hover:text-purple-600 px-5 py-2 rounded-full text-sm font-semibold transition">متاجر إلكترونية</a>
-      <a href="templates/corporate/index.html" class="bg-gray-100 text-gray-700 hover:bg-purple-50 hover:text-purple-600 px-5 py-2 rounded-full text-sm font-semibold transition">شركات وخدمات</a>
-      <a href="templates/restaurant-demo/index.html" class="bg-gray-100 text-gray-700 hover:bg-purple-50 hover:text-purple-600 px-5 py-2 rounded-full text-sm font-semibold transition">مطاعم وضيافة</a>
-      <a href="templates/real-estate/index.html" class="bg-gray-100 text-gray-700 hover:bg-purple-50 hover:text-purple-600 px-5 py-2 rounded-full text-sm font-semibold transition">عقارات</a>
-      <a href="templates/blogs/index.html" class="bg-gray-100 text-gray-700 hover:bg-purple-50 hover:text-purple-600 px-5 py-2 rounded-full text-sm font-semibold transition">مدونات شخصية</a>
+    <div class="max-w-7xl mx-auto px-4 flex justify-between items-center min-w-max">
+      
+      <!-- الأصناف في اليمين -->
+      <div class="flex space-x-4 space-x-reverse">
+        <a href="index.html" class="bg-purple-600 text-white px-5 py-2 rounded-full text-sm font-bold shadow transition">الكل</a>
+        <a href="templates/ecommerce/index.html" class="bg-gray-100 text-gray-700 hover:bg-purple-50 hover:text-purple-600 px-5 py-2 rounded-full text-sm font-semibold transition">متاجر إلكترونية</a>
+        <a href="templates/corporate/index.html" class="bg-gray-100 text-gray-700 hover:bg-purple-50 hover:text-purple-600 px-5 py-2 rounded-full text-sm font-semibold transition">شركات وخدمات</a>
+        <a href="templates/restaurant-demo/index.html" class="bg-gray-100 text-gray-700 hover:bg-purple-50 hover:text-purple-600 px-5 py-2 rounded-full text-sm font-semibold transition">مطاعم وضيافة</a>
+        <a href="templates/real-estate/index.html" class="bg-gray-100 text-gray-700 hover:bg-purple-50 hover:text-purple-600 px-5 py-2 rounded-full text-sm font-semibold transition">عقارات</a>
+        <a href="templates/blogs/index.html" class="bg-gray-100 text-gray-700 hover:bg-purple-50 hover:text-purple-600 px-5 py-2 rounded-full text-sm font-semibold transition">مدونات شخصية</a>
+      </div>
+
+      <!-- زر إنشاء مشروع الكبير باللون الأخضر في أقصى اليسار -->
+      <div id="create-project-btn-container" class="hidden">
+        <a href="create-project.html" class="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-3 rounded-xl text-base font-bold shadow-lg transition flex items-center gap-2">
+          <span>⚡</span>
+          <span>إنشاء مشروع جديد</span>
+        </a>
+      </div>
+
     </div>
   </nav>
 
@@ -144,28 +156,26 @@
   <!-- استدعاء ملف الإنديكس المركزي -->
   <script src="./client-api.js"></script>
   <script>
-    // التحقق واش المستخدم مسجل الدخول عن طريق LocalStorage
     window.addEventListener('DOMContentLoaded', () => {
       const storedUser = localStorage.getItem('user');
       const authSection = document.getElementById('auth-section');
+      const createProjectBtnContainer = document.getElementById('create-project-btn-container');
 
       if (storedUser) {
         const user = JSON.parse(storedUser);
+        
+        // إظهار زر إنشاء المشروع في أقصى اليسار فقط إذا كان مسجلاً دخول
+        if (createProjectBtnContainer) {
+          createProjectBtnContainer.classList.remove('hidden');
+        }
+
+        // عرض البروفايل وزر الخروج في الفوق
         authSection.innerHTML = `
           <div class="flex items-center gap-3">
-            <!-- زر إنشاء مشروع الجديد -->
-            <a href="create-project.html" class="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white px-4 py-2 rounded-xl text-sm font-bold shadow-md transition flex items-center gap-1.5">
-              <span>⚡</span>
-              <span>إنشاء مشروع</span>
-            </a>
-
-            <!-- بروفايل المستخدم -->
-            <a href="profile.html" class="flex items-center gap-2 text-sm font-bold text-purple-700 bg-purple-50 hover:bg-purple-100 px-3 py-2 rounded-xl border border-purple-100 transition shadow-xs">
+            <a href="profile.html" class="flex items-center gap-2 text-sm font-bold text-purple-700 bg-purple-50 hover:bg-purple-100 px-4 py-2 rounded-xl border border-purple-100 transition shadow-xs">
               <span>👤</span>
               <span>${user.username}</span>
             </a>
-
-            <!-- زر خروج -->
             <button onclick="logout()" class="bg-red-50 hover:bg-red-100 text-red-600 px-3 py-2 rounded-xl text-sm font-bold transition">
               خروج
             </button>
