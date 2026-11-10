@@ -33,7 +33,7 @@
   </header>
 
   <!-- Wizard Main Container -->
-  <main class="max-w-3xl mx-auto px-4 py-12 w-full flex-grow">
+  <main class="max-w-4xl mx-auto px-4 py-12 w-full flex-grow">
     <div class="bg-white rounded-2xl shadow-xl border border-gray-100 p-8">
       
       <div class="mb-8 text-center">
@@ -95,9 +95,9 @@
           
           <!-- قسم القوالب الديناميكية حسب التصنيف -->
           <div id="templates-container" class="space-y-4 hidden">
-            <h3 class="text-lg font-bold text-gray-800 border-r-4 border-purple-600 pr-3">قوالب الصنف المختاره:</h3>
+            <h3 class="text-lg font-bold text-gray-800 border-r-4 border-purple-600 pr-3">قوالب الصنف المختارة:</h3>
             <div id="dynamic-templates-grid" class="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <!-- سيتم تعبئتها أوتوماتيكياً حسب اختيار المستخدم -->
+              <!-- سيتم تعبئتها أوتوماتيكياً بجميع القوالب الستة -->
             </div>
           </div>
 
@@ -135,14 +135,18 @@
   <script>
     let chosenBuildMode = 'template';
 
-    // قاعدة بيانات مصغرة للقوالب حسب مجلداتها الحقيقية في مشروعك
+    // قاعدة بيانات القوالب محدثة بجميع الـ 6 قوالب الحقيقية لـ blogs وباقي الأصناف
     const templatesData = {
       "ecommerce": [
         { id: "store-demo", name: "قالب متجر ملابس عصري", img: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=400", path: "./templates/store-demo/index.html" }
       ],
       "blogs": [
-        { id: "template-1", name: "قالب TechPulse التقني", img: "https://images.unsplash.com/photo-1518770660439-4636190af475?w=400", path: "./templates/blogs/template-1/index.html" },
-        { id: "template-2", name: "قالب رحلات للسياحة", img: "https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=400", path: "./templates/blogs/template-2/index.html" }
+        { id: "blog-health", name: "قالب توازن الصحي", img: "https://images.unsplash.com/photo-1498837167922-ddd27525d352?w=400", path: "./templates/blogs/index.html" },
+        { id: "blog-travel", name: "قالب رحلات للسياحة", img: "https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=400", path: "./templates/blogs/index.html" },
+        { id: "blog-tech", name: "قالب TechPulse التقني", img: "https://images.unsplash.com/photo-1518770660439-4636190af475?w=400", path: "./templates/blogs/template-1/index.html" },
+        { id: "blog-minimal", name: "قالب أفكار مبعثرة", img: "https://images.unsplash.com/photo-1455390582262-044cdead277a?w=400", path: "./templates/blogs/index.html" },
+        { id: "blog-design", name: "قالب رؤية للتصميم", img: "https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?w=400", path: "./templates/blogs/index.html" },
+        { id: "blog-invest", name: "قالب المستثمر الذكي", img: "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=400", path: "./templates/blogs/index.html" }
       ],
       "corporate": [
         { id: "company-demo", name: "قالب شركة استشارات", img: "https://images.unsplash.com/photo-1497366216548-37526070297c?w=400", path: "./templates/company-demo/index.html" }
@@ -176,7 +180,6 @@
         codeContainer.classList.add('hidden');
         document.getElementById('step-desc').innerText = 'الخطوة 2 من 2: اختر قالباً من تصنيف: ' + projectType;
 
-        // تعبئة القوالب الخاصة بهذا التصنيف حصرياً
         const grid = document.getElementById('dynamic-templates-grid');
         grid.innerHTML = '';
 
