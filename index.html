@@ -46,7 +46,7 @@
         <span class="text-sm bg-purple-50 text-purple-700 px-3 py-1 rounded-full font-semibold hidden md:inline-block">منصة القوالب الرقمية</span>
       </div>
       
-      <!-- منطقة الحساب وزر تسجيل الدخول -->
+      <!-- منطقة الحساب وأزرار التحكم -->
       <div id="auth-section" class="flex items-center space-x-3 space-x-reverse">
         <!-- يتم تعبئتها ديناميكياً عبر الجافاسكريبت -->
         <a href="login.html" class="bg-purple-600 hover:bg-purple-700 text-white px-5 py-2 rounded-xl text-sm font-bold shadow transition flex items-center gap-2">
@@ -153,10 +153,19 @@
         const user = JSON.parse(storedUser);
         authSection.innerHTML = `
           <div class="flex items-center gap-3">
-            <a href="profile.html" class="flex items-center gap-2 text-sm font-bold text-purple-700 bg-purple-50 hover:bg-purple-100 px-4 py-2 rounded-xl border border-purple-100 transition shadow-xs">
+            <!-- زر إنشاء مشروع الجديد -->
+            <a href="create-project.html" class="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white px-4 py-2 rounded-xl text-sm font-bold shadow-md transition flex items-center gap-1.5">
+              <span>⚡</span>
+              <span>إنشاء مشروع</span>
+            </a>
+
+            <!-- بروفايل المستخدم -->
+            <a href="profile.html" class="flex items-center gap-2 text-sm font-bold text-purple-700 bg-purple-50 hover:bg-purple-100 px-3 py-2 rounded-xl border border-purple-100 transition shadow-xs">
               <span>👤</span>
               <span>${user.username}</span>
             </a>
+
+            <!-- زر خروج -->
             <button onclick="logout()" class="bg-red-50 hover:bg-red-100 text-red-600 px-3 py-2 rounded-xl text-sm font-bold transition">
               خروج
             </button>
