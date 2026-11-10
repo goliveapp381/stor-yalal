@@ -70,7 +70,7 @@
                 <input type="radio" name="buildMode" value="template" checked class="text-purple-600 focus:ring-purple-500">
                 <div>
                   <span class="block font-bold text-gray-800">قوالب جاهزة من الموقع</span>
-                  <span class="text-xs text-gray-500">عرض جميع القوالب المتاحة أوتوماتيكياً</span>
+                  <span class="text-xs text-gray-500">جلب أوتوماتيكي من صفحة الصنف</span>
                 </div>
               </label>
 
@@ -90,18 +90,17 @@
         </div>
 
 
-        <!-- ================= الخطوة الثانية ================= -->
+        <!-- ================= الخطوة الثانية (الجلب الديناميكي) ================= -->
         <div id="step-2" class="space-y-6 hidden">
           
-          <!-- قسم العرض الديناميكي اللامتناهي -->
           <div id="templates-container" class="space-y-4 hidden">
-            <h3 class="text-lg font-bold text-gray-800 border-r-4 border-purple-600 pr-3">اختر من بين جميع القوالب المتاحة:</h3>
+            <h3 class="text-lg font-bold text-gray-800 border-r-4 border-purple-600 pr-3">اختر من القوالب المتاحة في هذا الصنف:</h3>
             <div id="dynamic-templates-grid" class="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <!-- يُولد أوتوماتيكياً حسب العدد المتاح -->
+              <!-- سيتم جلب البطاقات هنا أوتوماتيكياً من صفحة العرض -->
+              <p class="text-gray-400 text-sm col-span-3 text-center py-4">جاري جلب القوالب أوتوماتيكياً...</p>
             </div>
           </div>
 
-          <!-- قسم رفع كود HTML -->
           <div id="code-container" class="space-y-4 hidden">
             <h3 class="text-lg font-bold text-gray-800 border-r-4 border-purple-600 pr-3">رفع أو كتابة كود HTML للمشروع:</h3>
             <div>
@@ -130,21 +129,13 @@
     جميع الحقوق محفوظة © 2026 - منصة TemplateCraft Pro
   </footer>
 
-  <!-- استدعاء ملف الـ API المركزي -->
+  <!-- استدعاء ملف الـ API -->
   <script src="./client-api.js"></script>
   <script>
     let chosenBuildMode = 'template';
+    let fetchedTemplatesData = [];
 
-    // خريطة لتحديد عدد القوالب المتاحة لكل صنف (يمكنك رفع الرقم لأي قيمة تريد: 50, 100, 1000...)
-    const categoryCounts = {
-      "blogs": 50,         // مثال: صنف المدونات يمكن أن يضم حتى 50 قالب أو أكثر
-      "ecommerce": 30,     // صنف المتاجر
-      "corporate": 30,     // صنف الشركات
-      "restaurant-demo": 30, // صنف المطاعم
-      "real-estate": 30    // صنف العقارات
-    };
-
-    function goToStep2() {
+    async function goToStep2() {
       const siteName = document.getElementById('siteName').value;
       if (!siteName.trim()) {
         alert('⚠️ الرجاء إدخال اسم المشروع أولاً!');
@@ -163,34 +154,79 @@
       if (chosenBuildMode === 'template') {
         templatesContainer.classList.remove('hidden');
         codeContainer.classList.add('hidden');
-        document.getElementById('step-desc').innerText = 'الخطوة 2 من 2: اختر قالباً من صنف: ' + projectType;
+        document.getElementById('step-desc').innerText = 'الخطوة 2 من 2: جلب القوالب أوتوماتيكياً من تصنيف: ' + projectType;
 
         const grid = document.getElementById('dynamic-templates-grid');
-        grid.innerHTML = '';
+        grid.innerHTML = '<p class="text-gray-400 text-sm col-span-3 text-center py-4">جاري تحميل القوالب الحقيقية من صفحة الصنف...</p>';
 
-        // جلب العدد الأقصى المحدد لهذا الصنف أوتوماتيكياً
-        const maxCount = categoryCounts[projectType] || 20;
+        try {
+          // تحديد مسار صفحة الصنف الحقيقية أوتوماتيكياً (مثال: ./templates/blogs/index.html)
+          let categoryIndexUrl = `./templates/${projectType}/index.html`;
+          if (projectType === 'ecommerce' || projectType === 'corporate' || projectType === 'restaurant-demo' || projectType === 'real-estate') {
+            categoryIndexUrl = `./templates/${projectType}/index.html`;
+          }
 
-        // توليد البطاقات بشكل ديناميكي كامل
-        for (let i = 1; i <= maxCount; i++) {
-          const templateId = `template-${i}`;
-          // ملاحظة: إذا كان الصنف عبارة عن فولدر مباشر بدون template-i، يمكن ضبط المسار بذكاء
-          const templatePath = (projectType === 'ecommerce' || projectType === 'corporate' || projectType === 'restaurant-demo' || projectType === 'real-estate') && i === 1 
-            ? `./templates/${projectType}/index.html` 
-            : `./templates/${projectType}/${templateId}/index.html`;
+          // جلب محتوى صفحة الصنف برمجياً
+          const response = await fetch(categoryIndexUrl);
+          const htmlText = await response.text();
 
-          const placeholderImg = `https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&sig=${i}`;
+          // تحليل الـ HTML المستخرج لاستخراج البطاقات والصور والعناوين
+          const parser = new DOMParser();
+          const doc = parser.parseFromString(htmlText, 'text/html');
 
-          grid.innerHTML += `
-            <label class="cursor-pointer border-2 rounded-xl p-4 hover:border-purple-600 transition flex flex-col justify-between relative group">
-              <input type="radio" name="selectedTemplate" value="${templateId}" ${i === 1 ? 'checked' : ''} class="absolute top-3 left-3 text-purple-600">
-              <div>
-                <img src="${placeholderImg}" alt="قالب ${i}" class="w-full h-32 object-cover rounded-lg mb-3">
-                <h4 class="font-bold text-gray-800 text-sm">قالب رقم ${i}</h4>
-              </div>
-              <a href="${templatePath}" target="_blank" class="text-xs text-purple-600 mt-2 hover:underline inline-block">معاينة مباشرة ↗</a>
-            </label>
-          `;
+          // البحث عن العناصر التي تمثل القوالب داخل الصفحة (حسب الهيكلة لديك)
+          // نفترض أن كل قالب موجود داخل عنصر يحتوي على رابط وصورة وعنوان
+          const cardElements = doc.querySelectorAll('a, div.border, div.bg-white'); // يمكن تعديل المختار حسب كود صفحتك
+          
+          fetchedTemplatesData = [];
+          let counter = 1;
+
+          // استخراج البيانات الذكية
+          doc.querySelectorAll('img').forEach((img, idx) => {
+            const parentCard = img.closest('div') || img.parentElement;
+            const titleEl = parentCard ? parentCard.querySelector('h4, h3, h2, span') : null;
+            
+            if (img.src && !img.src.includes('logo')) {
+              fetchedTemplatesData.push({
+                id: `template-${counter}`,
+                name: titleEl ? titleEl.innerText : `قالب رقم ${counter}`,
+                img: img.src,
+                path: `./templates/${projectType}/template-${counter}/index.html`
+              });
+              counter++;
+            }
+          });
+
+          // إذا لم يجد صوراً كافية بالطريقة الآلية، نضع عارض افتراضي ذكي
+          if (fetchedTemplatesData.length === 0) {
+            for(let i = 1; i <= 6; i++) {
+              fetchedTemplatesData.push({
+                id: `template-${i}`,
+                name: `قالب رقم ${i} (${projectType})`,
+                img: `https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&sig=${i}`,
+                path: `./templates/${projectType}/template-${i}/index.html`
+              });
+            }
+          }
+
+          // عرض القوالب المستخرجة أوتوماتيكياً في شبكة الاختيار
+          grid.innerHTML = '';
+          fetchedTemplatesData.forEach((tpl, index) => {
+            grid.innerHTML += `
+              <label class="cursor-pointer border-2 rounded-xl p-4 hover:border-purple-600 transition flex flex-col justify-between relative group">
+                <input type="radio" name="selectedTemplate" value="${tpl.id}" ${index === 0 ? 'checked' : ''} class="absolute top-3 left-3 text-purple-600">
+                <div>
+                  <img src="${tpl.img}" alt="${tpl.name}" class="w-full h-32 object-cover rounded-lg mb-3">
+                  <h4 class="font-bold text-gray-800 text-sm">${tpl.name}</h4>
+                </div>
+                <a href="${tpl.path}" target="_blank" class="text-xs text-purple-600 mt-2 hover:underline inline-block">معاينة مباشرة ↗</a>
+              </label>
+            `;
+          });
+
+        } catch (error) {
+          console.error("Error fetching templates:", error);
+          grid.innerHTML = '<p class="text-red-500 text-sm col-span-3 text-center">⚠️ تعذر جلب القوالب أوتوماتيكياً، تأكد من مسار الصنف.</p>';
         }
 
       } else {
@@ -224,7 +260,8 @@
       let htmlCodeVal = '';
 
       if (chosenBuildMode === 'template') {
-        templateId = document.querySelector('input[name="selectedTemplate"]:checked').value;
+        const selectedRadio = document.querySelector('input[name="selectedTemplate"]:checked');
+        templateId = selectedRadio ? selectedRadio.value : 'template-1';
       } else {
         htmlCodeVal = document.getElementById('htmlCode').value;
       }
