@@ -70,7 +70,7 @@
                 <input type="radio" name="buildMode" value="template" checked class="text-purple-600 focus:ring-purple-500">
                 <div>
                   <span class="block font-bold text-gray-800">قوالب جاهزة من الموقع</span>
-                  <span class="text-xs text-gray-500">اختر من قوالبنا الخاصة حسب التصنيف</span>
+                  <span class="text-xs text-gray-500">عرض جميع القوالب المتاحة أوتوماتيكياً</span>
                 </div>
               </label>
 
@@ -93,11 +93,11 @@
         <!-- ================= الخطوة الثانية ================= -->
         <div id="step-2" class="space-y-6 hidden">
           
-          <!-- قسم القوالب الديناميكية حسب التصنيف -->
+          <!-- قسم العرض الديناميكي اللامتناهي -->
           <div id="templates-container" class="space-y-4 hidden">
-            <h3 class="text-lg font-bold text-gray-800 border-r-4 border-purple-600 pr-3">قوالب الصنف المختارة:</h3>
+            <h3 class="text-lg font-bold text-gray-800 border-r-4 border-purple-600 pr-3">اختر من بين جميع القوالب المتاحة:</h3>
             <div id="dynamic-templates-grid" class="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <!-- سيتم تعبئتها أوتوماتيكياً بجميع القوالب الستة -->
+              <!-- يُولد أوتوماتيكياً حسب العدد المتاح -->
             </div>
           </div>
 
@@ -130,33 +130,18 @@
     جميع الحقوق محفوظة © 2026 - منصة TemplateCraft Pro
   </footer>
 
-  <!-- استدعاء ملف الإنديكس المركزي -->
+  <!-- استدعاء ملف الـ API المركزي -->
   <script src="./client-api.js"></script>
   <script>
     let chosenBuildMode = 'template';
 
-    // قاعدة بيانات القوالب محدثة بجميع الـ 6 قوالب الحقيقية لـ blogs وباقي الأصناف
-    const templatesData = {
-      "ecommerce": [
-        { id: "store-demo", name: "قالب متجر ملابس عصري", img: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=400", path: "./templates/store-demo/index.html" }
-      ],
-      "blogs": [
-        { id: "blog-health", name: "قالب توازن الصحي", img: "https://images.unsplash.com/photo-1498837167922-ddd27525d352?w=400", path: "./templates/blogs/index.html" },
-        { id: "blog-travel", name: "قالب رحلات للسياحة", img: "https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=400", path: "./templates/blogs/index.html" },
-        { id: "blog-tech", name: "قالب TechPulse التقني", img: "https://images.unsplash.com/photo-1518770660439-4636190af475?w=400", path: "./templates/blogs/template-1/index.html" },
-        { id: "blog-minimal", name: "قالب أفكار مبعثرة", img: "https://images.unsplash.com/photo-1455390582262-044cdead277a?w=400", path: "./templates/blogs/index.html" },
-        { id: "blog-design", name: "قالب رؤية للتصميم", img: "https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?w=400", path: "./templates/blogs/index.html" },
-        { id: "blog-invest", name: "قالب المستثمر الذكي", img: "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=400", path: "./templates/blogs/index.html" }
-      ],
-      "corporate": [
-        { id: "company-demo", name: "قالب شركة استشارات", img: "https://images.unsplash.com/photo-1497366216548-37526070297c?w=400", path: "./templates/company-demo/index.html" }
-      ],
-      "restaurant-demo": [
-        { id: "restaurant-demo", name: "قالب مطعم ومقاهي", img: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400", path: "./templates/restaurant-demo/index.html" }
-      ],
-      "real-estate": [
-        { id: "real-estate", name: "قالب عقارات ومنازل", img: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=400", path: "./templates/real-estate/index.html" }
-      ]
+    // خريطة لتحديد عدد القوالب المتاحة لكل صنف (يمكنك رفع الرقم لأي قيمة تريد: 50, 100, 1000...)
+    const categoryCounts = {
+      "blogs": 50,         // مثال: صنف المدونات يمكن أن يضم حتى 50 قالب أو أكثر
+      "ecommerce": 30,     // صنف المتاجر
+      "corporate": 30,     // صنف الشركات
+      "restaurant-demo": 30, // صنف المطاعم
+      "real-estate": 30    // صنف العقارات
     };
 
     function goToStep2() {
@@ -178,24 +163,35 @@
       if (chosenBuildMode === 'template') {
         templatesContainer.classList.remove('hidden');
         codeContainer.classList.add('hidden');
-        document.getElementById('step-desc').innerText = 'الخطوة 2 من 2: اختر قالباً من تصنيف: ' + projectType;
+        document.getElementById('step-desc').innerText = 'الخطوة 2 من 2: اختر قالباً من صنف: ' + projectType;
 
         const grid = document.getElementById('dynamic-templates-grid');
         grid.innerHTML = '';
 
-        const availableTemplates = templatesData[projectType] || templatesData["ecommerce"];
-        availableTemplates.forEach((tpl, index) => {
+        // جلب العدد الأقصى المحدد لهذا الصنف أوتوماتيكياً
+        const maxCount = categoryCounts[projectType] || 20;
+
+        // توليد البطاقات بشكل ديناميكي كامل
+        for (let i = 1; i <= maxCount; i++) {
+          const templateId = `template-${i}`;
+          // ملاحظة: إذا كان الصنف عبارة عن فولدر مباشر بدون template-i، يمكن ضبط المسار بذكاء
+          const templatePath = (projectType === 'ecommerce' || projectType === 'corporate' || projectType === 'restaurant-demo' || projectType === 'real-estate') && i === 1 
+            ? `./templates/${projectType}/index.html` 
+            : `./templates/${projectType}/${templateId}/index.html`;
+
+          const placeholderImg = `https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&sig=${i}`;
+
           grid.innerHTML += `
             <label class="cursor-pointer border-2 rounded-xl p-4 hover:border-purple-600 transition flex flex-col justify-between relative group">
-              <input type="radio" name="selectedTemplate" value="${tpl.id}" ${index === 0 ? 'checked' : ''} class="absolute top-3 left-3 text-purple-600">
+              <input type="radio" name="selectedTemplate" value="${templateId}" ${i === 1 ? 'checked' : ''} class="absolute top-3 left-3 text-purple-600">
               <div>
-                <img src="${tpl.img}" alt="${tpl.name}" class="w-full h-32 object-cover rounded-lg mb-3">
-                <h4 class="font-bold text-gray-800 text-sm">${tpl.name}</h4>
+                <img src="${placeholderImg}" alt="قالب ${i}" class="w-full h-32 object-cover rounded-lg mb-3">
+                <h4 class="font-bold text-gray-800 text-sm">قالب رقم ${i}</h4>
               </div>
-              <a href="${tpl.path}" target="_blank" class="text-xs text-purple-600 mt-2 hover:underline inline-block">معاينة مباشرة ↗</a>
+              <a href="${templatePath}" target="_blank" class="text-xs text-purple-600 mt-2 hover:underline inline-block">معاينة مباشرة ↗</a>
             </label>
           `;
-        });
+        }
 
       } else {
         templatesContainer.classList.add('hidden');
