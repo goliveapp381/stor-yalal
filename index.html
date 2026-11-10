@@ -64,7 +64,7 @@
     </div>
   </section>
 
-  <!-- Horizontal Categories Bar (مع زر إنشاء مشروع بالأخضر في أقصى اليسار) -->
+  <!-- Horizontal Categories Bar -->
   <nav class="bg-white border-b shadow-xs py-4 overflow-x-auto">
     <div class="max-w-7xl mx-auto px-4 flex justify-between items-center min-w-max">
       
@@ -78,9 +78,9 @@
         <a href="templates/blogs/index.html" class="bg-gray-100 text-gray-700 hover:bg-purple-50 hover:text-purple-600 px-5 py-2 rounded-full text-sm font-semibold transition">مدونات شخصية</a>
       </div>
 
-      <!-- زر إنشاء مشروع الكبير باللون الأخضر في أقصى اليسار -->
+      <!-- زر إنشاء مشروع بخلفية متدرجة (بنفسجي وأزرق)، ظل قوي، وكتابة خضراء في أقصى اليسار -->
       <div id="create-project-btn-container" class="hidden">
-        <a href="create-project.html" class="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-3 rounded-xl text-base font-bold shadow-lg transition flex items-center gap-2">
+        <a href="create-project.html" class="bg-gradient-to-r from-purple-700 via-indigo-600 to-blue-600 hover:from-purple-800 hover:to-blue-700 text-emerald-400 px-6 py-3 rounded-2xl text-base font-bold shadow-xl shadow-purple-900/30 transition flex items-center gap-2 border border-purple-400/20">
           <span>⚡</span>
           <span>إنشاء مشروع جديد</span>
         </a>
@@ -164,12 +164,10 @@
       if (storedUser) {
         const user = JSON.parse(storedUser);
         
-        // إظهار زر إنشاء المشروع في أقصى اليسار فقط إذا كان مسجلاً دخول
         if (createProjectBtnContainer) {
           createProjectBtnContainer.classList.remove('hidden');
         }
 
-        // عرض البروفايل وزر الخروج في الفوق
         authSection.innerHTML = `
           <div class="flex items-center gap-3">
             <a href="profile.html" class="flex items-center gap-2 text-sm font-bold text-purple-700 bg-purple-50 hover:bg-purple-100 px-4 py-2 rounded-xl border border-purple-100 transition shadow-xs">
