@@ -44,7 +44,7 @@
       <!-- Form Steps -->
       <form id="create-project-form" onsubmit="handleFinalSubmit(event)">
         
-        <!-- ================= الخطوة الأولى: المعلومات واختيار طريقة البناء ================= -->
+        <!-- ================= الخطوة الأولى ================= -->
         <div id="step-1" class="space-y-6">
           <div>
             <label class="block text-sm font-bold text-gray-700 mb-2">اسم المشروع (Site Name)</label>
@@ -54,24 +54,23 @@
           <div>
             <label class="block text-sm font-bold text-gray-700 mb-2">تصنيف المشروع</label>
             <select id="projectType" class="w-full px-4 py-3 border rounded-xl focus:outline-none focus:border-purple-600 bg-gray-50">
-              <option value="ecommerce">متجر إلكتروني (E-commerce)</option>
+              <option value="ecommerce">متاجر إلكترونية (E-commerce)</option>
+              <option value="blogs">مدونات ومقالات (Blogs)</option>
               <option value="corporate">شركات وخدمات (Corporate)</option>
-              <option value="restaurant">مطاعم وضيافة (Restaurant)</option>
+              <option value="restaurant-demo">مطاعم وضيافة (Restaurant)</option>
               <option value="real-estate">عقارات (Real Estate)</option>
-              <option value="blog">مدونات شخصية (Blog)</option>
             </select>
           </div>
 
-          <!-- اختيار طريقة البناء -->
+          <!-- طريقة البناء -->
           <div>
             <label class="block text-sm font-bold text-gray-700 mb-3">طريقة بناء المشروع</label>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              
               <label class="border-2 rounded-xl p-4 cursor-pointer hover:border-purple-600 flex items-center gap-3 transition">
                 <input type="radio" name="buildMode" value="template" checked class="text-purple-600 focus:ring-purple-500">
                 <div>
                   <span class="block font-bold text-gray-800">قوالب جاهزة من الموقع</span>
-                  <span class="text-xs text-gray-500">اختر قالباً احترافياً من قوالبنا</span>
+                  <span class="text-xs text-gray-500">اختر من قوالبنا الخاصة حسب التصنيف</span>
                 </div>
               </label>
 
@@ -79,10 +78,9 @@
                 <input type="radio" name="buildMode" value="code" class="text-purple-600 focus:ring-purple-500">
                 <div>
                   <span class="block font-bold text-gray-800">ملف HTML / كود برمجي</span>
-                  <span class="text-xs text-gray-500">ارفع ملفك أو اكتب الكود يدوياً</span>
+                  <span class="text-xs text-gray-500">اكتب أو ارفع كود HTML يدوياً</span>
                 </div>
               </label>
-
             </div>
           </div>
 
@@ -92,60 +90,32 @@
         </div>
 
 
-        <!-- ================= الخطوة الثانية: (تتغير حسب اختيار المستخدم في الخطوة 1) ================= -->
+        <!-- ================= الخطوة الثانية ================= -->
         <div id="step-2" class="space-y-6 hidden">
           
-          <!-- القسم أ: القوالب الجاهزة -->
+          <!-- قسم القوالب الديناميكية حسب التصنيف -->
           <div id="templates-container" class="space-y-4 hidden">
-            <h3 class="text-lg font-bold text-gray-800 border-r-4 border-purple-600 pr-3">اختر القالب المناسب لموقعك:</h3>
-            
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <label class="cursor-pointer border-2 rounded-xl p-4 hover:border-purple-600 transition flex flex-col justify-between relative group">
-                <input type="radio" name="selectedTemplate" value="store-demo" checked class="absolute top-3 left-3 text-purple-600">
-                <div>
-                  <img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=400" alt="متجر" class="w-full h-32 object-cover rounded-lg mb-3">
-                  <h4 class="font-bold text-gray-800 text-sm">قالب متجر ملابس عصري</h4>
-                </div>
-                <a href="./templates/store-demo/index.html" target="_blank" class="text-xs text-purple-600 mt-2 hover:underline inline-block">معاينة مباشرة ↗</a>
-              </label>
-
-              <label class="cursor-pointer border-2 rounded-xl p-4 hover:border-purple-600 transition flex flex-col justify-between relative group">
-                <input type="radio" name="selectedTemplate" value="company-demo" class="absolute top-3 left-3 text-purple-600">
-                <div>
-                  <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=400" alt="شركة" class="w-full h-32 object-cover rounded-lg mb-3">
-                  <h4 class="font-bold text-gray-800 text-sm">قالب شركة استشارات</h4>
-                </div>
-                <a href="./templates/company-demo/index.html" target="_blank" class="text-xs text-purple-600 mt-2 hover:underline inline-block">معاينة مباشرة ↗</a>
-              </label>
-
-              <label class="cursor-pointer border-2 rounded-xl p-4 hover:border-purple-600 transition flex flex-col justify-between relative group">
-                <input type="radio" name="selectedTemplate" value="restaurant-demo" class="absolute top-3 left-3 text-purple-600">
-                <div>
-                  <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400" alt="مطعم" class="w-full h-32 object-cover rounded-lg mb-3">
-                  <h4 class="font-bold text-gray-800 text-sm">قالب مطعم ومقاهي</h4>
-                </div>
-                <a href="./templates/restaurant-demo/index.html" target="_blank" class="text-xs text-purple-600 mt-2 hover:underline inline-block">معاينة مباشرة ↗</a>
-              </label>
+            <h3 class="text-lg font-bold text-gray-800 border-r-4 border-purple-600 pr-3">قوالب الصنف المختاره:</h3>
+            <div id="dynamic-templates-grid" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <!-- سيتم تعبئتها أوتوماتيكياً حسب اختيار المستخدم -->
             </div>
           </div>
 
-          <!-- القسم ب: رفع ملف HTML أو كود -->
+          <!-- قسم رفع كود HTML -->
           <div id="code-container" class="space-y-4 hidden">
-            <h3 class="text-lg font-bold text-gray-800 border-r-4 border-purple-600 pr-3">رفع كود أو ملف HTML للمشروع:</h3>
-            
+            <h3 class="text-lg font-bold text-gray-800 border-r-4 border-purple-600 pr-3">رفع أو كتابة كود HTML للمشروع:</h3>
             <div>
-              <label class="block text-sm font-bold text-gray-700 mb-2">أدخل كود HTML الخاص بك يدوياً</label>
+              <label class="block text-sm font-bold text-gray-700 mb-2">أدخل كود HTML الخاص بك</label>
               <textarea id="htmlCode" rows="6" class="w-full px-4 py-3 border rounded-xl focus:outline-none focus:border-purple-600 bg-gray-50 font-mono text-sm" placeholder="<!DOCTYPE html>..."></textarea>
             </div>
           </div>
 
-          <!-- أزرار التنقل -->
           <div class="flex gap-4 pt-4">
             <button type="button" onclick="goToStep1()" class="w-1/3 bg-gray-200 hover:bg-gray-300 text-gray-700 py-3.5 rounded-xl font-bold transition">
               ← السابق
             </button>
             <button type="submit" class="w-2/3 bg-gradient-to-r from-purple-700 via-indigo-600 to-blue-600 text-emerald-300 py-3.5 rounded-xl font-bold transition shadow-lg shadow-purple-900/20">
-              إطلاق وحفظ المشروع 🚀
+              إطلاق وتركيب المشروع 🚀
             </button>
           </div>
 
@@ -165,6 +135,26 @@
   <script>
     let chosenBuildMode = 'template';
 
+    // قاعدة بيانات مصغرة للقوالب حسب مجلداتها الحقيقية في مشروعك
+    const templatesData = {
+      "ecommerce": [
+        { id: "store-demo", name: "قالب متجر ملابس عصري", img: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=400", path: "./templates/store-demo/index.html" }
+      ],
+      "blogs": [
+        { id: "template-1", name: "قالب TechPulse التقني", img: "https://images.unsplash.com/photo-1518770660439-4636190af475?w=400", path: "./templates/blogs/template-1/index.html" },
+        { id: "template-2", name: "قالب رحلات للسياحة", img: "https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=400", path: "./templates/blogs/template-2/index.html" }
+      ],
+      "corporate": [
+        { id: "company-demo", name: "قالب شركة استشارات", img: "https://images.unsplash.com/photo-1497366216548-37526070297c?w=400", path: "./templates/company-demo/index.html" }
+      ],
+      "restaurant-demo": [
+        { id: "restaurant-demo", name: "قالب مطعم ومقاهي", img: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400", path: "./templates/restaurant-demo/index.html" }
+      ],
+      "real-estate": [
+        { id: "real-estate", name: "قالب عقارات ومنازل", img: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=400", path: "./templates/real-estate/index.html" }
+      ]
+    };
+
     function goToStep2() {
       const siteName = document.getElementById('siteName').value;
       if (!siteName.trim()) {
@@ -173,7 +163,8 @@
       }
 
       chosenBuildMode = document.querySelector('input[name="buildMode"]:checked').value;
-      
+      const projectType = document.getElementById('projectType').value;
+
       document.getElementById('step-1').classList.add('hidden');
       document.getElementById('step-2').classList.remove('hidden');
 
@@ -183,7 +174,26 @@
       if (chosenBuildMode === 'template') {
         templatesContainer.classList.remove('hidden');
         codeContainer.classList.add('hidden');
-        document.getElementById('step-desc').innerText = 'الخطوة 2 من 2: اختر القالب الجاهز المناسب';
+        document.getElementById('step-desc').innerText = 'الخطوة 2 من 2: اختر قالباً من تصنيف: ' + projectType;
+
+        // تعبئة القوالب الخاصة بهذا التصنيف حصرياً
+        const grid = document.getElementById('dynamic-templates-grid');
+        grid.innerHTML = '';
+
+        const availableTemplates = templatesData[projectType] || templatesData["ecommerce"];
+        availableTemplates.forEach((tpl, index) => {
+          grid.innerHTML += `
+            <label class="cursor-pointer border-2 rounded-xl p-4 hover:border-purple-600 transition flex flex-col justify-between relative group">
+              <input type="radio" name="selectedTemplate" value="${tpl.id}" ${index === 0 ? 'checked' : ''} class="absolute top-3 left-3 text-purple-600">
+              <div>
+                <img src="${tpl.img}" alt="${tpl.name}" class="w-full h-32 object-cover rounded-lg mb-3">
+                <h4 class="font-bold text-gray-800 text-sm">${tpl.name}</h4>
+              </div>
+              <a href="${tpl.path}" target="_blank" class="text-xs text-purple-600 mt-2 hover:underline inline-block">معاينة مباشرة ↗</a>
+            </label>
+          `;
+        });
+
       } else {
         templatesContainer.classList.add('hidden');
         codeContainer.classList.remove('hidden');
@@ -220,7 +230,6 @@
         htmlCodeVal = document.getElementById('htmlCode').value;
       }
 
-      // إرسال البيانات للباكند
       const result = await TemplateCraftAPI.deploy({
         userId: user.id || user.username,
         siteName,
