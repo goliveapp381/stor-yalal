@@ -9,13 +9,95 @@
   <style>body { font-family: 'Cairo', sans-serif; }</style>
 </head>
 <body class="bg-gray-50 text-gray-800">
-  <header class="bg-white shadow-sm border-b py-4 px-6 flex justify-between items-center">
-    <h1 class="text-xl font-bold text-purple-600">قسم الشركات والخدمات</h1>
-    <a href="../../index.html" class="text-sm bg-purple-100 text-purple-700 px-3 py-1.5 rounded-lg font-semibold hover:bg-purple-200 transition">الرئيسية</a>
+  
+  <!-- Header -->
+  <header class="bg-white shadow-sm border-b py-4 px-6 flex justify-between items-center sticky top-0 z-50">
+    <h1 class="text-xl font-bold text-purple-600">قسم الشركات والخدمات (Corporate)</h1>
+    <a href="../../create-project.html" class="text-sm bg-purple-600 text-white px-4 py-2 rounded-xl font-bold hover:bg-purple-700 transition">إنشاء مشروع بهذا القسم 🚀</a>
   </header>
-  <main class="max-w-7xl mx-auto px-4 py-16 text-center">
-    <h2 class="text-3xl font-bold mb-4">قريباً: تجميعة قوالب الشركات والخدمات</h2>
-    <p class="text-gray-500">هذه الصفحة ستضم جميع قوالب الشركات الخاصة بنا.</p>
+
+  <!-- Main Content -->
+  <main class="max-w-7xl mx-auto px-4 py-12">
+    <div class="text-center mb-12">
+      <h2 class="text-3xl font-bold mb-2">استعرض قوالب الشركات والأعمال</h2>
+      <p class="text-gray-500">اختر القالب المناسب لشركتك وانطلق بقوة في عالم الويب.</p>
+    </div>
+
+    <!-- Templates Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      
+      <!-- قالب 1 -->
+      <div class="bg-white p-4 rounded-2xl border shadow-sm hover:shadow-md transition flex flex-col justify-between">
+        <div>
+          <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=400" class="w-full h-40 object-cover rounded-xl mb-4">
+          <span class="text-xs text-blue-600 font-bold bg-blue-50 px-2.5 py-1 rounded-md">استشارات مالية</span>
+          <h4 class="font-bold text-base mt-2 text-gray-800">قالب استشارات برو</h4>
+          <p class="text-gray-500 text-xs mt-1">حلول استراتيجية متكاملة للشركات والمؤسسات.</p>
+        </div>
+        <a href="./template-1/index.html" target="_blank" class="mt-4 block text-center bg-purple-50 text-purple-700 hover:bg-purple-100 py-2 rounded-xl text-sm font-bold transition">معاينة مباشرة ↗</a>
+      </div>
+
+      <!-- قالب 2 -->
+      <div class="bg-white p-4 rounded-2xl border shadow-sm hover:shadow-md transition flex flex-col justify-between">
+        <div>
+          <img src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=400" class="w-full h-40 object-cover rounded-xl mb-4">
+          <span class="text-xs text-indigo-600 font-bold bg-indigo-50 px-2.5 py-1 rounded-md">حلول برمجية</span>
+          <h4 class="font-bold text-base mt-2 text-gray-800">قالب TechFactory</h4>
+          <p class="text-gray-500 text-xs mt-1">تطوير تطبيقات الويب والهواتف الذكية السحابية.</p>
+        </div>
+        <a href="./template-2/index.html" target="_blank" class="mt-4 block text-center bg-purple-50 text-purple-700 hover:bg-purple-100 py-2 rounded-xl text-sm font-bold transition">معاينة مباشرة ↗</a>
+      </div>
+
+      <!-- قالب 3 -->
+      <div class="bg-white p-4 rounded-2xl border shadow-sm hover:shadow-md transition flex flex-col justify-between">
+        <div>
+          <img src="https://images.unsplash.com/photo-1541888946425-d0fbb18f5049?w=400" class="w-full h-40 object-cover rounded-xl mb-4">
+          <span class="text-xs text-amber-600 font-bold bg-amber-50 px-2.5 py-1 rounded-md">مقاولات وبناء</span>
+          <h4 class="font-bold text-base mt-2 text-gray-800">قالب البنيان الراسخ</h4>
+          <p class="text-gray-500 text-xs mt-1">متخصص في المجمعات السكنية والمشاريع الكبرى.</p>
+        </div>
+        <a href="./template-3/index.html" target="_blank" class="mt-4 block text-center bg-purple-50 text-purple-700 hover:bg-purple-100 py-2 rounded-xl text-sm font-bold transition">معاينة مباشرة ↗</a>
+      </div>
+
+      <!-- قالب 4 -->
+      <div class="bg-white p-4 rounded-2xl border shadow-sm hover:shadow-md transition flex flex-col justify-between">
+        <div>
+          <img src="https://images.unsplash.com/photo-1432888622747-4eb9a8efeb07?w=400" class="w-full h-40 object-cover rounded-xl mb-4">
+          <span class="text-xs text-purple-600 font-bold bg-purple-50 px-2.5 py-1 rounded-md">تسويق رقمي</span>
+          <h4 class="font-bold text-base mt-2 text-gray-800">قالب MarketingHub</h4>
+          <p class="text-gray-500 text-xs mt-1">إدارة الحملات الإعلانية وزيادة مبيعات الشركات.</p>
+        </div>
+        <a href="./template-4/index.html" target="_blank" class="mt-4 block text-center bg-purple-50 text-purple-700 hover:bg-purple-100 py-2 rounded-xl text-sm font-bold transition">معاينة مباشرة ↗</a>
+      </div>
+
+      <!-- قالب 5 -->
+      <div class="bg-white p-4 rounded-2xl border shadow-sm hover:shadow-md transition flex flex-col justify-between">
+        <div>
+          <img src="https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=400" class="w-full h-40 object-cover rounded-xl mb-4">
+          <span class="text-xs text-zinc-600 font-bold bg-zinc-100 px-2.5 py-1 rounded-md">استشارات قانونية</span>
+          <h4 class="font-bold text-base mt-2 text-gray-800">قالب العدالة القانونية</h4>
+          <p class="text-gray-500 text-xs mt-1">تمثيل قانوني احترافي وحلول استشارية موثوقة.</p>
+        </div>
+        <a href="./template-5/index.html" target="_blank" class="mt-4 block text-center bg-purple-50 text-purple-700 hover:bg-purple-100 py-2 rounded-xl text-sm font-bold transition">معاينة مباشرة ↗</a>
+      </div>
+
+      <!-- قالب 6 -->
+      <div class="bg-white p-4 rounded-2xl border shadow-sm hover:shadow-md transition flex flex-col justify-between">
+        <div>
+          <img src="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=400" class="w-full h-40 object-cover rounded-xl mb-4">
+          <span class="text-xs text-cyan-600 font-bold bg-cyan-50 px-2.5 py-1 rounded-md">لوجستيات وشحن</span>
+          <h4 class="font-bold text-base mt-2 text-gray-800">قالب سريع لوجستيك</h4>
+          <p class="text-gray-500 text-xs mt-1">خدمات شحن بري وبحري وجوي متكاملة.</p>
+        </div>
+        <a href="./template-6/index.html" target="_blank" class="mt-4 block text-center bg-purple-50 text-purple-700 hover:bg-purple-100 py-2 rounded-xl text-sm font-bold transition">معاينة مباشرة ↗</a>
+      </div>
+
+    </div>
   </main>
+
+  <footer class="bg-white border-t py-6 text-center text-gray-400 text-sm mt-12">
+    جميع الحقوق محفوظة © 2026 - TemplateCraft Pro
+  </footer>
+
 </body>
 </html>
