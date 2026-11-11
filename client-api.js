@@ -8,7 +8,7 @@
 
 const TEMPLATECRAFT_API_BASE_URL = (
     window.TEMPLATECRAFT_API_URL ||
-    'http://localhost:3000'
+    'https://templatecraft-backend.onrender.com'
 ).replace(/\/+$/, '');
 
 
@@ -45,7 +45,7 @@ async function apiRequest(endpoint, options = {}) {
 
         return {
             success: false,
-            error: 'تعذر الاتصال بالسيرفر. تأكد أن Backend شغال.'
+            error: 'تعذر الاتصال بالسيرفر. تأكد من اتصال Backend.'
         };
     }
 }
@@ -77,7 +77,6 @@ const TemplateCraftAPI = {
         });
     },
 
-
     // Signup
     async signup(userData) {
         return apiRequest('/api/signup', {
@@ -85,7 +84,6 @@ const TemplateCraftAPI = {
             body: JSON.stringify(userData)
         });
     },
-
 
     // Login
     async login(credentials) {
@@ -95,7 +93,6 @@ const TemplateCraftAPI = {
         });
     },
 
-
     // Deploy New Project
     async deploy(siteData) {
         return apiRequest('/api/deploy', {
@@ -103,7 +100,6 @@ const TemplateCraftAPI = {
             body: JSON.stringify(siteData)
         });
     },
-
 
     // Get User Projects
     async getSites(userId) {
@@ -121,7 +117,6 @@ const TemplateCraftAPI = {
             }
         );
     },
-
 
     // Get Single Project
     async getSite(siteId, userId) {
@@ -142,7 +137,6 @@ const TemplateCraftAPI = {
         });
     },
 
-
     // Update Project
     async updateSite(siteId, projectData = {}) {
         if (!siteId) {
@@ -160,7 +154,6 @@ const TemplateCraftAPI = {
             }
         );
     },
-
 
     // Get Project Files
     async getSiteFiles(siteId, userId) {
@@ -181,12 +174,10 @@ const TemplateCraftAPI = {
         });
     },
 
-
     // Backward Compatibility
     async getProjectFiles(siteId, userId) {
         return this.getSiteFiles(siteId, userId);
     },
-
 
     // Save Edited Project File
     async saveSiteFile(siteId, fileData = {}) {
@@ -210,7 +201,6 @@ const TemplateCraftAPI = {
         );
     },
 
-
     // Backward Compatibility
     async saveProjectFile(siteId, filePath, content, userId) {
         return this.saveSiteFile(siteId, {
@@ -219,7 +209,6 @@ const TemplateCraftAPI = {
             content
         });
     },
-
 
     // Get Available Templates
     async getTemplates(projectType) {
@@ -238,7 +227,6 @@ const TemplateCraftAPI = {
         );
     },
 
-
     // Get Template Preview URL
     getTemplatePreviewUrl(projectType, templateId) {
         if (!projectType || !templateId) {
@@ -252,7 +240,6 @@ const TemplateCraftAPI = {
         );
     },
 
-
     // Get Project Preview URL
     getProjectPreviewUrl(siteName) {
         if (!siteName) {
@@ -264,7 +251,6 @@ const TemplateCraftAPI = {
             `${encodeURIComponent(siteName)}/index.html`
         );
     },
-
 
     // Publish Project
     async publish(siteId, userId) {
