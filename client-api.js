@@ -1,154 +1,299 @@
 // ==========================================
-// TemplateCraft Pro - API Client
+// TEMPLATECRAFT PRO - API CLIENT
 // ==========================================
 
-// ⚠️ مؤقتاً للتجربة المحلية من نفس PC
-// من بعد ملي ننشرو Backend غادي نبدلوه إلى رابط HTTPS ديال السيرفر.
-const API_BASE_URL = 'http://localhost:3000';
+// ==========================================
+// 1. SERVER CONFIGURATION
+// ==========================================
+
+// محلياً:
+const API_BASE_URL = (
+    window.TEMPLATECRAFT_API_URL ||
+    'http://localhost:3000'
+).replace(/\/+$/, '');
+
+
+// ==========================================
+// 2. COMMON REQUEST HELPER
+// ==========================================
+
+async function apiRequest(endpoint, options = {}) {
+    try {
+        const response = await fetch(
+            `${API_BASE_URL}${endpoint}`,
+            {
+                ...options,
+                headers: {
+                    'Content-Type': 'application/json',
+                    ...(options.headers || {})
+                }
+            }
+        );
+
+        const data = await response.json().catch(() => ({
+            success: false,
+            error: 'استجابة غير صالحة من السيرفر'
+        }));
+
+        if (!response.ok && data.success === undefined) {
+            data.success = false;
+        }
+
+        return data;
+
+    } catch (error) {
+        console.error('❌ API Request Error:', error);
+
+        return {
+            success: false,
+            error: 'تعذر الاتصال بالسيرفر. تأكد أن Backend شغال.'
+        };
+    }
+}
+
+
+// ==========================================
+// 3. TEMPLATECRAFT API
+// ==========================================
 
 const TemplateCraftAPI = {
 
-    // =========================
+    // --------------------------------------
     // Server Status
-    // =========================
+    // --------------------------------------
+
     async status() {
-        try {
-            const response = await fetch(`${API_BASE_URL}/api/status`);
-
-            const data = await response.json();
-
-            return data;
-
-        } catch (error) {
-
-            console.error('❌ Server status error:', error);
-
-            return {
-                success: false,
-                error: 'تعذر الاتصال بالسيرفر'
-            };
-        }
+        return await apiRequest('/api/status', {
+            method: 'GET'
+        });
     },
 
 
-    // =========================
+    // --------------------------------------
     // Signup
-    // =========================
+    // --------------------------------------
+
     async signup(userData) {
-        try {
-
-            const response = await fetch(`${API_BASE_URL}/api/signup`, {
-                method: 'POST',
-
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-
-                body: JSON.stringify(userData)
-            });
-
-            const data = await response.json();
-
-            return data;
-
-        } catch (error) {
-
-            console.error('❌ Signup connection error:', error);
-
-            return {
-                success: false,
-                error: 'تعذر الاتصال بالسيرفر. تأكد أن Backend شغال.'
-            };
-        }
+        return await apiRequest('/api/signup', {
+            method: 'POST',
+            body: JSON.stringify(userData)
+        });
     },
 
 
-    // =========================
+    // --------------------------------------
     // Login
-    // =========================
+    // --------------------------------------
+
     async login(credentials) {
-        try {
-
-            const response = await fetch(`${API_BASE_URL}/api/login`, {
-                method: 'POST',
-
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-
-                body: JSON.stringify(credentials)
-            });
-
-            const data = await response.json();
-
-            return data;
-
-        } catch (error) {
-
-            console.error('❌ Login connection error:', error);
-
-            return {
-                success: false,
-                error: 'تعذر الاتصال بالسيرفر. تأكد من رابط Backend.'
-            };
-        }
+        return await apiRequest('/api/login', {
+            method: 'POST',
+            body: JSON.stringify(credentials)
+        });
     },
 
 
-    // =========================
-    // Deploy
-    // =========================
+    // --------------------------------------
+    // Deploy New Project
+    // --------------------------------------
+
     async deploy(siteData) {
-        try {
-
-            const response = await fetch(`${API_BASE_URL}/api/deploy`, {
-                method: 'POST',
-
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-
-                body: JSON.stringify(siteData)
-            });
-
-            const data = await response.json();
-
-            return data;
-
-        } catch (error) {
-
-            console.error('❌ Deploy connection error:', error);
-
-            return {
-                success: false,
-                error: 'تعذر الاتصال بالسيرفر.'
-            };
-        }
+        return await apiRequest('/api/deploy', {
+            method: 'POST',
+            body: JSON.stringify(siteData)
+        });
     },
 
 
-    // =========================
-    // Get User Sites
-    // =========================
+    // --------------------------------------
+    // Get User Projects
+    // --------------------------------------
+
     async getSites(userId) {
-        try {
-
-            const response = await fetch(
-                `${API_BASE_URL}/api/sites/${encodeURIComponent(userId)}`
-            );
-
-            const data = await response.json();
-
-            return data;
-
-        } catch (error) {
-
-            console.error('❌ Get sites error:', error);
-
+        if (!userId) {
             return {
                 success: false,
-                error: 'تعذر جلب المواقع من السيرفر.'
+                error: 'معرف المستخدم غير موجود'
             };
         }
+
+        return await apiRequest(
+            `/api/sites/${encodeURIComponent(userId)}`,
+            {
+                method: 'GET'
+            }
+        );
+    },
+
+
+    // --------------------------------------
+    // Get Single Project
+    // --------------------------------------
+
+    async getSite(siteId) {
+        if (!siteId) {
+            return {
+                success: false,
+                error: 'معرف المشروع غير موجود'
+            };
+        }
+
+        return await apiRequest(
+            `/api/site/${encodeURIComponent(siteId)}`,
+            {
+                method: 'GET'
+            }
+        );
+    },
+
+
+    // --------------------------------------
+    // Update Project
+    // --------------------------------------
+
+    async updateSite(siteId, projectData) {
+        if (!siteId) {
+            return {
+                success: false,
+                error: 'معرف المشروع غير موجود'
+            };
+        }
+
+        return await apiRequest(
+            `/api/site/${encodeURIComponent(siteId)}`,
+            {
+                method: 'PUT',
+                body: JSON.stringify(projectData)
+            }
+        );
+    },
+
+
+    // --------------------------------------
+    // Get Project Files
+    // --------------------------------------
+
+    async getProjectFiles(siteId) {
+        if (!siteId) {
+            return {
+                success: false,
+                error: 'معرف المشروع غير موجود'
+            };
+        }
+
+        return await apiRequest(
+            `/api/site/${encodeURIComponent(siteId)}/files`,
+            {
+                method: 'GET'
+            }
+        );
+    },
+
+
+    // --------------------------------------
+    // Save Edited File
+    // --------------------------------------
+
+    async saveProjectFile(siteId, filePath, content) {
+        if (!siteId || !filePath) {
+            return {
+                success: false,
+                error: 'معلومات الملف ناقصة'
+            };
+        }
+
+        return await apiRequest(
+            `/api/site/${encodeURIComponent(siteId)}/file`,
+            {
+                method: 'PUT',
+                body: JSON.stringify({
+                    filePath,
+                    content
+                })
+            }
+        );
+    },
+
+
+    // --------------------------------------
+    // Get Available Templates
+    // --------------------------------------
+
+    async getTemplates(projectType) {
+        if (!projectType) {
+            return {
+                success: false,
+                error: 'نوع القالب غير محدد'
+            };
+        }
+
+        return await apiRequest(
+            `/api/templates/${encodeURIComponent(projectType)}`,
+            {
+                method: 'GET'
+            }
+        );
+    },
+
+
+    // --------------------------------------
+    // Get Template Preview
+    // --------------------------------------
+
+    getTemplatePreviewUrl(projectType, templateId) {
+        if (!projectType || !templateId) {
+            return null;
+        }
+
+        return (
+            `${API_BASE_URL}/api/template-preview/` +
+            `${encodeURIComponent(projectType)}/` +
+            `${encodeURIComponent(templateId)}`
+        );
+    },
+
+
+    // --------------------------------------
+    // Get Project Preview URL
+    // --------------------------------------
+
+    getProjectPreviewUrl(siteName) {
+        if (!siteName) {
+            return null;
+        }
+
+        return (
+            `${API_BASE_URL}/sites/` +
+            `${encodeURIComponent(siteName)}/index.html`
+        );
+    },
+
+
+    // --------------------------------------
+    // Publish Project
+    // --------------------------------------
+
+    async publish(siteId) {
+        if (!siteId) {
+            return {
+                success: false,
+                error: 'معرف المشروع غير موجود'
+            };
+        }
+
+        return await apiRequest(
+            `/api/site/${encodeURIComponent(siteId)}/publish`,
+            {
+                method: 'POST'
+            }
+        );
     }
+
 };
+
+
+// ==========================================
+// 4. GLOBAL API ACCESS
+// ==========================================
+
+window.TemplateCraftAPI = TemplateCraftAPI;

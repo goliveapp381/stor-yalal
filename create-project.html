@@ -20,29 +20,62 @@
         }
 
         .template-card {
-            transition: all .2s ease;
+            transition: all .25s ease;
             cursor: pointer;
+            overflow: hidden;
         }
 
         .template-card:hover {
             transform: translateY(-4px);
             border-color: #9333ea;
+            box-shadow: 0 10px 25px rgba(0,0,0,.07);
         }
 
         .template-card.selected {
             border: 2px solid #9333ea;
             background: #faf5ff;
-            box-shadow: 0 0 0 3px rgba(147, 51, 234, .12);
+            box-shadow: 0 0 0 3px rgba(147,51,234,.12);
         }
 
-        .template-number {
-            background: #f3e8ff;
-            color: #7e22ce;
+        .preview-frame {
+            width: 100%;
+            height: 190px;
+            border: 0;
+            background: white;
+            pointer-events: none;
+        }
+
+        .modal-frame {
+            width: 100%;
+            height: 70vh;
+            border: 0;
+            background: white;
         }
 
         button:disabled {
             opacity: .6;
             cursor: not-allowed;
+        }
+
+        .modal {
+            display: none;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .loader {
+            width: 30px;
+            height: 30px;
+            border: 3px solid #e9d5ff;
+            border-top-color: #9333ea;
+            border-radius: 50%;
+            animation: spin .8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
     </style>
 </head>
@@ -68,7 +101,7 @@
 
 
     <!-- MAIN -->
-    <main class="max-w-5xl mx-auto px-4 py-10">
+    <main class="max-w-6xl mx-auto px-4 py-10">
 
         <div class="bg-white rounded-2xl shadow-sm border p-6 md:p-8">
 
@@ -83,7 +116,7 @@
                 </h1>
 
                 <p class="text-gray-500 mt-2">
-                    اختر القالب المناسب لموقعك، وأدخل اسم المشروع للبدء.
+                    اختر تصنيف موقعك، شاهد القوالب الحقيقية قبل الاختيار، ثم أنشئ مشروعك.
                 </p>
 
             </div>
@@ -125,13 +158,9 @@
                     class="w-full p-3 border border-gray-300 rounded-xl bg-white outline-none focus:ring-2 focus:ring-purple-500">
 
                     <option value="blogs">📝 المدونات والمقالات</option>
-
                     <option value="corporate">🏢 مواقع الشركات</option>
-
                     <option value="ecommerce">🛒 المتاجر الإلكترونية</option>
-
                     <option value="real-estate">🏠 العقارات</option>
-
                     <option value="restaurant-demo">🍽️ المطاعم والمقاهي</option>
 
                 </select>
@@ -142,14 +171,20 @@
             <!-- TEMPLATE SELECTION -->
             <div class="mb-8">
 
-                <div class="flex justify-between items-center mb-4">
+                <div class="flex flex-wrap justify-between items-center gap-3 mb-5">
 
-                    <h2 class="font-extrabold text-lg">
-                        اختر القالب
-                    </h2>
+                    <div>
+                        <h2 class="font-extrabold text-lg">
+                            اختر القالب المناسب
+                        </h2>
+
+                        <p class="text-sm text-gray-500 mt-1">
+                            اضغط على معاينة لمشاهدة الموقع قبل إنشائه.
+                        </p>
+                    </div>
 
                     <span id="selectedLabel"
-                          class="text-xs text-purple-700 font-bold">
+                          class="text-xs text-purple-700 bg-purple-50 px-3 py-2 rounded-lg font-bold">
                         القالب 1 محدد
                     </span>
 
@@ -157,108 +192,9 @@
 
 
                 <div id="templatesGrid"
-                     class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                     class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
 
-                    <!-- TEMPLATE 1 -->
-                    <div class="template-card selected border-2 border-gray-200 rounded-xl p-5 text-center"
-                         data-template="template-1">
-
-                        <div class="template-number w-12 h-12 rounded-xl flex items-center justify-center mx-auto text-xl font-extrabold">
-                            1
-                        </div>
-
-                        <h3 class="font-bold mt-3">القالب الأول</h3>
-
-                        <p class="text-xs text-gray-500 mt-1">
-                            تصميم احترافي
-                        </p>
-
-                    </div>
-
-
-                    <!-- TEMPLATE 2 -->
-                    <div class="template-card border-2 border-gray-200 rounded-xl p-5 text-center"
-                         data-template="template-2">
-
-                        <div class="template-number w-12 h-12 rounded-xl flex items-center justify-center mx-auto text-xl font-extrabold">
-                            2
-                        </div>
-
-                        <h3 class="font-bold mt-3">القالب الثاني</h3>
-
-                        <p class="text-xs text-gray-500 mt-1">
-                            تصميم عصري
-                        </p>
-
-                    </div>
-
-
-                    <!-- TEMPLATE 3 -->
-                    <div class="template-card border-2 border-gray-200 rounded-xl p-5 text-center"
-                         data-template="template-3">
-
-                        <div class="template-number w-12 h-12 rounded-xl flex items-center justify-center mx-auto text-xl font-extrabold">
-                            3
-                        </div>
-
-                        <h3 class="font-bold mt-3">القالب الثالث</h3>
-
-                        <p class="text-xs text-gray-500 mt-1">
-                            تصميم أنيق
-                        </p>
-
-                    </div>
-
-
-                    <!-- TEMPLATE 4 -->
-                    <div class="template-card border-2 border-gray-200 rounded-xl p-5 text-center"
-                         data-template="template-4">
-
-                        <div class="template-number w-12 h-12 rounded-xl flex items-center justify-center mx-auto text-xl font-extrabold">
-                            4
-                        </div>
-
-                        <h3 class="font-bold mt-3">القالب الرابع</h3>
-
-                        <p class="text-xs text-gray-500 mt-1">
-                            تصميم متطور
-                        </p>
-
-                    </div>
-
-
-                    <!-- TEMPLATE 5 -->
-                    <div class="template-card border-2 border-gray-200 rounded-xl p-5 text-center"
-                         data-template="template-5">
-
-                        <div class="template-number w-12 h-12 rounded-xl flex items-center justify-center mx-auto text-xl font-extrabold">
-                            5
-                        </div>
-
-                        <h3 class="font-bold mt-3">القالب الخامس</h3>
-
-                        <p class="text-xs text-gray-500 mt-1">
-                            تصميم مميز
-                        </p>
-
-                    </div>
-
-
-                    <!-- TEMPLATE 6 -->
-                    <div class="template-card border-2 border-gray-200 rounded-xl p-5 text-center"
-                         data-template="template-6">
-
-                        <div class="template-number w-12 h-12 rounded-xl flex items-center justify-center mx-auto text-xl font-extrabold">
-                            6
-                        </div>
-
-                        <h3 class="font-bold mt-3">القالب السادس</h3>
-
-                        <p class="text-xs text-gray-500 mt-1">
-                            تصميم إبداعي
-                        </p>
-
-                    </div>
+                    <!-- CARDS GENERATED BY JAVASCRIPT -->
 
                 </div>
 
@@ -300,7 +236,7 @@
             </div>
 
 
-            <!-- RESULT LINK -->
+            <!-- RESULT -->
             <div id="resultContainer"
                  class="hidden mt-5 bg-green-50 border border-green-200 rounded-xl p-5 text-center">
 
@@ -316,15 +252,98 @@
                    href="#"
                    target="_blank"
                    rel="noopener noreferrer"
-                   class="inline-block bg-green-600 text-white px-6 py-3 rounded-xl font-bold">
+                   class="inline-block bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-xl font-bold">
                     زيارة الموقع 🌐
                 </a>
+
+                <div class="mt-4">
+                    <a href="profile.html"
+                       class="text-purple-700 font-bold text-sm hover:underline">
+                        الذهاب إلى مشاريعي وتعديل الموقع
+                    </a>
+                </div>
 
             </div>
 
         </div>
 
     </main>
+
+
+    <!-- PREVIEW MODAL -->
+    <div id="previewModal"
+         class="modal fixed inset-0 z-50 bg-black/70 items-center justify-center p-3 md:p-6">
+
+        <div class="bg-white w-full max-w-6xl rounded-2xl overflow-hidden shadow-2xl">
+
+            <div class="flex justify-between items-center p-4 border-b">
+
+                <div>
+                    <h3 id="previewTitle"
+                        class="font-extrabold text-gray-900">
+                        معاينة القالب
+                    </h3>
+
+                    <p class="text-xs text-gray-500 mt-1">
+                        معاينة الموقع قبل إنشائه
+                    </p>
+                </div>
+
+                <button id="closePreviewBtn"
+                        type="button"
+                        class="bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg px-4 py-2 font-bold">
+                    ✕ إغلاق
+                </button>
+
+            </div>
+
+            <div id="previewLoading"
+                 class="flex flex-col items-center justify-center p-10 gap-3">
+
+                <div class="loader"></div>
+
+                <p class="text-sm text-gray-500">
+                    جاري تحميل معاينة القالب...
+                </p>
+
+            </div>
+
+            <div id="previewError"
+                 class="hidden text-center p-10">
+
+                <p class="text-red-600 font-bold">
+                    تعذر تحميل المعاينة.
+                </p>
+
+                <p class="text-sm text-gray-500 mt-2">
+                    تأكد من تشغيل السيرفر وتوفر ملفات القالب.
+                </p>
+
+            </div>
+
+            <iframe id="previewFrame"
+                    class="modal-frame hidden"
+                    title="معاينة القالب"
+                    loading="lazy">
+            </iframe>
+
+            <div class="p-4 border-t flex flex-wrap justify-between items-center gap-3">
+
+                <p class="text-xs text-gray-500">
+                    اختر هذا القالب لإنشاء مشروعك.
+                </p>
+
+                <button id="choosePreviewBtn"
+                        type="button"
+                        class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-xl font-bold">
+                    اختيار هذا القالب
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
 
 
     <!-- API CLIENT -->
@@ -341,7 +360,9 @@
         let user = null;
 
         try {
-            user = JSON.parse(localStorage.getItem('user') || 'null');
+            user = JSON.parse(
+                localStorage.getItem('user') || 'null'
+            );
         } catch (error) {
             user = null;
         }
@@ -358,43 +379,428 @@
 
 
         // ==================================
-        // 2. SELECTED TEMPLATE
+        // 2. TEMPLATE CONFIGURATION
         // ==================================
+
+        const templateList = [
+            {
+                id: 'template-1',
+                name: 'القالب الأول',
+                description: 'تصميم احترافي'
+            },
+            {
+                id: 'template-2',
+                name: 'القالب الثاني',
+                description: 'تصميم عصري'
+            },
+            {
+                id: 'template-3',
+                name: 'القالب الثالث',
+                description: 'تصميم أنيق'
+            },
+            {
+                id: 'template-4',
+                name: 'القالب الرابع',
+                description: 'تصميم متطور'
+            },
+            {
+                id: 'template-5',
+                name: 'القالب الخامس',
+                description: 'تصميم مميز'
+            },
+            {
+                id: 'template-6',
+                name: 'القالب السادس',
+                description: 'تصميم إبداعي'
+            }
+        ];
+
 
         let selectedTemplateId = 'template-1';
 
-        const templateCards =
-            document.querySelectorAll('.template-card');
+        let previewTemplateId = null;
+
+
+        // ==================================
+        // 3. ELEMENTS
+        // ==================================
+
+        const templatesGrid =
+            document.getElementById('templatesGrid');
+
+        const projectTypeSelect =
+            document.getElementById('projectTypeSelect');
 
         const selectedLabel =
             document.getElementById('selectedLabel');
 
+        const deployBtn =
+            document.getElementById('deployBtn');
 
-        templateCards.forEach(card => {
+        const statusMessage =
+            document.getElementById('statusMessage');
 
-            card.addEventListener('click', () => {
+        const resultContainer =
+            document.getElementById('resultContainer');
 
-                templateCards.forEach(item => {
-                    item.classList.remove('selected');
+        const resultLink =
+            document.getElementById('resultLink');
+
+        const previewModal =
+            document.getElementById('previewModal');
+
+        const previewFrame =
+            document.getElementById('previewFrame');
+
+        const previewLoading =
+            document.getElementById('previewLoading');
+
+        const previewError =
+            document.getElementById('previewError');
+
+
+        // ==================================
+        // 4. API CHECK
+        // ==================================
+
+        function apiAvailable() {
+
+            return (
+                typeof TemplateCraftAPI !== 'undefined' &&
+                typeof TemplateCraftAPI.getTemplatePreviewUrl === 'function'
+            );
+
+        }
+
+
+        // ==================================
+        // 5. TEMPLATE PREVIEW URL
+        // ==================================
+
+        function getPreviewUrl(templateId) {
+
+            if (!apiAvailable()) {
+                return null;
+            }
+
+            const projectType =
+                projectTypeSelect.value;
+
+            return TemplateCraftAPI.getTemplatePreviewUrl(
+                projectType,
+                templateId
+            );
+
+        }
+
+
+        // ==================================
+        // 6. RENDER TEMPLATE CARDS
+        // ==================================
+
+        function renderTemplates() {
+
+            templatesGrid.innerHTML = '';
+
+            templateList.forEach((template, index) => {
+
+                const card = document.createElement('div');
+
+                card.className =
+                    'template-card border-2 border-gray-200 rounded-2xl bg-white' +
+                    (template.id === selectedTemplateId ? ' selected' : '');
+
+                card.dataset.template = template.id;
+
+
+                const previewUrl =
+                    getPreviewUrl(template.id);
+
+
+                card.innerHTML = `
+
+                    <div class="relative bg-gray-100 overflow-hidden">
+
+                        <iframe
+                            class="preview-frame"
+                            src="${previewUrl || 'about:blank'}"
+                            title="${template.name}"
+                            loading="lazy"
+                            tabindex="-1">
+                        </iframe>
+
+                        <div class="absolute inset-0 pointer-events-none bg-gradient-to-t from-black/10 to-transparent"></div>
+
+                        <span class="absolute top-3 right-3 bg-white text-purple-700 font-extrabold rounded-lg px-3 py-1 text-sm shadow">
+                            ${index + 1}
+                        </span>
+
+                    </div>
+
+                    <div class="p-4">
+
+                        <div class="flex justify-between items-center gap-2">
+
+                            <h3 class="font-extrabold text-gray-900">
+                                ${template.name}
+                            </h3>
+
+                            <span class="selectedMark text-xs font-bold text-purple-700">
+                                ${template.id === selectedTemplateId ? '✓ محدد' : ''}
+                            </span>
+
+                        </div>
+
+                        <p class="text-xs text-gray-500 mt-1">
+                            ${template.description}
+                        </p>
+
+                        <div class="grid grid-cols-2 gap-2 mt-4">
+
+                            <button
+                                type="button"
+                                class="previewButton bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg py-2 text-sm font-bold">
+                                👁️ معاينة
+                            </button>
+
+                            <button
+                                type="button"
+                                class="selectButton bg-purple-600 hover:bg-purple-700 text-white rounded-lg py-2 text-sm font-bold">
+                                اختيار
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                `;
+
+
+                // Select card by clicking its main area
+                card.addEventListener('click', function(event) {
+
+                    if (
+                        event.target.closest('.previewButton') ||
+                        event.target.closest('.selectButton')
+                    ) {
+                        return;
+                    }
+
+                    selectTemplate(template.id);
+
                 });
 
-                card.classList.add('selected');
 
-                selectedTemplateId =
-                    card.dataset.template;
+                // Preview button
+                card.querySelector('.previewButton')
+                    .addEventListener('click', function(event) {
 
-                selectedLabel.textContent =
-                    'القالب ' +
-                    selectedTemplateId.replace('template-', '') +
-                    ' محدد';
+                        event.stopPropagation();
+
+                        openPreview(template.id);
+
+                    });
+
+
+                // Select button
+                card.querySelector('.selectButton')
+                    .addEventListener('click', function(event) {
+
+                        event.stopPropagation();
+
+                        selectTemplate(template.id);
+
+                    });
+
+
+                templatesGrid.appendChild(card);
 
             });
+
+            updateSelectedLabel();
+
+        }
+
+
+        // ==================================
+        // 7. SELECT TEMPLATE
+        // ==================================
+
+        function selectTemplate(templateId) {
+
+            selectedTemplateId = templateId;
+
+            document.querySelectorAll('.template-card')
+                .forEach(card => {
+
+                    const selected =
+                        card.dataset.template === templateId;
+
+                    card.classList.toggle('selected', selected);
+
+                    const mark =
+                        card.querySelector('.selectedMark');
+
+                    if (mark) {
+                        mark.textContent =
+                            selected ? '✓ محدد' : '';
+                    }
+
+                });
+
+            updateSelectedLabel();
+
+        }
+
+
+        function updateSelectedLabel() {
+
+            const number =
+                selectedTemplateId.replace('template-', '');
+
+            selectedLabel.textContent =
+                `القالب ${number} محدد`;
+
+        }
+
+
+        // ==================================
+        // 8. OPEN PREVIEW
+        // ==================================
+
+        function openPreview(templateId) {
+
+            previewTemplateId = templateId;
+
+            const template =
+                templateList.find(item => item.id === templateId);
+
+            document.getElementById('previewTitle').textContent =
+                template ? template.name : 'معاينة القالب';
+
+            previewModal.classList.add('active');
+
+            previewFrame.classList.add('hidden');
+
+            previewError.classList.add('hidden');
+
+            previewLoading.classList.remove('hidden');
+
+
+            const url =
+                getPreviewUrl(templateId);
+
+            if (!url) {
+
+                previewLoading.classList.add('hidden');
+
+                previewError.classList.remove('hidden');
+
+                return;
+
+            }
+
+
+            previewFrame.onload = function() {
+
+                previewLoading.classList.add('hidden');
+
+                previewError.classList.add('hidden');
+
+                previewFrame.classList.remove('hidden');
+
+            };
+
+
+            previewFrame.onerror = function() {
+
+                previewLoading.classList.add('hidden');
+
+                previewError.classList.remove('hidden');
+
+            };
+
+
+            previewFrame.src = url;
+
+        }
+
+
+        // ==================================
+        // 9. CLOSE PREVIEW
+        // ==================================
+
+        function closePreview() {
+
+            previewModal.classList.remove('active');
+
+            previewFrame.src = 'about:blank';
+
+            previewTemplateId = null;
+
+        }
+
+
+        document.getElementById('closePreviewBtn')
+            .addEventListener('click', closePreview);
+
+
+        previewModal.addEventListener('click', function(event) {
+
+            if (event.target === previewModal) {
+                closePreview();
+            }
+
+        });
+
+
+        document.addEventListener('keydown', function(event) {
+
+            if (event.key === 'Escape') {
+                closePreview();
+            }
 
         });
 
 
         // ==================================
-        // 3. USER INFORMATION
+        // 10. CHOOSE FROM PREVIEW
+        // ==================================
+
+        document.getElementById('choosePreviewBtn')
+            .addEventListener('click', function() {
+
+                if (!previewTemplateId) {
+                    return;
+                }
+
+                selectTemplate(previewTemplateId);
+
+                closePreview();
+
+                showStatus(
+                    'تم اختيار القالب بنجاح.',
+                    'success'
+                );
+
+            });
+
+
+        // ==================================
+        // 11. CATEGORY CHANGE
+        // ==================================
+
+        projectTypeSelect.addEventListener('change', function() {
+
+            resultContainer.classList.add('hidden');
+
+            renderTemplates();
+
+        });
+
+
+        // ==================================
+        // 12. USER INFORMATION
         // ==================================
 
         if (user && userId) {
@@ -412,270 +818,167 @@
 
 
         // ==================================
-        // 4. ELEMENTS
+        // 13. CREATE PROJECT
         // ==================================
 
-        const deployBtn =
-            document.getElementById('deployBtn');
+        deployBtn.addEventListener('click', async function() {
 
-        const statusMessage =
-            document.getElementById('statusMessage');
+            const siteName =
+                document.getElementById('siteNameInput')
+                    .value.trim();
 
-        const resultContainer =
-            document.getElementById('resultContainer');
-
-        const resultLink =
-            document.getElementById('resultLink');
+            const projectType =
+                projectTypeSelect.value;
 
 
-        // ==================================
-        // 5. CREATE PROJECT
-        // ==================================
-
-        deployBtn.addEventListener(
-            'click',
-            async function () {
-
-                const siteName =
-                    document
-                        .getElementById('siteNameInput')
-                        .value
-                        .trim();
-
-                const projectType =
-                    document
-                        .getElementById('projectTypeSelect')
-                        .value;
+            resultContainer.classList.add('hidden');
 
 
-                resultContainer.classList.add('hidden');
-
-
-                // CHECK NAME
-
-                if (!siteName) {
-
-                    showStatus(
-                        'يرجى إدخال اسم المشروع أولاً.',
-                        'error'
-                    );
-
-                    return;
-
-                }
-
-
-                // VALIDATE NAME
-
-                if (!/^[a-zA-Z0-9_-]+$/.test(siteName)) {
-
-                    showStatus(
-                        'اسم المشروع يجب أن يحتوي على حروف إنجليزية أو أرقام أو شرطة فقط.',
-                        'error'
-                    );
-
-                    return;
-
-                }
-
-
-                // CHECK USER
-
-                if (!user || !userId) {
-
-                    showStatus(
-                        'يجب تسجيل الدخول أولاً.',
-                        'error'
-                    );
-
-                    return;
-
-                }
-
-
-                // CHECK API CLIENT
-
-                if (
-                    typeof TemplateCraftAPI === 'undefined' ||
-                    typeof TemplateCraftAPI.deploy !== 'function'
-                ) {
-
-                    showStatus(
-                        'ملف client-api.js غير متصل أو لم يتم تحميله.',
-                        'error'
-                    );
-
-                    return;
-
-                }
-
-
-                // START
-
-                deployBtn.disabled = true;
-
-                deployBtn.textContent =
-                    '⏳ جاري إنشاء المشروع...';
+            // Validate name
+            if (!siteName) {
 
                 showStatus(
-                    'جاري الاتصال بالسيرفر وإنشاء موقعك...',
-                    'loading'
+                    'يرجى إدخال اسم المشروع أولاً.',
+                    'error'
+                );
+
+                return;
+
+            }
+
+
+            if (!/^[a-zA-Z0-9_-]+$/.test(siteName)) {
+
+                showStatus(
+                    'اسم المشروع يجب أن يحتوي على حروف إنجليزية أو أرقام أو شرطة فقط.',
+                    'error'
+                );
+
+                return;
+
+            }
+
+
+            if (!user || !userId) {
+
+                showStatus(
+                    'يجب تسجيل الدخول أولاً.',
+                    'error'
+                );
+
+                return;
+
+            }
+
+
+            if (
+                typeof TemplateCraftAPI === 'undefined' ||
+                typeof TemplateCraftAPI.deploy !== 'function'
+            ) {
+
+                showStatus(
+                    'ملف client-api.js غير متصل أو لم يتم تحميله.',
+                    'error'
+                );
+
+                return;
+
+            }
+
+
+            // Start
+            deployBtn.disabled = true;
+
+            deployBtn.textContent =
+                '⏳ جاري إنشاء المشروع...';
+
+            showStatus(
+                'جاري الاتصال بالسيرفر وإنشاء موقعك...',
+                'loading'
+            );
+
+
+            try {
+
+                const result =
+                    await TemplateCraftAPI.deploy({
+
+                        userId: String(userId),
+
+                        siteName: siteName,
+
+                        templateId: selectedTemplateId,
+
+                        variables: {
+                            projectType: projectType
+                        }
+
+                    });
+
+
+                if (!result || !result.success) {
+
+                    throw new Error(
+                        result?.error ||
+                        result?.message ||
+                        'تعذر إنشاء المشروع.'
+                    );
+
+                }
+
+
+                if (!result.url) {
+
+                    throw new Error(
+                        'تم إنشاء المشروع ولكن السيرفر لم يرجع رابط الموقع.'
+                    );
+
+                }
+
+
+                showStatus(
+                    'تم إنشاء المشروع بنجاح!',
+                    'success'
                 );
 
 
-                try {
+                resultLink.href = result.url;
 
-                    // ===============================
-                    // SEND DATA TO LOCAL BACKEND
-                    // ===============================
-
-                    const response =
-                        await fetch(
-                            'http://localhost:3000/api/deploy',
-                            {
-                                method: 'POST',
-
-                                headers: {
-                                    'Content-Type':
-                                        'application/json'
-                                },
-
-                                body: JSON.stringify({
-
-                                    userId: String(userId),
-
-                                    siteName: siteName,
-
-                                    templateId:
-                                        selectedTemplateId,
-
-                                    variables: {
-                                        projectType:
-                                            projectType
-                                    }
-
-                                })
-                            }
-                        );
+                resultContainer.classList.remove('hidden');
 
 
-                    // ===============================
-                    // READ RESPONSE SAFELY
-                    // ===============================
+            } catch (error) {
 
-                    const contentType =
-                        response.headers.get(
-                            'content-type'
-                        ) || '';
+                console.error('Deploy error:', error);
 
-                    let result;
+                showStatus(
+                    error.message ||
+                    'حدث خطأ في الاتصال بالسيرفر.',
+                    'error'
+                );
 
-                    if (contentType.includes('application/json')) {
+            } finally {
 
-                        result = await response.json();
+                deployBtn.disabled = false;
 
-                    } else {
-
-                        const text =
-                            await response.text();
-
-                        console.error(
-                            'Server returned non-JSON:',
-                            text
-                        );
-
-                        throw new Error(
-                            'السيرفر رجع استجابة غير صحيحة.'
-                        );
-
-                    }
-
-
-                    // ===============================
-                    // CHECK HTTP STATUS
-                    // ===============================
-
-                    if (!response.ok) {
-
-                        throw new Error(
-                            result.error ||
-                            result.message ||
-                            `HTTP ${response.status}`
-                        );
-
-                    }
-
-
-                    // ===============================
-                    // SUCCESS
-                    // ===============================
-
-                    if (
-                        result.success &&
-                        result.url
-                    ) {
-
-                        showStatus(
-                            'تم إنشاء المشروع بنجاح!',
-                            'success'
-                        );
-
-                        resultLink.href =
-                            result.url;
-
-                        resultContainer
-                            .classList
-                            .remove('hidden');
-
-                    } else {
-
-                        showStatus(
-                            result.error ||
-                            'تعذر إنشاء المشروع.',
-                            'error'
-                        );
-
-                    }
-
-
-                } catch (error) {
-
-                    console.error(
-                        'Deploy error:',
-                        error
-                    );
-
-                    showStatus(
-                        error.message ||
-                        'حدث خطأ في الاتصال بالسيرفر. تأكد من تشغيل الباكند.',
-                        'error'
-                    );
-
-                } finally {
-
-                    deployBtn.disabled = false;
-
-                    deployBtn.textContent =
-                        '🚀 إنشاء وإطلاق المشروع';
-
-                }
+                deployBtn.textContent =
+                    '🚀 إنشاء وإطلاق المشروع';
 
             }
-        );
+
+        });
 
 
         // ==================================
-        // 6. STATUS MESSAGE
+        // 14. STATUS MESSAGE
         // ==================================
 
         function showStatus(message, type) {
 
-            statusMessage.textContent =
-                message;
+            statusMessage.textContent = message;
 
             statusMessage.className =
                 'mt-5 text-center text-sm font-bold';
-
 
             if (type === 'success') {
 
@@ -698,6 +1001,13 @@
             }
 
         }
+
+
+        // ==================================
+        // 15. INITIALIZE PAGE
+        // ==================================
+
+        renderTemplates();
 
     </script>
 
