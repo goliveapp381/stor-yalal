@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 
@@ -64,6 +65,11 @@
             opacity: .85;
         }
 
+        .tool-button:disabled {
+            opacity: .5;
+            cursor: not-allowed;
+        }
+
         .tab-button.active {
             color: #9333ea;
             border-bottom: 2px solid #9333ea;
@@ -100,1205 +106,1304 @@
 
 <body class="bg-gray-100 text-gray-800 min-h-screen">
 
-<!-- HEADER -->
+    <!-- HEADER -->
 
-<header class="h-[72px] bg-white border-b flex items-center justify-between px-4 md:px-6 gap-3 sticky top-0 z-50">
+    <header class="min-h-[72px] bg-white border-b flex items-center justify-between px-4 md:px-6 gap-3 sticky top-0 z-50">
 
-    <div class="flex items-center gap-3">
+        <div class="flex items-center gap-3">
 
-        <a
-            href="profile.html"
-            class="text-gray-500 hover:text-purple-600 text-sm font-bold"
-        >
-            ← المشاريع
-        </a>
-
-        <div class="hidden sm:block border-r h-8"></div>
-
-        <div>
-            <h1 class="font-bold text-purple-600">
-                TemplateCraft Pro
-            </h1>
-
-            <p class="text-xs text-gray-400">
-                محرر المواقع
-            </p>
-        </div>
-
-    </div>
-
-
-    <div class="flex items-center gap-2">
-
-        <span
-            id="save-status"
-            class="hidden sm:inline text-xs text-gray-400"
-        >
-            جاهز
-        </span>
-
-        <button
-            id="preview-button"
-            class="tool-button bg-gray-100 text-gray-700"
-        >
-            👁️ معاينة
-        </button>
-
-        <button
-            id="save-button"
-            class="tool-button bg-purple-600 text-white"
-        >
-            💾 حفظ التعديلات
-        </button>
-
-    </div>
-
-</header>
-
-
-<!-- EDITOR -->
-
-<main class="editor-layout">
-
-
-    <!-- WEBSITE PREVIEW -->
-
-    <section class="preview-container flex flex-col min-w-0">
-
-        <div class="bg-white border-b px-4 py-3 flex items-center justify-between gap-3">
-
-            <div class="flex items-center gap-2 min-w-0">
-
-                <span class="w-2 h-2 bg-green-500 rounded-full"></span>
-
-                <span
-                    id="project-title"
-                    class="font-bold text-sm truncate"
-                >
-                    جاري تحميل المشروع...
-                </span>
-
-            </div>
-
-
-            <div class="flex items-center gap-2">
-
-                <button
-                    id="reload-preview"
-                    class="tool-button bg-gray-100 text-gray-600"
-                >
-                    ↻ تحديث
-                </button>
-
-                <button
-                    id="desktop-preview"
-                    class="tool-button bg-purple-50 text-purple-700"
-                >
-                    💻 سطح المكتب
-                </button>
-
-            </div>
-
-        </div>
-
-
-        <div class="flex-1 min-h-0 bg-gray-200 p-2 md:p-4">
-
-            <div class="bg-white rounded-xl overflow-hidden shadow-sm w-full h-full">
-
-                <iframe
-                    id="site-frame"
-                    class="preview-frame"
-                    title="معاينة المشروع"
-                    sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
-                ></iframe>
-
-            </div>
-
-        </div>
-
-    </section>
-
-
-
-    <!-- SIDE PANEL -->
-
-    <aside class="editor-sidebar bg-white border-r overflow-y-auto">
-
-        <div class="p-5 border-b">
-
-            <h2 class="font-bold text-lg">
-                إعدادات المشروع
-            </h2>
-
-            <p class="text-xs text-gray-400 mt-1">
-                تحكم في محتوى وتصميم موقعك
-            </p>
-
-        </div>
-
-
-        <!-- PROJECT NAME -->
-
-        <div class="p-5 border-b">
-
-            <label class="block text-sm font-bold mb-2">
-                اسم المشروع
-            </label>
-
-            <input
-                id="project-name"
-                type="text"
-                class="panel-input"
-                placeholder="اسم الموقع"
+            <a
+                href="profile.html"
+                class="text-gray-500 hover:text-purple-600 text-sm font-bold"
             >
+                ← المشاريع
+            </a>
 
-        </div>
+            <div class="hidden sm:block border-r h-8"></div>
 
+            <div>
+                <h1 class="font-bold text-purple-600">
+                    TemplateCraft Pro
+                </h1>
 
-        <!-- TABS -->
-
-        <div class="flex border-b">
-
-            <button
-                class="tab-button active flex-1 py-3 text-sm font-bold"
-                data-tab="element"
-            >
-                العنصر
-            </button>
-
-            <button
-                class="tab-button flex-1 py-3 text-sm font-bold"
-                data-tab="files"
-            >
-                الملفات
-            </button>
-
-            <button
-                class="tab-button flex-1 py-3 text-sm font-bold"
-                data-tab="code"
-            >
-                الكود
-            </button>
-
-        </div>
-
-
-        <!-- ELEMENT TAB -->
-
-        <section
-            id="element-tab"
-            class="tab-content p-5"
-        >
-
-            <div class="bg-purple-50 rounded-xl p-4 mb-5">
-
-                <p class="text-sm font-bold text-purple-700">
-                    🎯 تعديل العنصر
+                <p class="text-xs text-gray-400">
+                    محرر المواقع
                 </p>
+            </div>
+
+        </div>
+
+        <div class="flex items-center gap-2">
+
+            <span
+                id="save-status"
+                class="hidden sm:inline text-xs text-gray-400"
+            >
+                جاهز
+            </span>
+
+            <button
+                id="preview-button"
+                type="button"
+                class="tool-button bg-gray-100 text-gray-700"
+            >
+                👁️ معاينة
+            </button>
+
+            <button
+                id="save-button"
+                type="button"
+                class="tool-button bg-purple-600 text-white"
+            >
+                💾 حفظ التعديلات
+            </button>
+
+        </div>
+
+    </header>
+
+
+    <!-- EDITOR -->
+
+    <main class="editor-layout">
+
+        <!-- WEBSITE PREVIEW -->
+
+        <section class="preview-container flex flex-col min-w-0">
+
+            <div class="bg-white border-b px-4 py-3 flex items-center justify-between gap-3">
+
+                <div class="flex items-center gap-2 min-w-0">
+
+                    <span class="w-2 h-2 bg-green-500 rounded-full"></span>
+
+                    <span
+                        id="project-title"
+                        class="font-bold text-sm truncate"
+                    >
+                        جاري تحميل المشروع...
+                    </span>
+
+                </div>
+
+                <div class="flex items-center gap-2">
+
+                    <button
+                        id="reload-preview"
+                        type="button"
+                        class="tool-button bg-gray-100 text-gray-600"
+                    >
+                        ↻ تحديث
+                    </button>
+
+                    <button
+                        id="desktop-preview"
+                        type="button"
+                        class="tool-button bg-purple-50 text-purple-700"
+                    >
+                        💻 سطح المكتب
+                    </button>
+
+                </div>
+
+            </div>
+
+            <div class="flex-1 min-h-0 bg-gray-200 p-2 md:p-4">
+
+                <div class="bg-white rounded-xl overflow-hidden shadow-sm w-full h-full">
+
+                    <iframe
+                        id="site-frame"
+                        class="preview-frame"
+                        title="معاينة المشروع"
+                        sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
+                    ></iframe>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- SIDE PANEL -->
+
+        <aside class="editor-sidebar bg-white border-r overflow-y-auto">
+
+            <div class="p-5 border-b">
+
+                <h2 class="font-bold text-lg">
+                    إعدادات المشروع
+                </h2>
+
+                <p class="text-xs text-gray-400 mt-1">
+                    تحكم في محتوى وتصميم موقعك
+                </p>
+
+            </div>
+
+
+            <!-- PROJECT NAME -->
+
+            <div class="p-5 border-b">
+
+                <label class="block text-sm font-bold mb-2">
+                    اسم المشروع
+                </label>
+
+                <input
+                    id="project-name"
+                    type="text"
+                    class="panel-input"
+                    placeholder="اسم الموقع"
+                >
+
+            </div>
+
+
+            <!-- TABS -->
+
+            <div class="flex border-b">
+
+                <button
+                    class="tab-button active flex-1 py-3 text-sm font-bold"
+                    data-tab="element"
+                    type="button"
+                >
+                    العنصر
+                </button>
+
+                <button
+                    class="tab-button flex-1 py-3 text-sm font-bold"
+                    data-tab="files"
+                    type="button"
+                >
+                    الملفات
+                </button>
+
+                <button
+                    class="tab-button flex-1 py-3 text-sm font-bold"
+                    data-tab="code"
+                    type="button"
+                >
+                    الكود
+                </button>
+
+            </div>
+
+
+            <!-- ELEMENT TAB -->
+
+            <section
+                id="element-tab"
+                class="tab-content p-5"
+            >
+
+                <div class="bg-purple-50 rounded-xl p-4 mb-5">
+
+                    <p class="text-sm font-bold text-purple-700">
+                        🎯 تعديل العنصر
+                    </p>
+
+                    <p
+                        id="selected-element"
+                        class="text-xs text-purple-500 mt-1"
+                    >
+                        اختر عنصراً من معاينة الموقع
+                    </p>
+
+                </div>
+
+                <div class="space-y-4">
+
+                    <div>
+
+                        <label class="block text-sm font-bold mb-2">
+                            النص
+                        </label>
+
+                        <textarea
+                            id="element-text"
+                            rows="4"
+                            class="panel-input"
+                            placeholder="النص الذي تريد تغييره..."
+                        ></textarea>
+
+                    </div>
+
+                    <div>
+
+                        <label class="block text-sm font-bold mb-2">
+                            رابط الصورة
+                        </label>
+
+                        <input
+                            id="element-image"
+                            type="url"
+                            class="panel-input"
+                            placeholder="https://example.com/image.jpg"
+                            dir="ltr"
+                        >
+
+                    </div>
+
+                    <div>
+
+                        <label class="block text-sm font-bold mb-2">
+                            رابط الانتقال
+                        </label>
+
+                        <input
+                            id="element-link"
+                            type="text"
+                            class="panel-input"
+                            placeholder="https://example.com"
+                            dir="ltr"
+                        >
+
+                    </div>
+
+                    <div>
+
+                        <label class="block text-sm font-bold mb-2">
+                            لون النص
+                        </label>
+
+                        <input
+                            id="element-color"
+                            type="color"
+                            value="#333333"
+                            class="w-full h-10 border rounded-lg p-1"
+                        >
+
+                    </div>
+
+                    <div>
+
+                        <label class="block text-sm font-bold mb-2">
+                            حجم الخط
+                        </label>
+
+                        <input
+                            id="element-size"
+                            type="number"
+                            min="8"
+                            max="100"
+                            value="16"
+                            class="panel-input"
+                            dir="ltr"
+                        >
+
+                    </div>
+
+                    <button
+                        id="apply-element"
+                        type="button"
+                        class="w-full bg-purple-600 hover:bg-purple-700 text-white py-3 rounded-xl font-bold text-sm"
+                    >
+                        تطبيق التعديلات
+                    </button>
+
+                    <p class="text-xs text-gray-400 text-center leading-6">
+                        تطبيق التعديلات يغيّر المعاينة مؤقتاً. لحفظ التغييرات بشكل دائم، استعمل محرر الملفات.
+                    </p>
+
+                </div>
+
+            </section>
+
+
+            <!-- FILES TAB -->
+
+            <section
+                id="files-tab"
+                class="tab-content hidden p-5"
+            >
+
+                <h3 class="font-bold text-sm mb-3">
+                    ملفات المشروع
+                </h3>
+
+                <div
+                    id="files-list"
+                    class="space-y-2 text-sm"
+                >
+
+                    <p class="text-gray-400 text-xs">
+                        جاري تحميل الملفات...
+                    </p>
+
+                </div>
+
+            </section>
+
+
+            <!-- CODE TAB -->
+
+            <section
+                id="code-tab"
+                class="tab-content hidden p-5"
+            >
+
+                <h3 class="font-bold text-sm mb-3">
+                    محرر الملفات
+                </h3>
 
                 <p
-                    id="selected-element"
-                    class="text-xs text-purple-500 mt-1"
+                    id="current-file"
+                    class="text-xs text-purple-600 mb-3"
                 >
-                    اختر عنصراً من معاينة الموقع
+                    لم يتم اختيار ملف
                 </p>
 
-            </div>
-
-
-            <div class="space-y-4">
-
-
-                <!-- TEXT -->
-
-                <div>
-
-                    <label class="block text-sm font-bold mb-2">
-                        النص
-                    </label>
-
-                    <textarea
-                        id="element-text"
-                        rows="4"
-                        class="panel-input"
-                        placeholder="النص الذي تريد تغييره..."
-                    ></textarea>
-
-                </div>
-
-
-                <!-- IMAGE -->
-
-                <div>
-
-                    <label class="block text-sm font-bold mb-2">
-                        رابط الصورة
-                    </label>
-
-                    <input
-                        id="element-image"
-                        type="url"
-                        class="panel-input"
-                        placeholder="https://example.com/image.jpg"
-                        dir="ltr"
-                    >
-
-                </div>
-
-
-                <!-- LINK -->
-
-                <div>
-
-                    <label class="block text-sm font-bold mb-2">
-                        رابط الانتقال
-                    </label>
-
-                    <input
-                        id="element-link"
-                        type="text"
-                        class="panel-input"
-                        placeholder="https://example.com"
-                        dir="ltr"
-                    >
-
-                </div>
-
-
-                <!-- COLOR -->
-
-                <div>
-
-                    <label class="block text-sm font-bold mb-2">
-                        لون النص
-                    </label>
-
-                    <input
-                        id="element-color"
-                        type="color"
-                        value="#333333"
-                        class="w-full h-10 border rounded-lg p-1"
-                    >
-
-                </div>
-
-
-                <!-- FONT SIZE -->
-
-                <div>
-
-                    <label class="block text-sm font-bold mb-2">
-                        حجم الخط
-                    </label>
-
-                    <input
-                        id="element-size"
-                        type="number"
-                        min="8"
-                        max="100"
-                        value="16"
-                        class="panel-input"
-                        dir="ltr"
-                    >
-
-                </div>
-
+                <textarea
+                    id="code-editor"
+                    class="panel-input"
+                    spellcheck="false"
+                    placeholder="اختر ملف HTML أو CSS أو JavaScript من قائمة الملفات..."
+                ></textarea>
 
                 <button
-                    id="apply-element"
-                    class="w-full bg-purple-600 hover:bg-purple-700 text-white py-3 rounded-xl font-bold text-sm"
+                    id="save-file-button"
+                    type="button"
+                    class="w-full mt-3 bg-purple-600 hover:bg-purple-700 text-white py-3 rounded-xl font-bold text-sm"
                 >
-                    تطبيق التعديلات
+                    💾 حفظ الملف
                 </button>
 
-                <p class="text-xs text-gray-400 text-center">
-                    التعديلات تُحفظ عند الضغط على زر الحفظ.
+            </section>
+
+
+            <!-- HELP -->
+
+            <div class="p-5 border-t bg-gray-50">
+
+                <p class="text-xs text-gray-500 leading-7">
+                    💡 اختر ملفاً من قائمة الملفات لتعديل HTML وCSS وJavaScript. بعد الحفظ، اضغط على معاينة لمشاهدة التغييرات.
+                </p>
+
+                <p class="text-xs text-orange-600 leading-6 mt-2">
+                    ⚠️ الحفظ لا يعني نشر الموقع على الإنترنت. النشر الحقيقي سنضيفه بشكل منفصل.
                 </p>
 
             </div>
 
-        </section>
+        </aside>
 
+    </main>
 
 
-        <!-- FILES TAB -->
+    <!-- NOTIFICATION -->
 
-        <section
-            id="files-tab"
-            class="tab-content hidden p-5"
-        >
+    <div
+        id="notification"
+        role="status"
+        aria-live="polite"
+        class="fixed bottom-5 left-5 hidden bg-gray-900 text-white px-5 py-3 rounded-xl shadow-lg text-sm z-[100] max-w-[90vw]"
+    ></div>
 
-            <h3 class="font-bold text-sm mb-3">
-                ملفات المشروع
-            </h3>
 
-            <div
-                id="files-list"
-                class="space-y-2 text-sm"
-            >
+    <script src="./client-api.js"></script>
 
-                <p class="text-gray-400 text-xs">
-                    جاري تحميل الملفات...
-                </p>
+    <script>
 
-            </div>
+        // ==========================================
+        // CONFIGURATION
+        // ==========================================
 
-        </section>
+        const API_BASE_URL =
+            window.TEMPLATECRAFT_API_URL ||
+            'http://localhost:3000';
 
+        const params = new URLSearchParams(window.location.search);
 
+        const siteId = params.get('siteId');
 
-        <!-- CODE TAB -->
+        const storedUser = localStorage.getItem('user');
 
-        <section
-            id="code-tab"
-            class="tab-content hidden p-5"
-        >
+        let user = null;
+        let currentSite = null;
+        let projectFiles = [];
+        let currentFile = null;
+        let selectedElement = null;
+        let notificationTimer = null;
+        let isSaving = false;
 
-            <h3 class="font-bold text-sm mb-3">
-                محرر الملفات
-            </h3>
 
-            <p
-                id="current-file"
-                class="text-xs text-purple-600 mb-3"
-            >
-                لم يتم اختيار ملف
-            </p>
+        // ==========================================
+        // ELEMENTS
+        // ==========================================
 
-            <textarea
-                id="code-editor"
-                class="panel-input"
-                spellcheck="false"
-                placeholder="اختر ملف HTML أو CSS أو JavaScript من قائمة الملفات..."
-            ></textarea>
+        const frame = document.getElementById('site-frame');
 
-            <button
-                id="save-file-button"
-                class="w-full mt-3 bg-purple-600 hover:bg-purple-700 text-white py-3 rounded-xl font-bold text-sm"
-            >
-                💾 حفظ الملف
-            </button>
+        const notification = document.getElementById('notification');
 
-        </section>
+        const saveStatus = document.getElementById('save-status');
 
+        const codeEditor = document.getElementById('code-editor');
 
-        <!-- HELP -->
+        const saveButton = document.getElementById('save-button');
 
-        <div class="p-5 border-t bg-gray-50">
+        const saveFileButton = document.getElementById('save-file-button');
 
-            <p class="text-xs text-gray-500 leading-7">
-                💡 اختر العنصر من المعاينة لتعديله، أو افتح قائمة الملفات لتعديل ملفات HTML وCSS وJavaScript.
-            </p>
 
-        </div>
-
-    </aside>
-
-</main>
-
-
-
-<!-- NOTIFICATION -->
-
-<div
-    id="notification"
-    class="fixed bottom-5 left-5 hidden bg-gray-900 text-white px-5 py-3 rounded-xl shadow-lg text-sm z-[100]"
-></div>
-
-
-
-<script src="./client-api.js"></script>
-
-
-<script>
-
-    // ==========================================
-    // CONFIGURATION
-    // ==========================================
-
-    const API_BASE_URL = 'http://localhost:3000';
-
-    const params = new URLSearchParams(window.location.search);
-
-    const siteId = params.get('siteId');
-
-    const storedUser = localStorage.getItem('user');
-
-    let user = null;
-
-    let currentSite = null;
-
-    let projectFiles = [];
-
-    let currentFile = null;
-
-    let selectedElement = null;
-
-
-    // ==========================================
-    // ELEMENTS
-    // ==========================================
-
-    const frame = document.getElementById('site-frame');
-
-    const notification = document.getElementById('notification');
-
-    const saveStatus = document.getElementById('save-status');
-
-    const codeEditor = document.getElementById('code-editor');
-
-
-    // ==========================================
-    // AUTHENTICATION
-    // ==========================================
-
-    try {
-
-        user = JSON.parse(storedUser);
-
-    } catch (error) {
-
-        user = null;
-
-    }
-
-
-    if (!user) {
-
-        window.location.href = 'login.html';
-
-    }
-
-
-    const userId = user?.id || user?._id;
-
-
-    if (!siteId) {
-
-        alert('معرف المشروع غير موجود.');
-
-        window.location.href = 'profile.html';
-
-    }
-
-
-    // ==========================================
-    // NOTIFICATION
-    // ==========================================
-
-    function showNotification(message, success = true) {
-
-        notification.textContent = message;
-
-        notification.classList.remove('hidden');
-
-        notification.classList.toggle('bg-red-600', !success);
-
-        notification.classList.toggle('bg-gray-900', success);
-
-        setTimeout(() => {
-
-            notification.classList.add('hidden');
-
-        }, 3000);
-
-    }
-
-
-    function setSaveStatus(message) {
-
-        saveStatus.textContent = message;
-
-    }
-
-
-    // ==========================================
-    // API CHECK
-    // ==========================================
-
-    function checkAPI() {
-
-        const requiredMethods = [
-            'getSite',
-            'getSiteFiles',
-            'saveSiteFile',
-            'updateSite'
-        ];
-
-        if (typeof TemplateCraftAPI === 'undefined') {
-            throw new Error('ملف client-api.js غير محمل');
-        }
-
-        for (const method of requiredMethods) {
-
-            if (typeof TemplateCraftAPI[method] !== 'function') {
-
-                throw new Error(
-                    `الدالة ${method} غير موجودة في client-api.js`
-                );
-
-            }
-
-        }
-
-    }
-
-
-    // ==========================================
-    // LOAD PROJECT
-    // ==========================================
-
-    async function loadProject() {
+        // ==========================================
+        // AUTHENTICATION
+        // ==========================================
 
         try {
+            user = JSON.parse(storedUser);
+        } catch (error) {
+            user = null;
+        }
 
-            checkAPI();
+        if (!user) {
+            window.location.href = 'login.html';
+        }
 
-            if (!userId) {
-                throw new Error('معرف المستخدم غير موجود');
-            }
+        const userId = user?.id || user?._id;
 
-            setSaveStatus('جاري تحميل المشروع...');
+        if (!siteId) {
+            alert('معرف المشروع غير موجود.');
+            window.location.href = 'profile.html';
+        }
 
-            const result = await TemplateCraftAPI.getSite(
-                siteId,
-                userId
+
+        // ==========================================
+        // NOTIFICATIONS
+        // ==========================================
+
+        function showNotification(message, success = true) {
+
+            notification.textContent = message;
+
+            notification.classList.remove(
+                'hidden',
+                'bg-red-600',
+                'bg-gray-900'
             );
 
-            if (!result || !result.success || !result.site) {
+            notification.classList.add(
+                success ? 'bg-gray-900' : 'bg-red-600'
+            );
 
-                throw new Error(
-                    result?.error || 'تعذر تحميل المشروع'
-                );
+            clearTimeout(notificationTimer);
 
+            notificationTimer = setTimeout(() => {
+                notification.classList.add('hidden');
+            }, 3500);
+        }
+
+
+        function setSaveStatus(message) {
+            saveStatus.textContent = message;
+        }
+
+
+        // ==========================================
+        // API CHECK
+        // ==========================================
+
+        function checkAPI() {
+
+            if (typeof TemplateCraftAPI === 'undefined') {
+                throw new Error('ملف client-api.js غير محمل');
             }
 
-            currentSite = result.site;
+            const requiredMethods = [
+                'getSite',
+                'getSiteFiles',
+                'saveSiteFile',
+                'updateSite'
+            ];
 
-            const projectName =
-                currentSite.variables?.displayName ||
-                currentSite.siteName ||
-                'مشروع بدون اسم';
+            for (const method of requiredMethods) {
 
-            document.getElementById('project-name').value =
-                projectName;
+                if (typeof TemplateCraftAPI[method] !== 'function') {
+                    throw new Error(
+                        `الدالة ${method} غير موجودة في client-api.js`
+                    );
+                }
 
-            document.getElementById('project-title').textContent =
-                projectName;
+            }
+        }
 
 
-            // Load preview
+        // ==========================================
+        // PREVIEW URL
+        // ==========================================
 
-            const previewUrl =
+        function getPreviewUrl() {
+
+            if (!currentSite) {
+                throw new Error('المشروع غير محمل');
+            }
+
+            const url =
                 currentSite.liveUrl ||
                 `${API_BASE_URL}/sites/${encodeURIComponent(currentSite.siteName)}/index.html`;
 
-            frame.src = previewUrl;
+            const parsed = new URL(url, window.location.href);
 
+            // منع الروابط غير المتوقعة
+            if (!['http:', 'https:'].includes(parsed.protocol)) {
+                throw new Error('رابط المعاينة غير صالح');
+            }
 
-            await loadProjectFiles();
+            // تحديث الرابط لتفادي نسخة المتصفح القديمة
+            parsed.searchParams.set('_preview', Date.now());
 
-            setSaveStatus('تم تحميل المشروع');
-
-        } catch (error) {
-
-            console.error(error);
-
-            showNotification(error.message, false);
-
-            setSaveStatus('تعذر تحميل المشروع');
-
+            return parsed.href;
         }
 
-    }
+
+        function refreshPreview(showMessage = false) {
+
+            try {
+
+                frame.src = getPreviewUrl();
+
+                if (showMessage) {
+                    showNotification('تم تحديث المعاينة');
+                }
+
+            } catch (error) {
+
+                showNotification(error.message, false);
+
+            }
+        }
 
 
-    // ==========================================
-    // LOAD PROJECT FILES
-    // ==========================================
+        // ==========================================
+        // LOAD PROJECT
+        // ==========================================
 
-    async function loadProjectFiles() {
+        async function loadProject() {
 
-        const container = document.getElementById('files-list');
+            try {
 
-        container.innerHTML = `
-            <p class="text-gray-400 text-xs">
-                جاري تحميل الملفات...
-            </p>
-        `;
+                checkAPI();
 
-        try {
+                if (!userId) {
+                    throw new Error('معرف المستخدم غير موجود');
+                }
 
-            const result = await TemplateCraftAPI.getSiteFiles(
-                siteId,
-                userId
-            );
+                setSaveStatus('جاري تحميل المشروع...');
 
-            if (!result || !result.success) {
-
-                throw new Error(
-                    result?.error || 'تعذر جلب الملفات'
+                const result = await TemplateCraftAPI.getSite(
+                    siteId,
+                    userId
                 );
 
+                if (!result || !result.success || !result.site) {
+                    throw new Error(
+                        result?.error || 'تعذر تحميل المشروع'
+                    );
+                }
+
+                currentSite = result.site;
+
+                const projectName =
+                    currentSite.variables?.displayName ||
+                    currentSite.siteName ||
+                    'مشروع بدون اسم';
+
+                document.getElementById('project-name').value =
+                    projectName;
+
+                document.getElementById('project-title').textContent =
+                    projectName;
+
+                refreshPreview();
+
+                await loadProjectFiles();
+
+                setSaveStatus('تم تحميل المشروع');
+
+            } catch (error) {
+
+                console.error(error);
+
+                showNotification(error.message, false);
+
+                setSaveStatus('تعذر تحميل المشروع');
+
             }
+        }
 
-            projectFiles = result.files || [];
 
-            container.innerHTML = '';
+        // ==========================================
+        // LOAD PROJECT FILES
+        // ==========================================
 
-            if (!projectFiles.length) {
+        async function loadProjectFiles() {
 
-                container.innerHTML = `
-                    <p class="text-gray-400 text-xs">
-                        لا توجد ملفات.
-                    </p>
-                `;
-
-                return;
-
-            }
-
-            projectFiles.forEach(file => {
-
-                const path =
-                    typeof file === 'string'
-                        ? file
-                        : file.path;
-
-                const button = document.createElement('button');
-
-                button.type = 'button';
-
-                button.className =
-                    'w-full text-right p-3 bg-gray-50 hover:bg-purple-50 rounded-lg border text-xs break-all';
-
-                button.textContent = '📄 ' + path;
-
-                button.addEventListener('click', () => {
-
-                    loadFile(path);
-
-                });
-
-                container.appendChild(button);
-
-            });
-
-        } catch (error) {
-
-            console.error(error);
+            const container = document.getElementById('files-list');
 
             container.innerHTML = `
-                <p class="text-red-500 text-xs">
-                    ${escapeHtml(error.message)}
+                <p class="text-gray-400 text-xs">
+                    جاري تحميل الملفات...
                 </p>
             `;
 
+            try {
+
+                const result = await TemplateCraftAPI.getSiteFiles(
+                    siteId,
+                    userId
+                );
+
+                if (!result || !result.success) {
+                    throw new Error(
+                        result?.error || 'تعذر جلب الملفات'
+                    );
+                }
+
+                projectFiles = result.files || [];
+
+                container.innerHTML = '';
+
+                if (!projectFiles.length) {
+
+                    container.innerHTML = `
+                        <p class="text-gray-400 text-xs">
+                            لا توجد ملفات.
+                        </p>
+                    `;
+
+                    return;
+                }
+
+                projectFiles.forEach(file => {
+
+                    const path =
+                        typeof file === 'string'
+                            ? file
+                            : file.path;
+
+                    if (!path) return;
+
+                    const button = document.createElement('button');
+
+                    button.type = 'button';
+
+                    button.className =
+                        'w-full text-right p-3 bg-gray-50 hover:bg-purple-50 rounded-lg border text-xs break-all';
+
+                    button.textContent = '📄 ' + path;
+
+                    button.addEventListener('click', () => {
+                        loadFile(path);
+                    });
+
+                    container.appendChild(button);
+
+                });
+
+            } catch (error) {
+
+                console.error(error);
+
+                container.innerHTML = '';
+
+                const errorText = document.createElement('p');
+
+                errorText.className = 'text-red-500 text-xs';
+
+                errorText.textContent = error.message;
+
+                container.appendChild(errorText);
+
+            }
         }
 
-    }
 
+        // ==========================================
+        // SAFE FILE URL
+        // ==========================================
 
-    // ==========================================
-    // LOAD FILE CONTENT
-    // ==========================================
+        function getFileUrl(filePath) {
 
-    async function loadFile(filePath) {
+            const safePath = filePath
+                .split('/')
+                .map(segment => encodeURIComponent(segment))
+                .join('/');
 
-        try {
-
-            const file = projectFiles.find(item =>
-                (typeof item === 'string' ? item : item.path) === filePath
-            );
-
-            if (!file) {
-                throw new Error('الملف غير موجود في القائمة');
-            }
-
-            if (
-                file.type &&
-                file.type !== 'text' &&
-                file.type !== 'code'
-            ) {
-
-                throw new Error('هذا الملف ليس ملفاً نصياً قابلاً للتحرير');
-
-            }
-
-            const response = await fetch(
-                `${API_BASE_URL}/sites/${encodeURIComponent(currentSite.siteName)}/${filePath.split('/').map(encodeURIComponent).join('/')}`
-            );
-
-            if (!response.ok) {
-
-                throw new Error('تعذر قراءة الملف');
-
-            }
-
-            const content = await response.text();
-
-            currentFile = filePath;
-
-            codeEditor.value = content;
-
-            document.getElementById('current-file').textContent =
-                '📄 ' + filePath;
-
-            activateTab('code');
-
-        } catch (error) {
-
-            showNotification(error.message, false);
-
+            return `${API_BASE_URL}/sites/${encodeURIComponent(currentSite.siteName)}/${safePath}`;
         }
 
-    }
 
+        // ==========================================
+        // LOAD FILE CONTENT
+        // ==========================================
 
-    // ==========================================
-    // SAVE FILE
-    // ==========================================
+        async function loadFile(filePath) {
 
-    async function saveCurrentFile() {
+            try {
 
-        if (!currentFile) {
+                const file = projectFiles.find(item =>
+                    (typeof item === 'string' ? item : item.path) === filePath
+                );
 
-            showNotification('اختر ملفاً أولاً', false);
+                if (!file) {
+                    throw new Error('الملف غير موجود في القائمة');
+                }
 
-            return;
+                if (
+                    file.type &&
+                    file.type !== 'text' &&
+                    file.type !== 'code'
+                ) {
+                    throw new Error(
+                        'هذا الملف ليس ملفاً نصياً قابلاً للتحرير'
+                    );
+                }
 
+                const response = await fetch(
+                    getFileUrl(filePath),
+                    { cache: 'no-store' }
+                );
+
+                if (!response.ok) {
+                    throw new Error('تعذر قراءة الملف');
+                }
+
+                const content = await response.text();
+
+                currentFile = filePath;
+
+                codeEditor.value = content;
+
+                document.getElementById('current-file').textContent =
+                    '📄 ' + filePath;
+
+                activateTab('code');
+
+                setSaveStatus('تم تحميل الملف');
+
+            } catch (error) {
+
+                console.error(error);
+
+                showNotification(error.message, false);
+
+            }
         }
 
-        try {
 
-            setSaveStatus('جاري حفظ الملف...');
+        // ==========================================
+        // SAVE CURRENT FILE
+        // ==========================================
 
-            const result = await TemplateCraftAPI.saveSiteFile(
+        async function saveCurrentFile(options = {}) {
+
+            const showMessage = options.showMessage !== false;
+
+            if (!currentFile) {
+
+                if (showMessage) {
+                    showNotification('اختر ملفاً أولاً', false);
+                }
+
+                return false;
+            }
+
+            try {
+
+                setSaveStatus('جاري حفظ الملف...');
+
+                saveFileButton.disabled = true;
+
+                const result = await TemplateCraftAPI.saveSiteFile(
+                    siteId,
+                    {
+                        userId,
+                        filePath: currentFile,
+                        content: codeEditor.value
+                    }
+                );
+
+                if (!result || !result.success) {
+                    throw new Error(
+                        result?.error || 'تعذر حفظ الملف'
+                    );
+                }
+
+                setSaveStatus('تم حفظ الملف');
+
+                if (showMessage) {
+                    showNotification('تم حفظ الملف بنجاح. يمكنك الآن معاينة التعديلات.');
+                }
+
+                return true;
+
+            } catch (error) {
+
+                console.error(error);
+
+                setSaveStatus('فشل الحفظ');
+
+                if (showMessage) {
+                    showNotification(error.message, false);
+                }
+
+                return false;
+
+            } finally {
+
+                saveFileButton.disabled = false;
+
+            }
+        }
+
+
+        // ==========================================
+        // UPDATE PROJECT NAME
+        // ==========================================
+
+        async function saveProjectName() {
+
+            const name = document
+                .getElementById('project-name')
+                .value
+                .trim();
+
+            if (!name) {
+                throw new Error('أدخل اسم المشروع');
+            }
+
+            const result = await TemplateCraftAPI.updateSite(
                 siteId,
                 {
                     userId,
-                    filePath: currentFile,
-                    content: codeEditor.value
+                    siteName: name
                 }
             );
 
             if (!result || !result.success) {
-
                 throw new Error(
-                    result?.error || 'تعذر حفظ الملف'
+                    result?.error || 'تعذر تحديث اسم المشروع'
+                );
+            }
+
+            currentSite.variables = {
+                ...(currentSite.variables || {}),
+                displayName: name
+            };
+
+            document.getElementById('project-title').textContent = name;
+
+            return true;
+        }
+
+
+        // ==========================================
+        // SAVE ALL
+        // ==========================================
+
+        async function saveAll() {
+
+            if (isSaving) return;
+
+            isSaving = true;
+
+            saveButton.disabled = true;
+
+            try {
+
+                setSaveStatus('جاري حفظ التعديلات...');
+
+                // Save the open code file if one is selected
+                if (currentFile) {
+
+                    const fileSaved = await saveCurrentFile({
+                        showMessage: false
+                    });
+
+                    if (!fileSaved) {
+                        throw new Error('تعذر حفظ الملف المفتوح');
+                    }
+
+                }
+
+                // Save project name
+                await saveProjectName();
+
+                setSaveStatus('تم الحفظ بنجاح');
+
+                showNotification(
+                    'تم حفظ التعديلات بنجاح. اضغط على معاينة لمشاهدة النتيجة.'
                 );
 
+            } catch (error) {
+
+                console.error(error);
+
+                setSaveStatus('فشل الحفظ');
+
+                showNotification(error.message, false);
+
+            } finally {
+
+                isSaving = false;
+
+                saveButton.disabled = false;
+
             }
-
-            setSaveStatus('تم حفظ الملف');
-
-            showNotification('تم حفظ الملف بنجاح');
-
-            frame.contentWindow.location.reload();
-
-        } catch (error) {
-
-            console.error(error);
-
-            showNotification(error.message, false);
-
-            setSaveStatus('فشل الحفظ');
-
         }
 
-    }
 
+        // ==========================================
+        // EDITOR TABS
+        // ==========================================
 
-    // ==========================================
-    // UPDATE PROJECT NAME
-    // ==========================================
+        function activateTab(tabName) {
 
-    async function saveProjectName() {
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.add('hidden');
+            });
 
-        const name = document
-            .getElementById('project-name')
-            .value
-            .trim();
+            document.querySelectorAll('.tab-button').forEach(button => {
+                button.classList.remove('active');
+            });
 
-        if (!name) {
+            document
+                .getElementById(`${tabName}-tab`)
+                .classList.remove('hidden');
 
-            showNotification('أدخل اسم المشروع', false);
-
-            return false;
-
+            document
+                .querySelector(`[data-tab="${tabName}"]`)
+                .classList.add('active');
         }
 
-        const result = await TemplateCraftAPI.updateSite(
-            siteId,
-            {
-                userId,
-                siteName: name
-            }
-        );
-
-        if (!result || !result.success) {
-
-            throw new Error(
-                result?.error || 'تعذر تحديث اسم المشروع'
-            );
-
-        }
-
-        currentSite.variables = {
-            ...(currentSite.variables || {}),
-            displayName: name
-        };
-
-        document.getElementById('project-title').textContent = name;
-
-        return true;
-
-    }
-
-
-    // ==========================================
-    // SAVE ALL
-    // ==========================================
-
-    async function saveAll() {
-
-        try {
-
-            await saveProjectName();
-
-            showNotification('تم حفظ معلومات المشروع');
-
-            setSaveStatus('تم الحفظ');
-
-        } catch (error) {
-
-            showNotification(error.message, false);
-
-        }
-
-    }
-
-
-    // ==========================================
-    // EDITOR TABS
-    // ==========================================
-
-    function activateTab(tabName) {
-
-        document.querySelectorAll('.tab-content').forEach(tab => {
-
-            tab.classList.add('hidden');
-
-        });
 
         document.querySelectorAll('.tab-button').forEach(button => {
 
-            button.classList.remove('active');
+            button.addEventListener('click', () => {
+                activateTab(button.dataset.tab);
+            });
 
         });
 
-        document.getElementById(`${tabName}-tab`).classList.remove('hidden');
+
+        // ==========================================
+        // VISUAL ELEMENT SELECTION
+        // ==========================================
+
+        /*
+            الاختيار البصري المباشر كيحتاج أن تكون صفحة
+            المعاينة والمحرر من نفس الأصل (Same Origin)،
+            أو إضافة Editor Bridge داخل الموقع.
+
+            إذا كان المحرر على GitHub Pages والمعاينة على
+            localhost:3000، المتصفح يمنع الوصول المباشر.
+        */
+
+        frame.addEventListener('load', () => {
+
+            try {
+
+                const frameDocument =
+                    frame.contentDocument ||
+                    frame.contentWindow.document;
+
+                if (!frameDocument) return;
+
+                frameDocument.addEventListener('click', event => {
+
+                    const target = event.target;
+
+                    if (!target || target === frameDocument.body) {
+                        return;
+                    }
+
+                    event.preventDefault();
+
+                    event.stopPropagation();
+
+                    selectedElement = target;
+
+                    document.getElementById('selected-element').textContent =
+                        target.tagName.toLowerCase();
+
+                    document.getElementById('element-text').value =
+                        target.innerText || '';
+
+                    document.getElementById('element-image').value =
+                        target.tagName === 'IMG'
+                            ? target.src
+                            : '';
+
+                    document.getElementById('element-link').value =
+                        target.closest('a')?.getAttribute('href') || '';
+
+                    document.getElementById('element-color').value =
+                        rgbToHex(getComputedStyle(target).color);
+
+                    document.getElementById('element-size').value =
+                        parseInt(getComputedStyle(target).fontSize) || 16;
+
+                    activateTab('element');
+
+                }, true);
+
+            } catch (error) {
+
+                console.info(
+                    'الاختيار البصري يحتاج إعداد Editor Bridge.',
+                    error
+                );
+
+            }
+
+        });
+
+
+        // ==========================================
+        // COLOR CONVERTER
+        // ==========================================
+
+        function rgbToHex(color) {
+
+            if (!color) return '#333333';
+
+            if (color.startsWith('#')) return color;
+
+            const values = color.match(/\d+/g);
+
+            if (!values || values.length < 3) {
+                return '#333333';
+            }
+
+            return '#' + values.slice(0, 3).map(value => {
+
+                return Number(value)
+                    .toString(16)
+                    .padStart(2, '0');
+
+            }).join('');
+        }
+
+
+        // ==========================================
+        // APPLY VISUAL CHANGES
+        // ==========================================
 
         document
-            .querySelector(`[data-tab="${tabName}"]`)
-            .classList.add('active');
+            .getElementById('apply-element')
+            .addEventListener('click', () => {
 
-    }
+                if (!selectedElement) {
+
+                    showNotification(
+                        'اختيار العناصر يحتاج تفعيل Editor Bridge أولاً.',
+                        false
+                    );
+
+                    return;
+                }
+
+                const text =
+                    document.getElementById('element-text').value;
+
+                const image =
+                    document.getElementById('element-image').value.trim();
+
+                const link =
+                    document.getElementById('element-link').value.trim();
+
+                const color =
+                    document.getElementById('element-color').value;
+
+                const size = Number(
+                    document.getElementById('element-size').value
+                );
 
 
-    document.querySelectorAll('.tab-button').forEach(button => {
+                // Image update
+                if (selectedElement.tagName === 'IMG' && image) {
 
-        button.addEventListener('click', () => {
+                    try {
 
-            activateTab(button.dataset.tab);
+                        const parsed = new URL(image);
+
+                        if (!['http:', 'https:'].includes(parsed.protocol)) {
+                            throw new Error('رابط الصورة غير صالح');
+                        }
+
+                        selectedElement.src = parsed.href;
+
+                    } catch (error) {
+
+                        showNotification('رابط الصورة غير صالح', false);
+
+                        return;
+                    }
+                }
+
+
+                // Text update
+                if (selectedElement.tagName !== 'IMG') {
+                    selectedElement.textContent = text;
+                }
+
+
+                // Color update
+                selectedElement.style.color = color;
+
+
+                // Font size update
+                if (size >= 8 && size <= 100) {
+                    selectedElement.style.fontSize = `${size}px`;
+                }
+
+
+                // Link update
+                const anchor = selectedElement.closest('a');
+
+                if (anchor && link) {
+
+                    try {
+
+                        const parsed = new URL(
+                            link,
+                            window.location.origin
+                        );
+
+                        if (!['http:', 'https:'].includes(parsed.protocol)) {
+                            throw new Error('رابط غير صالح');
+                        }
+
+                        anchor.href = parsed.href;
+
+                    } catch (error) {
+
+                        showNotification('رابط الانتقال غير صالح', false);
+
+                        return;
+                    }
+                }
+
+                showNotification(
+                    'تم تطبيق التغييرات على المعاينة مؤقتاً. لحفظها دائماً، عدّل الملف من تبويب الكود.'
+                );
+
+            });
+
+
+        // ==========================================
+        // SAVE BUTTON
+        // ==========================================
+
+        saveButton.addEventListener('click', saveAll);
+
+
+        // ==========================================
+        // SAVE FILE BUTTON
+        // ==========================================
+
+        saveFileButton.addEventListener('click', async () => {
+
+            const saved = await saveCurrentFile();
+
+            if (saved) {
+                setSaveStatus('تم الحفظ - في انتظار المعاينة');
+            }
 
         });
 
-    });
+
+        // ==========================================
+        // RELOAD PREVIEW
+        // ==========================================
+
+        document
+            .getElementById('reload-preview')
+            .addEventListener('click', () => {
+
+                refreshPreview(true);
+
+            });
 
 
-    // ==========================================
-    // VISUAL ELEMENT SELECTION
-    // ==========================================
+        // ==========================================
+        // PREVIEW BUTTON
+        // ==========================================
 
-    /*
-       ملاحظة:
-       الوصول المباشر إلى عناصر iframe يتطلب أن تكون
-       صفحة المعاينة من نفس الأصل (Same Origin)، أو
-       إضافة Editor Bridge داخل الموقع.
-       سيتم تفعيل الاختيار البصري بعد إعداد هذا الجسر.
-    */
+        document
+            .getElementById('preview-button')
+            .addEventListener('click', () => {
 
-    frame.addEventListener('load', () => {
+                try {
 
-        try {
+                    const previewUrl = getPreviewUrl();
 
-            const frameDocument =
-                frame.contentDocument ||
-                frame.contentWindow.document;
+                    // Refresh the preview inside the editor
+                    frame.src = previewUrl;
 
-            if (!frameDocument) return;
+                    // Open a separate preview tab
+                    window.open(
+                        previewUrl,
+                        '_blank',
+                        'noopener,noreferrer'
+                    );
 
-            frameDocument.addEventListener('click', event => {
+                    showNotification(
+                        'تم فتح المعاينة. التغييرات المحفوظة فقط هي التي ستظهر.'
+                    );
 
-                const target = event.target;
+                } catch (error) {
 
-                if (!target || target === frameDocument.body) return;
+                    showNotification(error.message, false);
 
-                event.preventDefault();
+                }
 
-                event.stopPropagation();
+            });
 
-                selectedElement = target;
 
-                document.getElementById('selected-element').textContent =
-                    target.tagName.toLowerCase();
+        // ==========================================
+        // DESKTOP PREVIEW
+        // ==========================================
 
-                document.getElementById('element-text').value =
-                    target.innerText || '';
+        document
+            .getElementById('desktop-preview')
+            .addEventListener('click', () => {
 
-                document.getElementById('element-image').value =
-                    target.tagName === 'IMG'
-                        ? target.src
-                        : '';
+                frame.style.width = '100%';
 
-                document.getElementById('element-link').value =
-                    target.closest('a')?.getAttribute('href') || '';
+                frame.style.maxWidth = '100%';
 
-                document.getElementById('element-color').value =
-                    rgbToHex(getComputedStyle(target).color);
+                showNotification('تم تفعيل معاينة سطح المكتب');
 
-                document.getElementById('element-size').value =
-                    parseInt(getComputedStyle(target).fontSize) || 16;
+            });
 
-                activateTab('element');
 
-            }, true);
+        // ==========================================
+        // ESCAPE HTML
+        // ==========================================
 
-        } catch (error) {
+        function escapeHtml(value) {
 
-            console.info(
-                'الاختيار البصري يحتاج إعداد Editor Bridge.',
-                error
-            );
+            return String(value ?? '')
+                .replaceAll('&', '&amp;')
+                .replaceAll('<', '&lt;')
+                .replaceAll('>', '&gt;')
+                .replaceAll('"', '&quot;')
+                .replaceAll("'", '&#039;');
 
         }
 
-    });
 
+        // ==========================================
+        // START EDITOR
+        // ==========================================
 
-    // ==========================================
-    // COLOR CONVERTER
-    // ==========================================
+        if (userId && siteId) {
+            loadProject();
+        }
 
-    function rgbToHex(color) {
-
-        if (!color) return '#333333';
-
-        if (color.startsWith('#')) return color;
-
-        const values = color.match(/\d+/g);
-
-        if (!values || values.length < 3) return '#333333';
-
-        return '#' + values.slice(0, 3).map(value => {
-
-            return Number(value)
-                .toString(16)
-                .padStart(2, '0');
-
-        }).join('');
-
-    }
-
-
-    // ==========================================
-    // APPLY VISUAL CHANGES
-    // ==========================================
-
-    document
-        .getElementById('apply-element')
-        .addEventListener('click', () => {
-
-            if (!selectedElement) {
-
-                showNotification(
-                    'اختر عنصراً من المعاينة أولاً',
-                    false
-                );
-
-                return;
-
-            }
-
-            const text = document.getElementById('element-text').value;
-
-            const image = document.getElementById('element-image').value;
-
-            const link = document.getElementById('element-link').value;
-
-            const color = document.getElementById('element-color').value;
-
-            const size = Number(
-                document.getElementById('element-size').value
-            );
-
-
-            if (selectedElement.tagName === 'IMG' && image) {
-
-                try {
-
-                    const parsed = new URL(image);
-
-                    if (!['http:', 'https:'].includes(parsed.protocol)) {
-                        throw new Error('رابط الصورة غير صالح');
-                    }
-
-                    selectedElement.src = parsed.href;
-
-                } catch (error) {
-
-                    showNotification('رابط الصورة غير صالح', false);
-
-                    return;
-
-                }
-
-            }
-
-
-            if (selectedElement.tagName !== 'IMG') {
-
-                selectedElement.textContent = text;
-
-            }
-
-
-            selectedElement.style.color = color;
-
-            if (size >= 8 && size <= 100) {
-
-                selectedElement.style.fontSize = `${size}px`;
-
-            }
-
-
-            const anchor = selectedElement.closest('a');
-
-            if (anchor && link) {
-
-                try {
-
-                    const parsed = new URL(link, window.location.origin);
-
-                    if (!['http:', 'https:'].includes(parsed.protocol)) {
-                        throw new Error('رابط غير صالح');
-                    }
-
-                    anchor.href = parsed.href;
-
-                } catch (error) {
-
-                    showNotification('رابط الانتقال غير صالح', false);
-
-                    return;
-
-                }
-
-            }
-
-            showNotification(
-                'تم تطبيق التغييرات على المعاينة. احفظ الملف لتثبيتها.'
-            );
-
-        });
-
-
-    // ==========================================
-    // BUTTONS
-    // ==========================================
-
-    document
-        .getElementById('save-button')
-        .addEventListener('click', saveAll);
-
-
-    document
-        .getElementById('save-file-button')
-        .addEventListener('click', saveCurrentFile);
-
-
-    document
-        .getElementById('reload-preview')
-        .addEventListener('click', () => {
-
-            frame.contentWindow.location.reload();
-
-        });
-
-
-    document
-        .getElementById('preview-button')
-        .addEventListener('click', () => {
-
-            if (currentSite?.liveUrl) {
-
-                window.open(
-                    currentSite.liveUrl,
-                    '_blank',
-                    'noopener,noreferrer'
-                );
-
-            } else {
-
-                showNotification('رابط المعاينة غير متاح', false);
-
-            }
-
-        });
-
-
-    document
-        .getElementById('desktop-preview')
-        .addEventListener('click', () => {
-
-            frame.style.width = '100%';
-
-            frame.style.maxWidth = '100%';
-
-            showNotification('تم تفعيل معاينة سطح المكتب');
-
-        });
-
-
-    // ==========================================
-    // ESCAPE HTML
-    // ==========================================
-
-    function escapeHtml(value) {
-
-        return String(value ?? '')
-            .replaceAll('&', '&amp;')
-            .replaceAll('<', '&lt;')
-            .replaceAll('>', '&gt;')
-            .replaceAll('"', '&quot;')
-            .replaceAll("'", '&#039;');
-
-    }
-
-
-    // ==========================================
-    // START EDITOR
-    // ==========================================
-
-    if (userId && siteId) {
-
-        loadProject();
-
-    }
-
-</script>
+    </script>
 
 </body>
 </html>
