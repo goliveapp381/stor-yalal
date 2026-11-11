@@ -3,132 +3,703 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TemplateCraft Pro | إنشاء مشروع جديد</title>
-    <!-- Tailwind CSS لتصميم عصري وسريع -->
+
+    <title>إنشاء مشروع جديد | TemplateCraft Pro</title>
+
     <script src="https://cdn.tailwindcss.com"></script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            font-family: 'Cairo', sans-serif;
+        }
+
+        body {
+            background: #f8fafc;
+        }
+
+        .template-card {
+            transition: all .2s ease;
+            cursor: pointer;
+        }
+
+        .template-card:hover {
+            transform: translateY(-4px);
+            border-color: #9333ea;
+        }
+
+        .template-card.selected {
+            border: 2px solid #9333ea;
+            background: #faf5ff;
+            box-shadow: 0 0 0 3px rgba(147, 51, 234, .12);
+        }
+
+        .template-number {
+            background: #f3e8ff;
+            color: #7e22ce;
+        }
+
+        button:disabled {
+            opacity: .6;
+            cursor: not-allowed;
+        }
+    </style>
 </head>
-<body class="bg-slate-100 text-slate-800 font-sans min-h-screen p-6">
 
-    <div class="max-w-4xl mx-auto bg-white p-8 rounded-2xl shadow-md">
-        <h1 class="text-2xl font-bold mb-6 text-indigo-600">🚀 إنشاء موقع جديد عبر TemplateCraft Pro</h1>
+<body class="min-h-screen">
 
-        <!-- خطوة 1: اسم الموقع -->
-        <div class="mb-6">
-            <label class="block font-semibold mb-2">اسم الموقع (رابط المشروع):</label>
-            <input type="text" id="siteNameInput" placeholder="مثال: my-awesome-store" class="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+    <!-- HEADER -->
+    <header class="bg-white border-b shadow-sm">
+        <div class="max-w-6xl mx-auto px-5 py-4 flex justify-between items-center">
+
+            <a href="index.html"
+               class="text-xl font-extrabold text-purple-700">
+                TemplateCraft Pro
+            </a>
+
+            <a href="profile.html"
+               class="text-sm font-bold text-gray-600 hover:text-purple-700">
+                مشاريعي
+            </a>
+
         </div>
+    </header>
 
-        <!-- خطوة 2: اختيار الصنف (Category) -->
-        <div class="mb-6">
-            <label class="block font-semibold mb-2">اختر الصنف (Category):</label>
-            <select id="projectTypeSelect" class="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                <option value="blogs">مدونات (Blogs)</option>
-                <option value="corporate">شركات (Corporate)</option>
-                <option value="ecommerce">متاجر إلكترونية (E-commerce)</option>
-                <option value="real-estate">عقارات (Real Estate)</option>
-                <option value="restaurant-demo">مطاعم (Restaurant)</option>
-            </select>
-        </div>
 
-        <!-- خطوة 3: اختيار القالب (Template ID) -->
-        <div class="mb-6">
-            <label class="block font-semibold mb-2">اختر رقم القالب المفضل:</label>
-            <div class="grid grid-cols-3 gap-4">
-                <div class="template-card border-2 p-4 rounded-xl cursor-pointer text-center hover:border-indigo-500 transition" data-template="template-1">
-                    <p class="font-bold">القالب 1</p>
-                </div>
-                <div class="template-card border-2 p-4 rounded-xl cursor-pointer text-center hover:border-indigo-500 transition" data-template="template-2">
-                    <p class="font-bold">القالب 2</p>
-                </div>
-                <div class="template-card border-2 p-4 rounded-xl cursor-pointer text-center hover:border-indigo-500 transition" data-template="template-3">
-                    <p class="font-bold">القالب 3</p>
-                </div>
-                <div class="template-card border-2 p-4 rounded-xl cursor-pointer text-center hover:border-indigo-500 transition" data-template="template-4">
-                    <p class="font-bold">القالب 4</p>
-                </div>
-                <div class="template-card border-2 p-4 rounded-xl cursor-pointer text-center hover:border-indigo-500 transition" data-template="template-5">
-                    <p class="font-bold">القالب 5</p>
-                </div>
-                <div class="template-card border-2 p-4 rounded-xl cursor-pointer text-center hover:border-indigo-500 transition" data-template="template-6">
-                    <p class="font-bold">القالب 6</p>
-                </div>
+    <!-- MAIN -->
+    <main class="max-w-5xl mx-auto px-4 py-10">
+
+        <div class="bg-white rounded-2xl shadow-sm border p-6 md:p-8">
+
+            <div class="mb-8">
+
+                <span class="text-purple-700 text-sm font-bold">
+                    TEMPLATECRAFT BUILDER
+                </span>
+
+                <h1 class="text-2xl md:text-3xl font-extrabold text-gray-900 mt-2">
+                    🚀 إنشاء مشروع جديد
+                </h1>
+
+                <p class="text-gray-500 mt-2">
+                    اختر القالب المناسب لموقعك، وأدخل اسم المشروع للبدء.
+                </p>
+
             </div>
+
+
+            <!-- SITE NAME -->
+            <div class="mb-7">
+
+                <label for="siteNameInput"
+                       class="block font-bold text-gray-800 mb-2">
+                    اسم الموقع
+                </label>
+
+                <input
+                    type="text"
+                    id="siteNameInput"
+                    maxlength="50"
+                    placeholder="مثال: my-awesome-store"
+                    class="w-full p-3 border border-gray-300 rounded-xl outline-none focus:ring-2 focus:ring-purple-500"
+                >
+
+                <p class="text-xs text-gray-400 mt-2">
+                    استعمل الحروف الإنجليزية والأرقام والشرطة فقط.
+                </p>
+
+            </div>
+
+
+            <!-- CATEGORY -->
+            <div class="mb-8">
+
+                <label for="projectTypeSelect"
+                       class="block font-bold text-gray-800 mb-2">
+                    نوع الموقع
+                </label>
+
+                <select
+                    id="projectTypeSelect"
+                    class="w-full p-3 border border-gray-300 rounded-xl bg-white outline-none focus:ring-2 focus:ring-purple-500">
+
+                    <option value="blogs">📝 المدونات والمقالات</option>
+
+                    <option value="corporate">🏢 مواقع الشركات</option>
+
+                    <option value="ecommerce">🛒 المتاجر الإلكترونية</option>
+
+                    <option value="real-estate">🏠 العقارات</option>
+
+                    <option value="restaurant-demo">🍽️ المطاعم والمقاهي</option>
+
+                </select>
+
+            </div>
+
+
+            <!-- TEMPLATE SELECTION -->
+            <div class="mb-8">
+
+                <div class="flex justify-between items-center mb-4">
+
+                    <h2 class="font-extrabold text-lg">
+                        اختر القالب
+                    </h2>
+
+                    <span id="selectedLabel"
+                          class="text-xs text-purple-700 font-bold">
+                        القالب 1 محدد
+                    </span>
+
+                </div>
+
+
+                <div id="templatesGrid"
+                     class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+
+                    <!-- TEMPLATE 1 -->
+                    <div class="template-card selected border-2 border-gray-200 rounded-xl p-5 text-center"
+                         data-template="template-1">
+
+                        <div class="template-number w-12 h-12 rounded-xl flex items-center justify-center mx-auto text-xl font-extrabold">
+                            1
+                        </div>
+
+                        <h3 class="font-bold mt-3">القالب الأول</h3>
+
+                        <p class="text-xs text-gray-500 mt-1">
+                            تصميم احترافي
+                        </p>
+
+                    </div>
+
+
+                    <!-- TEMPLATE 2 -->
+                    <div class="template-card border-2 border-gray-200 rounded-xl p-5 text-center"
+                         data-template="template-2">
+
+                        <div class="template-number w-12 h-12 rounded-xl flex items-center justify-center mx-auto text-xl font-extrabold">
+                            2
+                        </div>
+
+                        <h3 class="font-bold mt-3">القالب الثاني</h3>
+
+                        <p class="text-xs text-gray-500 mt-1">
+                            تصميم عصري
+                        </p>
+
+                    </div>
+
+
+                    <!-- TEMPLATE 3 -->
+                    <div class="template-card border-2 border-gray-200 rounded-xl p-5 text-center"
+                         data-template="template-3">
+
+                        <div class="template-number w-12 h-12 rounded-xl flex items-center justify-center mx-auto text-xl font-extrabold">
+                            3
+                        </div>
+
+                        <h3 class="font-bold mt-3">القالب الثالث</h3>
+
+                        <p class="text-xs text-gray-500 mt-1">
+                            تصميم أنيق
+                        </p>
+
+                    </div>
+
+
+                    <!-- TEMPLATE 4 -->
+                    <div class="template-card border-2 border-gray-200 rounded-xl p-5 text-center"
+                         data-template="template-4">
+
+                        <div class="template-number w-12 h-12 rounded-xl flex items-center justify-center mx-auto text-xl font-extrabold">
+                            4
+                        </div>
+
+                        <h3 class="font-bold mt-3">القالب الرابع</h3>
+
+                        <p class="text-xs text-gray-500 mt-1">
+                            تصميم متطور
+                        </p>
+
+                    </div>
+
+
+                    <!-- TEMPLATE 5 -->
+                    <div class="template-card border-2 border-gray-200 rounded-xl p-5 text-center"
+                         data-template="template-5">
+
+                        <div class="template-number w-12 h-12 rounded-xl flex items-center justify-center mx-auto text-xl font-extrabold">
+                            5
+                        </div>
+
+                        <h3 class="font-bold mt-3">القالب الخامس</h3>
+
+                        <p class="text-xs text-gray-500 mt-1">
+                            تصميم مميز
+                        </p>
+
+                    </div>
+
+
+                    <!-- TEMPLATE 6 -->
+                    <div class="template-card border-2 border-gray-200 rounded-xl p-5 text-center"
+                         data-template="template-6">
+
+                        <div class="template-number w-12 h-12 rounded-xl flex items-center justify-center mx-auto text-xl font-extrabold">
+                            6
+                        </div>
+
+                        <h3 class="font-bold mt-3">القالب السادس</h3>
+
+                        <p class="text-xs text-gray-500 mt-1">
+                            تصميم إبداعي
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- USER INFO -->
+            <div id="userInfo"
+                 class="hidden bg-purple-50 border border-purple-100 rounded-xl p-4 mb-6">
+
+                <p class="text-sm text-purple-800 font-bold">
+                    المشروع سيتم تسجيله في حسابك.
+                </p>
+
+                <p id="userEmail"
+                   class="text-xs text-purple-600 mt-1"
+                   dir="ltr">
+                </p>
+
+            </div>
+
+
+            <!-- DEPLOY BUTTON -->
+            <button
+                id="deployBtn"
+                type="button"
+                class="w-full bg-purple-600 hover:bg-purple-700 text-white p-4 rounded-xl font-extrabold transition shadow-lg">
+
+                🚀 إنشاء وإطلاق المشروع
+
+            </button>
+
+
+            <!-- STATUS -->
+            <div id="statusMessage"
+                 class="mt-5 text-center text-sm font-bold"
+                 role="status"
+                 aria-live="polite">
+            </div>
+
+
+            <!-- RESULT LINK -->
+            <div id="resultContainer"
+                 class="hidden mt-5 bg-green-50 border border-green-200 rounded-xl p-5 text-center">
+
+                <h3 class="text-green-700 font-extrabold mb-2">
+                    ✅ تم إنشاء المشروع بنجاح
+                </h3>
+
+                <p class="text-gray-600 text-sm mb-4">
+                    يمكنك فتح موقعك من الرابط التالي:
+                </p>
+
+                <a id="resultLink"
+                   href="#"
+                   target="_blank"
+                   rel="noopener noreferrer"
+                   class="inline-block bg-green-600 text-white px-6 py-3 rounded-xl font-bold">
+                    زيارة الموقع 🌐
+                </a>
+
+            </div>
+
         </div>
 
-        <!-- زر الإطلاق -->
-        <button id="deployBtn" class="w-full bg-indigo-600 text-white p-3 rounded-lg font-bold hover:bg-indigo-700 transition">
-            إطلاق وتركيب المشروع 🚀
-        </button>
+    </main>
 
-        <!-- رسالة الحالة -->
-        <div id="statusMessage" class="mt-4 text-center font-semibold"></div>
-    </div>
 
-    <!-- سكربت الربط مع الـ API -->
+    <!-- API CLIENT -->
+    <script src="./client-api.js"></script>
+
+
+    <!-- PAGE SCRIPT -->
     <script>
-        let selectedTemplateId = 'template-1'; // القالب الافتراضي
 
-        // تفعيل اختيار القالب بالضغط عليه
-        document.querySelectorAll('.template-card').forEach(card => {
+        // ==================================
+        // 1. USER AUTHENTICATION
+        // ==================================
+
+        let user = null;
+
+        try {
+            user = JSON.parse(localStorage.getItem('user') || 'null');
+        } catch (error) {
+            user = null;
+        }
+
+        const userId = user && (user.id || user._id);
+
+        if (!user || !userId) {
+
+            alert('يجب تسجيل الدخول أولاً');
+
+            window.location.href = 'login.html';
+
+        }
+
+
+        // ==================================
+        // 2. SELECTED TEMPLATE
+        // ==================================
+
+        let selectedTemplateId = 'template-1';
+
+        const templateCards =
+            document.querySelectorAll('.template-card');
+
+        const selectedLabel =
+            document.getElementById('selectedLabel');
+
+
+        templateCards.forEach(card => {
+
             card.addEventListener('click', () => {
-                document.querySelectorAll('.template-card').forEach(c => c.classList.remove('border-indigo-600', 'bg-indigo-50'));
-                card.classList.add('border-indigo-600', 'bg-indigo-50');
-                selectedTemplateId = card.getAttribute('data-template');
-            });
-        });
 
-        // عملية الإرسال عند النقر على زر الإطلاق
-        document.getElementById('deployBtn').addEventListener('click', async () => {
-            const siteName = document.getElementById('siteNameInput').value.trim();
-            const projectType = document.getElementById('projectTypeSelect').value;
-            const statusDiv = document.getElementById('statusMessage');
-
-            // جلب الـ userId المخزن محلياً عند تسجيل الدخول
-            const user = JSON.parse(localStorage.getItem('user')) || {};
-            const userId = user.id || localStorage.getItem('userId');
-
-            if (!siteName) {
-                statusDiv.className = "mt-4 text-center font-semibold text-red-600";
-                statusDiv.innerText = "⚠️ عذراً، يجب إدخال اسم المشروع أولاً!";
-                return;
-            }
-
-            if (!userId) {
-                statusDiv.className = "mt-4 text-center font-semibold text-red-600";
-                statusDiv.innerText = "⚠️ يرجى تسجيل الدخول أولاً لإطلاق المشروع.";
-                return;
-            }
-
-            statusDiv.className = "mt-4 text-center font-semibold text-blue-600";
-            statusDiv.innerText = "⏳ جاري إنشاء وإطلاق موقعك، يرجى الانتظار...";
-
-            try {
-                const response = await fetch('/api/deploy', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        userId: userId,
-                        siteName: siteName,
-                        templateId: selectedTemplateId,
-                        variables: { projectType: projectType }
-                    })
+                templateCards.forEach(item => {
+                    item.classList.remove('selected');
                 });
 
-                const data = await response.json();
+                card.classList.add('selected');
 
-                if (data.success) {
-                    statusDiv.className = "mt-4 text-center font-semibold text-green-600";
-                    statusDiv.innerHTML = `✅ تم إطلاق الموقع بنجاح! <br><a href="${data.url}" target="_blank" class="underline text-indigo-700">اضغط هنا لزيارة موقعك الحي 🌐</a>`;
-                } else {
-                    statusDiv.className = "mt-4 text-center font-semibold text-red-600";
-                    statusDiv.innerText = "❌ خطأ: " + data.error;
-                }
-            } catch (err) {
-                statusDiv.className = "mt-4 text-center font-semibold text-red-600";
-                statusDiv.innerText = "❌ حدث خطأ في الاتصال بالسيرفر.";
-                console.error(err);
-            }
+                selectedTemplateId =
+                    card.dataset.template;
+
+                selectedLabel.textContent =
+                    'القالب ' +
+                    selectedTemplateId.replace('template-', '') +
+                    ' محدد';
+
+            });
+
         });
+
+
+        // ==================================
+        // 3. USER INFORMATION
+        // ==================================
+
+        if (user && userId) {
+
+            document.getElementById('userInfo')
+                .classList.remove('hidden');
+
+            document.getElementById('userEmail')
+                .textContent =
+                    user.email ||
+                    user.username ||
+                    '';
+
+        }
+
+
+        // ==================================
+        // 4. ELEMENTS
+        // ==================================
+
+        const deployBtn =
+            document.getElementById('deployBtn');
+
+        const statusMessage =
+            document.getElementById('statusMessage');
+
+        const resultContainer =
+            document.getElementById('resultContainer');
+
+        const resultLink =
+            document.getElementById('resultLink');
+
+
+        // ==================================
+        // 5. CREATE PROJECT
+        // ==================================
+
+        deployBtn.addEventListener(
+            'click',
+            async function () {
+
+                const siteName =
+                    document
+                        .getElementById('siteNameInput')
+                        .value
+                        .trim();
+
+                const projectType =
+                    document
+                        .getElementById('projectTypeSelect')
+                        .value;
+
+
+                resultContainer.classList.add('hidden');
+
+
+                // CHECK NAME
+
+                if (!siteName) {
+
+                    showStatus(
+                        'يرجى إدخال اسم المشروع أولاً.',
+                        'error'
+                    );
+
+                    return;
+
+                }
+
+
+                // VALIDATE NAME
+
+                if (!/^[a-zA-Z0-9_-]+$/.test(siteName)) {
+
+                    showStatus(
+                        'اسم المشروع يجب أن يحتوي على حروف إنجليزية أو أرقام أو شرطة فقط.',
+                        'error'
+                    );
+
+                    return;
+
+                }
+
+
+                // CHECK USER
+
+                if (!user || !userId) {
+
+                    showStatus(
+                        'يجب تسجيل الدخول أولاً.',
+                        'error'
+                    );
+
+                    return;
+
+                }
+
+
+                // CHECK API CLIENT
+
+                if (
+                    typeof TemplateCraftAPI === 'undefined' ||
+                    typeof TemplateCraftAPI.deploy !== 'function'
+                ) {
+
+                    showStatus(
+                        'ملف client-api.js غير متصل أو لم يتم تحميله.',
+                        'error'
+                    );
+
+                    return;
+
+                }
+
+
+                // START
+
+                deployBtn.disabled = true;
+
+                deployBtn.textContent =
+                    '⏳ جاري إنشاء المشروع...';
+
+                showStatus(
+                    'جاري الاتصال بالسيرفر وإنشاء موقعك...',
+                    'loading'
+                );
+
+
+                try {
+
+                    // ===============================
+                    // SEND DATA TO LOCAL BACKEND
+                    // ===============================
+
+                    const response =
+                        await fetch(
+                            'http://localhost:3000/api/deploy',
+                            {
+                                method: 'POST',
+
+                                headers: {
+                                    'Content-Type':
+                                        'application/json'
+                                },
+
+                                body: JSON.stringify({
+
+                                    userId: String(userId),
+
+                                    siteName: siteName,
+
+                                    templateId:
+                                        selectedTemplateId,
+
+                                    variables: {
+                                        projectType:
+                                            projectType
+                                    }
+
+                                })
+                            }
+                        );
+
+
+                    // ===============================
+                    // READ RESPONSE SAFELY
+                    // ===============================
+
+                    const contentType =
+                        response.headers.get(
+                            'content-type'
+                        ) || '';
+
+                    let result;
+
+                    if (contentType.includes('application/json')) {
+
+                        result = await response.json();
+
+                    } else {
+
+                        const text =
+                            await response.text();
+
+                        console.error(
+                            'Server returned non-JSON:',
+                            text
+                        );
+
+                        throw new Error(
+                            'السيرفر رجع استجابة غير صحيحة.'
+                        );
+
+                    }
+
+
+                    // ===============================
+                    // CHECK HTTP STATUS
+                    // ===============================
+
+                    if (!response.ok) {
+
+                        throw new Error(
+                            result.error ||
+                            result.message ||
+                            `HTTP ${response.status}`
+                        );
+
+                    }
+
+
+                    // ===============================
+                    // SUCCESS
+                    // ===============================
+
+                    if (
+                        result.success &&
+                        result.url
+                    ) {
+
+                        showStatus(
+                            'تم إنشاء المشروع بنجاح!',
+                            'success'
+                        );
+
+                        resultLink.href =
+                            result.url;
+
+                        resultContainer
+                            .classList
+                            .remove('hidden');
+
+                    } else {
+
+                        showStatus(
+                            result.error ||
+                            'تعذر إنشاء المشروع.',
+                            'error'
+                        );
+
+                    }
+
+
+                } catch (error) {
+
+                    console.error(
+                        'Deploy error:',
+                        error
+                    );
+
+                    showStatus(
+                        error.message ||
+                        'حدث خطأ في الاتصال بالسيرفر. تأكد من تشغيل الباكند.',
+                        'error'
+                    );
+
+                } finally {
+
+                    deployBtn.disabled = false;
+
+                    deployBtn.textContent =
+                        '🚀 إنشاء وإطلاق المشروع';
+
+                }
+
+            }
+        );
+
+
+        // ==================================
+        // 6. STATUS MESSAGE
+        // ==================================
+
+        function showStatus(message, type) {
+
+            statusMessage.textContent =
+                message;
+
+            statusMessage.className =
+                'mt-5 text-center text-sm font-bold';
+
+
+            if (type === 'success') {
+
+                statusMessage.classList.add(
+                    'text-green-600'
+                );
+
+            } else if (type === 'error') {
+
+                statusMessage.classList.add(
+                    'text-red-600'
+                );
+
+            } else {
+
+                statusMessage.classList.add(
+                    'text-blue-600'
+                );
+
+            }
+
+        }
+
     </script>
+
 </body>
 </html>
