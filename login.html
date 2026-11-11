@@ -1,117 +1,444 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>تسجيل الدخول | TemplateCraft Pro</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
-  <style>
-    body { font-family: 'Cairo', sans-serif; }
-    .animated-mesh-bg {
-      background: linear-gradient(-45deg, #0f172a, #2e1065, #4c1d95, #3b0764);
-      background-size: 400% 400%;
-      animation: waveGradient 12s ease infinite;
-    }
-    @keyframes waveGradient {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
-  </style>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>تسجيل الدخول | TemplateCraft Pro</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap"
+        rel="stylesheet"
+    >
+
+    <style>
+
+        body {
+            font-family: 'Cairo', sans-serif;
+        }
+
+        .animated-mesh-bg {
+
+            background:
+                linear-gradient(
+                    -45deg,
+                    #0f172a,
+                    #2e1065,
+                    #4c1d95,
+                    #3b0764
+                );
+
+            background-size: 400% 400%;
+
+            animation:
+                waveGradient 12s ease infinite;
+        }
+
+        @keyframes waveGradient {
+
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+    </style>
+
 </head>
+
+
 <body class="animated-mesh-bg min-h-screen flex items-center justify-center p-4">
 
-  <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-8 relative">
-    
-    <!-- زر العودة للرئيسية -->
-    <a href="index.html" class="absolute top-4 left-4 text-gray-400 hover:text-purple-600 text-sm font-bold flex items-center gap-1">
-      الرئيسية ➔
+
+<div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-8 relative">
+
+
+    <!-- العودة -->
+    <a
+        href="index.html"
+        class="absolute top-4 left-4 text-gray-400 hover:text-purple-600 text-sm font-bold"
+    >
+        الرئيسية ➔
     </a>
 
+
+    <!-- العنوان -->
     <div class="text-center mb-8">
-      <h1 class="text-2xl font-bold text-purple-600 mb-1">TemplateCraft Pro</h1>
-      <p id="page-subtitle" class="text-gray-500 text-sm">سجل دخولك لإدارة مشاريعك وقوالبك الرقمية</p>
+
+        <h1 class="text-2xl font-bold text-purple-600 mb-1">
+            TemplateCraft Pro
+        </h1>
+
+        <p
+            id="page-subtitle"
+            class="text-gray-500 text-sm"
+        >
+            سجل دخولك لإدارة مشاريعك وقوالبك الرقمية
+        </p>
+
     </div>
 
-    <!-- فورم الدخول والتسجيل -->
-    <form id="login-form" onsubmit="handleFormSubmit(event)" class="space-y-4">
-      
-      <div id="name-container" class="hidden">
-        <label class="block text-sm font-bold text-gray-700 mb-1">اسم المستخدم</label>
-        <input type="text" id="username" class="w-full px-4 py-3 border rounded-xl focus:outline-none focus:border-purple-600 bg-gray-50" placeholder="أدخل اسمك الكامل">
-      </div>
 
-      <div>
-        <label class="block text-sm font-bold text-gray-700 mb-1">البريد الإلكتروني</label>
-        <!-- تم تصحيح email5 إلى email -->
-        <input type="email" id="email" required class="w-full px-4 py-3 border rounded-xl focus:outline-none focus:border-purple-600 bg-gray-50" placeholder="name@example.com">
-      </div>
+    <!-- Form -->
+    <form
+        id="login-form"
+        class="space-y-4"
+    >
 
-      <div>
-        <label class="block text-sm font-bold text-gray-700 mb-1">كلمة المرور</label>
-        <input type="password" id="password" required class="w-full px-4 py-3 border rounded-xl focus:outline-none focus:border-purple-600 bg-gray-50" placeholder="••••••••">
-      </div>
 
-      <button type="submit" id="submit-btn" class="w-full bg-purple-600 hover:bg-purple-700 text-white py-3 rounded-xl font-bold transition shadow-lg shadow-purple-600/30">
-        تسجيل الدخول
-      </button>
+        <!-- Username -->
+        <div
+            id="name-container"
+            class="hidden"
+        >
+
+            <label class="block text-sm font-bold text-gray-700 mb-1">
+                اسم المستخدم
+            </label>
+
+            <input
+                type="text"
+                id="username"
+                class="w-full px-4 py-3 border rounded-xl focus:outline-none focus:border-purple-600 bg-gray-50"
+                placeholder="أدخل اسمك"
+            >
+
+        </div>
+
+
+        <!-- Email -->
+        <div>
+
+            <label class="block text-sm font-bold text-gray-700 mb-1">
+                البريد الإلكتروني
+            </label>
+
+            <input
+                type="email"
+                id="email"
+                required
+                autocomplete="email"
+                class="w-full px-4 py-3 border rounded-xl focus:outline-none focus:border-purple-600 bg-gray-50"
+                placeholder="name@example.com"
+            >
+
+        </div>
+
+
+        <!-- Password -->
+        <div>
+
+            <label class="block text-sm font-bold text-gray-700 mb-1">
+                كلمة المرور
+            </label>
+
+            <input
+                type="password"
+                id="password"
+                required
+                minlength="6"
+                autocomplete="current-password"
+                class="w-full px-4 py-3 border rounded-xl focus:outline-none focus:border-purple-600 bg-gray-50"
+                placeholder="••••••••"
+            >
+
+        </div>
+
+
+        <!-- Button -->
+        <button
+            type="submit"
+            id="submit-btn"
+            class="w-full bg-purple-600 hover:bg-purple-700 text-white py-3 rounded-xl font-bold transition"
+        >
+            تسجيل الدخول
+        </button>
+
+
     </form>
 
-    <!-- تبديل الوضع بين Login و Signup -->
+
+    <!-- Toggle -->
     <div class="mt-6 text-center text-sm border-t pt-4">
-      <span id="toggle-text" class="text-gray-500">ليس لديك حساب؟</span>
-      <button type="button" onclick="toggleMode()" class="text-purple-600 font-bold mr-1 hover:underline">إنشاء حساب جديد</button>
+
+        <span
+            id="toggle-text"
+            class="text-gray-500"
+        >
+            ليس لديك حساب؟
+        </span>
+
+        <button
+            type="button"
+            id="toggle-button"
+            class="text-purple-600 font-bold mr-1 hover:underline"
+        >
+            إنشاء حساب جديد
+        </button>
+
     </div>
 
-  </div>
 
-  <!-- استدعاء ملف الإنديكس المركزي للاتصال بالباكند -->
-  <script src="./client-api.js"></script>
-  <script>
+    <!-- Status -->
+    <div
+        id="message"
+        class="mt-5 text-center text-sm font-semibold"
+    ></div>
+
+
+</div>
+
+
+<script src="./client-api.js"></script>
+
+
+<script>
+
     let isSignup = false;
 
-    function toggleMode() {
-      isSignup = !isSignup;
-      const subtitle = document.getElementById('page-subtitle');
-      const nameContainer = document.getElementById('name-container');
-      const submitBtn = document.getElementById('submit-btn');
-      const toggleText = document.getElementById('toggle-text');
 
-      if (isSignup) {
-        subtitle.innerText = 'أنشئ حساباً جديداً وابدأ رحلتك معنا';
-        nameContainer.classList.remove('hidden');
-        submitBtn.innerText = 'إنشاء الحساب والتسجيل';
-        toggleText.innerText = 'لديك حساب بالفعل؟';
-      } else {
-        subtitle.innerText = 'سجل دخولك لإدارة مشاريعك وقوالبك الرقمية';
-        nameContainer.classList.add('hidden');
-        submitBtn.innerText = 'تسجيل الدخول';
-        toggleText.innerText = 'ليس لديك حساب؟';
-      }
-    }
+    const form =
+        document.getElementById('login-form');
 
-    async function handleFormSubmit(event) {
-      event.preventDefault();
-      const email = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
+    const nameContainer =
+        document.getElementById('name-container');
 
-      let result;
-      if (isSignup) {
-        const username = document.getElementById('username').value;
-        result = await TemplateCraftAPI.signup({ username, email, password });
-      } else {
-        result = await TemplateCraftAPI.login({ email, password });
-      }
+    const usernameInput =
+        document.getElementById('username');
 
-      if (result.success) {
-        alert('✅ ' + result.message);
-        localStorage.setItem('user', JSON.stringify(result.user));
-        window.location.href = 'index.html';
-      } else {
-        alert('❌ خطأ: ' + result.error);
-      }
-    }
-  </script>
+    const emailInput =
+        document.getElementById('email');
+
+    const passwordInput =
+        document.getElementById('password');
+
+    const submitButton =
+        document.getElementById('submit-btn');
+
+    const toggleButton =
+        document.getElementById('toggle-button');
+
+    const toggleText =
+        document.getElementById('toggle-text');
+
+    const subtitle =
+        document.getElementById('page-subtitle');
+
+    const message =
+        document.getElementById('message');
+
+
+    // =========================
+    // Toggle Login / Signup
+    // =========================
+
+    toggleButton.addEventListener('click', () => {
+
+        isSignup = !isSignup;
+
+        message.textContent = '';
+
+        if (isSignup) {
+
+            subtitle.textContent =
+                'أنشئ حساباً جديداً وابدأ رحلتك معنا';
+
+            nameContainer.classList.remove('hidden');
+
+            usernameInput.required = true;
+
+            submitButton.textContent =
+                'إنشاء الحساب';
+
+            toggleText.textContent =
+                'لديك حساب بالفعل؟';
+
+            toggleButton.textContent =
+                'تسجيل الدخول';
+
+        } else {
+
+            subtitle.textContent =
+                'سجل دخولك لإدارة مشاريعك وقوالبك الرقمية';
+
+            nameContainer.classList.add('hidden');
+
+            usernameInput.required = false;
+
+            submitButton.textContent =
+                'تسجيل الدخول';
+
+            toggleText.textContent =
+                'ليس لديك حساب؟';
+
+            toggleButton.textContent =
+                'إنشاء حساب جديد';
+        }
+
+    });
+
+
+    // =========================
+    // Form Submit
+    // =========================
+
+    form.addEventListener('submit', async (event) => {
+
+        event.preventDefault();
+
+
+        const email =
+            emailInput.value.trim().toLowerCase();
+
+        const password =
+            passwordInput.value;
+
+
+        submitButton.disabled = true;
+
+        submitButton.textContent =
+            '⏳ جاري الاتصال...';
+
+        message.className =
+            'mt-5 text-center text-sm font-semibold text-blue-600';
+
+        message.textContent =
+            'جاري الاتصال بالسيرفر...';
+
+
+        try {
+
+            let result;
+
+
+            // =========================
+            // Signup
+            // =========================
+
+            if (isSignup) {
+
+                const username =
+                    usernameInput.value.trim();
+
+
+                if (!username) {
+
+                    message.className =
+                        'mt-5 text-center text-sm font-semibold text-red-600';
+
+                    message.textContent =
+                        '⚠️ أدخل اسم المستخدم';
+
+                    return;
+                }
+
+
+                result =
+                    await TemplateCraftAPI.signup({
+
+                        username: username,
+
+                        email: email,
+
+                        password: password
+                    });
+
+
+            }
+
+            // =========================
+            // Login
+            // =========================
+
+            else {
+
+                result =
+                    await TemplateCraftAPI.login({
+
+                        email: email,
+
+                        password: password
+                    });
+
+            }
+
+
+            // =========================
+            // Success
+            // =========================
+
+            if (result.success) {
+
+                localStorage.setItem(
+                    'user',
+                    JSON.stringify(result.user)
+                );
+
+                message.className =
+                    'mt-5 text-center text-sm font-semibold text-green-600';
+
+                message.textContent =
+                    '✅ ' + result.message;
+
+
+                setTimeout(() => {
+
+                    window.location.href =
+                        'profile.html';
+
+                }, 700);
+
+
+            } else {
+
+                message.className =
+                    'mt-5 text-center text-sm font-semibold text-red-600';
+
+                message.textContent =
+                    '❌ ' + (result.error || 'حدث خطأ');
+
+
+            }
+
+
+        } catch (error) {
+
+            console.error(error);
+
+            message.className =
+                'mt-5 text-center text-sm font-semibold text-red-600';
+
+            message.textContent =
+                '❌ تعذر الاتصال بالسيرفر.';
+
+
+        } finally {
+
+            submitButton.disabled = false;
+
+            submitButton.textContent =
+                isSignup
+                    ? 'إنشاء الحساب'
+                    : 'تسجيل الدخول';
+
+        }
+
+    });
+
+</script>
+
 </body>
 </html>

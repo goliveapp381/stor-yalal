@@ -1,74 +1,154 @@
 // ==========================================
-// TemplateCraft Pro - API Client Manager (Index)
+// TemplateCraft Pro - API Client
 // ==========================================
+
+// ⚠️ مؤقتاً للتجربة المحلية من نفس PC
+// من بعد ملي ننشرو Backend غادي نبدلوه إلى رابط HTTPS ديال السيرفر.
 const API_BASE_URL = 'http://localhost:3000';
 
 const TemplateCraftAPI = {
-    
-    // [1] رمز فحص حالة السيرفر والقاعدة: 'status'
+
+    // =========================
+    // Server Status
+    // =========================
     async status() {
         try {
-            const res = await fetch(`${API_BASE_URL}/api/status`);
-            return await res.json();
-        } catch (err) {
-            console.error('❌ خطأ في الاتصال:', err);
-            return { success: false, error: err.message };
+            const response = await fetch(`${API_BASE_URL}/api/status`);
+
+            const data = await response.json();
+
+            return data;
+
+        } catch (error) {
+
+            console.error('❌ Server status error:', error);
+
+            return {
+                success: false,
+                error: 'تعذر الاتصال بالسيرفر'
+            };
         }
     },
 
-    // [2] رمز تسجيل حساب جديد: 'signup'
+
+    // =========================
+    // Signup
+    // =========================
     async signup(userData) {
         try {
-            const res = await fetch(`${API_BASE_URL}/api/signup`, {
+
+            const response = await fetch(`${API_BASE_URL}/api/signup`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+
                 body: JSON.stringify(userData)
             });
-            return await res.json();
-        } catch (err) {
-            console.error('❌ خطأ في التسجيل:', err);
-            return { success: false, error: err.message };
+
+            const data = await response.json();
+
+            return data;
+
+        } catch (error) {
+
+            console.error('❌ Signup connection error:', error);
+
+            return {
+                success: false,
+                error: 'تعذر الاتصال بالسيرفر. تأكد أن Backend شغال.'
+            };
         }
     },
 
-    // [3] رمز تسجيل الدخول: 'login'
+
+    // =========================
+    // Login
+    // =========================
     async login(credentials) {
         try {
-            const res = await fetch(`${API_BASE_URL}/api/login`, {
+
+            const response = await fetch(`${API_BASE_URL}/api/login`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+
                 body: JSON.stringify(credentials)
             });
-            return await res.json();
-        } catch (err) {
-            console.error('❌ خطأ في تسجيل الدخول:', err);
-            return { success: false, error: err.message };
+
+            const data = await response.json();
+
+            return data;
+
+        } catch (error) {
+
+            console.error('❌ Login connection error:', error);
+
+            return {
+                success: false,
+                error: 'تعذر الاتصال بالسيرفر. تأكد من رابط Backend.'
+            };
         }
     },
 
-    // [4] رمز نشر أو حفظ الموقع: 'deploy'
+
+    // =========================
+    // Deploy
+    // =========================
     async deploy(siteData) {
         try {
-            const res = await fetch(`${API_BASE_URL}/api/deploy`, {
+
+            const response = await fetch(`${API_BASE_URL}/api/deploy`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+
                 body: JSON.stringify(siteData)
             });
-            return await res.json();
-        } catch (err) {
-            console.error('❌ خطأ في النشر:', err);
-            return { success: false, error: err.message };
+
+            const data = await response.json();
+
+            return data;
+
+        } catch (error) {
+
+            console.error('❌ Deploy connection error:', error);
+
+            return {
+                success: false,
+                error: 'تعذر الاتصال بالسيرفر.'
+            };
         }
     },
 
-    // [5] رمز جلب مواقع المستخدم: 'getSites'
+
+    // =========================
+    // Get User Sites
+    // =========================
     async getSites(userId) {
         try {
-            const res = await fetch(`${API_BASE_URL}/api/sites/${userId}`);
-            return await res.json();
-        } catch (err) {
-            console.error('❌ خطأ في الجلب:', err);
-            return { success: false, error: err.message };
+
+            const response = await fetch(
+                `${API_BASE_URL}/api/sites/${encodeURIComponent(userId)}`
+            );
+
+            const data = await response.json();
+
+            return data;
+
+        } catch (error) {
+
+            console.error('❌ Get sites error:', error);
+
+            return {
+                success: false,
+                error: 'تعذر جلب المواقع من السيرفر.'
+            };
         }
     }
 };

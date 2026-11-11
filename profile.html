@@ -1,127 +1,386 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>لوحة التحكم ومشاريعي | TemplateCraft Pro</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
-  <style>
-    body { font-family: 'Cairo', sans-serif; }
-  </style>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        لوحة التحكم | TemplateCraft Pro
+    </title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap"
+        rel="stylesheet"
+    >
+
+    <style>
+
+        body {
+            font-family: 'Cairo', sans-serif;
+        }
+
+    </style>
+
 </head>
-<body class="bg-gray-50 text-gray-800 min-h-screen flex flex-col justify-between">
 
-  <!-- Header -->
-  <header class="bg-white border-b sticky top-0 z-50">
-    <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-      <div class="flex items-center gap-3">
-        <h1 class="text-xl font-bold text-purple-600">TemplateCraft Pro</h1>
-        <span class="text-xs bg-purple-100 text-purple-700 px-2.5 py-1 rounded-full font-bold">لوحة التحكم</span>
-      </div>
-      <div class="flex items-center gap-4">
-        <span id="user-welcome" class="text-sm font-bold text-gray-700">مرحباً، المستخدم</span>
-        <a href="create-project.html" class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-xl text-sm font-bold transition shadow-md shadow-purple-600/20">
-          + إنشاء مشروع جديد
-        </a>
-        <button onclick="logout()" class="text-red-500 hover:bg-red-50 px-3 py-2 rounded-xl text-sm font-bold transition">
-          خروج
-        </button>
-      </div>
-    </div>
-  </header>
 
-  <!-- Main Content -->
-  <main class="max-w-7xl mx-auto px-6 py-10 w-full flex-grow">
-    
-    <div class="mb-8 flex justify-between items-center border-b pb-4">
-      <div>
-        <h2 class="text-2xl font-bold text-gray-900">مشاريعي المنشورة 🚀</h2>
-        <p class="text-gray-500 text-sm mt-1">إدارة ومتابعة جميع المواقع التي قمت بإطلاقها عبر المنصة.</p>
-      </div>
-      <a href="index.html" class="text-purple-600 text-sm font-bold hover:underline">← العودة للرئيسية</a>
-    </div>
+<body class="bg-gray-50 text-gray-800 min-h-screen">
 
-    <!-- Sites Grid Container -->
-    <div id="sites-grid" class="grid grid-cols-1 md:grid-cols-3 gap-6">
-      <!-- يتم جلب وعرض المواقع هنا أوتوماتيكياً -->
-      <div class="col-span-3 text-center py-16 text-gray-400">
-        جاري تحميل مشاريعك...
-      </div>
-    </div>
 
-  </main>
+<header class="bg-white border-b sticky top-0 z-50">
 
-  <!-- Footer -->
-  <footer class="bg-white border-t py-6 text-center text-gray-400 text-sm">
-    جميع الحقوق محفوظة © 2026 - TemplateCraft Pro
-  </footer>
+    <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center gap-4">
 
-  <!-- استدعاء ملف الـ API -->
-  <script src="./client-api.js"></script>
-  <script>
-    // التحقق من تسجيل الدخول عند تحميل الصفحة
-    const storedUser = localStorage.getItem('user');
-    if (!storedUser) {
-      alert('❌ يجب تسجيل الدخول أولاً!');
-      window.location.href = 'login.html';
-    }
+        <div>
 
-    const user = JSON.parse(storedUser);
-    document.getElementById('user-welcome').innerText = `مرحباً، ${user.username || user.email}`;
+            <h1 class="text-xl font-bold text-purple-600">
+                TemplateCraft Pro
+            </h1>
 
-    // جلب وعرض المواقع الخاصة بالمستخدم من السيرفر
-    async function loadUserSites() {
-      const grid = document.getElementById('sites-grid');
-      const userId = user.id || user.username;
+            <span class="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded-full font-bold">
+                لوحة التحكم
+            </span>
 
-      const result = await TemplateCraftAPI.getSites(userId);
+        </div>
 
-      if (!result.success || !result.sites || result.sites.length === 0) {
-        grid.innerHTML = `
-          <div class="col-span-3 bg-white p-12 rounded-2xl border text-center shadow-sm">
-            <p class="text-gray-500 font-semibold mb-4">ليس لديك أي مشروع منشور حتى الآن!</p>
-            <a href="create-project.html" class="inline-block bg-purple-600 text-white px-6 py-2.5 rounded-xl text-sm font-bold shadow-md hover:bg-purple-700 transition">
-              أطلق مشروعك الأول الآن 🚀
+
+        <div class="flex items-center gap-3 flex-wrap">
+
+            <span
+                id="user-welcome"
+                class="text-sm font-bold"
+            >
+                مرحباً
+            </span>
+
+            <a
+                href="create-project.html"
+                class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-xl text-sm font-bold"
+            >
+                + مشروع جديد
             </a>
-          </div>
-        `;
-        return;
-      }
 
-      grid.innerHTML = '';
-      result.sites.forEach(site => {
-        const createdDate = new Date(site.createdAt).toLocaleDateString('ar-EG');
-        grid.innerHTML += `
-          <div class="bg-white p-6 rounded-2xl border shadow-sm hover:shadow-md transition flex flex-col justify-between">
-            <div>
-              <div class="flex justify-between items-start mb-3">
-                <h3 class="font-bold text-lg text-gray-900">${site.siteName}</h3>
-                <span class="text-xs bg-blue-50 text-blue-700 px-2.5 py-1 rounded-md font-bold">${site.templateId}</span>
-              </div>
-              <p class="text-gray-400 text-xs mb-4">تاريخ الإنشاء: ${createdDate}</p>
-              <div class="bg-gray-50 p-2.5 rounded-xl border text-xs text-gray-600 font-mono truncate mb-4" dir="ltr">
-                ${site.liveUrl}
-              </div>
-            </div>
-            <div class="flex gap-2">
-              <a href="${site.liveUrl}" target="_blank" class="flex-1 text-center bg-purple-600 hover:bg-purple-700 text-white py-2 rounded-xl text-sm font-bold transition shadow-sm">
-                زيارة الموقع ↗
-              </a>
-            </div>
-          </div>
-        `;
-      });
+            <button
+                id="logout-button"
+                class="text-red-500 hover:bg-red-50 px-3 py-2 rounded-xl text-sm font-bold"
+            >
+                خروج
+            </button>
+
+        </div>
+
+    </div>
+
+</header>
+
+
+<main class="max-w-7xl mx-auto px-6 py-10 w-full">
+
+
+    <div class="mb-8 flex justify-between items-center border-b pb-4">
+
+        <div>
+
+            <h2 class="text-2xl font-bold text-gray-900">
+                مشاريعي 🚀
+            </h2>
+
+            <p class="text-gray-500 text-sm mt-1">
+                جميع المواقع المرتبطة بحسابك.
+            </p>
+
+        </div>
+
+
+        <a
+            href="index.html"
+            class="text-purple-600 text-sm font-bold"
+        >
+            ← الرئيسية
+        </a>
+
+    </div>
+
+
+    <div
+        id="sites-grid"
+        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+    >
+
+        <div class="col-span-full text-center py-16 text-gray-400">
+            ⏳ جاري تحميل مشاريعك...
+        </div>
+
+    </div>
+
+
+</main>
+
+
+<footer class="bg-white border-t py-6 text-center text-gray-400 text-sm">
+
+    جميع الحقوق محفوظة © 2026 - TemplateCraft Pro
+
+</footer>
+
+
+<script src="./client-api.js"></script>
+
+
+<script>
+
+    const storedUser =
+        localStorage.getItem('user');
+
+
+    // =========================
+    // Login Check
+    // =========================
+
+    if (!storedUser) {
+
+        window.location.href =
+            'login.html';
+
     }
 
-    function logout() {
-      localStorage.removeItem('user');
-      window.location.href = 'login.html';
+
+    let user;
+
+    try {
+
+        user =
+            JSON.parse(storedUser);
+
+    } catch (error) {
+
+        localStorage.removeItem('user');
+
+        window.location.href =
+            'login.html';
+
     }
 
-    // تشغيل الدالة عند تحميل الصفحة
+
+    const userWelcome =
+        document.getElementById('user-welcome');
+
+    userWelcome.textContent =
+        `مرحباً، ${user.username || user.email}`;
+
+
+    // =========================
+    // Load Sites
+    // =========================
+
+    async function loadUserSites() {
+
+        const grid =
+            document.getElementById('sites-grid');
+
+
+        const userId =
+            user.id;
+
+
+        if (!userId) {
+
+            grid.innerHTML = `
+                <div class="col-span-full bg-white p-10 rounded-2xl border text-center">
+                    <p class="text-red-500 font-bold">
+                        ❌ معرف المستخدم غير موجود.
+                    </p>
+                </div>
+            `;
+
+            return;
+        }
+
+
+        const result =
+            await TemplateCraftAPI.getSites(userId);
+
+
+        if (!result.success) {
+
+            grid.innerHTML = `
+                <div class="col-span-full bg-white p-10 rounded-2xl border text-center">
+                    <p class="text-red-500 font-bold mb-3">
+                        ❌ ${result.error || 'تعذر جلب المشاريع'}
+                    </p>
+
+                    <button
+                        onclick="loadUserSites()"
+                        class="bg-purple-600 text-white px-5 py-2 rounded-xl"
+                    >
+                        إعادة المحاولة
+                    </button>
+                </div>
+            `;
+
+            return;
+        }
+
+
+        if (!result.sites || result.sites.length === 0) {
+
+            grid.innerHTML = `
+                <div class="col-span-full bg-white p-12 rounded-2xl border text-center">
+
+                    <p class="text-gray-500 font-semibold mb-4">
+                        ليس لديك أي مشروع حتى الآن.
+                    </p>
+
+                    <a
+                        href="create-project.html"
+                        class="inline-block bg-purple-600 text-white px-6 py-3 rounded-xl font-bold"
+                    >
+                        إنشاء أول مشروع 🚀
+                    </a>
+
+                </div>
+            `;
+
+            return;
+        }
+
+
+        grid.innerHTML = '';
+
+
+        result.sites.forEach(site => {
+
+            const date =
+                site.createdAt
+                    ? new Date(site.createdAt).toLocaleDateString('ar-MA')
+                    : '-';
+
+
+            const projectType =
+                site.variables &&
+                site.variables.projectType
+                    ? site.variables.projectType
+                    : 'غير محدد';
+
+
+            const card =
+                document.createElement('div');
+
+
+            card.className =
+                'bg-white p-6 rounded-2xl border shadow-sm hover:shadow-md transition flex flex-col justify-between';
+
+
+            card.innerHTML = `
+
+                <div>
+
+                    <div class="flex justify-between items-start gap-3 mb-4">
+
+                        <h3 class="font-bold text-lg text-gray-900 break-words">
+                            ${escapeHtml(site.siteName)}
+                        </h3>
+
+                        <span class="text-xs bg-purple-50 text-purple-700 px-2.5 py-1 rounded-md font-bold whitespace-nowrap">
+                            ${escapeHtml(site.templateId)}
+                        </span>
+
+                    </div>
+
+
+                    <div class="text-sm text-gray-500 mb-2">
+                        الصنف:
+                        <strong>
+                            ${escapeHtml(projectType)}
+                        </strong>
+                    </div>
+
+
+                    <div class="text-xs text-gray-400 mb-4">
+                        تاريخ الإنشاء:
+                        ${date}
+                    </div>
+
+
+                    <div
+                        class="bg-gray-50 p-3 rounded-xl border text-xs text-gray-600 font-mono truncate mb-4"
+                        dir="ltr"
+                    >
+                        ${escapeHtml(site.liveUrl || '')}
+                    </div>
+
+                </div>
+
+
+                <a
+                    href="${escapeAttribute(site.liveUrl || '#')}"
+                    target="_blank"
+                    rel="noopener"
+                    class="block text-center bg-purple-600 hover:bg-purple-700 text-white py-2.5 rounded-xl text-sm font-bold"
+                >
+                    زيارة الموقع ↗
+                </a>
+
+            `;
+
+
+            grid.appendChild(card);
+
+        });
+
+    }
+
+
+    // =========================
+    // Security Helpers
+    // =========================
+
+    function escapeHtml(value) {
+
+        return String(value)
+            .replaceAll('&', '&amp;')
+            .replaceAll('<', '&lt;')
+            .replaceAll('>', '&gt;')
+            .replaceAll('"', '&quot;')
+            .replaceAll("'", '&#039;');
+
+    }
+
+
+    function escapeAttribute(value) {
+
+        return escapeHtml(value);
+
+    }
+
+
+    // =========================
+    // Logout
+    // =========================
+
+    document
+        .getElementById('logout-button')
+        .addEventListener('click', () => {
+
+            localStorage.removeItem('user');
+
+            window.location.href =
+                'login.html';
+
+        });
+
+
     loadUserSites();
-  </script>
+
+</script>
 
 </body>
 </html>
