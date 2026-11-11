@@ -3,14 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>محرر المشاريع | TemplateCraft Pro</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
+
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
 
     <style>
         * { box-sizing: border-box; }
-        body { font-family: 'Cairo', sans-serif; }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+        }
 
         .editor-layout {
             display: grid;
@@ -50,7 +55,11 @@
         }
 
         .tool-button:hover { opacity: .85; }
-        .tool-button:disabled { opacity: .5; cursor: not-allowed; }
+
+        .tool-button:disabled {
+            opacity: .5;
+            cursor: not-allowed;
+        }
 
         .tab-button.active {
             color: #9333ea;
@@ -75,8 +84,13 @@
                 height: auto;
             }
 
-            .preview-container { height: 65vh; }
-            .editor-sidebar { max-height: none; }
+            .preview-container {
+                height: 65vh;
+            }
+
+            .editor-sidebar {
+                max-height: none;
+            }
         }
     </style>
 </head>
@@ -84,9 +98,14 @@
 <body class="bg-gray-100 text-gray-800 min-h-screen">
 
 <header class="min-h-[72px] bg-white border-b flex items-center justify-between px-4 md:px-6 gap-3 sticky top-0 z-50">
+
     <div class="flex items-center gap-3">
-        <a href="profile.html" class="text-gray-500 hover:text-purple-600 text-sm font-bold">← المشاريع</a>
+        <a href="profile.html" class="text-gray-500 hover:text-purple-600 text-sm font-bold">
+            ← المشاريع
+        </a>
+
         <div class="hidden sm:block border-r h-8"></div>
+
         <div>
             <h1 class="font-bold text-purple-600">TemplateCraft Pro</h1>
             <p class="text-xs text-gray-400">محرر المواقع</p>
@@ -94,170 +113,370 @@
     </div>
 
     <div class="flex items-center gap-2">
-        <span id="save-status" class="hidden sm:inline text-xs text-gray-400">جاهز</span>
-        <button id="preview-button" type="button" class="tool-button bg-gray-100 text-gray-700">👁️ معاينة</button>
-        <button id="save-button" type="button" class="tool-button bg-purple-600 text-white">💾 حفظ التعديلات</button>
+        <span id="save-status" class="hidden sm:inline text-xs text-gray-400">
+            جاهز
+        </span>
+
+        <button id="preview-button" type="button"
+                class="tool-button bg-gray-100 text-gray-700">
+            👁️ معاينة
+        </button>
+
+        <button id="save-button" type="button"
+                class="tool-button bg-purple-600 text-white">
+            💾 حفظ التعديلات
+        </button>
     </div>
+
 </header>
 
 <main class="editor-layout">
 
+    <!-- PREVIEW -->
+
     <section class="preview-container flex flex-col min-w-0">
+
         <div class="bg-white border-b px-4 py-3 flex items-center justify-between gap-3">
+
             <div class="flex items-center gap-2 min-w-0">
                 <span class="w-2 h-2 bg-green-500 rounded-full"></span>
-                <span id="project-title" class="font-bold text-sm truncate">جاري تحميل المشروع...</span>
+
+                <span id="project-title" class="font-bold text-sm truncate">
+                    جاري تحميل المشروع...
+                </span>
             </div>
 
             <div class="flex items-center gap-2">
-                <button id="reload-preview" type="button" class="tool-button bg-gray-100 text-gray-600">↻ تحديث</button>
-                <button id="desktop-preview" type="button" class="tool-button bg-purple-50 text-purple-700">💻 سطح المكتب</button>
+
+                <button id="reload-preview" type="button"
+                        class="tool-button bg-gray-100 text-gray-600">
+                    ↻ تحديث
+                </button>
+
+                <button id="desktop-preview" type="button"
+                        class="tool-button bg-purple-50 text-purple-700">
+                    💻 سطح المكتب
+                </button>
+
             </div>
+
         </div>
 
         <div class="flex-1 min-h-0 bg-gray-200 p-2 md:p-4">
+
             <div class="bg-white rounded-xl overflow-hidden shadow-sm w-full h-full">
+
                 <iframe
                     id="site-frame"
                     class="preview-frame"
                     title="معاينة المشروع"
                     sandbox="allow-scripts allow-same-origin allow-forms allow-popups">
                 </iframe>
+
             </div>
+
         </div>
+
     </section>
+
+
+    <!-- SIDEBAR -->
 
     <aside class="editor-sidebar bg-white border-r overflow-y-auto">
 
         <div class="p-5 border-b">
             <h2 class="font-bold text-lg">إعدادات المشروع</h2>
-            <p class="text-xs text-gray-400 mt-1">تحكم في محتوى وتصميم موقعك</p>
+
+            <p class="text-xs text-gray-400 mt-1">
+                تحكم في محتوى وتصميم موقعك
+            </p>
         </div>
+
+
+        <!-- PROJECT NAME -->
 
         <div class="p-5 border-b">
-            <label class="block text-sm font-bold mb-2">اسم المشروع</label>
-            <input id="project-name" type="text" class="panel-input" placeholder="اسم الموقع">
+
+            <label class="block text-sm font-bold mb-2">
+                اسم المشروع
+            </label>
+
+            <input
+                id="project-name"
+                type="text"
+                class="panel-input"
+                placeholder="اسم الموقع">
+
         </div>
+
+
+        <!-- TABS -->
 
         <div class="flex border-b">
-            <button class="tab-button active flex-1 py-3 text-sm font-bold" data-tab="element" type="button">العنصر</button>
-            <button class="tab-button flex-1 py-3 text-sm font-bold" data-tab="files" type="button">الملفات</button>
-            <button class="tab-button flex-1 py-3 text-sm font-bold" data-tab="code" type="button">الكود</button>
+
+            <button class="tab-button active flex-1 py-3 text-sm font-bold"
+                    data-tab="element" type="button">
+                العنصر
+            </button>
+
+            <button class="tab-button flex-1 py-3 text-sm font-bold"
+                    data-tab="files" type="button">
+                الملفات
+            </button>
+
+            <button class="tab-button flex-1 py-3 text-sm font-bold"
+                    data-tab="code" type="button">
+                الكود
+            </button>
+
         </div>
 
+
+        <!-- ELEMENT TAB -->
+
         <section id="element-tab" class="tab-content p-5">
+
             <div class="bg-purple-50 rounded-xl p-4 mb-5">
-                <p class="text-sm font-bold text-purple-700">🎯 تعديل العنصر</p>
-                <p id="selected-element" class="text-xs text-purple-500 mt-1">اختر عنصراً من معاينة الموقع</p>
+
+                <p class="text-sm font-bold text-purple-700">
+                    🎯 تعديل العنصر
+                </p>
+
+                <p id="selected-element" class="text-xs text-purple-500 mt-1">
+                    اختر عنصراً من معاينة الموقع
+                </p>
+
             </div>
 
             <div class="space-y-4">
-                <div>
-                    <label class="block text-sm font-bold mb-2">النص</label>
-                    <textarea id="element-text" rows="4" class="panel-input" placeholder="النص الذي تريد تغييره..."></textarea>
-                </div>
 
                 <div>
-                    <label class="block text-sm font-bold mb-2">رابط الصورة</label>
-                    <input id="element-image" type="url" class="panel-input" placeholder="https://example.com/image.jpg" dir="ltr">
+                    <label class="block text-sm font-bold mb-2">
+                        النص
+                    </label>
+
+                    <textarea
+                        id="element-text"
+                        rows="4"
+                        class="panel-input"
+                        placeholder="النص الذي تريد تغييره...">
+                    </textarea>
                 </div>
+
 
                 <div>
-                    <label class="block text-sm font-bold mb-2">رابط الانتقال</label>
-                    <input id="element-link" type="text" class="panel-input" placeholder="https://example.com" dir="ltr">
+                    <label class="block text-sm font-bold mb-2">
+                        رابط الصورة
+                    </label>
+
+                    <input
+                        id="element-image"
+                        type="url"
+                        class="panel-input"
+                        placeholder="https://example.com/image.jpg"
+                        dir="ltr">
                 </div>
+
 
                 <div>
-                    <label class="block text-sm font-bold mb-2">لون النص</label>
-                    <input id="element-color" type="color" value="#333333" class="w-full h-10 border rounded-lg p-1">
+                    <label class="block text-sm font-bold mb-2">
+                        رابط الانتقال
+                    </label>
+
+                    <input
+                        id="element-link"
+                        type="text"
+                        class="panel-input"
+                        placeholder="https://example.com"
+                        dir="ltr">
                 </div>
+
 
                 <div>
-                    <label class="block text-sm font-bold mb-2">حجم الخط</label>
-                    <input id="element-size" type="number" min="8" max="100" value="16" class="panel-input" dir="ltr">
+                    <label class="block text-sm font-bold mb-2">
+                        لون النص
+                    </label>
+
+                    <input
+                        id="element-color"
+                        type="color"
+                        value="#333333"
+                        class="w-full h-10 border rounded-lg p-1">
                 </div>
 
-                <button id="apply-element" type="button" class="w-full bg-purple-600 hover:bg-purple-700 text-white py-3 rounded-xl font-bold text-sm">
+
+                <div>
+                    <label class="block text-sm font-bold mb-2">
+                        حجم الخط
+                    </label>
+
+                    <input
+                        id="element-size"
+                        type="number"
+                        min="8"
+                        max="100"
+                        value="16"
+                        class="panel-input"
+                        dir="ltr">
+                </div>
+
+
+                <button
+                    id="apply-element"
+                    type="button"
+                    class="w-full bg-purple-600 hover:bg-purple-700 text-white py-3 rounded-xl font-bold text-sm">
+
                     تطبيق التعديلات
+
                 </button>
 
+
                 <p class="text-xs text-gray-400 text-center leading-6">
-                    تطبيق التعديلات يغيّر المعاينة مؤقتاً. لحفظ التغييرات بشكل دائم، استعمل محرر الملفات.
+                    التعديلات البصرية تظهر في المعاينة مؤقتاً.
+                    لحفظها بشكل دائم، استعمل محرر الملفات.
                 </p>
+
             </div>
+
         </section>
+
+
+        <!-- FILES TAB -->
 
         <section id="files-tab" class="tab-content hidden p-5">
-            <h3 class="font-bold text-sm mb-3">ملفات المشروع</h3>
+
+            <h3 class="font-bold text-sm mb-3">
+                ملفات المشروع
+            </h3>
+
             <div id="files-list" class="space-y-2 text-sm">
-                <p class="text-gray-400 text-xs">جاري تحميل الملفات...</p>
+
+                <p class="text-gray-400 text-xs">
+                    جاري تحميل الملفات...
+                </p>
+
             </div>
+
         </section>
+
+
+        <!-- CODE TAB -->
 
         <section id="code-tab" class="tab-content hidden p-5">
-            <h3 class="font-bold text-sm mb-3">محرر الملفات</h3>
-            <p id="current-file" class="text-xs text-purple-600 mb-3">لم يتم اختيار ملف</p>
 
-            <textarea id="code-editor" class="panel-input" spellcheck="false" placeholder="اختر ملف HTML أو CSS أو JavaScript من قائمة الملفات..."></textarea>
+            <h3 class="font-bold text-sm mb-3">
+                محرر الملفات
+            </h3>
 
-            <button id="save-file-button" type="button" class="w-full mt-3 bg-purple-600 hover:bg-purple-700 text-white py-3 rounded-xl font-bold text-sm">
+            <p id="current-file" class="text-xs text-purple-600 mb-3">
+                لم يتم اختيار ملف
+            </p>
+
+            <textarea
+                id="code-editor"
+                class="panel-input"
+                spellcheck="false"
+                placeholder="اختر ملف HTML أو CSS أو JavaScript من قائمة الملفات...">
+            </textarea>
+
+            <button
+                id="save-file-button"
+                type="button"
+                class="w-full mt-3 bg-purple-600 hover:bg-purple-700 text-white py-3 rounded-xl font-bold text-sm">
+
                 💾 حفظ الملف
+
             </button>
+
         </section>
 
+
+        <!-- FOOTER INFO -->
+
         <div class="p-5 border-t bg-gray-50">
+
             <p class="text-xs text-gray-500 leading-7">
-                💡 اختر ملفاً من قائمة الملفات لتعديل HTML وCSS وJavaScript. بعد الحفظ، اضغط على معاينة لمشاهدة التغييرات.
+                💡 اختر ملفاً من قائمة الملفات لتعديل HTML وCSS وJavaScript.
+                بعد الحفظ، اضغط على معاينة لمشاهدة التغييرات.
             </p>
+
             <p class="text-xs text-orange-600 leading-6 mt-2">
-                ⚠️ الحفظ لا يعني نشر الموقع على الإنترنت. النشر الحقيقي سنضيفه بشكل منفصل.
+                ⚠️ الحفظ لا يعني نشر الموقع على الإنترنت.
+                النشر الحقيقي سنضيفه بشكل منفصل.
             </p>
+
         </div>
+
     </aside>
+
 </main>
 
-<div id="notification" role="status" aria-live="polite"
-     class="fixed bottom-5 left-5 hidden bg-gray-900 text-white px-5 py-3 rounded-xl shadow-lg text-sm z-[100] max-w-[90vw]">
+
+<!-- NOTIFICATION -->
+
+<div
+    id="notification"
+    role="status"
+    aria-live="polite"
+    class="fixed bottom-5 left-5 hidden bg-gray-900 text-white px-5 py-3 rounded-xl shadow-lg text-sm z-[100] max-w-[90vw]">
 </div>
 
+
 <script src="./client-api.js"></script>
+
 
 <script>
 'use strict';
 
+
 // ==========================================
-// CONFIGURATION
+// 1. CONFIGURATION
 // ==========================================
 
-// اسم مستقل لتجنب التعارض مع client-api.js
-const EDITOR_API_BASE_URL =
-    window.TEMPLATECRAFT_API_URL || 'http://localhost:3000';
+// رابط Backend الحقيقي على Render
+const EDITOR_API_BASE_URL = (
+    window.TEMPLATECRAFT_API_URL ||
+    'https://templatecraft-backend.onrender.com'
+).replace(/\/+$/, '');
 
 const params = new URLSearchParams(window.location.search);
+
 const siteId = params.get('siteId');
+
 const storedUser = localStorage.getItem('user');
 
 let user = null;
 let currentSite = null;
 let projectFiles = [];
 let currentFile = null;
+
 let selectedElement = null;
+
 let notificationTimer = null;
 let isSaving = false;
+let frameReady = false;
+let expectedFrameOrigin = null;
+
 
 // ==========================================
-// ELEMENTS
+// 2. ELEMENTS
 // ==========================================
 
 const frame = document.getElementById('site-frame');
+
 const notification = document.getElementById('notification');
+
 const saveStatus = document.getElementById('save-status');
+
 const codeEditor = document.getElementById('code-editor');
+
 const saveButton = document.getElementById('save-button');
+
 const saveFileButton = document.getElementById('save-file-button');
 
+
 // ==========================================
-// AUTHENTICATION
+// 3. AUTHENTICATION
 // ==========================================
 
 try {
@@ -277,15 +496,24 @@ if (!siteId) {
     window.location.href = 'profile.html';
 }
 
+
 // ==========================================
-// NOTIFICATIONS
+// 4. NOTIFICATIONS
 // ==========================================
 
 function showNotification(message, success = true) {
+
     notification.textContent = message;
 
-    notification.classList.remove('hidden', 'bg-red-600', 'bg-gray-900');
-    notification.classList.add(success ? 'bg-gray-900' : 'bg-red-600');
+    notification.classList.remove(
+        'hidden',
+        'bg-red-600',
+        'bg-gray-900'
+    );
+
+    notification.classList.add(
+        success ? 'bg-gray-900' : 'bg-red-600'
+    );
 
     clearTimeout(notificationTimer);
 
@@ -294,15 +522,18 @@ function showNotification(message, success = true) {
     }, 3500);
 }
 
+
 function setSaveStatus(message) {
     saveStatus.textContent = message;
 }
 
+
 // ==========================================
-// API CHECK
+// 5. API CHECK
 // ==========================================
 
 function checkAPI() {
+
     if (typeof TemplateCraftAPI === 'undefined') {
         throw new Error('ملف client-api.js غير محمل');
     }
@@ -315,17 +546,23 @@ function checkAPI() {
     ];
 
     for (const method of requiredMethods) {
+
         if (typeof TemplateCraftAPI[method] !== 'function') {
-            throw new Error(`الدالة ${method} غير موجودة في client-api.js`);
+            throw new Error(
+                `الدالة ${method} غير موجودة في client-api.js`
+            );
         }
+
     }
 }
 
+
 // ==========================================
-// PREVIEW URL
+// 6. PREVIEW URL
 // ==========================================
 
 function getPreviewUrl() {
+
     if (!currentSite) {
         throw new Error('المشروع غير محمل');
     }
@@ -344,24 +581,227 @@ function getPreviewUrl() {
     return parsed.href;
 }
 
-function refreshPreview(showMessage = false) {
-    try {
-        frame.src = getPreviewUrl();
-
-        if (showMessage) {
-            showNotification('تم تحديث المعاينة');
-        }
-    } catch (error) {
-        showNotification(error.message, false);
-    }
-}
 
 // ==========================================
-// LOAD PROJECT
+// 7. EDITOR BRIDGE COMMUNICATION
+// ==========================================
+
+function getFrameOrigin() {
+
+    try {
+
+        const previewUrl = getPreviewUrl();
+
+        return new URL(previewUrl).origin;
+
+    } catch (error) {
+
+        return null;
+
+    }
+
+}
+
+
+function sendMessageToFrame(type, data = {}) {
+
+    if (!frame.contentWindow) {
+        return false;
+    }
+
+    const origin = expectedFrameOrigin || getFrameOrigin();
+
+    if (!origin) {
+        return false;
+    }
+
+    frame.contentWindow.postMessage(
+        {
+            source: 'templatecraft-editor',
+            type,
+            ...data
+        },
+        origin
+    );
+
+    return true;
+}
+
+
+function enableVisualEditor() {
+
+    if (!frame.contentWindow) return;
+
+    expectedFrameOrigin = getFrameOrigin();
+
+    if (!expectedFrameOrigin) return;
+
+    frameReady = true;
+
+    sendMessageToFrame('SET_EDIT_MODE', {
+        enabled: true
+    });
+
+    console.log('TemplateCraft Editor Bridge: enabled');
+
+}
+
+
+function disableVisualEditor() {
+
+    sendMessageToFrame('SET_EDIT_MODE', {
+        enabled: false
+    });
+
+    frameReady = false;
+
+}
+
+
+// ==========================================
+// 8. RECEIVE MESSAGES FROM IFRAME
+// ==========================================
+
+window.addEventListener('message', function(event) {
+
+    // قبول الرسائل فقط من iframe الخاص بالمشروع
+    if (event.source !== frame.contentWindow) {
+        return;
+    }
+
+    const expectedOrigin = expectedFrameOrigin || getFrameOrigin();
+
+    if (!expectedOrigin || event.origin !== expectedOrigin) {
+        console.warn('تم رفض رسالة من مصدر غير معروف');
+        return;
+    }
+
+    const data = event.data;
+
+    if (!data || data.source !== 'templatecraft-editor-bridge') {
+        return;
+    }
+
+
+    // Bridge ready
+    if (data.type === 'BRIDGE_READY') {
+
+        enableVisualEditor();
+
+        showNotification('تم الاتصال بمعاينة الموقع');
+
+        return;
+    }
+
+
+    // Element selected
+    if (data.type === 'ELEMENT_SELECTED') {
+
+        selectedElement = {
+            selector: data.selector || '',
+            tagName: data.tagName || 'element',
+            text: data.text || '',
+            src: data.src || '',
+            alt: data.alt || '',
+            href: data.href || '',
+            color: data.color || '#333333',
+            fontSize: data.fontSize || 16
+        };
+
+        document.getElementById('selected-element').textContent =
+            `${selectedElement.tagName} — ${selectedElement.selector || 'عنصر محدد'}`;
+
+        document.getElementById('element-text').value =
+            selectedElement.text;
+
+        document.getElementById('element-image').value =
+            selectedElement.src;
+
+        document.getElementById('element-link').value =
+            selectedElement.href;
+
+        document.getElementById('element-color').value =
+            rgbToHex(selectedElement.color);
+
+        document.getElementById('element-size').value =
+            parseInt(selectedElement.fontSize) || 16;
+
+        activateTab('element');
+
+        return;
+    }
+
+
+    // Element updated
+    if (data.type === 'ELEMENT_UPDATED') {
+
+        showNotification('تم تطبيق التعديلات على المعاينة');
+
+        return;
+    }
+
+});
+
+
+// ==========================================
+// 9. REFRESH PREVIEW
+// ==========================================
+
+function refreshPreview(showMessage = false) {
+
+    try {
+
+        disableVisualEditor();
+
+        const url = getPreviewUrl();
+
+        expectedFrameOrigin = new URL(url).origin;
+
+        frame.src = url;
+
+        if (showMessage) {
+            showNotification('جاري تحديث المعاينة...');
+        }
+
+    } catch (error) {
+
+        showNotification(error.message, false);
+
+    }
+
+}
+
+
+// ==========================================
+// 10. IFRAME LOAD
+// ==========================================
+
+frame.addEventListener('load', function() {
+
+    frameReady = false;
+
+    expectedFrameOrigin = getFrameOrigin();
+
+    // نرسل التفعيل حتى إذا لم يرسل Bridge رسالة BRIDGE_READY
+    setTimeout(() => {
+
+        if (frame.contentWindow) {
+            enableVisualEditor();
+        }
+
+    }, 300);
+
+});
+
+
+// ==========================================
+// 11. LOAD PROJECT
 // ==========================================
 
 async function loadProject() {
+
     try {
+
         checkAPI();
 
         if (!userId) {
@@ -370,10 +810,15 @@ async function loadProject() {
 
         setSaveStatus('جاري تحميل المشروع...');
 
-        const result = await TemplateCraftAPI.getSite(siteId, userId);
+        const result = await TemplateCraftAPI.getSite(
+            siteId,
+            userId
+        );
 
         if (!result || !result.success || !result.site) {
-            throw new Error(result?.error || 'تعذر تحميل المشروع');
+            throw new Error(
+                result?.error || 'تعذر تحميل المشروع'
+            );
         }
 
         currentSite = result.site;
@@ -384,106 +829,160 @@ async function loadProject() {
             'مشروع بدون اسم';
 
         document.getElementById('project-name').value = projectName;
+
         document.getElementById('project-title').textContent = projectName;
 
         refreshPreview();
+
         await loadProjectFiles();
 
         setSaveStatus('تم تحميل المشروع');
 
     } catch (error) {
+
         console.error(error);
+
         showNotification(error.message, false);
+
         setSaveStatus('تعذر تحميل المشروع');
+
     }
+
 }
 
+
 // ==========================================
-// LOAD PROJECT FILES
+// 12. LOAD PROJECT FILES
 // ==========================================
 
 async function loadProjectFiles() {
+
     const container = document.getElementById('files-list');
 
-    container.innerHTML = '<p class="text-gray-400 text-xs">جاري تحميل الملفات...</p>';
+    container.innerHTML =
+        '<p class="text-gray-400 text-xs">جاري تحميل الملفات...</p>';
 
     try {
-        const result = await TemplateCraftAPI.getSiteFiles(siteId, userId);
+
+        const result = await TemplateCraftAPI.getSiteFiles(
+            siteId,
+            userId
+        );
 
         if (!result || !result.success) {
-            throw new Error(result?.error || 'تعذر جلب الملفات');
+            throw new Error(
+                result?.error || 'تعذر جلب الملفات'
+            );
         }
 
         projectFiles = result.files || [];
+
         container.innerHTML = '';
 
         if (!projectFiles.length) {
-            container.innerHTML = '<p class="text-gray-400 text-xs">لا توجد ملفات.</p>';
+
+            container.innerHTML =
+                '<p class="text-gray-400 text-xs">لا توجد ملفات.</p>';
+
             return;
         }
 
         projectFiles.forEach(file => {
-            const path = typeof file === 'string' ? file : file.path;
+
+            const path = typeof file === 'string'
+                ? file
+                : file.path;
+
             if (!path) return;
 
             const button = document.createElement('button');
 
             button.type = 'button';
+
             button.className =
                 'w-full text-right p-3 bg-gray-50 hover:bg-purple-50 rounded-lg border text-xs break-all';
 
             button.textContent = '📄 ' + path;
-            button.addEventListener('click', () => loadFile(path));
+
+            button.addEventListener('click', () => {
+                loadFile(path);
+            });
 
             container.appendChild(button);
+
         });
 
     } catch (error) {
+
         console.error(error);
+
         container.innerHTML = '';
 
         const errorText = document.createElement('p');
+
         errorText.className = 'text-red-500 text-xs';
+
         errorText.textContent = error.message;
 
         container.appendChild(errorText);
+
     }
+
 }
 
+
 // ==========================================
-// SAFE FILE URL
+// 13. SAFE FILE URL
 // ==========================================
 
 function getFileUrl(filePath) {
+
     const safePath = filePath
         .split('/')
         .map(segment => encodeURIComponent(segment))
         .join('/');
 
     return `${EDITOR_API_BASE_URL}/sites/${encodeURIComponent(currentSite.siteName)}/${safePath}`;
+
 }
 
+
 // ==========================================
-// LOAD FILE CONTENT
+// 14. LOAD FILE CONTENT
 // ==========================================
 
 async function loadFile(filePath) {
+
     try {
-        const file = projectFiles.find(item =>
-            (typeof item === 'string' ? item : item.path) === filePath
-        );
+
+        const file = projectFiles.find(item => {
+
+            return (
+                typeof item === 'string'
+                    ? item
+                    : item.path
+            ) === filePath;
+
+        });
 
         if (!file) {
             throw new Error('الملف غير موجود في القائمة');
         }
 
-        if (file.type && file.type !== 'text' && file.type !== 'code') {
+        if (
+            file.type &&
+            file.type !== 'text' &&
+            file.type !== 'code'
+        ) {
             throw new Error('هذا الملف ليس ملفاً نصياً قابلاً للتحرير');
         }
 
-        const response = await fetch(getFileUrl(filePath), {
-            cache: 'no-store'
-        });
+        const response = await fetch(
+            getFileUrl(filePath),
+            {
+                cache: 'no-store'
+            }
+        );
 
         if (!response.ok) {
             throw new Error('تعذر قراءة الملف');
@@ -492,57 +991,81 @@ async function loadFile(filePath) {
         const content = await response.text();
 
         currentFile = filePath;
+
         codeEditor.value = content;
 
-        document.getElementById('current-file').textContent = '📄 ' + filePath;
+        document.getElementById('current-file').textContent =
+            '📄 ' + filePath;
 
         activateTab('code');
+
         setSaveStatus('تم تحميل الملف');
 
     } catch (error) {
+
         console.error(error);
+
         showNotification(error.message, false);
+
     }
+
 }
 
+
 // ==========================================
-// SAVE CURRENT FILE
+// 15. SAVE CURRENT FILE
 // ==========================================
 
 async function saveCurrentFile(options = {}) {
+
     const showMessage = options.showMessage !== false;
 
     if (!currentFile) {
+
         if (showMessage) {
             showNotification('اختر ملفاً أولاً', false);
         }
+
         return false;
     }
 
     try {
+
         setSaveStatus('جاري حفظ الملف...');
+
         saveFileButton.disabled = true;
 
-        const result = await TemplateCraftAPI.saveSiteFile(siteId, {
-            userId,
-            filePath: currentFile,
-            content: codeEditor.value
-        });
+        const result = await TemplateCraftAPI.saveSiteFile(
+            siteId,
+            {
+                userId,
+                filePath: currentFile,
+                content: codeEditor.value
+            }
+        );
 
         if (!result || !result.success) {
-            throw new Error(result?.error || 'تعذر حفظ الملف');
+            throw new Error(
+                result?.error || 'تعذر حفظ الملف'
+            );
         }
 
         setSaveStatus('تم حفظ الملف');
 
         if (showMessage) {
-            showNotification('تم حفظ الملف بنجاح. يمكنك الآن معاينة التعديلات.');
+
+            showNotification(
+                'تم حفظ الملف بنجاح. يمكنك الآن معاينة التعديلات.'
+            );
+
         }
 
         return true;
 
     } catch (error) {
+
         console.error(error);
+
         setSaveStatus('فشل الحفظ');
 
         if (showMessage) {
@@ -552,28 +1075,41 @@ async function saveCurrentFile(options = {}) {
         return false;
 
     } finally {
+
         saveFileButton.disabled = false;
+
     }
+
 }
 
+
 // ==========================================
-// UPDATE PROJECT NAME
+// 16. UPDATE PROJECT NAME
 // ==========================================
 
 async function saveProjectName() {
-    const name = document.getElementById('project-name').value.trim();
+
+    const name = document
+        .getElementById('project-name')
+        .value
+        .trim();
 
     if (!name) {
         throw new Error('أدخل اسم المشروع');
     }
 
-    const result = await TemplateCraftAPI.updateSite(siteId, {
-        userId,
-        siteName: name
-    });
+    const result = await TemplateCraftAPI.updateSite(
+        siteId,
+        {
+            userId,
+            siteName: name
+        }
+    );
 
     if (!result || !result.success) {
-        throw new Error(result?.error || 'تعذر تحديث اسم المشروع');
+        throw new Error(
+            result?.error || 'تعذر تحديث اسم المشروع'
+        );
     }
 
     currentSite.variables = {
@@ -584,51 +1120,71 @@ async function saveProjectName() {
     document.getElementById('project-title').textContent = name;
 
     return true;
+
 }
 
+
 // ==========================================
-// SAVE ALL
+// 17. SAVE ALL
 // ==========================================
 
 async function saveAll() {
+
     if (isSaving) return;
 
     isSaving = true;
+
     saveButton.disabled = true;
 
     try {
+
         setSaveStatus('جاري حفظ التعديلات...');
 
         if (currentFile) {
-            const fileSaved = await saveCurrentFile({ showMessage: false });
+
+            const fileSaved = await saveCurrentFile({
+                showMessage: false
+            });
 
             if (!fileSaved) {
                 throw new Error('تعذر حفظ الملف المفتوح');
             }
+
         }
 
         await saveProjectName();
 
         setSaveStatus('تم الحفظ بنجاح');
 
-        showNotification('تم حفظ التعديلات بنجاح. اضغط على معاينة لمشاهدة النتيجة.');
+        showNotification(
+            'تم حفظ التعديلات بنجاح. اضغط على معاينة لمشاهدة النتيجة.'
+        );
 
     } catch (error) {
+
         console.error(error);
+
         setSaveStatus('فشل الحفظ');
+
         showNotification(error.message, false);
 
     } finally {
+
         isSaving = false;
+
         saveButton.disabled = false;
+
     }
+
 }
 
+
 // ==========================================
-// EDITOR TABS
+// 18. EDITOR TABS
 // ==========================================
 
 function activateTab(tabName) {
+
     document.querySelectorAll('.tab-content').forEach(tab => {
         tab.classList.add('hidden');
     });
@@ -637,75 +1193,45 @@ function activateTab(tabName) {
         button.classList.remove('active');
     });
 
-    const targetTab = document.getElementById(`${tabName}-tab`);
-    const targetButton = document.querySelector(`[data-tab="${tabName}"]`);
+    const targetTab = document.getElementById(
+        `${tabName}-tab`
+    );
 
-    if (targetTab) targetTab.classList.remove('hidden');
-    if (targetButton) targetButton.classList.add('active');
+    const targetButton = document.querySelector(
+        `[data-tab="${tabName}"]`
+    );
+
+    if (targetTab) {
+        targetTab.classList.remove('hidden');
+    }
+
+    if (targetButton) {
+        targetButton.classList.add('active');
+    }
+
 }
 
+
 document.querySelectorAll('.tab-button').forEach(button => {
+
     button.addEventListener('click', () => {
         activateTab(button.dataset.tab);
     });
+
 });
 
-// ==========================================
-// VISUAL ELEMENT SELECTION
-// ==========================================
-
-// الاختيار البصري المباشر يعمل فقط عندما تسمح سياسة المتصفح
-// بالوصول إلى محتوى iframe من نفس الأصل.
-
-frame.addEventListener('load', () => {
-    try {
-        const frameDocument = frame.contentDocument || frame.contentWindow.document;
-
-        if (!frameDocument) return;
-
-        frameDocument.addEventListener('click', event => {
-            const target = event.target;
-
-            if (!target || target === frameDocument.body) return;
-
-            event.preventDefault();
-            event.stopPropagation();
-
-            selectedElement = target;
-
-            document.getElementById('selected-element').textContent =
-                target.tagName.toLowerCase();
-
-            document.getElementById('element-text').value =
-                target.innerText || '';
-
-            document.getElementById('element-image').value =
-                target.tagName === 'IMG' ? target.src : '';
-
-            document.getElementById('element-link').value =
-                target.closest('a')?.getAttribute('href') || '';
-
-            document.getElementById('element-color').value =
-                rgbToHex(getComputedStyle(target).color);
-
-            document.getElementById('element-size').value =
-                parseInt(getComputedStyle(target).fontSize) || 16;
-
-            activateTab('element');
-        }, true);
-
-    } catch (error) {
-        console.info('الاختيار البصري يحتاج إعداد Editor Bridge.', error);
-    }
-});
 
 // ==========================================
-// COLOR CONVERTER
+// 19. COLOR CONVERTER
 // ==========================================
 
 function rgbToHex(color) {
+
     if (!color) return '#333333';
-    if (color.startsWith('#')) return color;
+
+    if (color.startsWith('#')) {
+        return color;
+    }
 
     const values = color.match(/\d+/g);
 
@@ -713,120 +1239,210 @@ function rgbToHex(color) {
         return '#333333';
     }
 
-    return '#' + values.slice(0, 3).map(value =>
-        Number(value).toString(16).padStart(2, '0')
-    ).join('');
+    return '#' + values.slice(0, 3).map(value => {
+
+        return Number(value)
+            .toString(16)
+            .padStart(2, '0');
+
+    }).join('');
+
 }
 
+
 // ==========================================
-// APPLY VISUAL CHANGES
+// 20. VALIDATE URL
 // ==========================================
 
-document.getElementById('apply-element').addEventListener('click', () => {
-    if (!selectedElement) {
-        showNotification('اختيار العناصر يحتاج تفعيل Editor Bridge أولاً.', false);
-        return;
+function validateHttpUrl(value) {
+
+    if (!value) return '';
+
+    const parsed = new URL(
+        value,
+        window.location.origin
+    );
+
+    if (!['http:', 'https:'].includes(parsed.protocol)) {
+        throw new Error('الرابط غير صالح');
     }
 
-    const text = document.getElementById('element-text').value;
-    const image = document.getElementById('element-image').value.trim();
-    const link = document.getElementById('element-link').value.trim();
-    const color = document.getElementById('element-color').value;
-    const size = Number(document.getElementById('element-size').value);
+    return parsed.href;
 
-    if (selectedElement.tagName === 'IMG' && image) {
-        try {
-            const parsed = new URL(image);
+}
 
-            if (!['http:', 'https:'].includes(parsed.protocol)) {
-                throw new Error('رابط الصورة غير صالح');
-            }
 
-            selectedElement.src = parsed.href;
+// ==========================================
+// 21. APPLY VISUAL CHANGES
+// ==========================================
 
-        } catch (error) {
-            showNotification('رابط الصورة غير صالح', false);
+document.getElementById('apply-element').addEventListener(
+    'click',
+    function() {
+
+        if (!selectedElement || !selectedElement.selector) {
+
+            showNotification(
+                'اختر عنصراً من معاينة الموقع أولاً.',
+                false
+            );
+
             return;
         }
-    }
 
-    if (selectedElement.tagName !== 'IMG') {
-        selectedElement.textContent = text;
-    }
+        const text = document.getElementById('element-text').value;
 
-    selectedElement.style.color = color;
+        const imageInput = document
+            .getElementById('element-image')
+            .value
+            .trim();
 
-    if (size >= 8 && size <= 100) {
-        selectedElement.style.fontSize = `${size}px`;
-    }
+        const linkInput = document
+            .getElementById('element-link')
+            .value
+            .trim();
 
-    const anchor = selectedElement.closest('a');
+        const color = document.getElementById('element-color').value;
 
-    if (anchor && link) {
+        const size = Number(
+            document.getElementById('element-size').value
+        );
+
+        let image = '';
+        let link = '';
+
         try {
-            const parsed = new URL(link, window.location.origin);
 
-            if (!['http:', 'https:'].includes(parsed.protocol)) {
-                throw new Error('رابط غير صالح');
+            if (imageInput) {
+                image = validateHttpUrl(imageInput);
             }
 
-            anchor.href = parsed.href;
+            if (linkInput) {
+                link = validateHttpUrl(linkInput);
+            }
 
         } catch (error) {
-            showNotification('رابط الانتقال غير صالح', false);
+
+            showNotification(error.message, false);
+
+            return;
+
+        }
+
+        if (size < 8 || size > 100 || !Number.isFinite(size)) {
+
+            showNotification(
+                'حجم الخط يجب أن يكون بين 8 و100.',
+                false
+            );
+
             return;
         }
-    }
 
-    showNotification('تم تطبيق التغييرات على المعاينة مؤقتاً. لحفظها دائماً، عدّل الملف من تبويب الكود.');
-});
+        const updateData = {
+            selector: selectedElement.selector,
+            text,
+            src: image,
+            href: link,
+            color,
+            fontSize: size
+        };
+
+        const sent = sendMessageToFrame(
+            'UPDATE_ELEMENT',
+            updateData
+        );
+
+        if (!sent) {
+
+            showNotification(
+                'تعذر الاتصال بمعاينة الموقع. حدّث المعاينة.',
+                false
+            );
+
+            return;
+        }
+
+        showNotification(
+            'تم إرسال التعديلات إلى المعاينة. لحفظها بشكل دائم، عدّل الملف من تبويب الكود.'
+        );
+
+    }
+);
+
 
 // ==========================================
-// BUTTON EVENTS
+// 22. BUTTON EVENTS
 // ==========================================
 
 saveButton.addEventListener('click', saveAll);
 
-saveFileButton.addEventListener('click', async () => {
+
+saveFileButton.addEventListener('click', async function() {
+
     const saved = await saveCurrentFile();
 
     if (saved) {
         setSaveStatus('تم الحفظ - في انتظار المعاينة');
     }
+
 });
 
-document.getElementById('reload-preview').addEventListener('click', () => {
-    refreshPreview(true);
-});
 
-document.getElementById('preview-button').addEventListener('click', () => {
-    try {
-        const previewUrl = getPreviewUrl();
+document.getElementById('reload-preview').addEventListener(
+    'click',
+    function() {
 
-        frame.src = previewUrl;
+        refreshPreview(true);
 
-        window.open(
-            previewUrl,
-            '_blank',
-            'noopener,noreferrer'
-        );
-
-        showNotification('تم فتح المعاينة. التغييرات المحفوظة فقط هي التي ستظهر.');
-
-    } catch (error) {
-        showNotification(error.message, false);
     }
-});
+);
 
-document.getElementById('desktop-preview').addEventListener('click', () => {
-    frame.style.width = '100%';
-    frame.style.maxWidth = '100%';
 
-    showNotification('تم تفعيل معاينة سطح المكتب');
-});
+document.getElementById('preview-button').addEventListener(
+    'click',
+    function() {
+
+        try {
+
+            const previewUrl = getPreviewUrl();
+
+            window.open(
+                previewUrl,
+                '_blank',
+                'noopener,noreferrer'
+            );
+
+            showNotification(
+                'تم فتح المعاينة. التغييرات المحفوظة فقط هي التي ستظهر.'
+            );
+
+        } catch (error) {
+
+            showNotification(error.message, false);
+
+        }
+
+    }
+);
+
+
+document.getElementById('desktop-preview').addEventListener(
+    'click',
+    function() {
+
+        frame.style.width = '100%';
+
+        frame.style.maxWidth = '100%';
+
+        showNotification('تم تفعيل معاينة سطح المكتب');
+
+    }
+);
+
 
 // ==========================================
-// START EDITOR
+// 23. START EDITOR
 // ==========================================
 
 if (userId && siteId) {
