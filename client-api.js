@@ -6,7 +6,6 @@
 // 1. SERVER CONFIGURATION
 // ==========================================
 
-// محلياً:
 const API_BASE_URL = (
     window.TEMPLATECRAFT_API_URL ||
     'http://localhost:3000'
@@ -42,7 +41,7 @@ async function apiRequest(endpoint, options = {}) {
         return data;
 
     } catch (error) {
-        console.error('❌ API Request Error:', error);
+        console.error('API Request Error:', error);
 
         return {
             success: false,
@@ -53,7 +52,20 @@ async function apiRequest(endpoint, options = {}) {
 
 
 // ==========================================
-// 3. TEMPLATECRAFT API
+// 3. URL HELPER
+// ==========================================
+
+function addUserId(endpoint, userId) {
+    if (!userId) return endpoint;
+
+    const separator = endpoint.includes('?') ? '&' : '?';
+
+    return `${endpoint}${separator}userId=${encodeURIComponent(userId)}`;
+}
+
+
+// ==========================================
+// 4. TEMPLATECRAFT API
 // ==========================================
 
 const TemplateCraftAPI = {
@@ -63,7 +75,7 @@ const TemplateCraftAPI = {
     // --------------------------------------
 
     async status() {
-        return await apiRequest('/api/status', {
+        return apiRequest('/api/status', {
             method: 'GET'
         });
     },
@@ -74,7 +86,7 @@ const TemplateCraftAPI = {
     // --------------------------------------
 
     async signup(userData) {
-        return await apiRequest('/api/signup', {
+        return apiRequest('/api/signup', {
             method: 'POST',
             body: JSON.stringify(userData)
         });
@@ -86,7 +98,7 @@ const TemplateCraftAPI = {
     // --------------------------------------
 
     async login(credentials) {
-        return await apiRequest('/api/login', {
+        return apiRequest('/api/login', {
             method: 'POST',
             body: JSON.stringify(credentials)
         });
@@ -98,7 +110,7 @@ const TemplateCraftAPI = {
     // --------------------------------------
 
     async deploy(siteData) {
-        return await apiRequest('/api/deploy', {
+        return apiRequest('/api/deploy', {
             method: 'POST',
             body: JSON.stringify(siteData)
         });
@@ -117,7 +129,7 @@ const TemplateCraftAPI = {
             };
         }
 
-        return await apiRequest(
+        return apiRequest(
             `/api/sites/${encodeURIComponent(userId)}`,
             {
                 method: 'GET'
@@ -130,7 +142,7 @@ const TemplateCraftAPI = {
     // Get Single Project
     // --------------------------------------
 
-    async getSite(siteId) {
+    async getSite(siteId, userId) {
         if (!siteId) {
             return {
                 success: false,
@@ -138,12 +150,14 @@ const TemplateCraftAPI = {
             };
         }
 
-        return await apiRequest(
+        const endpoint = addUserId(
             `/api/site/${encodeURIComponent(siteId)}`,
-            {
-                method: 'GET'
-            }
+            userId
         );
+
+        return apiRequest(endpoint, {
+            method: 'GET'
+        });
     },
 
 
@@ -151,7 +165,7 @@ const TemplateCraftAPI = {
     // Update Project
     // --------------------------------------
 
-    async updateSite(siteId, projectData) {
+    async updateSite(siteId, projectData = {}) {
         if (!siteId) {
             return {
                 success: false,
@@ -159,7 +173,7 @@ const TemplateCraftAPI = {
             };
         }
 
-        return await apiRequest(
+        return apiRequest(
             `/api/site/${encodeURIComponent(siteId)}`,
             {
                 method: 'PUT',
@@ -173,7 +187,7 @@ const TemplateCraftAPI = {
     // Get Project Files
     // --------------------------------------
 
-    async getProjectFiles(siteId) {
+    async getSiteFiles(siteId, userId) {
         if (!siteId) {
             return {
                 success: false,
@@ -181,37 +195,62 @@ const TemplateCraftAPI = {
             };
         }
 
-        return await apiRequest(
+        const endpoint = addUserId(
             `/api/site/${encodeURIComponent(siteId)}/files`,
-            {
-                method: 'GET'
-            }
+            userId
         );
+
+        return apiRequest(endpoint, {
+            method: 'GET'
+        });
     },
 
 
     // --------------------------------------
-    // Save Edited File
+    // Backward Compatibility
     // --------------------------------------
 
-    async saveProjectFile(siteId, filePath, content) {
-        if (!siteId || !filePath) {
+    async getProjectFiles(siteId, userId) {
+        return this.getSiteFiles(siteId, userId);
+    },
+
+
+    // --------------------------------------
+    // Save Edited Project File
+    // --------------------------------------
+
+    async saveSiteFile(siteId, fileData = {}) {
+        if (!siteId || !fileData.filePath) {
             return {
                 success: false,
                 error: 'معلومات الملف ناقصة'
             };
         }
 
-        return await apiRequest(
+        return apiRequest(
             `/api/site/${encodeURIComponent(siteId)}/file`,
             {
                 method: 'PUT',
                 body: JSON.stringify({
-                    filePath,
-                    content
+                    userId: fileData.userId,
+                    filePath: fileData.filePath,
+                    content: fileData.content
                 })
             }
         );
+    },
+
+
+    // --------------------------------------
+    // Backward Compatibility
+    // --------------------------------------
+
+    async saveProjectFile(siteId, filePath, content, userId) {
+        return this.saveSiteFile(siteId, {
+            userId,
+            filePath,
+            content
+        });
     },
 
 
@@ -227,7 +266,7 @@ const TemplateCraftAPI = {
             };
         }
 
-        return await apiRequest(
+        return apiRequest(
             `/api/templates/${encodeURIComponent(projectType)}`,
             {
                 method: 'GET'
@@ -273,7 +312,7 @@ const TemplateCraftAPI = {
     // Publish Project
     // --------------------------------------
 
-    async publish(siteId) {
+    async publish(siteId, userId) {
         if (!siteId) {
             return {
                 success: false,
@@ -281,10 +320,13 @@ const TemplateCraftAPI = {
             };
         }
 
-        return await apiRequest(
+        return apiRequest(
             `/api/site/${encodeURIComponent(siteId)}/publish`,
             {
-                method: 'POST'
+                method: 'POST',
+                body: JSON.stringify({
+                    userId
+                })
             }
         );
     }
@@ -293,7 +335,7 @@ const TemplateCraftAPI = {
 
 
 // ==========================================
-// 4. GLOBAL API ACCESS
+// 5. GLOBAL API ACCESS
 // ==========================================
 
 window.TemplateCraftAPI = TemplateCraftAPI;
