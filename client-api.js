@@ -6,7 +6,7 @@
 // 1. SERVER CONFIGURATION
 // ==========================================
 
-const API_BASE_URL = (
+const TEMPLATECRAFT_API_BASE_URL = (
     window.TEMPLATECRAFT_API_URL ||
     'http://localhost:3000'
 ).replace(/\/+$/, '');
@@ -19,7 +19,7 @@ const API_BASE_URL = (
 async function apiRequest(endpoint, options = {}) {
     try {
         const response = await fetch(
-            `${API_BASE_URL}${endpoint}`,
+            `${TEMPLATECRAFT_API_BASE_URL}${endpoint}`,
             {
                 ...options,
                 headers: {
@@ -70,10 +70,7 @@ function addUserId(endpoint, userId) {
 
 const TemplateCraftAPI = {
 
-    // --------------------------------------
     // Server Status
-    // --------------------------------------
-
     async status() {
         return apiRequest('/api/status', {
             method: 'GET'
@@ -81,10 +78,7 @@ const TemplateCraftAPI = {
     },
 
 
-    // --------------------------------------
     // Signup
-    // --------------------------------------
-
     async signup(userData) {
         return apiRequest('/api/signup', {
             method: 'POST',
@@ -93,10 +87,7 @@ const TemplateCraftAPI = {
     },
 
 
-    // --------------------------------------
     // Login
-    // --------------------------------------
-
     async login(credentials) {
         return apiRequest('/api/login', {
             method: 'POST',
@@ -105,10 +96,7 @@ const TemplateCraftAPI = {
     },
 
 
-    // --------------------------------------
     // Deploy New Project
-    // --------------------------------------
-
     async deploy(siteData) {
         return apiRequest('/api/deploy', {
             method: 'POST',
@@ -117,10 +105,7 @@ const TemplateCraftAPI = {
     },
 
 
-    // --------------------------------------
     // Get User Projects
-    // --------------------------------------
-
     async getSites(userId) {
         if (!userId) {
             return {
@@ -138,10 +123,7 @@ const TemplateCraftAPI = {
     },
 
 
-    // --------------------------------------
     // Get Single Project
-    // --------------------------------------
-
     async getSite(siteId, userId) {
         if (!siteId) {
             return {
@@ -161,10 +143,7 @@ const TemplateCraftAPI = {
     },
 
 
-    // --------------------------------------
     // Update Project
-    // --------------------------------------
-
     async updateSite(siteId, projectData = {}) {
         if (!siteId) {
             return {
@@ -183,10 +162,7 @@ const TemplateCraftAPI = {
     },
 
 
-    // --------------------------------------
     // Get Project Files
-    // --------------------------------------
-
     async getSiteFiles(siteId, userId) {
         if (!siteId) {
             return {
@@ -206,19 +182,13 @@ const TemplateCraftAPI = {
     },
 
 
-    // --------------------------------------
     // Backward Compatibility
-    // --------------------------------------
-
     async getProjectFiles(siteId, userId) {
         return this.getSiteFiles(siteId, userId);
     },
 
 
-    // --------------------------------------
     // Save Edited Project File
-    // --------------------------------------
-
     async saveSiteFile(siteId, fileData = {}) {
         if (!siteId || !fileData.filePath) {
             return {
@@ -241,10 +211,7 @@ const TemplateCraftAPI = {
     },
 
 
-    // --------------------------------------
     // Backward Compatibility
-    // --------------------------------------
-
     async saveProjectFile(siteId, filePath, content, userId) {
         return this.saveSiteFile(siteId, {
             userId,
@@ -254,10 +221,7 @@ const TemplateCraftAPI = {
     },
 
 
-    // --------------------------------------
     // Get Available Templates
-    // --------------------------------------
-
     async getTemplates(projectType) {
         if (!projectType) {
             return {
@@ -275,43 +239,34 @@ const TemplateCraftAPI = {
     },
 
 
-    // --------------------------------------
-    // Get Template Preview
-    // --------------------------------------
-
+    // Get Template Preview URL
     getTemplatePreviewUrl(projectType, templateId) {
         if (!projectType || !templateId) {
             return null;
         }
 
         return (
-            `${API_BASE_URL}/api/template-preview/` +
+            `${TEMPLATECRAFT_API_BASE_URL}/api/template-preview/` +
             `${encodeURIComponent(projectType)}/` +
             `${encodeURIComponent(templateId)}`
         );
     },
 
 
-    // --------------------------------------
     // Get Project Preview URL
-    // --------------------------------------
-
     getProjectPreviewUrl(siteName) {
         if (!siteName) {
             return null;
         }
 
         return (
-            `${API_BASE_URL}/sites/` +
+            `${TEMPLATECRAFT_API_BASE_URL}/sites/` +
             `${encodeURIComponent(siteName)}/index.html`
         );
     },
 
 
-    // --------------------------------------
     // Publish Project
-    // --------------------------------------
-
     async publish(siteId, userId) {
         if (!siteId) {
             return {
