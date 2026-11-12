@@ -116,7 +116,7 @@
                 </h1>
 
                 <p class="text-gray-500 mt-2">
-                    اختر تصنيف موقعك، شاهد القوالب الحقيقية قبل الاختيار، ثم انشر موقعك مباشرة على Netlify.
+                    اختر تصنيف موقعك، شاهد القوالب الحقيقية قبل الاختيار، ثم انشر موقعك بدومينك الخاص.
                 </p>
 
             </div>
@@ -220,7 +220,7 @@
                 type="button"
                 class="w-full bg-purple-600 hover:bg-purple-700 text-white p-4 rounded-xl font-extrabold transition shadow-lg">
 
-                🚀 نشر الموقع على Netlify
+                🚀 إنشاء ونشر الموقع
 
             </button>
 
@@ -237,15 +237,18 @@
             <div id="resultContainer"
                  class="hidden mt-5 bg-green-50 border border-green-200 rounded-xl p-5 text-center">
 
-                <h3 class="text-green-700 font-extrabold text-lg mb-2">
-                    ✅ تم نشر موقعك بنجاح!
+                <h3 id="resultTitle"
+                    class="text-green-700 font-extrabold text-lg mb-2">
+                    ✅ تم إنشاء مشروعك بنجاح!
                 </h3>
 
-                <p class="text-gray-600 text-sm mb-4">
-                    موقعك أصبح متاحاً على الإنترنت عبر Netlify.
+                <p id="resultDescription"
+                   class="text-gray-600 text-sm mb-4">
+                    جاري تجهيز الدومين الخاص بموقعك.
                 </p>
 
-                <div class="bg-white border border-green-200 rounded-xl p-3 mb-4">
+                <div id="resultDomainBox"
+                     class="bg-white border border-green-200 rounded-xl p-3 mb-4">
 
                     <p class="text-xs text-gray-500 mb-2">
                         رابط موقعك:
@@ -259,6 +262,11 @@
                        class="text-purple-700 font-bold text-sm break-all">
                     </a>
 
+                    <p id="resultPending"
+                       class="hidden text-yellow-700 font-bold text-sm mt-2">
+                        ⏳ الدومين الخاص قيد التجهيز. سيظهر الرابط هنا بعد تأكيد DNS وSSL.
+                    </p>
+
                 </div>
 
                 <div class="flex flex-col sm:flex-row justify-center gap-3">
@@ -267,12 +275,13 @@
                        href="#"
                        target="_blank"
                        rel="noopener noreferrer"
-                       class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-xl font-bold">
+                       class="hidden bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-xl font-bold">
                         🌐 زيارة الموقع
                     </a>
 
                     <button id="copyLinkBtn"
                             type="button"
+                            disabled
                             class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-xl font-bold">
                         📋 نسخ الرابط
                     </button>
@@ -400,6 +409,8 @@
 
             window.location.href = 'login.html';
 
+            throw new Error('User not authenticated');
+
         }
 
 
@@ -447,6 +458,8 @@
 
         let publishedSiteUrl = null;
 
+        let createdSiteId = null;
+
 
         // ==================================
         // 3. ELEMENTS
@@ -470,11 +483,20 @@
         const resultContainer =
             document.getElementById('resultContainer');
 
-        const resultLink =
-            document.getElementById('resultLink');
+        const resultTitle =
+            document.getElementById('resultTitle');
+
+        const resultDescription =
+            document.getElementById('resultDescription');
 
         const resultUrl =
             document.getElementById('resultUrl');
+
+        const resultLink =
+            document.getElementById('resultLink');
+
+        const resultPending =
+            document.getElementById('resultPending');
 
         const copyLinkBtn =
             document.getElementById('copyLinkBtn');
@@ -842,7 +864,168 @@
 
 
         // ==================================
-        // 13. CREATE AND PUBLISH PROJECT
+        // 13. EXTRACT SITE INFORMATION
+        // ==================================
+
+        function getSiteData(result) {
+
+            const site =
+                result?.site ||
+                result?.project ||
+                {};
+
+            return {
+                siteId:
+                    site._id ||
+                    site.id ||
+                    result.siteId ||
+                    result.projectId ||
+                    null,
+
+                customUrl:
+                    result.customUrl ||
+                    result.publicUrl ||
+                    site.customUrl ||
+                    site.publicUrl ||
+                    null,
+
+                customDomain:
+                    result.customDomain ||
+                    site.customDomain ||
+                    null,
+
+                domainStatus:
+                    result.domainStatus ||
+                    site.domainStatus ||
+                    'pending',
+
+                liveUrl:
+                    result.liveUrl ||
+                    result.deployUrl ||
+                    site.liveUrl ||
+                    null
+            };
+
+        }
+
+
+        // ==================================
+        // 14. VALIDATE CUSTOM DOMAIN
+        // ==================================
+
+        function getSafeCustomUrl(url, domainStatus) {
+
+            if (
+                domainStatus !== 'active' ||
+                !url ||
+                typeof url !== 'string'
+            ) {
+                return null;
+            }
+
+            try {
+
+                const parsed = new URL(url);
+
+                if (parsed.protocol !== 'https:') {
+                    return null;
+                }
+
+                const hostname =
+                    parsed.hostname.toLowerCase();
+
+                if (
+                    !hostname.endsWith('.gollivetv.com') ||
+                    hostname === 'gollivetv.com'
+                ) {
+                    return null;
+                }
+
+                return parsed.href;
+
+            } catch (error) {
+
+                return null;
+
+            }
+
+        }
+
+
+        // ==================================
+        // 15. SHOW DEPLOY RESULT
+        // ==================================
+
+        function showDeployResult(siteData) {
+
+            const verifiedUrl = getSafeCustomUrl(
+                siteData.customUrl,
+                siteData.domainStatus
+            );
+
+            publishedSiteUrl = verifiedUrl;
+
+            resultContainer.classList.remove('hidden');
+
+            resultUrl.textContent = '';
+            resultUrl.removeAttribute('href');
+
+            resultLink.classList.add('hidden');
+
+            resultPending.classList.add('hidden');
+
+            copyLinkBtn.disabled = true;
+
+            if (verifiedUrl) {
+
+                resultTitle.textContent =
+                    '✅ تم نشر موقعك والدومين جاهز!';
+
+                resultDescription.textContent =
+                    'موقعك متاح الآن عبر الدومين الخاص بك.';
+
+                resultUrl.textContent = verifiedUrl;
+
+                resultUrl.href = verifiedUrl;
+
+                resultLink.href = verifiedUrl;
+
+                resultLink.classList.remove('hidden');
+
+                copyLinkBtn.disabled = false;
+
+                showStatus(
+                    'تم نشر الموقع وتأكيد الدومين وشهادة SSL بنجاح! 🎉',
+                    'success'
+                );
+
+            } else {
+
+                resultTitle.textContent =
+                    '✅ تم إنشاء ونشر مشروعك بنجاح!';
+
+                resultDescription.textContent =
+                    'تم إنشاء المشروع. الدومين الخاص مازال قيد التجهيز.';
+
+                resultPending.classList.remove('hidden');
+
+                showStatus(
+                    'تم إنشاء المشروع. جاري تجهيز الدومين الخاص وSSL. يمكنك متابعة الحالة من صفحة مشاريعي.',
+                    'success'
+                );
+
+            }
+
+            resultContainer.scrollIntoView({
+                behavior: 'smooth',
+                block: 'center'
+            });
+
+        }
+
+
+        // ==================================
+        // 16. CREATE AND PUBLISH PROJECT
         // ==================================
 
         deployBtn.addEventListener('click', async function() {
@@ -857,6 +1040,8 @@
             resultContainer.classList.add('hidden');
 
             publishedSiteUrl = null;
+
+            createdSiteId = null;
 
 
             // Validate name
@@ -915,7 +1100,7 @@
             deployBtn.disabled = true;
 
             deployBtn.textContent =
-                '⏳ جاري نشر موقعك على Netlify...';
+                '⏳ جاري إنشاء ونشر موقعك...';
 
             showStatus(
                 'جاري إنشاء الموقع ورفع الملفات إلى Netlify، المرجو الانتظار...',
@@ -946,78 +1131,33 @@
                     throw new Error(
                         result?.error ||
                         result?.message ||
-                        'تعذر نشر الموقع على Netlify.'
+                        'تعذر إنشاء أو نشر الموقع.'
                     );
 
                 }
 
 
-                // Prefer the actual Netlify URL
-                const liveUrl =
-                    result.liveUrl || result.url;
+                // Extract information from server response.
+                const siteData = getSiteData(result);
+
+                createdSiteId = siteData.siteId;
 
 
-                if (!liveUrl) {
+                // Important:
+                // A missing Netlify URL is NOT a publishing error.
+                // The backend may have deployed the project successfully
+                // while the custom domain is still being provisioned.
 
-                    throw new Error(
-                        'السيرفر لم يرجع رابط الموقع بعد النشر.'
-                    );
-
-                }
-
-
-                // Validate URL
-                let validUrl;
-
-                try {
-
-                    validUrl = new URL(liveUrl);
-
-                    if (validUrl.protocol !== 'https:') {
-                        throw new Error('Invalid protocol');
-                    }
-
-                } catch (error) {
-
-                    throw new Error(
-                        'الرابط الذي رجع من السيرفر غير صالح.'
-                    );
-
-                }
-
-
-                publishedSiteUrl = validUrl.href;
-
-
-                // Show success
-                resultLink.href = publishedSiteUrl;
-
-                resultUrl.href = publishedSiteUrl;
-
-                resultUrl.textContent = publishedSiteUrl;
-
-                resultContainer.classList.remove('hidden');
-
-
-                showStatus(
-                    'تم نشر موقعك بنجاح على Netlify! 🎉',
-                    'success'
-                );
-
-
-                resultContainer.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'center'
-                });
+                showDeployResult(siteData);
 
 
             } catch (error) {
 
-                console.error('Netlify publishing error:', error);
+                console.error('Project publishing error:', error);
 
                 showStatus(
                     error.message ||
-                    'حدث خطأ أثناء نشر الموقع. حاول مرة أخرى.',
+                    'حدث خطأ أثناء إنشاء الموقع. حاول مرة أخرى.',
                     'error'
                 );
 
@@ -1026,7 +1166,7 @@
                 deployBtn.disabled = false;
 
                 deployBtn.textContent =
-                    '🚀 نشر الموقع على Netlify';
+                    '🚀 إنشاء ونشر الموقع';
 
             }
 
@@ -1034,7 +1174,7 @@
 
 
         // ==================================
-        // 14. COPY LIVE URL
+        // 17. COPY CUSTOM DOMAIN URL
         // ==================================
 
         copyLinkBtn.addEventListener('click', async function() {
@@ -1042,7 +1182,7 @@
             if (!publishedSiteUrl) {
 
                 showStatus(
-                    'لا يوجد رابط لنسخه.',
+                    'الدومين الخاص لم يصبح جاهزاً للنسخ بعد.',
                     'error'
                 );
 
@@ -1104,7 +1244,7 @@
 
 
         // ==================================
-        // 15. STATUS MESSAGE
+        // 18. STATUS MESSAGE
         // ==================================
 
         function showStatus(message, type) {
@@ -1138,7 +1278,7 @@
 
 
         // ==================================
-        // 16. INITIALIZE PAGE
+        // 19. INITIALIZE PAGE
         // ==================================
 
         renderTemplates();

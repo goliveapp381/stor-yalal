@@ -71,7 +71,7 @@ async function apiRequest(endpoint, options = {}) {
 
 
 // ==========================================
-// 3. URL HELPER
+// 3. URL HELPERS
 // ==========================================
 
 function addUserId(endpoint, userId) {
@@ -84,7 +84,121 @@ function addUserId(endpoint, userId) {
 
 
 // ==========================================
-// 4. TEMPLATECRAFT API
+// 4. RESPONSE NORMALIZATION
+// ==========================================
+
+function normalizeSite(site) {
+    if (!site || typeof site !== 'object') {
+        return site;
+    }
+
+    const customUrl = site.customUrl || null;
+    const domainStatus = site.domainStatus || 'pending';
+
+    const customDomainActive =
+        domainStatus === 'active' &&
+        typeof customUrl === 'string' &&
+        customUrl.startsWith('https://');
+
+    return {
+        ...site,
+
+        // Keep the original Netlify URL for internal compatibility.
+        liveUrl: site.liveUrl || null,
+
+        // Custom domain information.
+        customUrl,
+        customDomain: site.customDomain || null,
+        domainStatus,
+        domainError: site.domainError || null,
+
+        // Public URL must only be the verified custom domain.
+        publicUrl: customDomainActive
+            ? customUrl
+            : null,
+
+        // Useful for frontend status display.
+        domainPending: !customDomainActive
+    };
+}
+
+
+function normalizeSiteResponse(result) {
+    if (!result || typeof result !== 'object') {
+        return result;
+    }
+
+    const normalized = { ...result };
+
+    if (normalized.site) {
+        normalized.site = normalizeSite(normalized.site);
+    }
+
+    if (Array.isArray(normalized.sites)) {
+        normalized.sites = normalized.sites.map(normalizeSite);
+    }
+
+    return normalized;
+}
+
+
+function normalizeDeployResponse(result) {
+    if (!result || typeof result !== 'object') {
+        return result;
+    }
+
+    const normalized = normalizeSiteResponse(result);
+
+    const site = normalized.site || {};
+
+    const liveUrl =
+        normalized.liveUrl ||
+        site.liveUrl ||
+        normalized.deployUrl ||
+        null;
+
+    const customUrl =
+        normalized.customUrl ||
+        site.customUrl ||
+        null;
+
+    const domainStatus =
+        normalized.domainStatus ||
+        site.domainStatus ||
+        'pending';
+
+    const customDomainActive =
+        domainStatus === 'active' &&
+        typeof customUrl === 'string' &&
+        customUrl.startsWith('https://');
+
+    return {
+        ...normalized,
+
+        // Netlify URL remains available for internal operations.
+        liveUrl,
+
+        // Custom domain details.
+        customUrl,
+        customDomain:
+            normalized.customDomain ||
+            site.customDomain ||
+            null,
+
+        domainStatus,
+
+        // Only expose the custom domain after SSL is confirmed.
+        publicUrl: customDomainActive
+            ? customUrl
+            : null,
+
+        domainPending: !customDomainActive
+    };
+}
+
+
+// ==========================================
+// 5. TEMPLATECRAFT API
 // ==========================================
 
 const TemplateCraftAPI = {
@@ -129,10 +243,12 @@ const TemplateCraftAPI = {
     // --------------------------------------
 
     async deploy(siteData) {
-        return apiRequest('/api/deploy', {
+        const result = await apiRequest('/api/deploy', {
             method: 'POST',
             body: JSON.stringify(siteData)
         });
+
+        return normalizeDeployResponse(result);
     },
 
 
@@ -148,12 +264,14 @@ const TemplateCraftAPI = {
             };
         }
 
-        return apiRequest(
+        const result = await apiRequest(
             `/api/sites/${encodeURIComponent(userId)}`,
             {
                 method: 'GET'
             }
         );
+
+        return normalizeSiteResponse(result);
     },
 
 
@@ -174,9 +292,11 @@ const TemplateCraftAPI = {
             userId
         );
 
-        return apiRequest(endpoint, {
+        const result = await apiRequest(endpoint, {
             method: 'GET'
         });
+
+        return normalizeSiteResponse(result);
     },
 
 
@@ -192,13 +312,15 @@ const TemplateCraftAPI = {
             };
         }
 
-        return apiRequest(
+        const result = await apiRequest(
             `/api/site/${encodeURIComponent(siteId)}`,
             {
                 method: 'PUT',
                 body: JSON.stringify(projectData)
             }
         );
+
+        return normalizeSiteResponse(result);
     },
 
 
@@ -225,7 +347,9 @@ const TemplateCraftAPI = {
     },
 
 
+    // --------------------------------------
     // Backward Compatibility
+    // --------------------------------------
 
     async getProjectFiles(siteId, userId) {
         return this.getSiteFiles(siteId, userId);
@@ -258,7 +382,9 @@ const TemplateCraftAPI = {
     },
 
 
+    // --------------------------------------
     // Backward Compatibility
+    // --------------------------------------
 
     async saveProjectFile(siteId, filePath, content, userId) {
         return this.saveSiteFile(siteId, {
@@ -324,6 +450,31 @@ const TemplateCraftAPI = {
 
 
     // --------------------------------------
+    // Get Project Domain Status
+    // --------------------------------------
+
+    async getDomainStatus(siteId, userId) {
+        if (!siteId) {
+            return {
+                success: false,
+                error: 'معرف المشروع غير موجود'
+            };
+        }
+
+        const endpoint = addUserId(
+            `/api/site/${encodeURIComponent(siteId)}/domain-status`,
+            userId
+        );
+
+        const result = await apiRequest(endpoint, {
+            method: 'GET'
+        });
+
+        return normalizeSiteResponse(result);
+    },
+
+
+    // --------------------------------------
     // Publish Project to Netlify
     // --------------------------------------
 
@@ -352,30 +503,33 @@ const TemplateCraftAPI = {
             }
         );
 
-        // Normalize the publish response.
-        if (result.success) {
-            return {
-                ...result,
-                liveUrl:
-                    result.liveUrl ||
-                    result.url ||
-                    result.deployUrl ||
-                    null,
-                publishStatus:
-                    result.publishStatus ||
-                    result.status ||
-                    'processing'
-            };
+        if (!result || !result.success) {
+            return result;
         }
 
-        return result;
+        const normalized = normalizeDeployResponse(result);
+
+        return {
+            ...normalized,
+
+            liveUrl:
+                normalized.liveUrl ||
+                normalized.url ||
+                normalized.deployUrl ||
+                null,
+
+            publishStatus:
+                normalized.publishStatus ||
+                normalized.status ||
+                'processing'
+        };
     }
 
 };
 
 
 // ==========================================
-// 5. GLOBAL API ACCESS
+// 6. GLOBAL API ACCESS
 // ==========================================
 
 window.TemplateCraftAPI = TemplateCraftAPI;

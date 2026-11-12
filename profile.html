@@ -77,7 +77,7 @@
 
 <main class="max-w-7xl mx-auto px-6 py-10 w-full">
 
-    <div class="mb-8 flex justify-between items-center border-b pb-4">
+    <div class="mb-8 flex justify-between items-center border-b pb-4 gap-3">
 
         <div>
             <h2 class="text-2xl font-bold text-gray-900">
@@ -89,12 +89,24 @@
             </p>
         </div>
 
-        <a
-            href="index.html"
-            class="text-purple-600 text-sm font-bold"
-        >
-            ← الرئيسية
-        </a>
+        <div class="flex items-center gap-3">
+
+            <button
+                id="refresh-projects"
+                type="button"
+                class="text-purple-600 hover:bg-purple-50 px-3 py-2 rounded-xl text-sm font-bold"
+            >
+                ↻ تحديث
+            </button>
+
+            <a
+                href="index.html"
+                class="text-purple-600 text-sm font-bold"
+            >
+                ← الرئيسية
+            </a>
+
+        </div>
 
     </div>
 
@@ -133,6 +145,7 @@
 
     if (!storedUser) {
         window.location.href = 'login.html';
+        throw new Error('User not authenticated');
     }
 
     let user = null;
@@ -151,6 +164,7 @@
 
         window.location.href = 'login.html';
 
+        throw error;
     }
 
 
@@ -192,19 +206,44 @@
     }
 
 
-    function getSafeProjectUrl(url) {
+    // ==========================================
+    // SAFE CUSTOM DOMAIN URL
+    // ==========================================
 
-        if (!url || typeof url !== 'string') {
+    function getSafeProjectUrl(site) {
+
+        if (!site || typeof site !== 'object') {
+            return null;
+        }
+
+        // Never show the Netlify URL publicly.
+        // The custom domain must be active first.
+
+        if (site.domainStatus !== 'active') {
+            return null;
+        }
+
+        if (
+            !site.customUrl ||
+            typeof site.customUrl !== 'string'
+        ) {
             return null;
         }
 
         try {
 
-            const parsed = new URL(url, window.location.origin);
+            const parsed = new URL(site.customUrl);
 
+            if (parsed.protocol !== 'https:') {
+                return null;
+            }
+
+            const hostname = parsed.hostname.toLowerCase();
+
+            // Accept only a subdomain of our configured root domain.
             if (
-                parsed.protocol !== 'http:' &&
-                parsed.protocol !== 'https:'
+                !hostname.endsWith('.gollivetv.com') ||
+                hostname === 'gollivetv.com'
             ) {
                 return null;
             }
@@ -216,6 +255,61 @@
             return null;
 
         }
+
+    }
+
+
+    // ==========================================
+    // DOMAIN STATUS DISPLAY
+    // ==========================================
+
+    function getDomainStatus(site, projectUrl) {
+
+        if (projectUrl) {
+
+            return {
+                label: 'الدومين جاهز',
+                description: 'موقعك متاح الآن عبر الدومين الخاص.',
+                style: 'bg-green-50 text-green-700 border-green-200',
+                icon: '✅'
+            };
+
+        }
+
+        if (
+            site.domainStatus === 'failed' ||
+            site.domainStatus === 'error'
+        ) {
+
+            return {
+                label: 'تعذر تجهيز الدومين',
+                description: 'حدث مشكل أثناء إعداد الدومين. حاول تحديث الحالة.',
+                style: 'bg-red-50 text-red-700 border-red-200',
+                icon: '⚠️'
+            };
+
+        }
+
+        if (
+            site.domainStatus === 'active' &&
+            !projectUrl
+        ) {
+
+            return {
+                label: 'الرابط غير متاح',
+                description: 'تعذر التحقق من رابط الدومين.',
+                style: 'bg-yellow-50 text-yellow-700 border-yellow-200',
+                icon: '⚠️'
+            };
+
+        }
+
+        return {
+            label: 'جاري تجهيز الدومين',
+            description: 'يتم إعداد DNS وشهادة SSL. سيظهر الرابط عند اكتمال العملية.',
+            style: 'bg-yellow-50 text-yellow-700 border-yellow-200',
+            icon: '⏳'
+        };
 
     }
 
@@ -360,8 +454,14 @@
                     ? new Date(site.createdAt).toLocaleDateString('ar-MA')
                     : '-';
 
-                const projectUrl =
-                    getSafeProjectUrl(site.liveUrl);
+
+                // Only the verified custom domain is displayed.
+                const projectUrl = getSafeProjectUrl(site);
+
+                const domainStatus = getDomainStatus(
+                    site,
+                    projectUrl
+                );
 
                 const editorUrl = siteId
                     ? `editor.html?siteId=${encodeURIComponent(siteId)}`
@@ -411,12 +511,34 @@
                         </div>
 
 
+                        <!-- DOMAIN STATUS -->
+
+                        <div class="border rounded-xl p-3 mb-4 ${domainStatus.style}">
+
+                            <div class="font-bold text-sm mb-1">
+                                ${domainStatus.icon}
+                                ${escapeHtml(domainStatus.label)}
+                            </div>
+
+                            <p class="text-xs">
+                                ${escapeHtml(domainStatus.description)}
+                            </p>
+
+                        </div>
+
+
+                        <!-- CUSTOM DOMAIN URL -->
+
                         <div
                             class="bg-gray-50 p-3 rounded-xl border text-xs text-gray-600 font-mono truncate mb-5"
                             dir="ltr"
-                            title="${escapeAttribute(projectUrl || 'لا يوجد رابط')}"
+                            title="${escapeAttribute(projectUrl || 'الدومين قيد التجهيز')}"
                         >
-                            ${escapeHtml(projectUrl || 'لا يوجد رابط للمشروع')}
+                            ${
+                                projectUrl
+                                ? escapeHtml(projectUrl)
+                                : 'الدومين الخاص قيد التجهيز...'
+                            }
                         </div>
 
                     </div>
@@ -463,6 +585,7 @@
                                 <button
                                     disabled
                                     class="bg-gray-100 text-gray-400 py-2.5 rounded-xl text-sm font-bold cursor-not-allowed"
+                                    title="سيصبح متاحاً بعد تجهيز الدومين"
                                 >
                                     👁️ غير متاح
                                 </button>
@@ -472,8 +595,9 @@
 
                         <button
                             type="button"
-                            class="copy-project-link bg-gray-100 hover:bg-gray-200 text-gray-700 py-2.5 rounded-xl text-sm font-bold transition"
+                            class="copy-project-link bg-gray-100 hover:bg-gray-200 text-gray-700 py-2.5 rounded-xl text-sm font-bold transition ${!projectUrl ? 'opacity-50 cursor-not-allowed' : ''}"
                             data-url="${escapeAttribute(projectUrl || '')}"
+                            ${!projectUrl ? 'disabled' : ''}
                         >
                             📋 نسخ الرابط
                         </button>
@@ -500,7 +624,7 @@
 
                     if (!url) {
 
-                        alert('لا يوجد رابط لهذا المشروع حالياً.');
+                        alert('الدومين الخاص بالمشروع مازال قيد التجهيز.');
 
                         return;
                     }
@@ -564,6 +688,19 @@
             localStorage.removeItem('user');
 
             window.location.href = 'login.html';
+
+        });
+
+
+    // ==========================================
+    // REFRESH PROJECTS
+    // ==========================================
+
+    document
+        .getElementById('refresh-projects')
+        .addEventListener('click', () => {
+
+            loadUserSites();
 
         });
 
