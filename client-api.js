@@ -18,34 +18,53 @@ const TEMPLATECRAFT_API_BASE_URL = (
 
 async function apiRequest(endpoint, options = {}) {
     try {
+        const headers = {
+            ...(options.body instanceof FormData
+                ? {}
+                : { 'Content-Type': 'application/json' }),
+            ...(options.headers || {})
+        };
+
         const response = await fetch(
             `${TEMPLATECRAFT_API_BASE_URL}${endpoint}`,
             {
                 ...options,
-                headers: {
-                    'Content-Type': 'application/json',
-                    ...(options.headers || {})
-                }
+                headers
             }
         );
 
-        const data = await response.json().catch(() => ({
-            success: false,
-            error: 'استجابة غير صالحة من السيرفر'
-        }));
+        const responseText = await response.text();
 
-        if (!response.ok && data.success === undefined) {
-            data.success = false;
+        let data;
+
+        try {
+            data = responseText ? JSON.parse(responseText) : {};
+        } catch (_) {
+            data = {
+                success: false,
+                error: 'استجابة غير صالحة من السيرفر'
+            };
+        }
+
+        if (!response.ok) {
+            return {
+                ...data,
+                success: false,
+                error:
+                    data.error ||
+                    data.message ||
+                    `خطأ من السيرفر: ${response.status}`
+            };
         }
 
         return data;
 
     } catch (error) {
-        console.error('API Request Error:', error);
+        console.error('TemplateCraft API Error:', error);
 
         return {
             success: false,
-            error: 'تعذر الاتصال بالسيرفر. تأكد من اتصال Backend.'
+            error: 'تعذر الاتصال بالسيرفر. تحقق من الإنترنت وحالة Backend.'
         };
     }
 }
@@ -70,14 +89,21 @@ function addUserId(endpoint, userId) {
 
 const TemplateCraftAPI = {
 
+    // --------------------------------------
     // Server Status
+    // --------------------------------------
+
     async status() {
         return apiRequest('/api/status', {
             method: 'GET'
         });
     },
 
+
+    // --------------------------------------
     // Signup
+    // --------------------------------------
+
     async signup(userData) {
         return apiRequest('/api/signup', {
             method: 'POST',
@@ -85,7 +111,11 @@ const TemplateCraftAPI = {
         });
     },
 
+
+    // --------------------------------------
     // Login
+    // --------------------------------------
+
     async login(credentials) {
         return apiRequest('/api/login', {
             method: 'POST',
@@ -93,7 +123,11 @@ const TemplateCraftAPI = {
         });
     },
 
+
+    // --------------------------------------
     // Deploy New Project
+    // --------------------------------------
+
     async deploy(siteData) {
         return apiRequest('/api/deploy', {
             method: 'POST',
@@ -101,7 +135,11 @@ const TemplateCraftAPI = {
         });
     },
 
+
+    // --------------------------------------
     // Get User Projects
+    // --------------------------------------
+
     async getSites(userId) {
         if (!userId) {
             return {
@@ -118,7 +156,11 @@ const TemplateCraftAPI = {
         );
     },
 
+
+    // --------------------------------------
     // Get Single Project
+    // --------------------------------------
+
     async getSite(siteId, userId) {
         if (!siteId) {
             return {
@@ -137,7 +179,11 @@ const TemplateCraftAPI = {
         });
     },
 
+
+    // --------------------------------------
     // Update Project
+    // --------------------------------------
+
     async updateSite(siteId, projectData = {}) {
         if (!siteId) {
             return {
@@ -155,7 +201,11 @@ const TemplateCraftAPI = {
         );
     },
 
+
+    // --------------------------------------
     // Get Project Files
+    // --------------------------------------
+
     async getSiteFiles(siteId, userId) {
         if (!siteId) {
             return {
@@ -174,12 +224,18 @@ const TemplateCraftAPI = {
         });
     },
 
+
     // Backward Compatibility
+
     async getProjectFiles(siteId, userId) {
         return this.getSiteFiles(siteId, userId);
     },
 
+
+    // --------------------------------------
     // Save Edited Project File
+    // --------------------------------------
+
     async saveSiteFile(siteId, fileData = {}) {
         if (!siteId || !fileData.filePath) {
             return {
@@ -201,7 +257,9 @@ const TemplateCraftAPI = {
         );
     },
 
+
     // Backward Compatibility
+
     async saveProjectFile(siteId, filePath, content, userId) {
         return this.saveSiteFile(siteId, {
             userId,
@@ -210,7 +268,11 @@ const TemplateCraftAPI = {
         });
     },
 
+
+    // --------------------------------------
     // Get Available Templates
+    // --------------------------------------
+
     async getTemplates(projectType) {
         if (!projectType) {
             return {
@@ -227,7 +289,11 @@ const TemplateCraftAPI = {
         );
     },
 
+
+    // --------------------------------------
     // Get Template Preview URL
+    // --------------------------------------
+
     getTemplatePreviewUrl(projectType, templateId) {
         if (!projectType || !templateId) {
             return null;
@@ -240,7 +306,11 @@ const TemplateCraftAPI = {
         );
     },
 
+
+    // --------------------------------------
     // Get Project Preview URL
+    // --------------------------------------
+
     getProjectPreviewUrl(siteName) {
         if (!siteName) {
             return null;
@@ -252,7 +322,11 @@ const TemplateCraftAPI = {
         );
     },
 
-    // Publish Project
+
+    // --------------------------------------
+    // Publish Project to Netlify
+    // --------------------------------------
+
     async publish(siteId, userId) {
         if (!siteId) {
             return {
@@ -261,7 +335,14 @@ const TemplateCraftAPI = {
             };
         }
 
-        return apiRequest(
+        if (!userId) {
+            return {
+                success: false,
+                error: 'معرف المستخدم غير موجود'
+            };
+        }
+
+        const result = await apiRequest(
             `/api/site/${encodeURIComponent(siteId)}/publish`,
             {
                 method: 'POST',
@@ -270,6 +351,24 @@ const TemplateCraftAPI = {
                 })
             }
         );
+
+        // Normalize the publish response.
+        if (result.success) {
+            return {
+                ...result,
+                liveUrl:
+                    result.liveUrl ||
+                    result.url ||
+                    result.deployUrl ||
+                    null,
+                publishStatus:
+                    result.publishStatus ||
+                    result.status ||
+                    'processing'
+            };
+        }
+
+        return result;
     }
 
 };
@@ -280,3 +379,4 @@ const TemplateCraftAPI = {
 // ==========================================
 
 window.TemplateCraftAPI = TemplateCraftAPI;
+window.TEMPLATECRAFT_API_BASE_URL = TEMPLATECRAFT_API_BASE_URL;
