@@ -11,13 +11,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
     <style>
-        * {
-            font-family: 'Cairo', sans-serif;
-        }
+        * { font-family: 'Cairo', sans-serif; }
 
-        body {
-            background: #f8fafc;
-        }
+        body { background: #f8fafc; }
 
         .template-card {
             transition: all .25s ease;
@@ -57,13 +53,8 @@
             cursor: not-allowed;
         }
 
-        .modal {
-            display: none;
-        }
-
-        .modal.active {
-            display: flex;
-        }
+        .modal { display: none; }
+        .modal.active { display: flex; }
 
         .loader {
             width: 30px;
@@ -85,28 +76,21 @@
     <!-- HEADER -->
     <header class="bg-white border-b shadow-sm">
         <div class="max-w-6xl mx-auto px-5 py-4 flex justify-between items-center">
-
-            <a href="index.html"
-               class="text-xl font-extrabold text-purple-700">
+            <a href="index.html" class="text-xl font-extrabold text-purple-700">
                 TemplateCraft Pro
             </a>
 
-            <a href="profile.html"
-               class="text-sm font-bold text-gray-600 hover:text-purple-700">
+            <a href="profile.html" class="text-sm font-bold text-gray-600 hover:text-purple-700">
                 مشاريعي
             </a>
-
         </div>
     </header>
 
-
     <!-- MAIN -->
     <main class="max-w-6xl mx-auto px-4 py-10">
-
         <div class="bg-white rounded-2xl shadow-sm border p-6 md:p-8">
 
             <div class="mb-8">
-
                 <span class="text-purple-700 text-sm font-bold">
                     TEMPLATECRAFT BUILDER
                 </span>
@@ -118,15 +102,11 @@
                 <p class="text-gray-500 mt-2">
                     اختر تصنيف موقعك، شاهد القوالب الحقيقية قبل الاختيار، ثم انشر موقعك بدومينك الخاص.
                 </p>
-
             </div>
-
 
             <!-- SITE NAME -->
             <div class="mb-7">
-
-                <label for="siteNameInput"
-                       class="block font-bold text-gray-800 mb-2">
+                <label for="siteNameInput" class="block font-bold text-gray-800 mb-2">
                     اسم الموقع
                 </label>
 
@@ -141,15 +121,11 @@
                 <p class="text-xs text-gray-400 mt-2">
                     استعمل الحروف الإنجليزية والأرقام والشرطة فقط.
                 </p>
-
             </div>
-
 
             <!-- CATEGORY -->
             <div class="mb-8">
-
-                <label for="projectTypeSelect"
-                       class="block font-bold text-gray-800 mb-2">
+                <label for="projectTypeSelect" class="block font-bold text-gray-800 mb-2">
                     نوع الموقع
                 </label>
 
@@ -162,17 +138,12 @@
                     <option value="ecommerce">🛒 المتاجر الإلكترونية</option>
                     <option value="real-estate">🏠 العقارات</option>
                     <option value="restaurant-demo">🍽️ المطاعم والمقاهي</option>
-
                 </select>
-
             </div>
-
 
             <!-- TEMPLATE SELECTION -->
             <div class="mb-8">
-
                 <div class="flex flex-wrap justify-between items-center gap-3 mb-5">
-
                     <div>
                         <h2 class="font-extrabold text-lg">
                             اختر القالب المناسب
@@ -187,16 +158,12 @@
                           class="text-xs text-purple-700 bg-purple-50 px-3 py-2 rounded-lg font-bold">
                         القالب 1 محدد
                     </span>
-
                 </div>
-
 
                 <div id="templatesGrid"
                      class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
                 </div>
-
             </div>
-
 
             <!-- USER INFO -->
             <div id="userInfo"
@@ -210,20 +177,15 @@
                    class="text-xs text-purple-600 mt-1"
                    dir="ltr">
                 </p>
-
             </div>
-
 
             <!-- DEPLOY BUTTON -->
             <button
                 id="deployBtn"
                 type="button"
                 class="w-full bg-purple-600 hover:bg-purple-700 text-white p-4 rounded-xl font-extrabold transition shadow-lg">
-
                 🚀 إنشاء ونشر الموقع
-
             </button>
-
 
             <!-- STATUS -->
             <div id="statusMessage"
@@ -231,7 +193,6 @@
                  role="status"
                  aria-live="polite">
             </div>
-
 
             <!-- RESULT -->
             <div id="resultContainer"
@@ -242,8 +203,7 @@
                     ✅ تم إنشاء مشروعك بنجاح!
                 </h3>
 
-                <p id="resultDescription"
-                   class="text-gray-600 text-sm mb-4">
+                <p id="resultDescription" class="text-gray-600 text-sm mb-4">
                     جاري تجهيز الدومين الخاص بموقعك.
                 </p>
 
@@ -266,11 +226,9 @@
                        class="hidden text-yellow-700 font-bold text-sm mt-2">
                         ⏳ الدومين الخاص قيد التجهيز. سيظهر الرابط هنا بعد تأكيد DNS وSSL.
                     </p>
-
                 </div>
 
                 <div class="flex flex-col sm:flex-row justify-center gap-3">
-
                     <a id="resultLink"
                        href="#"
                        target="_blank"
@@ -285,24 +243,17 @@
                             class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-xl font-bold">
                         📋 نسخ الرابط
                     </button>
-
                 </div>
 
                 <div class="mt-5">
-
                     <a href="profile.html"
                        class="text-purple-700 font-bold text-sm hover:underline">
                         الذهاب إلى مشاريعي وتعديل الموقع
                     </a>
-
                 </div>
-
             </div>
-
         </div>
-
     </main>
-
 
     <!-- PREVIEW MODAL -->
     <div id="previewModal"
@@ -311,10 +262,8 @@
         <div class="bg-white w-full max-w-6xl rounded-2xl overflow-hidden shadow-2xl">
 
             <div class="flex justify-between items-center p-4 border-b">
-
                 <div>
-                    <h3 id="previewTitle"
-                        class="font-extrabold text-gray-900">
+                    <h3 id="previewTitle" class="font-extrabold text-gray-900">
                         معاينة القالب
                     </h3>
 
@@ -328,23 +277,18 @@
                         class="bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg px-4 py-2 font-bold">
                     ✕ إغلاق
                 </button>
-
             </div>
 
             <div id="previewLoading"
                  class="flex flex-col items-center justify-center p-10 gap-3">
-
                 <div class="loader"></div>
 
                 <p class="text-sm text-gray-500">
                     جاري تحميل معاينة القالب...
                 </p>
-
             </div>
 
-            <div id="previewError"
-                 class="hidden text-center p-10">
-
+            <div id="previewError" class="hidden text-center p-10">
                 <p class="text-red-600 font-bold">
                     تعذر تحميل المعاينة.
                 </p>
@@ -352,7 +296,6 @@
                 <p class="text-sm text-gray-500 mt-2">
                     تأكد من تشغيل السيرفر وتوفر ملفات القالب.
                 </p>
-
             </div>
 
             <iframe id="previewFrame"
@@ -362,7 +305,6 @@
             </iframe>
 
             <div class="p-4 border-t flex flex-wrap justify-between items-center gap-3">
-
                 <p class="text-xs text-gray-500">
                     اختر هذا القالب لإنشاء مشروعك.
                 </p>
@@ -372,916 +314,650 @@
                         class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-xl font-bold">
                     اختيار هذا القالب
                 </button>
-
             </div>
-
         </div>
-
     </div>
-
 
     <!-- API CLIENT -->
     <script src="./client-api.js"></script>
 
-
     <!-- PAGE SCRIPT -->
     <script>
 
-        // ==================================
-        // 1. USER AUTHENTICATION
-        // ==================================
+    // ==================================
+    // 1. USER AUTHENTICATION - JWT
+    // ==================================
 
-        let user = null;
+    let user = null;
 
-        try {
-            user = JSON.parse(
-                localStorage.getItem('user') || 'null'
-            );
-        } catch (error) {
-            user = null;
+    try {
+        user = JSON.parse(localStorage.getItem('user') || 'null');
+    } catch (error) {
+        user = null;
+    }
+
+    const userId = user && (user.id || user._id);
+    const authToken = localStorage.getItem('token');
+
+    // خاص يكون المستخدم مسجل الدخول وعندو JWT.
+    if (!user || !userId || !authToken) {
+        localStorage.removeItem('user');
+        localStorage.removeItem('token');
+
+        alert('انتهت جلسة تسجيل الدخول أو لم يتم تسجيل الدخول. المرجو تسجيل الدخول مجدداً.');
+
+        window.location.replace('login.html');
+
+        throw new Error('Authentication required: JWT token missing');
+    }
+
+    // ==================================
+    // 2. TEMPLATE CONFIGURATION
+    // ==================================
+
+    const templateList = [
+        {
+            id: 'template-1',
+            name: 'القالب الأول',
+            description: 'تصميم احترافي'
+        },
+        {
+            id: 'template-2',
+            name: 'القالب الثاني',
+            description: 'تصميم عصري'
+        },
+        {
+            id: 'template-3',
+            name: 'القالب الثالث',
+            description: 'تصميم أنيق'
+        },
+        {
+            id: 'template-4',
+            name: 'القالب الرابع',
+            description: 'تصميم متطور'
+        },
+        {
+            id: 'template-5',
+            name: 'القالب الخامس',
+            description: 'تصميم مميز'
+        },
+        {
+            id: 'template-6',
+            name: 'القالب السادس',
+            description: 'تصميم إبداعي'
         }
+    ];
 
-        const userId = user && (user.id || user._id);
+    let selectedTemplateId = 'template-1';
+    let previewTemplateId = null;
+    let publishedSiteUrl = null;
+    let createdSiteId = null;
 
-        if (!user || !userId) {
+    // ==================================
+    // 3. ELEMENTS
+    // ==================================
 
-            alert('يجب تسجيل الدخول أولاً');
+    const templatesGrid = document.getElementById('templatesGrid');
+    const projectTypeSelect = document.getElementById('projectTypeSelect');
+    const selectedLabel = document.getElementById('selectedLabel');
+    const deployBtn = document.getElementById('deployBtn');
+    const statusMessage = document.getElementById('statusMessage');
+    const resultContainer = document.getElementById('resultContainer');
+    const resultTitle = document.getElementById('resultTitle');
+    const resultDescription = document.getElementById('resultDescription');
+    const resultUrl = document.getElementById('resultUrl');
+    const resultLink = document.getElementById('resultLink');
+    const resultPending = document.getElementById('resultPending');
+    const copyLinkBtn = document.getElementById('copyLinkBtn');
+    const previewModal = document.getElementById('previewModal');
+    const previewFrame = document.getElementById('previewFrame');
+    const previewLoading = document.getElementById('previewLoading');
+    const previewError = document.getElementById('previewError');
 
-            window.location.href = 'login.html';
+    // ==================================
+    // 4. API CHECK
+    // ==================================
 
-            throw new Error('User not authenticated');
+    function apiAvailable() {
+        return (
+            typeof TemplateCraftAPI !== 'undefined' &&
+            typeof TemplateCraftAPI.getTemplatePreviewUrl === 'function'
+        );
+    }
 
-        }
+    // ==================================
+    // 5. TEMPLATE PREVIEW URL
+    // ==================================
 
+    function getPreviewUrl(templateId) {
+        if (!apiAvailable()) return null;
 
-        // ==================================
-        // 2. TEMPLATE CONFIGURATION
-        // ==================================
+        return TemplateCraftAPI.getTemplatePreviewUrl(
+            projectTypeSelect.value,
+            templateId
+        );
+    }
 
-        const templateList = [
-            {
-                id: 'template-1',
-                name: 'القالب الأول',
-                description: 'تصميم احترافي'
-            },
-            {
-                id: 'template-2',
-                name: 'القالب الثاني',
-                description: 'تصميم عصري'
-            },
-            {
-                id: 'template-3',
-                name: 'القالب الثالث',
-                description: 'تصميم أنيق'
-            },
-            {
-                id: 'template-4',
-                name: 'القالب الرابع',
-                description: 'تصميم متطور'
-            },
-            {
-                id: 'template-5',
-                name: 'القالب الخامس',
-                description: 'تصميم مميز'
-            },
-            {
-                id: 'template-6',
-                name: 'القالب السادس',
-                description: 'تصميم إبداعي'
-            }
-        ];
+    // ==================================
+    // 6. RENDER TEMPLATE CARDS
+    // ==================================
 
+    function renderTemplates() {
+        templatesGrid.innerHTML = '';
 
-        let selectedTemplateId = 'template-1';
+        templateList.forEach((template, index) => {
+            const card = document.createElement('div');
 
-        let previewTemplateId = null;
+            card.className =
+                'template-card border-2 border-gray-200 rounded-2xl bg-white' +
+                (template.id === selectedTemplateId ? ' selected' : '');
 
-        let publishedSiteUrl = null;
+            card.dataset.template = template.id;
 
-        let createdSiteId = null;
+            const previewUrl = getPreviewUrl(template.id);
 
+            card.innerHTML = `
+                <div class="relative bg-gray-100 overflow-hidden">
+                    <iframe
+                        class="preview-frame"
+                        src="${previewUrl || 'about:blank'}"
+                        title="${template.name}"
+                        loading="lazy"
+                        tabindex="-1">
+                    </iframe>
 
-        // ==================================
-        // 3. ELEMENTS
-        // ==================================
+                    <div class="absolute inset-0 pointer-events-none bg-gradient-to-t from-black/10 to-transparent"></div>
 
-        const templatesGrid =
-            document.getElementById('templatesGrid');
+                    <span class="absolute top-3 right-3 bg-white text-purple-700 font-extrabold rounded-lg px-3 py-1 text-sm shadow">
+                        ${index + 1}
+                    </span>
+                </div>
 
-        const projectTypeSelect =
-            document.getElementById('projectTypeSelect');
+                <div class="p-4">
+                    <div class="flex justify-between items-center gap-2">
+                        <h3 class="font-extrabold text-gray-900">
+                            ${template.name}
+                        </h3>
 
-        const selectedLabel =
-            document.getElementById('selectedLabel');
-
-        const deployBtn =
-            document.getElementById('deployBtn');
-
-        const statusMessage =
-            document.getElementById('statusMessage');
-
-        const resultContainer =
-            document.getElementById('resultContainer');
-
-        const resultTitle =
-            document.getElementById('resultTitle');
-
-        const resultDescription =
-            document.getElementById('resultDescription');
-
-        const resultUrl =
-            document.getElementById('resultUrl');
-
-        const resultLink =
-            document.getElementById('resultLink');
-
-        const resultPending =
-            document.getElementById('resultPending');
-
-        const copyLinkBtn =
-            document.getElementById('copyLinkBtn');
-
-        const previewModal =
-            document.getElementById('previewModal');
-
-        const previewFrame =
-            document.getElementById('previewFrame');
-
-        const previewLoading =
-            document.getElementById('previewLoading');
-
-        const previewError =
-            document.getElementById('previewError');
-
-
-        // ==================================
-        // 4. API CHECK
-        // ==================================
-
-        function apiAvailable() {
-
-            return (
-                typeof TemplateCraftAPI !== 'undefined' &&
-                typeof TemplateCraftAPI.getTemplatePreviewUrl === 'function'
-            );
-
-        }
-
-
-        // ==================================
-        // 5. TEMPLATE PREVIEW URL
-        // ==================================
-
-        function getPreviewUrl(templateId) {
-
-            if (!apiAvailable()) {
-                return null;
-            }
-
-            const projectType =
-                projectTypeSelect.value;
-
-            return TemplateCraftAPI.getTemplatePreviewUrl(
-                projectType,
-                templateId
-            );
-
-        }
-
-
-        // ==================================
-        // 6. RENDER TEMPLATE CARDS
-        // ==================================
-
-        function renderTemplates() {
-
-            templatesGrid.innerHTML = '';
-
-            templateList.forEach((template, index) => {
-
-                const card = document.createElement('div');
-
-                card.className =
-                    'template-card border-2 border-gray-200 rounded-2xl bg-white' +
-                    (template.id === selectedTemplateId ? ' selected' : '');
-
-                card.dataset.template = template.id;
-
-                const previewUrl =
-                    getPreviewUrl(template.id);
-
-                card.innerHTML = `
-
-                    <div class="relative bg-gray-100 overflow-hidden">
-
-                        <iframe
-                            class="preview-frame"
-                            src="${previewUrl || 'about:blank'}"
-                            title="${template.name}"
-                            loading="lazy"
-                            tabindex="-1">
-                        </iframe>
-
-                        <div class="absolute inset-0 pointer-events-none bg-gradient-to-t from-black/10 to-transparent"></div>
-
-                        <span class="absolute top-3 right-3 bg-white text-purple-700 font-extrabold rounded-lg px-3 py-1 text-sm shadow">
-                            ${index + 1}
+                        <span class="selectedMark text-xs font-bold text-purple-700">
+                            ${template.id === selectedTemplateId ? '✓ محدد' : ''}
                         </span>
-
                     </div>
 
-                    <div class="p-4">
+                    <p class="text-xs text-gray-500 mt-1">
+                        ${template.description}
+                    </p>
 
-                        <div class="flex justify-between items-center gap-2">
+                    <div class="grid grid-cols-2 gap-2 mt-4">
+                        <button type="button"
+                            class="previewButton bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg py-2 text-sm font-bold">
+                            👁️ معاينة
+                        </button>
 
-                            <h3 class="font-extrabold text-gray-900">
-                                ${template.name}
-                            </h3>
-
-                            <span class="selectedMark text-xs font-bold text-purple-700">
-                                ${template.id === selectedTemplateId ? '✓ محدد' : ''}
-                            </span>
-
-                        </div>
-
-                        <p class="text-xs text-gray-500 mt-1">
-                            ${template.description}
-                        </p>
-
-                        <div class="grid grid-cols-2 gap-2 mt-4">
-
-                            <button
-                                type="button"
-                                class="previewButton bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg py-2 text-sm font-bold">
-                                👁️ معاينة
-                            </button>
-
-                            <button
-                                type="button"
-                                class="selectButton bg-purple-600 hover:bg-purple-700 text-white rounded-lg py-2 text-sm font-bold">
-                                اختيار
-                            </button>
-
-                        </div>
-
+                        <button type="button"
+                            class="selectButton bg-purple-600 hover:bg-purple-700 text-white rounded-lg py-2 text-sm font-bold">
+                            اختيار
+                        </button>
                     </div>
+                </div>
+            `;
 
-                `;
+            card.addEventListener('click', function(event) {
+                if (
+                    event.target.closest('.previewButton') ||
+                    event.target.closest('.selectButton')
+                ) return;
 
-
-                card.addEventListener('click', function(event) {
-
-                    if (
-                        event.target.closest('.previewButton') ||
-                        event.target.closest('.selectButton')
-                    ) {
-                        return;
-                    }
-
-                    selectTemplate(template.id);
-
-                });
-
-
-                card.querySelector('.previewButton')
-                    .addEventListener('click', function(event) {
-
-                        event.stopPropagation();
-
-                        openPreview(template.id);
-
-                    });
-
-
-                card.querySelector('.selectButton')
-                    .addEventListener('click', function(event) {
-
-                        event.stopPropagation();
-
-                        selectTemplate(template.id);
-
-                    });
-
-
-                templatesGrid.appendChild(card);
-
+                selectTemplate(template.id);
             });
 
-            updateSelectedLabel();
+            card.querySelector('.previewButton').addEventListener('click', function(event) {
+                event.stopPropagation();
+                openPreview(template.id);
+            });
 
+            card.querySelector('.selectButton').addEventListener('click', function(event) {
+                event.stopPropagation();
+                selectTemplate(template.id);
+            });
+
+            templatesGrid.appendChild(card);
+        });
+
+        updateSelectedLabel();
+    }
+
+    // ==================================
+    // 7. SELECT TEMPLATE
+    // ==================================
+
+    function selectTemplate(templateId) {
+        selectedTemplateId = templateId;
+
+        document.querySelectorAll('.template-card').forEach(card => {
+            const selected = card.dataset.template === templateId;
+
+            card.classList.toggle('selected', selected);
+
+            const mark = card.querySelector('.selectedMark');
+
+            if (mark) {
+                mark.textContent = selected ? '✓ محدد' : '';
+            }
+        });
+
+        updateSelectedLabel();
+    }
+
+    function updateSelectedLabel() {
+        const number = selectedTemplateId.replace('template-', '');
+        selectedLabel.textContent = `القالب ${number} محدد`;
+    }
+
+    // ==================================
+    // 8. OPEN PREVIEW
+    // ==================================
+
+    function openPreview(templateId) {
+        previewTemplateId = templateId;
+
+        const template = templateList.find(item => item.id === templateId);
+
+        document.getElementById('previewTitle').textContent =
+            template ? template.name : 'معاينة القالب';
+
+        previewModal.classList.add('active');
+        previewFrame.classList.add('hidden');
+        previewError.classList.add('hidden');
+        previewLoading.classList.remove('hidden');
+
+        const url = getPreviewUrl(templateId);
+
+        if (!url) {
+            previewLoading.classList.add('hidden');
+            previewError.classList.remove('hidden');
+            return;
         }
 
-
-        // ==================================
-        // 7. SELECT TEMPLATE
-        // ==================================
-
-        function selectTemplate(templateId) {
-
-            selectedTemplateId = templateId;
-
-            document.querySelectorAll('.template-card')
-                .forEach(card => {
-
-                    const selected =
-                        card.dataset.template === templateId;
-
-                    card.classList.toggle('selected', selected);
-
-                    const mark =
-                        card.querySelector('.selectedMark');
-
-                    if (mark) {
-                        mark.textContent =
-                            selected ? '✓ محدد' : '';
-                    }
-
-                });
-
-            updateSelectedLabel();
-
-        }
-
-
-        function updateSelectedLabel() {
-
-            const number =
-                selectedTemplateId.replace('template-', '');
-
-            selectedLabel.textContent =
-                `القالب ${number} محدد`;
-
-        }
-
-
-        // ==================================
-        // 8. OPEN PREVIEW
-        // ==================================
-
-        function openPreview(templateId) {
-
-            previewTemplateId = templateId;
-
-            const template =
-                templateList.find(item => item.id === templateId);
-
-            document.getElementById('previewTitle').textContent =
-                template ? template.name : 'معاينة القالب';
-
-            previewModal.classList.add('active');
-
-            previewFrame.classList.add('hidden');
-
+        previewFrame.onload = function() {
+            previewLoading.classList.add('hidden');
             previewError.classList.add('hidden');
+            previewFrame.classList.remove('hidden');
+        };
 
-            previewLoading.classList.remove('hidden');
+        previewFrame.onerror = function() {
+            previewLoading.classList.add('hidden');
+            previewError.classList.remove('hidden');
+        };
 
-            const url =
-                getPreviewUrl(templateId);
+        previewFrame.src = url;
+    }
 
-            if (!url) {
+    // ==================================
+    // 9. CLOSE PREVIEW
+    // ==================================
 
-                previewLoading.classList.add('hidden');
+    function closePreview() {
+        previewModal.classList.remove('active');
+        previewFrame.src = 'about:blank';
+        previewTemplateId = null;
+    }
 
-                previewError.classList.remove('hidden');
+    document.getElementById('closePreviewBtn')
+        .addEventListener('click', closePreview);
 
-                return;
+    previewModal.addEventListener('click', function(event) {
+        if (event.target === previewModal) closePreview();
+    });
 
-            }
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape') closePreview();
+    });
 
-            previewFrame.onload = function() {
+    // ==================================
+    // 10. CHOOSE FROM PREVIEW
+    // ==================================
 
-                previewLoading.classList.add('hidden');
+    document.getElementById('choosePreviewBtn')
+        .addEventListener('click', function() {
+            if (!previewTemplateId) return;
 
-                previewError.classList.add('hidden');
+            selectTemplate(previewTemplateId);
+            closePreview();
 
-                previewFrame.classList.remove('hidden');
-
-            };
-
-            previewFrame.onerror = function() {
-
-                previewLoading.classList.add('hidden');
-
-                previewError.classList.remove('hidden');
-
-            };
-
-            previewFrame.src = url;
-
-        }
-
-
-        // ==================================
-        // 9. CLOSE PREVIEW
-        // ==================================
-
-        function closePreview() {
-
-            previewModal.classList.remove('active');
-
-            previewFrame.src = 'about:blank';
-
-            previewTemplateId = null;
-
-        }
-
-
-        document.getElementById('closePreviewBtn')
-            .addEventListener('click', closePreview);
-
-
-        previewModal.addEventListener('click', function(event) {
-
-            if (event.target === previewModal) {
-                closePreview();
-            }
-
+            showStatus('تم اختيار القالب بنجاح.', 'success');
         });
 
+    // ==================================
+    // 11. CATEGORY CHANGE
+    // ==================================
 
-        document.addEventListener('keydown', function(event) {
+    projectTypeSelect.addEventListener('change', function() {
+        resultContainer.classList.add('hidden');
+        renderTemplates();
+    });
 
-            if (event.key === 'Escape') {
-                closePreview();
-            }
+    // ==================================
+    // 12. USER INFORMATION
+    // ==================================
 
+    document.getElementById('userInfo').classList.remove('hidden');
+
+    document.getElementById('userEmail').textContent =
+        user.email || user.username || '';
+
+    // ==================================
+    // 13. EXTRACT SITE INFORMATION
+    // ==================================
+
+    function getSiteData(result) {
+        const site = result?.site || result?.project || {};
+
+        return {
+            siteId:
+                site._id ||
+                site.id ||
+                result.siteId ||
+                result.projectId ||
+                null,
+
+            customUrl:
+                result.customUrl ||
+                result.publicUrl ||
+                site.customUrl ||
+                site.publicUrl ||
+                null,
+
+            customDomain:
+                result.customDomain ||
+                site.customDomain ||
+                null,
+
+            domainStatus:
+                result.domainStatus ||
+                site.domainStatus ||
+                'pending',
+
+            liveUrl:
+                result.liveUrl ||
+                result.deployUrl ||
+                site.liveUrl ||
+                null
+        };
+    }
+
+    // ==================================
+    // 14. VALIDATE CUSTOM DOMAIN
+    // ==================================
+
+    function getSafeCustomUrl(url, domainStatus) {
+        if (
+            domainStatus !== 'active' ||
+            !url ||
+            typeof url !== 'string'
+        ) return null;
+
+        try {
+            const parsed = new URL(url);
+
+            if (parsed.protocol !== 'https:') return null;
+
+            const hostname = parsed.hostname.toLowerCase();
+
+            if (
+                !hostname.endsWith('.gollivetv.com') ||
+                hostname === 'gollivetv.com'
+            ) return null;
+
+            return parsed.href;
+        } catch (error) {
+            return null;
+        }
+    }
+
+    // ==================================
+    // 15. SHOW DEPLOY RESULT
+    // ==================================
+
+    function showDeployResult(siteData) {
+        const verifiedUrl = getSafeCustomUrl(
+            siteData.customUrl,
+            siteData.domainStatus
+        );
+
+        publishedSiteUrl = verifiedUrl;
+
+        resultContainer.classList.remove('hidden');
+
+        resultUrl.textContent = '';
+        resultUrl.removeAttribute('href');
+
+        resultLink.classList.add('hidden');
+        resultPending.classList.add('hidden');
+        copyLinkBtn.disabled = true;
+
+        if (verifiedUrl) {
+            resultTitle.textContent = '✅ تم نشر موقعك والدومين جاهز!';
+            resultDescription.textContent = 'موقعك متاح الآن عبر الدومين الخاص بك.';
+
+            resultUrl.textContent = verifiedUrl;
+            resultUrl.href = verifiedUrl;
+
+            resultLink.href = verifiedUrl;
+            resultLink.classList.remove('hidden');
+
+            copyLinkBtn.disabled = false;
+
+            showStatus(
+                'تم نشر الموقع وتأكيد الدومين وشهادة SSL بنجاح! 🎉',
+                'success'
+            );
+        } else {
+            resultTitle.textContent = '✅ تم إنشاء ونشر مشروعك بنجاح!';
+            resultDescription.textContent =
+                'تم إنشاء المشروع. الدومين الخاص مازال قيد التجهيز.';
+
+            resultPending.classList.remove('hidden');
+
+            showStatus(
+                'تم إنشاء المشروع. جاري تجهيز الدومين الخاص وSSL. يمكنك متابعة الحالة من صفحة مشاريعي.',
+                'success'
+            );
+        }
+
+        resultContainer.scrollIntoView({
+            behavior: 'smooth',
+            block: 'center'
         });
+    }
 
+    // ==================================
+    // 16. CREATE AND PUBLISH PROJECT
+    // JWT AUTHENTICATION
+    // ==================================
 
-        // ==================================
-        // 10. CHOOSE FROM PREVIEW
-        // ==================================
+    deployBtn.addEventListener('click', async function() {
+        const siteName = document.getElementById('siteNameInput').value.trim();
+        const projectType = projectTypeSelect.value;
 
-        document.getElementById('choosePreviewBtn')
-            .addEventListener('click', function() {
+        resultContainer.classList.add('hidden');
+        publishedSiteUrl = null;
+        createdSiteId = null;
 
-                if (!previewTemplateId) {
+        if (!siteName) {
+            showStatus('يرجى إدخال اسم الموقع أولاً.', 'error');
+            return;
+        }
+
+        if (!/^[a-zA-Z0-9_-]+$/.test(siteName)) {
+            showStatus(
+                'اسم الموقع يجب أن يحتوي على حروف إنجليزية أو أرقام أو شرطة فقط.',
+                'error'
+            );
+            return;
+        }
+
+        // التحقق من وجود JWT قبل طلب النشر.
+        const currentToken = localStorage.getItem('token');
+
+        if (!currentToken) {
+            localStorage.removeItem('user');
+            localStorage.removeItem('token');
+
+            alert('جلسة الدخول غير موجودة. المرجو تسجيل الدخول مجدداً.');
+
+            window.location.replace('login.html');
+            return;
+        }
+
+        if (
+            typeof TemplateCraftAPI === 'undefined' ||
+            typeof TemplateCraftAPI.deploy !== 'function'
+        ) {
+            showStatus(
+                'ملف client-api.js غير متصل أو لم يتم تحميله.',
+                'error'
+            );
+            return;
+        }
+
+        deployBtn.disabled = true;
+        deployBtn.textContent = '⏳ جاري إنشاء ونشر موقعك...';
+
+        showStatus(
+            'جاري إنشاء الموقع ورفع الملفات إلى Netlify، المرجو الانتظار...',
+            'loading'
+        );
+
+        try {
+            // لا نرسل userId من المتصفح.
+            // Backend يستخرج هوية المستخدم من JWT فقط.
+            // client-api.js يضيف Authorization Bearer تلقائياً.
+
+            const result = await TemplateCraftAPI.deploy({
+                siteName: siteName,
+                templateId: selectedTemplateId,
+
+                variables: {
+                    projectType: projectType
+                }
+            });
+
+            if (!result || !result.success) {
+                const message =
+                    result?.error ||
+                    result?.message ||
+                    'تعذر إنشاء أو نشر الموقع.';
+
+                if (
+                    result?.status === 401 ||
+                    result?.status === 403 ||
+                    /token|unauthorized|غير مصرح|تسجيل الدخول|انتهت الجلسة/i.test(message)
+                ) {
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('user');
+
+                    alert('انتهت جلسة الدخول. المرجو تسجيل الدخول مجدداً.');
+
+                    window.location.replace('login.html');
                     return;
                 }
 
-                selectTemplate(previewTemplateId);
-
-                closePreview();
-
-                showStatus(
-                    'تم اختيار القالب بنجاح.',
-                    'success'
-                );
-
-            });
-
-
-        // ==================================
-        // 11. CATEGORY CHANGE
-        // ==================================
-
-        projectTypeSelect.addEventListener('change', function() {
-
-            resultContainer.classList.add('hidden');
-
-            renderTemplates();
-
-        });
-
-
-        // ==================================
-        // 12. USER INFORMATION
-        // ==================================
-
-        if (user && userId) {
-
-            document.getElementById('userInfo')
-                .classList.remove('hidden');
-
-            document.getElementById('userEmail')
-                .textContent =
-                    user.email ||
-                    user.username ||
-                    '';
-
-        }
-
-
-        // ==================================
-        // 13. EXTRACT SITE INFORMATION
-        // ==================================
-
-        function getSiteData(result) {
-
-            const site =
-                result?.site ||
-                result?.project ||
-                {};
-
-            return {
-                siteId:
-                    site._id ||
-                    site.id ||
-                    result.siteId ||
-                    result.projectId ||
-                    null,
-
-                customUrl:
-                    result.customUrl ||
-                    result.publicUrl ||
-                    site.customUrl ||
-                    site.publicUrl ||
-                    null,
-
-                customDomain:
-                    result.customDomain ||
-                    site.customDomain ||
-                    null,
-
-                domainStatus:
-                    result.domainStatus ||
-                    site.domainStatus ||
-                    'pending',
-
-                liveUrl:
-                    result.liveUrl ||
-                    result.deployUrl ||
-                    site.liveUrl ||
-                    null
-            };
-
-        }
-
-
-        // ==================================
-        // 14. VALIDATE CUSTOM DOMAIN
-        // ==================================
-
-        function getSafeCustomUrl(url, domainStatus) {
-
-            if (
-                domainStatus !== 'active' ||
-                !url ||
-                typeof url !== 'string'
-            ) {
-                return null;
+                throw new Error(message);
             }
 
-            try {
+            const siteData = getSiteData(result);
 
-                const parsed = new URL(url);
+            createdSiteId = siteData.siteId;
 
-                if (parsed.protocol !== 'https:') {
-                    return null;
-                }
+            showDeployResult(siteData);
 
-                const hostname =
-                    parsed.hostname.toLowerCase();
-
-                if (
-                    !hostname.endsWith('.gollivetv.com') ||
-                    hostname === 'gollivetv.com'
-                ) {
-                    return null;
-                }
-
-                return parsed.href;
-
-            } catch (error) {
-
-                return null;
-
-            }
-
-        }
-
-
-        // ==================================
-        // 15. SHOW DEPLOY RESULT
-        // ==================================
-
-        function showDeployResult(siteData) {
-
-            const verifiedUrl = getSafeCustomUrl(
-                siteData.customUrl,
-                siteData.domainStatus
-            );
-
-            publishedSiteUrl = verifiedUrl;
-
-            resultContainer.classList.remove('hidden');
-
-            resultUrl.textContent = '';
-            resultUrl.removeAttribute('href');
-
-            resultLink.classList.add('hidden');
-
-            resultPending.classList.add('hidden');
-
-            copyLinkBtn.disabled = true;
-
-            if (verifiedUrl) {
-
-                resultTitle.textContent =
-                    '✅ تم نشر موقعك والدومين جاهز!';
-
-                resultDescription.textContent =
-                    'موقعك متاح الآن عبر الدومين الخاص بك.';
-
-                resultUrl.textContent = verifiedUrl;
-
-                resultUrl.href = verifiedUrl;
-
-                resultLink.href = verifiedUrl;
-
-                resultLink.classList.remove('hidden');
-
-                copyLinkBtn.disabled = false;
-
-                showStatus(
-                    'تم نشر الموقع وتأكيد الدومين وشهادة SSL بنجاح! 🎉',
-                    'success'
-                );
-
-            } else {
-
-                resultTitle.textContent =
-                    '✅ تم إنشاء ونشر مشروعك بنجاح!';
-
-                resultDescription.textContent =
-                    'تم إنشاء المشروع. الدومين الخاص مازال قيد التجهيز.';
-
-                resultPending.classList.remove('hidden');
-
-                showStatus(
-                    'تم إنشاء المشروع. جاري تجهيز الدومين الخاص وSSL. يمكنك متابعة الحالة من صفحة مشاريعي.',
-                    'success'
-                );
-
-            }
-
-            resultContainer.scrollIntoView({
-                behavior: 'smooth',
-                block: 'center'
-            });
-
-        }
-
-
-        // ==================================
-        // 16. CREATE AND PUBLISH PROJECT
-        // ==================================
-
-        deployBtn.addEventListener('click', async function() {
-
-            const siteName =
-                document.getElementById('siteNameInput')
-                    .value.trim();
-
-            const projectType =
-                projectTypeSelect.value;
-
-            resultContainer.classList.add('hidden');
-
-            publishedSiteUrl = null;
-
-            createdSiteId = null;
-
-
-            // Validate name
-            if (!siteName) {
-
-                showStatus(
-                    'يرجى إدخال اسم الموقع أولاً.',
-                    'error'
-                );
-
-                return;
-
-            }
-
-
-            if (!/^[a-zA-Z0-9_-]+$/.test(siteName)) {
-
-                showStatus(
-                    'اسم الموقع يجب أن يحتوي على حروف إنجليزية أو أرقام أو شرطة فقط.',
-                    'error'
-                );
-
-                return;
-
-            }
-
-
-            if (!user || !userId) {
-
-                showStatus(
-                    'يجب تسجيل الدخول أولاً.',
-                    'error'
-                );
-
-                return;
-
-            }
-
-
-            if (
-                typeof TemplateCraftAPI === 'undefined' ||
-                typeof TemplateCraftAPI.deploy !== 'function'
-            ) {
-
-                showStatus(
-                    'ملف client-api.js غير متصل أو لم يتم تحميله.',
-                    'error'
-                );
-
-                return;
-
-            }
-
-
-            // Start publishing
-            deployBtn.disabled = true;
-
-            deployBtn.textContent =
-                '⏳ جاري إنشاء ونشر موقعك...';
+        } catch (error) {
+            console.error('Project publishing error:', error);
 
             showStatus(
-                'جاري إنشاء الموقع ورفع الملفات إلى Netlify، المرجو الانتظار...',
-                'loading'
+                error.message ||
+                'حدث خطأ أثناء إنشاء الموقع. حاول مرة أخرى.',
+                'error'
             );
 
-
-            try {
-
-                const result =
-                    await TemplateCraftAPI.deploy({
-
-                        userId: String(userId),
-
-                        siteName: siteName,
-
-                        templateId: selectedTemplateId,
-
-                        variables: {
-                            projectType: projectType
-                        }
-
-                    });
-
-
-                if (!result || !result.success) {
-
-                    throw new Error(
-                        result?.error ||
-                        result?.message ||
-                        'تعذر إنشاء أو نشر الموقع.'
-                    );
-
-                }
-
-
-                // Extract information from server response.
-                const siteData = getSiteData(result);
-
-                createdSiteId = siteData.siteId;
-
-
-                // Important:
-                // A missing Netlify URL is NOT a publishing error.
-                // The backend may have deployed the project successfully
-                // while the custom domain is still being provisioned.
-
-                showDeployResult(siteData);
-
-
-            } catch (error) {
-
-                console.error('Project publishing error:', error);
-
-                showStatus(
-                    error.message ||
-                    'حدث خطأ أثناء إنشاء الموقع. حاول مرة أخرى.',
-                    'error'
-                );
-
-            } finally {
-
-                deployBtn.disabled = false;
-
-                deployBtn.textContent =
-                    '🚀 إنشاء ونشر الموقع';
-
-            }
-
-        });
-
-
-        // ==================================
-        // 17. COPY CUSTOM DOMAIN URL
-        // ==================================
-
-        copyLinkBtn.addEventListener('click', async function() {
-
-            if (!publishedSiteUrl) {
-
-                showStatus(
-                    'الدومين الخاص لم يصبح جاهزاً للنسخ بعد.',
-                    'error'
-                );
-
-                return;
-
-            }
-
-            try {
-
-                if (navigator.clipboard && window.isSecureContext) {
-
-                    await navigator.clipboard.writeText(
-                        publishedSiteUrl
-                    );
-
-                } else {
-
-                    const textArea =
-                        document.createElement('textarea');
-
-                    textArea.value = publishedSiteUrl;
-
-                    textArea.style.position = 'fixed';
-                    textArea.style.opacity = '0';
-
-                    document.body.appendChild(textArea);
-
-                    textArea.select();
-
-                    const copied =
-                        document.execCommand('copy');
-
-                    textArea.remove();
-
-                    if (!copied) {
-                        throw new Error('Copy failed');
-                    }
-
-                }
-
-                copyLinkBtn.textContent = '✅ تم نسخ الرابط';
-
-                setTimeout(() => {
-
-                    copyLinkBtn.textContent = '📋 نسخ الرابط';
-
-                }, 2000);
-
-            } catch (error) {
-
-                showStatus(
-                    'تعذر نسخ الرابط تلقائياً. يمكنك تحديده ونسخه يدوياً.',
-                    'error'
-                );
-
-            }
-
-        });
-
-
-        // ==================================
-        // 18. STATUS MESSAGE
-        // ==================================
-
-        function showStatus(message, type) {
-
-            statusMessage.textContent = message;
-
-            statusMessage.className =
-                'mt-5 text-center text-sm font-bold';
-
-            if (type === 'success') {
-
-                statusMessage.classList.add(
-                    'text-green-600'
-                );
-
-            } else if (type === 'error') {
-
-                statusMessage.classList.add(
-                    'text-red-600'
-                );
-
-            } else {
-
-                statusMessage.classList.add(
-                    'text-blue-600'
-                );
-
-            }
-
+        } finally {
+            deployBtn.disabled = false;
+            deployBtn.textContent = '🚀 إنشاء ونشر الموقع';
+        }
+    });
+
+    // ==================================
+    // 17. COPY CUSTOM DOMAIN URL
+    // ==================================
+
+    copyLinkBtn.addEventListener('click', async function() {
+        if (!publishedSiteUrl) {
+            showStatus(
+                'الدومين الخاص لم يصبح جاهزاً للنسخ بعد.',
+                'error'
+            );
+            return;
         }
 
+        try {
+            if (navigator.clipboard && window.isSecureContext) {
+                await navigator.clipboard.writeText(publishedSiteUrl);
+            } else {
+                const textArea = document.createElement('textarea');
 
-        // ==================================
-        // 19. INITIALIZE PAGE
-        // ==================================
+                textArea.value = publishedSiteUrl;
+                textArea.style.position = 'fixed';
+                textArea.style.opacity = '0';
 
-        renderTemplates();
+                document.body.appendChild(textArea);
+                textArea.select();
+
+                const copied = document.execCommand('copy');
+
+                textArea.remove();
+
+                if (!copied) throw new Error('Copy failed');
+            }
+
+            copyLinkBtn.textContent = '✅ تم نسخ الرابط';
+
+            setTimeout(() => {
+                copyLinkBtn.textContent = '📋 نسخ الرابط';
+            }, 2000);
+
+        } catch (error) {
+            showStatus(
+                'تعذر نسخ الرابط تلقائياً. يمكنك تحديده ونسخه يدوياً.',
+                'error'
+            );
+        }
+    });
+
+    // ==================================
+    // 18. STATUS MESSAGE
+    // ==================================
+
+    function showStatus(message, type) {
+        statusMessage.textContent = message;
+
+        statusMessage.className =
+            'mt-5 text-center text-sm font-bold';
+
+        if (type === 'success') {
+            statusMessage.classList.add('text-green-600');
+        } else if (type === 'error') {
+            statusMessage.classList.add('text-red-600');
+        } else {
+            statusMessage.classList.add('text-blue-600');
+        }
+    }
+
+    // ==================================
+    // 19. INITIALIZE PAGE
+    // ==================================
+
+    renderTemplates();
 
     </script>
 
