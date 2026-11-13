@@ -2,6 +2,7 @@
 // TEMPLATECRAFT PRO - API CLIENT
 // JWT AUTHENTICATION ENABLED
 // AUTO CUSTOM DOMAIN STATUS REFRESH
+// SAFE PROJECT DELETION
 // ==========================================
 
 
@@ -20,20 +21,29 @@ const TEMPLATECRAFT_API_BASE_URL = (
 // ==========================================
 
 function getAuthToken() {
+
     return localStorage.getItem('token');
+
 }
 
 
 function getAuthHeaders() {
 
     const headers = {};
+
     const token = getAuthToken();
 
+
     if (token) {
-        headers.Authorization = `Bearer ${token}`;
+
+        headers.Authorization =
+            `Bearer ${token}`;
+
     }
 
+
     return headers;
+
 }
 
 
@@ -41,7 +51,10 @@ function getAuthHeaders() {
 // 3. COMMON REQUEST HELPER
 // ==========================================
 
-async function apiRequest(endpoint, options = {}) {
+async function apiRequest(
+    endpoint,
+    options = {}
+) {
 
     try {
 
@@ -49,29 +62,39 @@ async function apiRequest(endpoint, options = {}) {
             typeof FormData !== 'undefined' &&
             options.body instanceof FormData;
 
+
         const headers = {
+
             ...(isFormData
                 ? {}
-                : { 'Content-Type': 'application/json' }),
+                : {
+                    'Content-Type':
+                        'application/json'
+                }),
 
             ...getAuthHeaders(),
 
             ...(options.headers || {})
+
         };
 
 
-        const response = await fetch(
-            `${TEMPLATECRAFT_API_BASE_URL}${endpoint}`,
-            {
-                ...options,
-                headers
-            }
-        );
+        const response =
+            await fetch(
+                `${TEMPLATECRAFT_API_BASE_URL}${endpoint}`,
+                {
+                    ...options,
+                    headers
+                }
+            );
 
 
-        const responseText = await response.text();
+        const responseText =
+            await response.text();
+
 
         let data;
+
 
         try {
 
@@ -83,7 +106,8 @@ async function apiRequest(endpoint, options = {}) {
 
             data = {
                 success: false,
-                error: 'استجابة غير صالحة من السيرفر'
+                error:
+                    'استجابة غير صالحة من السيرفر'
             };
 
         }
@@ -93,8 +117,11 @@ async function apiRequest(endpoint, options = {}) {
 
             return {
                 ...data,
+
                 success: false,
-                status: response.status,
+
+                status:
+                    response.status,
 
                 error:
                     data.error ||
@@ -107,18 +134,24 @@ async function apiRequest(endpoint, options = {}) {
 
         return {
             ...data,
-            status: response.status
+            status:
+                response.status
         };
 
 
     } catch (error) {
 
-        console.error('TemplateCraft API Error:', error);
+        console.error(
+            'TemplateCraft API Error:',
+            error
+        );
+
 
         return {
             success: false,
             status: 0,
-            error: 'تعذر الاتصال بالسيرفر. تحقق من الإنترنت وحالة Backend.'
+            error:
+                'تعذر الاتصال بالسيرفر. تحقق من الإنترنت وحالة Backend.'
         };
 
     }
@@ -130,15 +163,26 @@ async function apiRequest(endpoint, options = {}) {
 // 4. URL HELPERS
 // ==========================================
 
-function addUserId(endpoint, userId) {
+function addUserId(
+    endpoint,
+    userId
+) {
 
     if (!userId) {
         return endpoint;
     }
 
-    const separator = endpoint.includes('?') ? '&' : '?';
 
-    return `${endpoint}${separator}userId=${encodeURIComponent(userId)}`;
+    const separator =
+        endpoint.includes('?')
+            ? '&'
+            : '?';
+
+
+    return (
+        `${endpoint}${separator}` +
+        `userId=${encodeURIComponent(userId)}`
+    );
 
 }
 
@@ -149,37 +193,53 @@ function addUserId(endpoint, userId) {
 
 function normalizeSite(site) {
 
-    if (!site || typeof site !== 'object') {
+    if (
+        !site ||
+        typeof site !== 'object'
+    ) {
         return site;
     }
 
-    const customUrl = site.customUrl || null;
 
-    const domainStatus = site.domainStatus || 'pending';
+    const customUrl =
+        site.customUrl || null;
+
+
+    const domainStatus =
+        site.domainStatus || 'pending';
+
 
     const customDomainActive =
         domainStatus === 'active' &&
         typeof customUrl === 'string' &&
         customUrl.startsWith('https://');
 
+
     return {
+
         ...site,
 
-        // Internal compatibility.
-        liveUrl: site.liveUrl || null,
+        liveUrl:
+            site.liveUrl || null,
 
-        // Custom domain information.
         customUrl,
-        customDomain: site.customDomain || null,
+
+        customDomain:
+            site.customDomain || null,
+
         domainStatus,
-        domainError: site.domainError || null,
 
-        // Public URL only after domain activation.
-        publicUrl: customDomainActive
-            ? customUrl
-            : null,
+        domainError:
+            site.domainError || null,
 
-        domainPending: !customDomainActive
+        publicUrl:
+            customDomainActive
+                ? customUrl
+                : null,
+
+        domainPending:
+            !customDomainActive
+
     };
 
 }
@@ -187,19 +247,41 @@ function normalizeSite(site) {
 
 function normalizeSiteResponse(result) {
 
-    if (!result || typeof result !== 'object') {
+    if (
+        !result ||
+        typeof result !== 'object'
+    ) {
         return result;
     }
 
-    const normalized = { ...result };
+
+    const normalized =
+        { ...result };
+
 
     if (normalized.site) {
-        normalized.site = normalizeSite(normalized.site);
+
+        normalized.site =
+            normalizeSite(
+                normalized.site
+            );
+
     }
 
-    if (Array.isArray(normalized.sites)) {
-        normalized.sites = normalized.sites.map(normalizeSite);
+
+    if (
+        Array.isArray(
+            normalized.sites
+        )
+    ) {
+
+        normalized.sites =
+            normalized.sites.map(
+                normalizeSite
+            );
+
     }
+
 
     return normalized;
 
@@ -208,13 +290,23 @@ function normalizeSiteResponse(result) {
 
 function normalizeDeployResponse(result) {
 
-    if (!result || typeof result !== 'object') {
+    if (
+        !result ||
+        typeof result !== 'object'
+    ) {
         return result;
     }
 
-    const normalized = normalizeSiteResponse(result);
 
-    const site = normalized.site || {};
+    const normalized =
+        normalizeSiteResponse(
+            result
+        );
+
+
+    const site =
+        normalized.site || {};
+
 
     const liveUrl =
         normalized.liveUrl ||
@@ -222,22 +314,27 @@ function normalizeDeployResponse(result) {
         normalized.deployUrl ||
         null;
 
+
     const customUrl =
         normalized.customUrl ||
         site.customUrl ||
         null;
+
 
     const domainStatus =
         normalized.domainStatus ||
         site.domainStatus ||
         'pending';
 
+
     const customDomainActive =
         domainStatus === 'active' &&
         typeof customUrl === 'string' &&
         customUrl.startsWith('https://');
 
+
     return {
+
         ...normalized,
 
         liveUrl,
@@ -251,11 +348,14 @@ function normalizeDeployResponse(result) {
 
         domainStatus,
 
-        publicUrl: customDomainActive
-            ? customUrl
-            : null,
+        publicUrl:
+            customDomainActive
+                ? customUrl
+                : null,
 
-        domainPending: !customDomainActive
+        domainPending:
+            !customDomainActive
+
     };
 
 }
@@ -270,69 +370,83 @@ const TemplateCraftAPI = {
 
     // --------------------------------------
     // Server Status
-    // Public endpoint
     // --------------------------------------
 
     async status() {
 
-        return apiRequest('/api/status', {
-            method: 'GET'
-        });
+        return apiRequest(
+            '/api/status',
+            {
+                method: 'GET'
+            }
+        );
 
     },
 
 
     // --------------------------------------
     // Signup
-    // Public endpoint
     // --------------------------------------
 
     async signup(userData) {
 
-        return apiRequest('/api/signup', {
-            method: 'POST',
-            body: JSON.stringify(userData)
-        });
+        return apiRequest(
+            '/api/signup',
+            {
+                method: 'POST',
+                body:
+                    JSON.stringify(userData)
+            }
+        );
 
     },
 
 
     // --------------------------------------
     // Login
-    // Public endpoint
     // --------------------------------------
 
     async login(credentials) {
 
-        return apiRequest('/api/login', {
-            method: 'POST',
-            body: JSON.stringify(credentials)
-        });
+        return apiRequest(
+            '/api/login',
+            {
+                method: 'POST',
+                body:
+                    JSON.stringify(credentials)
+            }
+        );
 
     },
 
 
     // --------------------------------------
     // Deploy New Project
-    // JWT required
     // --------------------------------------
 
     async deploy(siteData) {
 
-        const result = await apiRequest('/api/deploy', {
-            method: 'POST',
-            body: JSON.stringify(siteData)
-        });
+        const result =
+            await apiRequest(
+                '/api/deploy',
+                {
+                    method: 'POST',
+                    body:
+                        JSON.stringify(siteData)
+                }
+            );
 
-        return normalizeDeployResponse(result);
+
+        return normalizeDeployResponse(
+            result
+        );
 
     },
 
 
     // --------------------------------------
     // Get User Projects
-    // JWT required
-    // Auto refresh pending custom domains
+    // Auto refresh pending domains
     // --------------------------------------
 
     async getSites(userId) {
@@ -341,19 +455,20 @@ const TemplateCraftAPI = {
 
             return {
                 success: false,
-                error: 'معرف المستخدم غير موجود'
+                error:
+                    'معرف المستخدم غير موجود'
             };
 
         }
 
 
-        // First: get all user projects.
-        const result = await apiRequest(
-            `/api/sites/${encodeURIComponent(userId)}`,
-            {
-                method: 'GET'
-            }
-        );
+        const result =
+            await apiRequest(
+                `/api/sites/${encodeURIComponent(userId)}`,
+                {
+                    method: 'GET'
+                }
+            );
 
 
         if (
@@ -361,70 +476,123 @@ const TemplateCraftAPI = {
             !result.success ||
             !Array.isArray(result.sites)
         ) {
-            return normalizeSiteResponse(result);
+
+            return normalizeSiteResponse(
+                result
+            );
+
         }
 
 
-        // Find projects that have a custom domain
-        // but are not active yet.
+        // --------------------------------------
+        // Find pending domain projects.
+        //
+        // Do NOT refresh projects that are:
+        // publishing
+        // deleting
+        // --------------------------------------
 
-        const pendingSites = result.sites.filter(site =>
-            site &&
-            site._id &&
-            site.customDomain &&
-            site.netlifySiteId &&
-            site.domainStatus !== 'active'
-        );
-
-
-        // Refresh pending domains.
-        // Each project is checked independently.
-
-        const refreshedResults = await Promise.allSettled(
-
-            pendingSites.map(async site => {
-
-                const domainResult = await this.getDomainStatus(
-                    site._id,
-                    userId
-                );
-
+        const pendingSites =
+            result.sites.filter(site => {
 
                 if (
-                    !domainResult ||
-                    !domainResult.customDomain
+                    !site ||
+                    !site._id
                 ) {
-                    return null;
+                    return false;
                 }
 
 
-                return {
-                    id: String(site._id),
-
-                    customDomain:
-                        domainResult.customDomain,
-
-                    customUrl:
-                        domainResult.customUrl || null,
-
-                    domainStatus:
-                        domainResult.domainStatus || 'pending',
-
-                    domainError:
-                        domainResult.error || null
-                };
-
-            })
-
-        );
+                const publishStatus =
+                    String(
+                        site.publishStatus || ''
+                    ).toLowerCase();
 
 
-        // Store successful refresh results.
+                if (
+                    publishStatus === 'publishing' ||
+                    publishStatus === 'deleting'
+                ) {
+                    return false;
+                }
 
-        const refreshedMap = new Map();
+
+                return Boolean(
+                    site.customDomain &&
+                    site.netlifySiteId &&
+                    site.domainStatus !== 'active'
+                );
+
+            });
 
 
-        for (const item of refreshedResults) {
+        // --------------------------------------
+        // Refresh pending domains
+        // --------------------------------------
+
+        const refreshedResults =
+            await Promise.allSettled(
+
+                pendingSites.map(
+                    async site => {
+
+                        const domainResult =
+                            await this.getDomainStatus(
+                                site._id,
+                                userId
+                            );
+
+
+                        if (
+                            !domainResult ||
+                            !domainResult.customDomain
+                        ) {
+                            return null;
+                        }
+
+
+                        return {
+
+                            id:
+                                String(
+                                    site._id
+                                ),
+
+                            customDomain:
+                                domainResult.customDomain,
+
+                            customUrl:
+                                domainResult.customUrl ||
+                                null,
+
+                            domainStatus:
+                                domainResult.domainStatus ||
+                                'pending',
+
+                            domainError:
+                                domainResult.error ||
+                                null
+
+                        };
+
+                    }
+                )
+
+            );
+
+
+        // --------------------------------------
+        // Store successful refresh results
+        // --------------------------------------
+
+        const refreshedMap =
+            new Map();
+
+
+        for (
+            const item
+            of refreshedResults
+        ) {
 
             if (
                 item.status === 'fulfilled' &&
@@ -441,43 +609,56 @@ const TemplateCraftAPI = {
         }
 
 
-        // Merge updated domain information
-        // with the original project information.
+        // --------------------------------------
+        // Merge refreshed domain information
+        // --------------------------------------
 
-        const updatedSites = result.sites.map(site => {
+        const updatedSites =
+            result.sites.map(
+                site => {
 
-            const refreshed = refreshedMap.get(
-                String(site._id)
+                    const refreshed =
+                        refreshedMap.get(
+                            String(
+                                site._id
+                            )
+                        );
+
+
+                    if (!refreshed) {
+                        return site;
+                    }
+
+
+                    return {
+
+                        ...site,
+
+                        customDomain:
+                            refreshed.customDomain,
+
+                        customUrl:
+                            refreshed.customUrl,
+
+                        domainStatus:
+                            refreshed.domainStatus,
+
+                        domainError:
+                            refreshed.domainError
+
+                    };
+
+                }
             );
 
 
-            if (!refreshed) {
-                return site;
-            }
-
-
-            return {
-                ...site,
-
-                customDomain:
-                    refreshed.customDomain,
-
-                customUrl:
-                    refreshed.customUrl,
-
-                domainStatus:
-                    refreshed.domainStatus,
-
-                domainError:
-                    refreshed.domainError
-            };
-
-        });
-
-
         return normalizeSiteResponse({
+
             ...result,
-            sites: updatedSites
+
+            sites:
+                updatedSites
+
         });
 
     },
@@ -485,131 +666,118 @@ const TemplateCraftAPI = {
 
     // --------------------------------------
     // Get Single Project
-    // JWT required
     // --------------------------------------
 
-    async getSite(siteId, userId) {
+    async getSite(
+        siteId,
+        userId
+    ) {
 
         if (!siteId) {
 
             return {
                 success: false,
-                error: 'معرف المشروع غير موجود'
+                error:
+                    'معرف المشروع غير موجود'
             };
 
         }
 
-        const endpoint = addUserId(
-            `/api/site/${encodeURIComponent(siteId)}`,
-            userId
+
+        const endpoint =
+            addUserId(
+                `/api/site/${encodeURIComponent(siteId)}`,
+                userId
+            );
+
+
+        const result =
+            await apiRequest(
+                endpoint,
+                {
+                    method: 'GET'
+                }
+            );
+
+
+        return normalizeSiteResponse(
+            result
         );
-
-        const result = await apiRequest(endpoint, {
-            method: 'GET'
-        });
-
-        return normalizeSiteResponse(result);
 
     },
 
 
     // --------------------------------------
     // Update Project
-    // JWT required
     // --------------------------------------
 
-    async updateSite(siteId, projectData = {}) {
+    async updateSite(
+        siteId,
+        projectData = {}
+    ) {
 
         if (!siteId) {
 
             return {
                 success: false,
-                error: 'معرف المشروع غير موجود'
+                error:
+                    'معرف المشروع غير موجود'
             };
 
         }
 
-        const result = await apiRequest(
-            `/api/site/${encodeURIComponent(siteId)}`,
-            {
-                method: 'PUT',
-                body: JSON.stringify(projectData)
-            }
-        );
 
-        return normalizeSiteResponse(result);
+        const result =
+            await apiRequest(
+                `/api/site/${encodeURIComponent(siteId)}`,
+                {
+                    method: 'PUT',
+                    body:
+                        JSON.stringify(
+                            projectData
+                        )
+                }
+            );
+
+
+        return normalizeSiteResponse(
+            result
+        );
 
     },
 
 
     // --------------------------------------
     // Get Project Files
-    // JWT required
     // --------------------------------------
 
-    async getSiteFiles(siteId, userId) {
+    async getSiteFiles(
+        siteId,
+        userId
+    ) {
 
         if (!siteId) {
 
             return {
                 success: false,
-                error: 'معرف المشروع غير موجود'
+                error:
+                    'معرف المشروع غير موجود'
             };
 
         }
 
-        const endpoint = addUserId(
-            `/api/site/${encodeURIComponent(siteId)}/files`,
-            userId
-        );
 
-        return apiRequest(endpoint, {
-            method: 'GET'
-        });
+        const endpoint =
+            addUserId(
+                `/api/site/${encodeURIComponent(siteId)}/files`,
+                userId
+            );
 
-    },
-
-
-    // --------------------------------------
-    // Backward Compatibility
-    // --------------------------------------
-
-    async getProjectFiles(siteId, userId) {
-
-        return this.getSiteFiles(siteId, userId);
-
-    },
-
-
-    // --------------------------------------
-    // Save Edited Project File
-    // JWT required
-    // --------------------------------------
-
-    async saveSiteFile(siteId, fileData = {}) {
-
-        if (!siteId || !fileData.filePath) {
-
-            return {
-                success: false,
-                error: 'معلومات الملف ناقصة'
-            };
-
-        }
 
         return apiRequest(
-            `/api/site/${encodeURIComponent(siteId)}/file`,
+            endpoint,
             {
-                method: 'PUT',
-
-                body: JSON.stringify({
-                    // Kept for old frontend compatibility.
-                    // Backend must use the JWT identity instead.
-                    userId: fileData.userId,
-
-                    filePath: fileData.filePath,
-                    content: fileData.content
-                })
+                method: 'GET'
             }
         );
 
@@ -620,32 +788,160 @@ const TemplateCraftAPI = {
     // Backward Compatibility
     // --------------------------------------
 
-    async saveProjectFile(siteId, filePath, content, userId) {
+    async getProjectFiles(
+        siteId,
+        userId
+    ) {
 
-        return this.saveSiteFile(siteId, {
-            userId,
-            filePath,
-            content
-        });
+        return this.getSiteFiles(
+            siteId,
+            userId
+        );
+
+    },
+
+
+    // --------------------------------------
+    // Save Edited Project File
+    // --------------------------------------
+
+    async saveSiteFile(
+        siteId,
+        fileData = {}
+    ) {
+
+        if (
+            !siteId ||
+            !fileData.filePath
+        ) {
+
+            return {
+                success: false,
+                error:
+                    'معلومات الملف ناقصة'
+            };
+
+        }
+
+
+        return apiRequest(
+            `/api/site/${encodeURIComponent(siteId)}/file`,
+            {
+                method: 'PUT',
+
+                body:
+                    JSON.stringify({
+
+                        // Compatibility only.
+                        // Backend must use JWT identity.
+
+                        userId:
+                            fileData.userId,
+
+                        filePath:
+                            fileData.filePath,
+
+                        content:
+                            fileData.content
+
+                    })
+            }
+        );
+
+    },
+
+
+    // --------------------------------------
+    // Backward Compatibility
+    // --------------------------------------
+
+    async saveProjectFile(
+        siteId,
+        filePath,
+        content,
+        userId
+    ) {
+
+        return this.saveSiteFile(
+            siteId,
+            {
+                userId,
+                filePath,
+                content
+            }
+        );
+
+    },
+
+
+    // --------------------------------------
+    // Delete Project
+    // JWT required
+    //
+    // Backend performs:
+    // 1. Netlify deletion
+    // 2. Cloudflare owned records deletion
+    // 3. Local project deletion
+    // 4. MongoDB deletion last
+    // --------------------------------------
+
+    async deleteSite(
+        siteId,
+        userId
+    ) {
+
+        if (!siteId) {
+
+            return {
+                success: false,
+                error:
+                    'معرف المشروع غير موجود'
+            };
+
+        }
+
+
+        const endpoint =
+            addUserId(
+                `/api/site/${encodeURIComponent(siteId)}`,
+                userId
+            );
+
+
+        const result =
+            await apiRequest(
+                endpoint,
+                {
+                    method: 'DELETE'
+                }
+            );
+
+
+        return normalizeSiteResponse(
+            result
+        );
 
     },
 
 
     // --------------------------------------
     // Get Available Templates
-    // Public endpoint
     // --------------------------------------
 
-    async getTemplates(projectType) {
+    async getTemplates(
+        projectType
+    ) {
 
         if (!projectType) {
 
             return {
                 success: false,
-                error: 'نوع القالب غير محدد'
+                error:
+                    'نوع القالب غير محدد'
             };
 
         }
+
 
         return apiRequest(
             `/api/templates/${encodeURIComponent(projectType)}`,
@@ -659,17 +955,24 @@ const TemplateCraftAPI = {
 
     // --------------------------------------
     // Get Template Preview URL
-    // Public endpoint
     // --------------------------------------
 
-    getTemplatePreviewUrl(projectType, templateId) {
+    getTemplatePreviewUrl(
+        projectType,
+        templateId
+    ) {
 
-        if (!projectType || !templateId) {
+        if (
+            !projectType ||
+            !templateId
+        ) {
             return null;
         }
 
+
         return (
-            `${TEMPLATECRAFT_API_BASE_URL}/api/template-preview/` +
+            `${TEMPLATECRAFT_API_BASE_URL}` +
+            `/api/template-preview/` +
             `${encodeURIComponent(projectType)}/` +
             `${encodeURIComponent(templateId)}`
         );
@@ -681,15 +984,20 @@ const TemplateCraftAPI = {
     // Get Project Preview URL
     // --------------------------------------
 
-    getProjectPreviewUrl(siteName) {
+    getProjectPreviewUrl(
+        siteName
+    ) {
 
         if (!siteName) {
             return null;
         }
 
+
         return (
-            `${TEMPLATECRAFT_API_BASE_URL}/sites/` +
-            `${encodeURIComponent(siteName)}/index.html`
+            `${TEMPLATECRAFT_API_BASE_URL}` +
+            `/sites/` +
+            `${encodeURIComponent(siteName)}` +
+            `/index.html`
         );
 
     },
@@ -697,79 +1005,116 @@ const TemplateCraftAPI = {
 
     // --------------------------------------
     // Get Project Domain Status
-    // JWT required
     // --------------------------------------
 
-    async getDomainStatus(siteId, userId) {
+    async getDomainStatus(
+        siteId,
+        userId
+    ) {
 
         if (!siteId) {
 
             return {
                 success: false,
-                error: 'معرف المشروع غير موجود'
+                error:
+                    'معرف المشروع غير موجود'
             };
 
         }
 
-        const endpoint = addUserId(
-            `/api/site/${encodeURIComponent(siteId)}/domain-status`,
-            userId
+
+        const endpoint =
+            addUserId(
+                `/api/site/${encodeURIComponent(siteId)}/domain-status`,
+                userId
+            );
+
+
+        const result =
+            await apiRequest(
+                endpoint,
+                {
+                    method: 'GET'
+                }
+            );
+
+
+        return normalizeSiteResponse(
+            result
         );
-
-        const result = await apiRequest(endpoint, {
-            method: 'GET'
-        });
-
-        return normalizeSiteResponse(result);
 
     },
 
 
     // --------------------------------------
     // Publish Project to Netlify
-    // JWT required
     // --------------------------------------
 
-    async publish(siteId, userId) {
+    async publish(
+        siteId,
+        userId
+    ) {
 
         if (!siteId) {
 
             return {
                 success: false,
-                error: 'معرف المشروع غير موجود'
+                error:
+                    'معرف المشروع غير موجود'
             };
 
         }
+
 
         if (!userId) {
 
             return {
                 success: false,
-                error: 'معرف المستخدم غير موجود'
+                error:
+                    'معرف المستخدم غير موجود'
             };
 
         }
 
-        const result = await apiRequest(
-            `/api/site/${encodeURIComponent(siteId)}/publish`,
-            {
-                method: 'POST',
 
-                body: JSON.stringify({
-                    // Compatibility only.
-                    // Backend must identify the owner from JWT.
-                    userId
-                })
-            }
-        );
+        const result =
+            await apiRequest(
+                `/api/site/${encodeURIComponent(siteId)}/publish`,
+                {
+                    method: 'POST',
 
-        if (!result || !result.success) {
+                    body:
+                        JSON.stringify({
+
+                            // Compatibility only.
+                            // Backend must identify owner from JWT.
+
+                            userId
+
+                        })
+
+                }
+            );
+
+
+        if (
+            !result ||
+            !result.success
+        ) {
+
             return result;
+
         }
 
-        const normalized = normalizeDeployResponse(result);
+
+        const normalized =
+            normalizeDeployResponse(
+                result
+            );
+
 
         return {
+
             ...normalized,
 
             liveUrl:
@@ -782,6 +1127,7 @@ const TemplateCraftAPI = {
                 normalized.publishStatus ||
                 normalized.status ||
                 'processing'
+
         };
 
     }
@@ -793,7 +1139,9 @@ const TemplateCraftAPI = {
 // 7. GLOBAL API ACCESS
 // ==========================================
 
-window.TemplateCraftAPI = TemplateCraftAPI;
+window.TemplateCraftAPI =
+    TemplateCraftAPI;
+
 
 window.TEMPLATECRAFT_API_BASE_URL =
     TEMPLATECRAFT_API_BASE_URL;
