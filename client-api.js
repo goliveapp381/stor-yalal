@@ -1,6 +1,7 @@
 // ==========================================
 // TEMPLATECRAFT PRO - API CLIENT
 // JWT AUTHENTICATION ENABLED
+// AUTO CUSTOM DOMAIN STATUS REFRESH
 // ==========================================
 
 
@@ -331,6 +332,7 @@ const TemplateCraftAPI = {
     // --------------------------------------
     // Get User Projects
     // JWT required
+    // Auto refresh pending custom domains
     // --------------------------------------
 
     async getSites(userId) {
@@ -344,6 +346,8 @@ const TemplateCraftAPI = {
 
         }
 
+
+        // First: get all user projects.
         const result = await apiRequest(
             `/api/sites/${encodeURIComponent(userId)}`,
             {
@@ -351,7 +355,130 @@ const TemplateCraftAPI = {
             }
         );
 
-        return normalizeSiteResponse(result);
+
+        if (
+            !result ||
+            !result.success ||
+            !Array.isArray(result.sites)
+        ) {
+            return normalizeSiteResponse(result);
+        }
+
+
+        // Find projects that have a custom domain
+        // but are not active yet.
+
+        const pendingSites = result.sites.filter(site =>
+            site &&
+            site._id &&
+            site.customDomain &&
+            site.netlifySiteId &&
+            site.domainStatus !== 'active'
+        );
+
+
+        // Refresh pending domains.
+        // Each project is checked independently.
+
+        const refreshedResults = await Promise.allSettled(
+
+            pendingSites.map(async site => {
+
+                const domainResult = await this.getDomainStatus(
+                    site._id,
+                    userId
+                );
+
+
+                if (
+                    !domainResult ||
+                    !domainResult.customDomain
+                ) {
+                    return null;
+                }
+
+
+                return {
+                    id: String(site._id),
+
+                    customDomain:
+                        domainResult.customDomain,
+
+                    customUrl:
+                        domainResult.customUrl || null,
+
+                    domainStatus:
+                        domainResult.domainStatus || 'pending',
+
+                    domainError:
+                        domainResult.error || null
+                };
+
+            })
+
+        );
+
+
+        // Store successful refresh results.
+
+        const refreshedMap = new Map();
+
+
+        for (const item of refreshedResults) {
+
+            if (
+                item.status === 'fulfilled' &&
+                item.value
+            ) {
+
+                refreshedMap.set(
+                    item.value.id,
+                    item.value
+                );
+
+            }
+
+        }
+
+
+        // Merge updated domain information
+        // with the original project information.
+
+        const updatedSites = result.sites.map(site => {
+
+            const refreshed = refreshedMap.get(
+                String(site._id)
+            );
+
+
+            if (!refreshed) {
+                return site;
+            }
+
+
+            return {
+                ...site,
+
+                customDomain:
+                    refreshed.customDomain,
+
+                customUrl:
+                    refreshed.customUrl,
+
+                domainStatus:
+                    refreshed.domainStatus,
+
+                domainError:
+                    refreshed.domainError
+            };
+
+        });
+
+
+        return normalizeSiteResponse({
+            ...result,
+            sites: updatedSites
+        });
 
     },
 
