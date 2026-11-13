@@ -26,6 +26,22 @@
         .project-card:hover {
             transform: translateY(-3px);
         }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 15px;
+            height: 15px;
+            border: 2px solid currentColor;
+            border-left-color: transparent;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
     </style>
 </head>
 
@@ -124,7 +140,7 @@
 <script>
 
     // ==========================================
-    // 1. AUTHENTICATION CHECK
+    // 1. AUTHENTICATION
     // ==========================================
 
     function clearAuthentication() {
@@ -180,10 +196,6 @@
             .replaceAll("'", '&#039;');
     }
 
-    function escapeAttribute(value) {
-        return escapeHtml(value);
-    }
-
     function getUserId() {
         return user.id || user._id || null;
     }
@@ -199,7 +211,9 @@
             return null;
         }
 
-        if (site.domainStatus !== 'active') {
+        const status = String(site.domainStatus || '').toLowerCase();
+
+        if (status !== 'active') {
             return null;
         }
 
@@ -235,7 +249,7 @@
 
 
     // ==========================================
-    // 5. DOMAIN STATUS DISPLAY
+    // 5. DOMAIN STATUS
     // ==========================================
 
     function getDomainStatus(site, projectUrl) {
@@ -249,27 +263,49 @@
             };
         }
 
-        if (
-            site.domainStatus === 'failed' ||
-            site.domainStatus === 'error'
-        ) {
+        const status = String(site.domainStatus || '').toLowerCase();
+
+        const hasDomainSetup = Boolean(
+            site.netlifySiteId ||
+            site.customDomain ||
+            site.customUrl
+        );
+
+        // أخطاء مؤقتة أثناء إعداد SSL
+        if (status === 'failed' || status === 'error') {
+
+            if (hasDomainSetup) {
+                return {
+                    label: 'جاري تجهيز الدومين',
+                    description: 'تم إعداد الموقع. ننتظر تأكيد شهادة SSL والتحقق من الرابط.',
+                    style: 'bg-yellow-50 text-yellow-700 border-yellow-200',
+                    icon: '⏳'
+                };
+            }
+
             return {
                 label: 'تعذر تجهيز الدومين',
-                description: 'حدث مشكل أثناء إعداد الدومين. حاول تحديث الحالة.',
+                description: 'لم يتم إعداد الدومين. يرجى إعادة المحاولة أو التواصل مع الدعم.',
                 style: 'bg-red-50 text-red-700 border-red-200',
                 icon: '⚠️'
             };
         }
 
-        if (
-            site.domainStatus === 'active' &&
-            !projectUrl
-        ) {
+        if (status === 'active' && !projectUrl) {
             return {
-                label: 'الرابط غير متاح',
-                description: 'تعذر التحقق من رابط الدومين.',
+                label: 'جاري التحقق من الدومين',
+                description: 'تم تفعيل الدومين، ويجري التحقق من رابط HTTPS.',
                 style: 'bg-yellow-50 text-yellow-700 border-yellow-200',
-                icon: '⚠️'
+                icon: '⏳'
+            };
+        }
+
+        if (status === 'pending' || status === 'provisioning') {
+            return {
+                label: 'جاري تجهيز الدومين',
+                description: 'يتم إعداد DNS وشهادة SSL. سيظهر الرابط عند اكتمال العملية.',
+                style: 'bg-yellow-50 text-yellow-700 border-yellow-200',
+                icon: '⏳'
             };
         }
 
@@ -283,7 +319,7 @@
 
 
     // ==========================================
-    // 6. AUTHENTICATION ERROR HANDLER
+    // 6. AUTHENTICATION ERROR
     // ==========================================
 
     function handleAuthenticationError(result) {
@@ -305,12 +341,23 @@
 
 
     // ==========================================
-    // 7. LOAD USER PROJECTS
+    // 7. LOADING STATE
     // ==========================================
+
+    let isLoading = false;
 
     async function loadUserSites() {
 
+        if (isLoading) return;
+
+        isLoading = true;
+
         const grid = document.getElementById('sites-grid');
+        const refreshButton = document.getElementById('refresh-projects');
+
+        refreshButton.disabled = true;
+        refreshButton.innerHTML =
+            '<span class="loading-spinner"></span> جاري التحديث';
 
         grid.innerHTML = `
             <div class="col-span-full text-center py-16 text-gray-400">
@@ -318,42 +365,40 @@
             </div>
         `;
 
-        const userId = getUserId();
-
-        if (!userId) {
-            grid.innerHTML = `
-                <div class="col-span-full bg-white p-10 rounded-2xl border text-center">
-                    <p class="text-red-500 font-bold">
-                        ❌ معرف المستخدم غير موجود.
-                    </p>
-
-                    <p class="text-gray-500 text-sm mt-2">
-                        يرجى تسجيل الخروج ثم تسجيل الدخول مجدداً.
-                    </p>
-                </div>
-            `;
-            return;
-        }
-
-        if (
-            typeof TemplateCraftAPI === 'undefined' ||
-            typeof TemplateCraftAPI.getSites !== 'function'
-        ) {
-            grid.innerHTML = `
-                <div class="col-span-full bg-white p-10 rounded-2xl border text-center">
-                    <p class="text-red-500 font-bold">
-                        ❌ تعذر تحميل نظام الاتصال بالخادم.
-                    </p>
-
-                    <p class="text-gray-500 text-sm mt-2">
-                        تأكد من ملف client-api.js.
-                    </p>
-                </div>
-            `;
-            return;
-        }
-
         try {
+
+            const userId = getUserId();
+
+            if (!userId) {
+                grid.innerHTML = `
+                    <div class="col-span-full bg-white p-10 rounded-2xl border text-center">
+                        <p class="text-red-500 font-bold">
+                            ❌ معرف المستخدم غير موجود.
+                        </p>
+                        <p class="text-gray-500 text-sm mt-2">
+                            يرجى تسجيل الخروج ثم تسجيل الدخول مجدداً.
+                        </p>
+                    </div>
+                `;
+                return;
+            }
+
+            if (
+                typeof TemplateCraftAPI === 'undefined' ||
+                typeof TemplateCraftAPI.getSites !== 'function'
+            ) {
+                grid.innerHTML = `
+                    <div class="col-span-full bg-white p-10 rounded-2xl border text-center">
+                        <p class="text-red-500 font-bold">
+                            ❌ تعذر تحميل نظام الاتصال بالخادم.
+                        </p>
+                        <p class="text-gray-500 text-sm mt-2">
+                            تأكد من ملف client-api.js.
+                        </p>
+                    </div>
+                `;
+                return;
+            }
 
             const result = await TemplateCraftAPI.getSites(userId);
 
@@ -364,7 +409,6 @@
             if (!result || !result.success) {
                 grid.innerHTML = `
                     <div class="col-span-full bg-white p-10 rounded-2xl border text-center">
-
                         <p class="text-red-500 font-bold mb-3">
                             ❌ ${escapeHtml(result?.error || 'تعذر جلب المشاريع')}
                         </p>
@@ -376,7 +420,6 @@
                         >
                             إعادة المحاولة
                         </button>
-
                     </div>
                 `;
                 return;
@@ -385,7 +428,6 @@
             if (!Array.isArray(result.sites) || result.sites.length === 0) {
                 grid.innerHTML = `
                     <div class="col-span-full bg-white p-12 rounded-2xl border text-center">
-
                         <p class="text-gray-500 font-semibold mb-4">
                             ليس لديك أي مشروع حتى الآن.
                         </p>
@@ -396,7 +438,6 @@
                         >
                             إنشاء أول مشروع 🚀
                         </a>
-
                     </div>
                 `;
                 return;
@@ -405,7 +446,7 @@
             grid.innerHTML = '';
 
             // ==========================================
-            // CREATE PROJECT CARDS
+            // 8. CREATE PROJECT CARDS
             // ==========================================
 
             result.sites.forEach(site => {
@@ -489,7 +530,7 @@
                         <div
                             class="bg-gray-50 p-3 rounded-xl border text-xs text-gray-600 font-mono truncate mb-5"
                             dir="ltr"
-                            title="${escapeAttribute(projectUrl || 'الدومين قيد التجهيز')}"
+                            title="${escapeHtml(projectUrl || 'الدومين قيد التجهيز')}"
                         >
                             ${
                                 projectUrl
@@ -506,7 +547,7 @@
                             editorUrl
                             ? `
                                 <a
-                                    href="${escapeAttribute(editorUrl)}"
+                                    href="${escapeHtml(editorUrl)}"
                                     class="col-span-2 block text-center bg-purple-600 hover:bg-purple-700 text-white py-2.5 rounded-xl text-sm font-bold transition"
                                 >
                                     ✏️ تعديل المشروع
@@ -526,7 +567,7 @@
                             projectUrl
                             ? `
                                 <a
-                                    href="${escapeAttribute(projectUrl)}"
+                                    href="${escapeHtml(projectUrl)}"
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     class="block text-center bg-gray-100 hover:bg-gray-200 text-gray-700 py-2.5 rounded-xl text-sm font-bold transition"
@@ -548,7 +589,7 @@
                         <button
                             type="button"
                             class="copy-project-link bg-gray-100 hover:bg-gray-200 text-gray-700 py-2.5 rounded-xl text-sm font-bold transition ${!projectUrl ? 'opacity-50 cursor-not-allowed' : ''}"
-                            data-url="${escapeAttribute(projectUrl || '')}"
+                            data-url="${escapeHtml(projectUrl || '')}"
                             ${!projectUrl ? 'disabled' : ''}
                         >
                             📋 نسخ الرابط
@@ -562,7 +603,7 @@
 
 
             // ==========================================
-            // COPY PROJECT URL
+            // 9. COPY PROJECT URL
             // ==========================================
 
             grid.querySelectorAll('.copy-project-link').forEach(button => {
@@ -577,6 +618,7 @@
                     }
 
                     try {
+
                         await navigator.clipboard.writeText(url);
 
                         const oldText = button.textContent;
@@ -598,7 +640,6 @@
 
             grid.innerHTML = `
                 <div class="col-span-full bg-white p-10 rounded-2xl border text-center">
-
                     <p class="text-red-500 font-bold mb-3">
                         ❌ حدث خطأ أثناء تحميل المشاريع.
                     </p>
@@ -610,15 +651,21 @@
                     >
                         إعادة المحاولة
                     </button>
-
                 </div>
             `;
+
+        } finally {
+
+            isLoading = false;
+
+            refreshButton.disabled = false;
+            refreshButton.textContent = '↻ تحديث';
         }
     }
 
 
     // ==========================================
-    // 8. LOGOUT
+    // 10. LOGOUT
     // ==========================================
 
     document
@@ -632,18 +679,16 @@
 
 
     // ==========================================
-    // 9. REFRESH PROJECTS
+    // 11. REFRESH
     // ==========================================
 
     document
         .getElementById('refresh-projects')
-        .addEventListener('click', () => {
-            loadUserSites();
-        });
+        .addEventListener('click', loadUserSites);
 
 
     // ==========================================
-    // 10. START
+    // 12. START
     // ==========================================
 
     loadUserSites();
