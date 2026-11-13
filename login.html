@@ -24,7 +24,6 @@
         }
 
         .animated-mesh-bg {
-
             background:
                 linear-gradient(
                     -45deg,
@@ -36,8 +35,7 @@
 
             background-size: 400% 400%;
 
-            animation:
-                waveGradient 12s ease infinite;
+            animation: waveGradient 12s ease infinite;
         }
 
         @keyframes waveGradient {
@@ -53,6 +51,7 @@
             100% {
                 background-position: 0% 50%;
             }
+
         }
 
     </style>
@@ -67,6 +66,7 @@
 
 
     <!-- العودة -->
+
     <a
         href="index.html"
         class="absolute top-4 left-4 text-gray-400 hover:text-purple-600 text-sm font-bold"
@@ -76,6 +76,7 @@
 
 
     <!-- العنوان -->
+
     <div class="text-center mb-8">
 
         <h1 class="text-2xl font-bold text-purple-600 mb-1">
@@ -93,6 +94,7 @@
 
 
     <!-- Form -->
+
     <form
         id="login-form"
         class="space-y-4"
@@ -100,6 +102,7 @@
 
 
         <!-- Username -->
+
         <div
             id="name-container"
             class="hidden"
@@ -112,6 +115,7 @@
             <input
                 type="text"
                 id="username"
+                autocomplete="username"
                 class="w-full px-4 py-3 border rounded-xl focus:outline-none focus:border-purple-600 bg-gray-50"
                 placeholder="أدخل اسمك"
             >
@@ -120,6 +124,7 @@
 
 
         <!-- Email -->
+
         <div>
 
             <label class="block text-sm font-bold text-gray-700 mb-1">
@@ -139,6 +144,7 @@
 
 
         <!-- Password -->
+
         <div>
 
             <label class="block text-sm font-bold text-gray-700 mb-1">
@@ -159,10 +165,11 @@
 
 
         <!-- Button -->
+
         <button
             type="submit"
             id="submit-btn"
-            class="w-full bg-purple-600 hover:bg-purple-700 text-white py-3 rounded-xl font-bold transition"
+            class="w-full bg-purple-600 hover:bg-purple-700 text-white py-3 rounded-xl font-bold transition disabled:opacity-50 disabled:cursor-not-allowed"
         >
             تسجيل الدخول
         </button>
@@ -172,6 +179,7 @@
 
 
     <!-- Toggle -->
+
     <div class="mt-6 text-center text-sm border-t pt-4">
 
         <span
@@ -193,8 +201,11 @@
 
 
     <!-- Status -->
+
     <div
         id="message"
+        role="status"
+        aria-live="polite"
         class="mt-5 text-center text-sm font-semibold"
     ></div>
 
@@ -207,8 +218,16 @@
 
 <script>
 
+    // ==========================================
+    // 1. STATE
+    // ==========================================
+
     let isSignup = false;
 
+
+    // ==========================================
+    // 2. ELEMENTS
+    // ==========================================
 
     const form =
         document.getElementById('login-form');
@@ -241,9 +260,37 @@
         document.getElementById('message');
 
 
-    // =========================
-    // Toggle Login / Signup
-    // =========================
+    // ==========================================
+    // 3. MESSAGE HELPER
+    // ==========================================
+
+    function showMessage(text, type = 'error') {
+
+        message.textContent = text;
+
+        message.className =
+            'mt-5 text-center text-sm font-semibold';
+
+        if (type === 'success') {
+
+            message.classList.add('text-green-600');
+
+        } else if (type === 'info') {
+
+            message.classList.add('text-blue-600');
+
+        } else {
+
+            message.classList.add('text-red-600');
+
+        }
+
+    }
+
+
+    // ==========================================
+    // 4. TOGGLE LOGIN / SIGNUP
+    // ==========================================
 
     toggleButton.addEventListener('click', () => {
 
@@ -259,6 +306,10 @@
             nameContainer.classList.remove('hidden');
 
             usernameInput.required = true;
+
+            usernameInput.autocomplete = 'username';
+
+            passwordInput.autocomplete = 'new-password';
 
             submitButton.textContent =
                 'إنشاء الحساب';
@@ -278,6 +329,8 @@
 
             usernameInput.required = false;
 
+            passwordInput.autocomplete = 'current-password';
+
             submitButton.textContent =
                 'تسجيل الدخول';
 
@@ -286,18 +339,128 @@
 
             toggleButton.textContent =
                 'إنشاء حساب جديد';
+
         }
 
     });
 
 
-    // =========================
-    // Form Submit
-    // =========================
+    // ==========================================
+    // 5. AUTHENTICATION RESPONSE VALIDATION
+    // ==========================================
+
+    function validateAuthResponse(result) {
+
+        if (!result || !result.success) {
+
+            throw new Error(
+                result?.error ||
+                result?.message ||
+                'تعذر إتمام العملية'
+            );
+
+        }
+
+        if (
+            typeof result.token !== 'string' ||
+            !result.token.trim()
+        ) {
+
+            throw new Error(
+                'السيرفر لم يرجع رمز الدخول JWT. تأكد من إعداد api-routes.js.'
+            );
+
+        }
+
+        if (
+            !result.user ||
+            typeof result.user !== 'object'
+        ) {
+
+            throw new Error(
+                'السيرفر لم يرجع بيانات المستخدم بشكل صحيح.'
+            );
+
+        }
+
+        const userId =
+            result.user.id ||
+            result.user._id;
+
+        if (!userId) {
+
+            throw new Error(
+                'معرف المستخدم غير موجود في استجابة السيرفر.'
+            );
+
+        }
+
+        return true;
+
+    }
+
+
+    // ==========================================
+    // 6. SAVE AUTHENTICATION
+    // ==========================================
+
+    function saveAuthentication(result) {
+
+        // Store JWT token.
+
+        localStorage.setItem(
+            'token',
+            result.token
+        );
+
+
+        // Store user information.
+
+        const userData = {
+            ...result.user,
+
+            id:
+                result.user.id ||
+                result.user._id
+        };
+
+        localStorage.setItem(
+            'user',
+            JSON.stringify(userData)
+        );
+
+
+        // Verify that storage succeeded.
+
+        if (
+            localStorage.getItem('token') !== result.token ||
+            !localStorage.getItem('user')
+        ) {
+
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+
+            throw new Error(
+                'تعذر حفظ بيانات تسجيل الدخول في المتصفح.'
+            );
+
+        }
+
+    }
+
+
+    // ==========================================
+    // 7. FORM SUBMIT
+    // ==========================================
 
     form.addEventListener('submit', async (event) => {
 
         event.preventDefault();
+
+
+        if (submitButton.disabled) {
+            return;
+        }
 
 
         const email =
@@ -307,122 +470,169 @@
             passwordInput.value;
 
 
+        const username =
+            usernameInput.value.trim();
+
+
+        if (!email || !password) {
+
+            showMessage(
+                'يرجى إدخال البريد الإلكتروني وكلمة المرور.'
+            );
+
+            return;
+
+        }
+
+
+        if (isSignup && !username) {
+
+            showMessage(
+                '⚠️ أدخل اسم المستخدم.'
+            );
+
+            usernameInput.focus();
+
+            return;
+
+        }
+
+
+        // Disable button.
+
         submitButton.disabled = true;
 
         submitButton.textContent =
             '⏳ جاري الاتصال...';
 
-        message.className =
-            'mt-5 text-center text-sm font-semibold text-blue-600';
 
-        message.textContent =
-            'جاري الاتصال بالسيرفر...';
+        showMessage(
+            'جاري الاتصال بالسيرفر...',
+            'info'
+        );
 
 
         try {
 
+            // Make sure API client exists.
+
+            if (
+                typeof TemplateCraftAPI === 'undefined'
+            ) {
+
+                throw new Error(
+                    'ملف client-api.js غير متوفر أو لم يتم تحميله.'
+                );
+
+            }
+
+
             let result;
 
 
-            // =========================
-            // Signup
-            // =========================
+            // ==========================================
+            // SIGNUP
+            // ==========================================
 
             if (isSignup) {
 
-                const username =
-                    usernameInput.value.trim();
+                result = await TemplateCraftAPI.signup({
 
+                    username: username,
 
-                if (!username) {
+                    email: email,
 
-                    message.className =
-                        'mt-5 text-center text-sm font-semibold text-red-600';
+                    password: password
 
-                    message.textContent =
-                        '⚠️ أدخل اسم المستخدم';
-
-                    return;
-                }
-
-
-                result =
-                    await TemplateCraftAPI.signup({
-
-                        username: username,
-
-                        email: email,
-
-                        password: password
-                    });
-
+                });
 
             }
 
-            // =========================
-            // Login
-            // =========================
+
+            // ==========================================
+            // LOGIN
+            // ==========================================
 
             else {
 
-                result =
-                    await TemplateCraftAPI.login({
+                result = await TemplateCraftAPI.login({
 
-                        email: email,
+                    email: email,
 
-                        password: password
-                    });
+                    password: password
+
+                });
 
             }
 
 
-            // =========================
-            // Success
-            // =========================
+            // ==========================================
+            // VALIDATE RESPONSE
+            // ==========================================
 
-            if (result.success) {
+            validateAuthResponse(result);
 
-                localStorage.setItem(
-                    'user',
-                    JSON.stringify(result.user)
+
+            // ==========================================
+            // SAVE JWT + USER
+            // ==========================================
+
+            saveAuthentication(result);
+
+
+            // ==========================================
+            // SUCCESS
+            // ==========================================
+
+            showMessage(
+                '✅ ' +
+                (
+                    result.message ||
+                    (isSignup
+                        ? 'تم إنشاء الحساب بنجاح'
+                        : 'تم تسجيل الدخول بنجاح')
+                ),
+                'success'
+            );
+
+
+            submitButton.textContent =
+                '✅ تم بنجاح';
+
+
+            // Redirect to dashboard.
+
+            setTimeout(() => {
+
+                window.location.replace(
+                    'profile.html'
                 );
 
-                message.className =
-                    'mt-5 text-center text-sm font-semibold text-green-600';
-
-                message.textContent =
-                    '✅ ' + result.message;
-
-
-                setTimeout(() => {
-
-                    window.location.href =
-                        'profile.html';
-
-                }, 700);
-
-
-            } else {
-
-                message.className =
-                    'mt-5 text-center text-sm font-semibold text-red-600';
-
-                message.textContent =
-                    '❌ ' + (result.error || 'حدث خطأ');
-
-
-            }
+            }, 700);
 
 
         } catch (error) {
 
-            console.error(error);
+            console.error(
+                'Authentication error:',
+                error
+            );
 
-            message.className =
-                'mt-5 text-center text-sm font-semibold text-red-600';
 
-            message.textContent =
-                '❌ تعذر الاتصال بالسيرفر.';
+            // Do not leave an old or invalid token.
+
+            localStorage.removeItem('token');
+
+            localStorage.removeItem('user');
+
+
+            showMessage(
+                '❌ ' +
+                (
+                    error.message ||
+                    'تعذر الاتصال بالسيرفر.'
+                )
+            );
 
 
         } finally {
@@ -437,6 +647,49 @@
         }
 
     });
+
+
+    // ==========================================
+    // 8. INITIAL CHECK
+    // ==========================================
+
+    // If a previous valid session exists,
+    // the dashboard can be opened directly.
+
+    const existingToken =
+        localStorage.getItem('token');
+
+    const existingUser =
+        localStorage.getItem('user');
+
+
+    if (existingToken && existingUser) {
+
+        try {
+
+            const parsedUser =
+                JSON.parse(existingUser);
+
+            if (
+                parsedUser &&
+                typeof parsedUser === 'object'
+            ) {
+
+                window.location.replace(
+                    'profile.html'
+                );
+
+            }
+
+        } catch (error) {
+
+            localStorage.removeItem('token');
+
+            localStorage.removeItem('user');
+
+        }
+
+    }
 
 </script>
 

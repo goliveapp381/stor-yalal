@@ -32,7 +32,6 @@
 <body class="bg-gray-50 text-gray-800 min-h-screen">
 
 <header class="bg-white border-b sticky top-0 z-50">
-
     <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center gap-4">
 
         <div>
@@ -47,10 +46,7 @@
 
         <div class="flex items-center gap-3 flex-wrap">
 
-            <span
-                id="user-welcome"
-                class="text-sm font-bold"
-            >
+            <span id="user-welcome" class="text-sm font-bold">
                 مرحباً
             </span>
 
@@ -63,15 +59,14 @@
 
             <button
                 id="logout-button"
+                type="button"
                 class="text-red-500 hover:bg-red-50 px-3 py-2 rounded-xl text-sm font-bold"
             >
                 خروج
             </button>
 
         </div>
-
     </div>
-
 </header>
 
 
@@ -99,29 +94,21 @@
                 ↻ تحديث
             </button>
 
-            <a
-                href="index.html"
-                class="text-purple-600 text-sm font-bold"
-            >
+            <a href="index.html" class="text-purple-600 text-sm font-bold">
                 ← الرئيسية
             </a>
 
         </div>
-
     </div>
 
-
-    <!-- Projects Grid -->
 
     <div
         id="sites-grid"
         class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
     >
-
         <div class="col-span-full text-center py-16 text-gray-400">
             ⏳ جاري تحميل مشاريعك...
         </div>
-
     </div>
 
 </main>
@@ -134,24 +121,29 @@
 
 <script src="./client-api.js"></script>
 
-
 <script>
 
     // ==========================================
-    // USER AUTHENTICATION CHECK
+    // 1. AUTHENTICATION CHECK
     // ==========================================
 
-    const storedUser = localStorage.getItem('user');
+    function clearAuthentication() {
+        localStorage.removeItem('user');
+        localStorage.removeItem('token');
+    }
 
-    if (!storedUser) {
-        window.location.href = 'login.html';
-        throw new Error('User not authenticated');
+    const storedUser = localStorage.getItem('user');
+    const authToken = localStorage.getItem('token');
+
+    if (!storedUser || !authToken) {
+        clearAuthentication();
+        window.location.replace('login.html');
+        throw new Error('Authentication required');
     }
 
     let user = null;
 
     try {
-
         user = JSON.parse(storedUser);
 
         if (!user || typeof user !== 'object') {
@@ -159,17 +151,14 @@
         }
 
     } catch (error) {
-
-        localStorage.removeItem('user');
-
-        window.location.href = 'login.html';
-
+        clearAuthentication();
+        window.location.replace('login.html');
         throw error;
     }
 
 
     // ==========================================
-    // USER INFORMATION
+    // 2. USER INFORMATION
     // ==========================================
 
     const userWelcome = document.getElementById('user-welcome');
@@ -179,35 +168,29 @@
 
 
     // ==========================================
-    // HELPERS
+    // 3. HELPERS
     // ==========================================
 
     function escapeHtml(value) {
-
         return String(value ?? '')
             .replaceAll('&', '&amp;')
             .replaceAll('<', '&lt;')
             .replaceAll('>', '&gt;')
             .replaceAll('"', '&quot;')
             .replaceAll("'", '&#039;');
-
     }
-
 
     function escapeAttribute(value) {
         return escapeHtml(value);
     }
 
-
     function getUserId() {
-
         return user.id || user._id || null;
-
     }
 
 
     // ==========================================
-    // SAFE CUSTOM DOMAIN URL
+    // 4. SAFE CUSTOM DOMAIN URL
     // ==========================================
 
     function getSafeProjectUrl(site) {
@@ -215,9 +198,6 @@
         if (!site || typeof site !== 'object') {
             return null;
         }
-
-        // Never show the Netlify URL publicly.
-        // The custom domain must be active first.
 
         if (site.domainStatus !== 'active') {
             return null;
@@ -231,7 +211,6 @@
         }
 
         try {
-
             const parsed = new URL(site.customUrl);
 
             if (parsed.protocol !== 'https:') {
@@ -240,7 +219,6 @@
 
             const hostname = parsed.hostname.toLowerCase();
 
-            // Accept only a subdomain of our configured root domain.
             if (
                 !hostname.endsWith('.gollivetv.com') ||
                 hostname === 'gollivetv.com'
@@ -251,57 +229,48 @@
             return parsed.href;
 
         } catch (error) {
-
             return null;
-
         }
-
     }
 
 
     // ==========================================
-    // DOMAIN STATUS DISPLAY
+    // 5. DOMAIN STATUS DISPLAY
     // ==========================================
 
     function getDomainStatus(site, projectUrl) {
 
         if (projectUrl) {
-
             return {
                 label: 'الدومين جاهز',
                 description: 'موقعك متاح الآن عبر الدومين الخاص.',
                 style: 'bg-green-50 text-green-700 border-green-200',
                 icon: '✅'
             };
-
         }
 
         if (
             site.domainStatus === 'failed' ||
             site.domainStatus === 'error'
         ) {
-
             return {
                 label: 'تعذر تجهيز الدومين',
                 description: 'حدث مشكل أثناء إعداد الدومين. حاول تحديث الحالة.',
                 style: 'bg-red-50 text-red-700 border-red-200',
                 icon: '⚠️'
             };
-
         }
 
         if (
             site.domainStatus === 'active' &&
             !projectUrl
         ) {
-
             return {
                 label: 'الرابط غير متاح',
                 description: 'تعذر التحقق من رابط الدومين.',
                 style: 'bg-yellow-50 text-yellow-700 border-yellow-200',
                 icon: '⚠️'
             };
-
         }
 
         return {
@@ -310,12 +279,33 @@
             style: 'bg-yellow-50 text-yellow-700 border-yellow-200',
             icon: '⏳'
         };
-
     }
 
 
     // ==========================================
-    // LOAD USER PROJECTS
+    // 6. AUTHENTICATION ERROR HANDLER
+    // ==========================================
+
+    function handleAuthenticationError(result) {
+
+        if (
+            result &&
+            (
+                result.status === 401 ||
+                result.status === 403
+            )
+        ) {
+            clearAuthentication();
+            window.location.replace('login.html');
+            return true;
+        }
+
+        return false;
+    }
+
+
+    // ==========================================
+    // 7. LOAD USER PROJECTS
     // ==========================================
 
     async function loadUserSites() {
@@ -328,15 +318,11 @@
             </div>
         `;
 
-
         const userId = getUserId();
 
-
         if (!userId) {
-
             grid.innerHTML = `
                 <div class="col-span-full bg-white p-10 rounded-2xl border text-center">
-
                     <p class="text-red-500 font-bold">
                         ❌ معرف المستخدم غير موجود.
                     </p>
@@ -344,22 +330,17 @@
                     <p class="text-gray-500 text-sm mt-2">
                         يرجى تسجيل الخروج ثم تسجيل الدخول مجدداً.
                     </p>
-
                 </div>
             `;
-
             return;
         }
-
 
         if (
             typeof TemplateCraftAPI === 'undefined' ||
             typeof TemplateCraftAPI.getSites !== 'function'
         ) {
-
             grid.innerHTML = `
                 <div class="col-span-full bg-white p-10 rounded-2xl border text-center">
-
                     <p class="text-red-500 font-bold">
                         ❌ تعذر تحميل نظام الاتصال بالخادم.
                     </p>
@@ -367,21 +348,20 @@
                     <p class="text-gray-500 text-sm mt-2">
                         تأكد من ملف client-api.js.
                     </p>
-
                 </div>
             `;
-
             return;
         }
-
 
         try {
 
             const result = await TemplateCraftAPI.getSites(userId);
 
+            if (handleAuthenticationError(result)) {
+                return;
+            }
 
             if (!result || !result.success) {
-
                 grid.innerHTML = `
                     <div class="col-span-full bg-white p-10 rounded-2xl border text-center">
 
@@ -390,6 +370,7 @@
                         </p>
 
                         <button
+                            type="button"
                             onclick="loadUserSites()"
                             class="bg-purple-600 hover:bg-purple-700 text-white px-5 py-2 rounded-xl"
                         >
@@ -398,13 +379,10 @@
 
                     </div>
                 `;
-
                 return;
             }
 
-
             if (!Array.isArray(result.sites) || result.sites.length === 0) {
-
                 grid.innerHTML = `
                     <div class="col-span-full bg-white p-12 rounded-2xl border text-center">
 
@@ -421,13 +399,10 @@
 
                     </div>
                 `;
-
                 return;
             }
 
-
             grid.innerHTML = '';
-
 
             // ==========================================
             // CREATE PROJECT CARDS
@@ -454,8 +429,6 @@
                     ? new Date(site.createdAt).toLocaleDateString('ar-MA')
                     : '-';
 
-
-                // Only the verified custom domain is displayed.
                 const projectUrl = getSafeProjectUrl(site);
 
                 const domainStatus = getDomainStatus(
@@ -467,12 +440,10 @@
                     ? `editor.html?siteId=${encodeURIComponent(siteId)}`
                     : null;
 
-
                 const card = document.createElement('div');
 
                 card.className =
                     'project-card bg-white p-6 rounded-2xl border shadow-sm hover:shadow-md flex flex-col justify-between';
-
 
                 card.innerHTML = `
 
@@ -490,28 +461,17 @@
 
                         </div>
 
-
                         <div class="text-sm text-gray-500 mb-2">
-
                             الصنف:
-
                             <strong class="text-gray-700">
                                 ${escapeHtml(projectType)}
                             </strong>
-
                         </div>
-
 
                         <div class="text-xs text-gray-400 mb-4">
-
                             تاريخ الإنشاء:
-
                             ${escapeHtml(date)}
-
                         </div>
-
-
-                        <!-- DOMAIN STATUS -->
 
                         <div class="border rounded-xl p-3 mb-4 ${domainStatus.style}">
 
@@ -526,9 +486,6 @@
 
                         </div>
 
-
-                        <!-- CUSTOM DOMAIN URL -->
-
                         <div
                             class="bg-gray-50 p-3 rounded-xl border text-xs text-gray-600 font-mono truncate mb-5"
                             dir="ltr"
@@ -542,9 +499,6 @@
                         </div>
 
                     </div>
-
-
-                    <!-- PROJECT ACTIONS -->
 
                     <div class="grid grid-cols-2 gap-2">
 
@@ -567,7 +521,6 @@
                                 </button>
                             `
                         }
-
 
                         ${
                             projectUrl
@@ -592,7 +545,6 @@
                             `
                         }
 
-
                         <button
                             type="button"
                             class="copy-project-link bg-gray-100 hover:bg-gray-200 text-gray-700 py-2.5 rounded-xl text-sm font-bold transition ${!projectUrl ? 'opacity-50 cursor-not-allowed' : ''}"
@@ -603,12 +555,9 @@
                         </button>
 
                     </div>
-
                 `;
 
-
                 grid.appendChild(card);
-
             });
 
 
@@ -623,18 +572,14 @@
                     const url = button.dataset.url;
 
                     if (!url) {
-
                         alert('الدومين الخاص بالمشروع مازال قيد التجهيز.');
-
                         return;
                     }
 
                     try {
-
                         await navigator.clipboard.writeText(url);
 
                         const oldText = button.textContent;
-
                         button.textContent = '✅ تم النسخ';
 
                         setTimeout(() => {
@@ -642,13 +587,9 @@
                         }, 2000);
 
                     } catch (error) {
-
                         alert('تعذر نسخ الرابط. يمكنك نسخه يدوياً.');
-
                     }
-
                 });
-
             });
 
         } catch (error) {
@@ -663,6 +604,7 @@
                     </p>
 
                     <button
+                        type="button"
                         onclick="loadUserSites()"
                         class="bg-purple-600 hover:bg-purple-700 text-white px-5 py-2 rounded-xl"
                     >
@@ -671,42 +613,37 @@
 
                 </div>
             `;
-
         }
-
     }
 
 
     // ==========================================
-    // LOGOUT
+    // 8. LOGOUT
     // ==========================================
 
     document
         .getElementById('logout-button')
         .addEventListener('click', () => {
 
-            localStorage.removeItem('user');
+            clearAuthentication();
 
-            window.location.href = 'login.html';
-
+            window.location.replace('login.html');
         });
 
 
     // ==========================================
-    // REFRESH PROJECTS
+    // 9. REFRESH PROJECTS
     // ==========================================
 
     document
         .getElementById('refresh-projects')
         .addEventListener('click', () => {
-
             loadUserSites();
-
         });
 
 
     // ==========================================
-    // START
+    // 10. START
     // ==========================================
 
     loadUserSites();
