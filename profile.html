@@ -27,6 +27,78 @@
             transform: translateY(-3px);
         }
 
+        /* =====================================
+           ANIMATED DOMAIN BORDER
+        ===================================== */
+
+        .domain-waiting-card {
+            position: relative;
+            border: 2px solid transparent;
+            border-radius: 14px;
+
+            background:
+                linear-gradient(#ffffff, #ffffff) padding-box,
+                linear-gradient(
+                    120deg,
+                    #9333ea,
+                    #3b82f6,
+                    #22c55e,
+                    #9333ea
+                ) border-box;
+
+            background-size:
+                100% 100%,
+                300% 300%;
+
+            animation: domain-border-wave 4s ease infinite;
+        }
+
+        @keyframes domain-border-wave {
+            0% {
+                background-position: 0 0, 0% 50%;
+            }
+
+            50% {
+                background-position: 0 0, 100% 50%;
+            }
+
+            100% {
+                background-position: 0 0, 0% 50%;
+            }
+        }
+
+        /* =====================================
+           HOURGLASS ANIMATION
+        ===================================== */
+
+        .hourglass-animation {
+            display: inline-block;
+            transform-origin: center;
+            animation: hourglass-rotate 1.8s ease-in-out infinite;
+        }
+
+        @keyframes hourglass-rotate {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            40% {
+                transform: rotate(180deg);
+            }
+
+            80% {
+                transform: rotate(180deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* =====================================
+           LOADING SPINNER
+        ===================================== */
+
         .loading-spinner {
             display: inline-block;
             width: 15px;
@@ -40,6 +112,18 @@
         @keyframes spin {
             to {
                 transform: rotate(360deg);
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .domain-waiting-card,
+            .hourglass-animation,
+            .loading-spinner {
+                animation: none;
+            }
+
+            .project-card {
+                transition: none;
             }
         }
     </style>
@@ -254,13 +338,9 @@
 
     function getDomainStatus(site, projectUrl) {
 
+        // الدومين جاهز: لا نعرض إطار الانتظار
         if (projectUrl) {
-            return {
-                label: 'الدومين جاهز',
-                description: 'موقعك متاح الآن عبر الدومين الخاص.',
-                style: 'bg-green-50 text-green-700 border-green-200',
-                icon: '✅'
-            };
+            return null;
         }
 
         const status = String(site.domainStatus || '').toLowerCase();
@@ -271,48 +351,24 @@
             site.customUrl
         );
 
-        // أخطاء مؤقتة أثناء إعداد SSL
-        if (status === 'failed' || status === 'error') {
-
-            if (hasDomainSetup) {
-                return {
-                    label: 'جاري تجهيز الدومين',
-                    description: 'تم إعداد الموقع. ننتظر تأكيد شهادة SSL والتحقق من الرابط.',
-                    style: 'bg-yellow-50 text-yellow-700 border-yellow-200',
-                    icon: '⏳'
-                };
-            }
-
+        // خطأ حقيقي بدون معلومات إعداد الدومين
+        if (
+            (status === 'failed' || status === 'error') &&
+            !hasDomainSetup
+        ) {
             return {
+                type: 'error',
                 label: 'تعذر تجهيز الدومين',
                 description: 'لم يتم إعداد الدومين. يرجى إعادة المحاولة أو التواصل مع الدعم.',
-                style: 'bg-red-50 text-red-700 border-red-200',
                 icon: '⚠️'
             };
         }
 
-        if (status === 'active' && !projectUrl) {
-            return {
-                label: 'جاري التحقق من الدومين',
-                description: 'تم تفعيل الدومين، ويجري التحقق من رابط HTTPS.',
-                style: 'bg-yellow-50 text-yellow-700 border-yellow-200',
-                icon: '⏳'
-            };
-        }
-
-        if (status === 'pending' || status === 'provisioning') {
-            return {
-                label: 'جاري تجهيز الدومين',
-                description: 'يتم إعداد DNS وشهادة SSL. سيظهر الرابط عند اكتمال العملية.',
-                style: 'bg-yellow-50 text-yellow-700 border-yellow-200',
-                icon: '⏳'
-            };
-        }
-
+        // الانتظار أثناء إعداد SSL أو DNS
         return {
+            type: 'waiting',
             label: 'جاري تجهيز الدومين',
-            description: 'يتم إعداد DNS وشهادة SSL. سيظهر الرابط عند اكتمال العملية.',
-            style: 'bg-yellow-50 text-yellow-700 border-yellow-200',
+            description: 'يتم الآن إعداد الدومين وشهادة SSL. سيظهر رابط موقعك تلقائياً عند اكتمال العملية.',
             icon: '⏳'
         };
     }
@@ -341,7 +397,7 @@
 
 
     // ==========================================
-    // 7. LOADING STATE
+    // 7. LOAD USER PROJECTS
     // ==========================================
 
     let isLoading = false;
@@ -356,6 +412,7 @@
         const refreshButton = document.getElementById('refresh-projects');
 
         refreshButton.disabled = true;
+
         refreshButton.innerHTML =
             '<span class="loading-spinner"></span> جاري التحديث';
 
@@ -375,6 +432,7 @@
                         <p class="text-red-500 font-bold">
                             ❌ معرف المستخدم غير موجود.
                         </p>
+
                         <p class="text-gray-500 text-sm mt-2">
                             يرجى تسجيل الخروج ثم تسجيل الدخول مجدداً.
                         </p>
@@ -392,6 +450,7 @@
                         <p class="text-red-500 font-bold">
                             ❌ تعذر تحميل نظام الاتصال بالخادم.
                         </p>
+
                         <p class="text-gray-500 text-sm mt-2">
                             تأكد من ملف client-api.js.
                         </p>
@@ -409,6 +468,7 @@
             if (!result || !result.success) {
                 grid.innerHTML = `
                     <div class="col-span-full bg-white p-10 rounded-2xl border text-center">
+
                         <p class="text-red-500 font-bold mb-3">
                             ❌ ${escapeHtml(result?.error || 'تعذر جلب المشاريع')}
                         </p>
@@ -420,6 +480,7 @@
                         >
                             إعادة المحاولة
                         </button>
+
                     </div>
                 `;
                 return;
@@ -428,6 +489,7 @@
             if (!Array.isArray(result.sites) || result.sites.length === 0) {
                 grid.innerHTML = `
                     <div class="col-span-full bg-white p-12 rounded-2xl border text-center">
+
                         <p class="text-gray-500 font-semibold mb-4">
                             ليس لديك أي مشروع حتى الآن.
                         </p>
@@ -438,6 +500,7 @@
                         >
                             إنشاء أول مشروع 🚀
                         </a>
+
                     </div>
                 `;
                 return;
@@ -514,18 +577,53 @@
                             ${escapeHtml(date)}
                         </div>
 
-                        <div class="border rounded-xl p-3 mb-4 ${domainStatus.style}">
+                        ${
+                            domainStatus
+                            ? `
+                                <div class="${
+                                    domainStatus.type === 'waiting'
+                                    ? 'domain-waiting-card'
+                                    : 'border border-red-200 bg-red-50'
+                                } rounded-xl p-3 mb-4">
 
-                            <div class="font-bold text-sm mb-1">
-                                ${domainStatus.icon}
-                                ${escapeHtml(domainStatus.label)}
-                            </div>
+                                    <div class="flex items-center gap-2 mb-1">
 
-                            <p class="text-xs">
-                                ${escapeHtml(domainStatus.description)}
-                            </p>
+                                        ${
+                                            domainStatus.type === 'waiting'
+                                            ? `
+                                                <span class="hourglass-animation text-lg">
+                                                    ⏳
+                                                </span>
+                                            `
+                                            : `
+                                                <span class="text-lg">
+                                                    ${domainStatus.icon}
+                                                </span>
+                                            `
+                                        }
 
-                        </div>
+                                        <strong class="${
+                                            domainStatus.type === 'waiting'
+                                            ? 'text-gray-800'
+                                            : 'text-red-700'
+                                        } text-sm">
+                                            ${escapeHtml(domainStatus.label)}
+                                        </strong>
+
+                                    </div>
+
+                                    <p class="text-xs leading-6 ${
+                                        domainStatus.type === 'waiting'
+                                        ? 'text-gray-600'
+                                        : 'text-red-600'
+                                    }">
+                                        ${escapeHtml(domainStatus.description)}
+                                    </p>
+
+                                </div>
+                            `
+                            : ''
+                        }
 
                         <div
                             class="bg-gray-50 p-3 rounded-xl border text-xs text-gray-600 font-mono truncate mb-5"
@@ -622,6 +720,7 @@
                         await navigator.clipboard.writeText(url);
 
                         const oldText = button.textContent;
+
                         button.textContent = '✅ تم النسخ';
 
                         setTimeout(() => {
@@ -640,6 +739,7 @@
 
             grid.innerHTML = `
                 <div class="col-span-full bg-white p-10 rounded-2xl border text-center">
+
                     <p class="text-red-500 font-bold mb-3">
                         ❌ حدث خطأ أثناء تحميل المشاريع.
                     </p>
@@ -651,6 +751,7 @@
                     >
                         إعادة المحاولة
                     </button>
+
                 </div>
             `;
 
@@ -679,7 +780,7 @@
 
 
     // ==========================================
-    // 11. REFRESH
+    // 11. REFRESH PROJECTS
     // ==========================================
 
     document
