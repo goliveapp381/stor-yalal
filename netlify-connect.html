@@ -1,1 +1,181 @@
 
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>ربط Netlify | TemplateCraft Pro</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: #080d19;
+            color: #f8fafc;
+        }
+
+        .panel {
+            background: #111827;
+            border: 1px solid #263247;
+        }
+
+        .primary {
+            background: linear-gradient(135deg, #e6b84a, #b98520);
+            color: #111827;
+        }
+
+        .primary:hover {
+            filter: brightness(1.1);
+        }
+
+        button:disabled {
+            opacity: .5;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+
+<body class="min-h-screen">
+
+<header class="border-b border-slate-800 bg-slate-950/80">
+    <div class="max-w-5xl mx-auto px-5 py-5 flex items-center justify-between gap-4">
+        <a href="dashboard.html" class="text-xl font-extrabold text-amber-400">
+            TemplateCraft Pro
+        </a>
+
+        <a href="dashboard.html" class="text-sm text-slate-300 hover:text-white">
+            العودة إلى لوحة التحكم ←
+        </a>
+    </div>
+</header>
+
+<main class="max-w-3xl mx-auto px-5 py-12">
+
+    <div class="mb-8">
+        <p class="text-amber-400 text-sm font-bold mb-2">
+            إعدادات النشر
+        </p>
+
+        <h1 class="text-3xl font-extrabold mb-3">
+            ربط حساب Netlify
+        </h1>
+
+        <p class="text-slate-400 leading-8">
+            اربط حساب Netlify الخاص بك حتى تتمكن من نشر مشاريعك
+            وإدارتها من داخل TemplateCraft Pro.
+        </p>
+    </div>
+
+    <section class="panel rounded-2xl p-6 md:p-8">
+
+        <div class="flex items-center gap-4 mb-7">
+            <div class="w-14 h-14 rounded-xl bg-white flex items-center justify-center">
+                <span class="text-3xl font-extrabold text-teal-600">N</span>
+            </div>
+
+            <div>
+                <h2 class="text-xl font-bold">Netlify</h2>
+                <p class="text-sm text-slate-400">
+                    حساب النشر والاستضافة
+                </p>
+            </div>
+        </div>
+
+        <div id="statusBox" class="rounded-xl bg-slate-900 border border-slate-700 p-5 mb-6">
+            <div class="flex items-center justify-between gap-3">
+                <span class="font-bold">حالة الاتصال</span>
+                <span id="statusBadge" class="text-sm text-slate-400">
+                    جاري التحقق...
+                </span>
+            </div>
+
+            <p id="statusDescription" class="text-sm text-slate-400 mt-3">
+                كنقومو بالتحقق من حساب Netlify ديالك.
+            </p>
+        </div>
+
+        <div id="connectSection">
+            <button
+                id="connectButton"
+                type="button"
+                class="primary w-full rounded-xl py-4 font-extrabold"
+            >
+                ربط حساب Netlify
+            </button>
+
+            <p class="text-xs text-slate-500 text-center mt-3">
+                غادي تفتح نافذة منفصلة للموافقة على الربط.
+            </p>
+        </div>
+
+        <div id="teamSection" class="hidden mt-7">
+
+            <div class="border-t border-slate-700 pt-6">
+                <h3 class="text-lg font-bold mb-2">
+                    اختيار Team
+                </h3>
+
+                <p class="text-sm text-slate-400 mb-5">
+                    اختار الحساب أو Team اللي بغيتي تستعمله لنشر المشاريع.
+                </p>
+
+                <label for="teamSelect" class="block text-sm mb-2">
+                    حساب Netlify
+                </label>
+
+                <select
+                    id="teamSelect"
+                    class="w-full bg-slate-950 border border-slate-700 rounded-xl p-4 text-white outline-none"
+                >
+                    <option value="">جاري تحميل الحسابات...</option>
+                </select>
+
+                <button
+                    id="saveTeamButton"
+                    type="button"
+                    class="primary w-full rounded-xl py-4 font-bold mt-4"
+                >
+                    حفظ اختيار Team
+                </button>
+            </div>
+        </div>
+
+        <div id="disconnectSection" class="hidden mt-7 border-t border-slate-700 pt-6">
+            <button
+                id="disconnectButton"
+                type="button"
+                class="w-full rounded-xl py-3 border border-red-500/50 text-red-400 hover:bg-red-500/10"
+            >
+                قطع الاتصال بـ Netlify
+            </button>
+
+            <p class="text-xs text-slate-500 mt-3 text-center">
+                قطع الاتصال لا يحذف المشاريع الموجودة في Netlify.
+            </p>
+        </div>
+
+        <div
+            id="messageBox"
+            class="hidden rounded-xl p-4 mt-6 text-sm"
+            role="status"
+            aria-live="polite"
+        ></div>
+
+    </section>
+
+    <p class="text-xs text-slate-500 text-center mt-7">
+        بيانات الاتصال كتتعالج من طرف السيرفر، وما كنخزنوش Access Token فالمتصفح.
+    </p>
+
+</main>
+
+<script src="./client-api.js"></script>
+<script src="./netlify-connect.js"></script>
+
+</body>
+</html>
+
