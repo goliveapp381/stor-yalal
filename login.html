@@ -2,22 +2,26 @@
 <html lang="ar" dir="rtl">
 
 <head>
-
     <meta charset="UTF-8">
 
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0">
+
+    <meta name="theme-color" content="#4c1d95">
 
     <title>تسجيل الدخول | TemplateCraft Pro</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
 
     <link
-        href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap"
         rel="stylesheet"
     >
 
     <style>
+        * {
+            box-sizing: border-box;
+        }
 
         body {
             font-family: 'Cairo', sans-serif;
@@ -39,7 +43,6 @@
         }
 
         @keyframes waveGradient {
-
             0% {
                 background-position: 0% 50%;
             }
@@ -51,647 +54,935 @@
             100% {
                 background-position: 0% 50%;
             }
-
         }
 
+        .form-input {
+            transition: all 0.2s ease;
+        }
+
+        .form-input:focus {
+            border-color: #9333ea;
+            box-shadow: 0 0 0 3px rgba(147, 51, 234, 0.12);
+            background: #fff;
+        }
+
+        .main-button {
+            transition: all 0.2s ease;
+        }
+
+        .main-button:not(:disabled):hover {
+            transform: translateY(-1px);
+        }
+
+        .main-button:disabled {
+            opacity: 0.65;
+            cursor: not-allowed;
+        }
+
+        .message-box:empty {
+            display: none;
+        }
     </style>
-
 </head>
-
 
 <body class="animated-mesh-bg min-h-screen flex items-center justify-center p-4">
 
+    <main class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-8 relative">
 
-<div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-8 relative">
+        <!-- HOME LINK -->
 
-
-    <!-- العودة -->
-
-    <a
-        href="index.html"
-        class="absolute top-4 left-4 text-gray-400 hover:text-purple-600 text-sm font-bold"
-    >
-        الرئيسية ➔
-    </a>
-
-
-    <!-- العنوان -->
-
-    <div class="text-center mb-8">
-
-        <h1 class="text-2xl font-bold text-purple-600 mb-1">
-            TemplateCraft Pro
-        </h1>
-
-        <p
-            id="page-subtitle"
-            class="text-gray-500 text-sm"
+        <a
+            href="index.html"
+            class="absolute top-4 left-4 text-gray-400 hover:text-purple-600 text-sm font-bold"
         >
-            سجل دخولك لإدارة مشاريعك وقوالبك الرقمية
-        </p>
-
-    </div>
+            الرئيسية ➔
+        </a>
 
 
-    <!-- Form -->
+        <!-- HEADER -->
 
-    <form
-        id="login-form"
-        class="space-y-4"
-    >
+        <div class="text-center mb-8 pt-3">
+
+            <div class="w-16 h-16 bg-purple-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+
+                <span class="text-3xl">✦</span>
+
+            </div>
+
+            <h1 class="text-2xl font-extrabold text-purple-700 mb-2">
+                TemplateCraft Pro
+            </h1>
+
+            <p
+                id="page-subtitle"
+                class="text-gray-500 text-sm"
+            >
+                سجل دخولك لإدارة مشاريعك وقوالبك الرقمية
+            </p>
+
+        </div>
 
 
-        <!-- Username -->
+        <!-- AUTH FORM -->
+
+        <form
+            id="login-form"
+            class="space-y-4"
+            novalidate
+        >
+
+            <!-- USERNAME -->
+
+            <div id="name-container" class="hidden">
+
+                <label
+                    for="username"
+                    class="block text-sm font-bold text-gray-700 mb-1"
+                >
+                    اسم المستخدم
+                </label>
+
+                <input
+                    type="text"
+                    id="username"
+                    autocomplete="username"
+                    maxlength="40"
+                    class="form-input w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none bg-gray-50"
+                    placeholder="أدخل اسم المستخدم"
+                >
+
+            </div>
+
+
+            <!-- EMAIL -->
+
+            <div>
+
+                <label
+                    for="email"
+                    class="block text-sm font-bold text-gray-700 mb-1"
+                >
+                    البريد الإلكتروني
+                </label>
+
+                <input
+                    type="email"
+                    id="email"
+                    required
+                    autocomplete="email"
+                    maxlength="150"
+                    class="form-input w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none bg-gray-50"
+                    placeholder="name@example.com"
+                >
+
+            </div>
+
+
+            <!-- PASSWORD -->
+
+            <div>
+
+                <label
+                    for="password"
+                    class="block text-sm font-bold text-gray-700 mb-1"
+                >
+                    كلمة المرور
+                </label>
+
+                <input
+                    type="password"
+                    id="password"
+                    required
+                    minlength="6"
+                    autocomplete="current-password"
+                    class="form-input w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none bg-gray-50"
+                    placeholder="أدخل كلمة المرور"
+                >
+
+            </div>
+
+
+            <!-- SUBMIT -->
+
+            <button
+                type="submit"
+                id="submit-btn"
+                class="main-button w-full bg-purple-600 hover:bg-purple-700 text-white py-3 rounded-xl font-bold"
+            >
+                تسجيل الدخول
+            </button>
+
+        </form>
+
+
+        <!-- LOGIN / SIGNUP TOGGLE -->
+
+        <div class="mt-6 text-center text-sm border-t pt-4">
+
+            <span
+                id="toggle-text"
+                class="text-gray-500"
+            >
+                ليس لديك حساب؟
+            </span>
+
+            <button
+                type="button"
+                id="toggle-button"
+                class="text-purple-600 font-bold mr-1 hover:underline"
+            >
+                إنشاء حساب جديد
+            </button>
+
+        </div>
+
+
+        <!-- MESSAGE -->
 
         <div
-            id="name-container"
-            class="hidden"
-        >
-
-            <label class="block text-sm font-bold text-gray-700 mb-1">
-                اسم المستخدم
-            </label>
-
-            <input
-                type="text"
-                id="username"
-                autocomplete="username"
-                class="w-full px-4 py-3 border rounded-xl focus:outline-none focus:border-purple-600 bg-gray-50"
-                placeholder="أدخل اسمك"
-            >
-
-        </div>
+            id="message"
+            role="status"
+            aria-live="polite"
+            class="message-box mt-5 text-center text-sm font-semibold"
+        ></div>
 
 
-        <!-- Email -->
+        <!-- FOOTER -->
 
-        <div>
+        <p class="text-center text-xs text-gray-400 mt-6">
+            © TemplateCraft Pro - جميع الحقوق محفوظة
+        </p>
 
-            <label class="block text-sm font-bold text-gray-700 mb-1">
-                البريد الإلكتروني
-            </label>
-
-            <input
-                type="email"
-                id="email"
-                required
-                autocomplete="email"
-                class="w-full px-4 py-3 border rounded-xl focus:outline-none focus:border-purple-600 bg-gray-50"
-                placeholder="name@example.com"
-            >
-
-        </div>
+    </main>
 
 
-        <!-- Password -->
+    <!-- API CONNECTOR -->
 
-        <div>
-
-            <label class="block text-sm font-bold text-gray-700 mb-1">
-                كلمة المرور
-            </label>
-
-            <input
-                type="password"
-                id="password"
-                required
-                minlength="6"
-                autocomplete="current-password"
-                class="w-full px-4 py-3 border rounded-xl focus:outline-none focus:border-purple-600 bg-gray-50"
-                placeholder="••••••••"
-            >
-
-        </div>
+    <script src="./client-api.js"></script>
 
 
-        <!-- Button -->
+    <script>
+    (() => {
 
-        <button
-            type="submit"
-            id="submit-btn"
-            class="w-full bg-purple-600 hover:bg-purple-700 text-white py-3 rounded-xl font-bold transition disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-            تسجيل الدخول
-        </button>
+        'use strict';
 
 
-    </form>
+        // ==========================================
+        // 1. CONFIGURATION
+        // ==========================================
+
+        const DASHBOARD_URL = 'profile.html';
 
 
-    <!-- Toggle -->
+        // ==========================================
+        // 2. STATE
+        // ==========================================
 
-    <div class="mt-6 text-center text-sm border-t pt-4">
-
-        <span
-            id="toggle-text"
-            class="text-gray-500"
-        >
-            ليس لديك حساب؟
-        </span>
-
-        <button
-            type="button"
-            id="toggle-button"
-            class="text-purple-600 font-bold mr-1 hover:underline"
-        >
-            إنشاء حساب جديد
-        </button>
-
-    </div>
+        let isSignup = false;
+        let isSubmitting = false;
 
 
-    <!-- Status -->
+        // ==========================================
+        // 3. ELEMENTS
+        // ==========================================
 
-    <div
-        id="message"
-        role="status"
-        aria-live="polite"
-        class="mt-5 text-center text-sm font-semibold"
-    ></div>
+        const form =
+            document.getElementById('login-form');
 
+        const nameContainer =
+            document.getElementById('name-container');
 
-</div>
+        const usernameInput =
+            document.getElementById('username');
 
+        const emailInput =
+            document.getElementById('email');
 
-<script src="./client-api.js"></script>
+        const passwordInput =
+            document.getElementById('password');
 
+        const submitButton =
+            document.getElementById('submit-btn');
 
-<script>
+        const toggleButton =
+            document.getElementById('toggle-button');
 
-    // ==========================================
-    // 1. STATE
-    // ==========================================
+        const toggleText =
+            document.getElementById('toggle-text');
 
-    let isSignup = false;
+        const subtitle =
+            document.getElementById('page-subtitle');
 
-
-    // ==========================================
-    // 2. ELEMENTS
-    // ==========================================
-
-    const form =
-        document.getElementById('login-form');
-
-    const nameContainer =
-        document.getElementById('name-container');
-
-    const usernameInput =
-        document.getElementById('username');
-
-    const emailInput =
-        document.getElementById('email');
-
-    const passwordInput =
-        document.getElementById('password');
-
-    const submitButton =
-        document.getElementById('submit-btn');
-
-    const toggleButton =
-        document.getElementById('toggle-button');
-
-    const toggleText =
-        document.getElementById('toggle-text');
-
-    const subtitle =
-        document.getElementById('page-subtitle');
-
-    const message =
-        document.getElementById('message');
+        const message =
+            document.getElementById('message');
 
 
-    // ==========================================
-    // 3. MESSAGE HELPER
-    // ==========================================
+        // ==========================================
+        // 4. MESSAGE HELPER
+        // ==========================================
 
-    function showMessage(text, type = 'error') {
+        function showMessage(text, type = 'error') {
 
-        message.textContent = text;
+            message.textContent = text;
 
-        message.className =
-            'mt-5 text-center text-sm font-semibold';
+            message.className =
+                'message-box mt-5 text-center text-sm font-semibold';
 
-        if (type === 'success') {
+            if (type === 'success') {
 
-            message.classList.add('text-green-600');
+                message.classList.add('text-green-600');
 
-        } else if (type === 'info') {
+            } else if (type === 'info') {
 
-            message.classList.add('text-blue-600');
+                message.classList.add('text-blue-600');
 
-        } else {
+            } else {
 
-            message.classList.add('text-red-600');
+                message.classList.add('text-red-600');
+
+            }
 
         }
 
-    }
 
+        function clearMessage() {
 
-    // ==========================================
-    // 4. TOGGLE LOGIN / SIGNUP
-    // ==========================================
+            message.textContent = '';
 
-    toggleButton.addEventListener('click', () => {
-
-        isSignup = !isSignup;
-
-        message.textContent = '';
-
-        if (isSignup) {
-
-            subtitle.textContent =
-                'أنشئ حساباً جديداً وابدأ رحلتك معنا';
-
-            nameContainer.classList.remove('hidden');
-
-            usernameInput.required = true;
-
-            usernameInput.autocomplete = 'username';
-
-            passwordInput.autocomplete = 'new-password';
-
-            submitButton.textContent =
-                'إنشاء الحساب';
-
-            toggleText.textContent =
-                'لديك حساب بالفعل؟';
-
-            toggleButton.textContent =
-                'تسجيل الدخول';
-
-        } else {
-
-            subtitle.textContent =
-                'سجل دخولك لإدارة مشاريعك وقوالبك الرقمية';
-
-            nameContainer.classList.add('hidden');
-
-            usernameInput.required = false;
-
-            passwordInput.autocomplete = 'current-password';
-
-            submitButton.textContent =
-                'تسجيل الدخول';
-
-            toggleText.textContent =
-                'ليس لديك حساب؟';
-
-            toggleButton.textContent =
-                'إنشاء حساب جديد';
+            message.className =
+                'message-box mt-5 text-center text-sm font-semibold';
 
         }
 
-    });
 
+        // ==========================================
+        // 5. AUTHENTICATION STORAGE
+        // ==========================================
 
-    // ==========================================
-    // 5. AUTHENTICATION RESPONSE VALIDATION
-    // ==========================================
+        function getStoredToken() {
 
-    function validateAuthResponse(result) {
-
-        if (!result || !result.success) {
-
-            throw new Error(
-                result?.error ||
-                result?.message ||
-                'تعذر إتمام العملية'
+            return (
+                localStorage.getItem('token') ||
+                localStorage.getItem('authToken') ||
+                ''
             );
 
         }
 
-        if (
-            typeof result.token !== 'string' ||
-            !result.token.trim()
-        ) {
 
-            throw new Error(
-                'السيرفر لم يرجع رمز الدخول JWT. تأكد من إعداد api-routes.js.'
-            );
+        function getStoredUser() {
 
-        }
+            try {
 
-        if (
-            !result.user ||
-            typeof result.user !== 'object'
-        ) {
+                return JSON.parse(
+                    localStorage.getItem('user') || 'null'
+                );
 
-            throw new Error(
-                'السيرفر لم يرجع بيانات المستخدم بشكل صحيح.'
-            );
+            } catch (error) {
 
-        }
+                console.error(
+                    'Stored user error:',
+                    error
+                );
 
-        const userId =
-            result.user.id ||
-            result.user._id;
+                return null;
 
-        if (!userId) {
-
-            throw new Error(
-                'معرف المستخدم غير موجود في استجابة السيرفر.'
-            );
+            }
 
         }
 
-        return true;
 
-    }
+        function saveAuthentication(result) {
 
+            const token = result.token;
 
-    // ==========================================
-    // 6. SAVE AUTHENTICATION
-    // ==========================================
+            const user = result.user;
 
-    function saveAuthentication(result) {
+            const userId =
+                user.id ||
+                user._id;
 
-        // Store JWT token.
+            if (!token || !userId) {
 
-        localStorage.setItem(
-            'token',
-            result.token
-        );
+                throw new Error(
+                    'بيانات تسجيل الدخول غير مكتملة.'
+                );
 
-
-        // Store user information.
-
-        const userData = {
-            ...result.user,
-
-            id:
-                result.user.id ||
-                result.user._id
-        };
-
-        localStorage.setItem(
-            'user',
-            JSON.stringify(userData)
-        );
+            }
 
 
-        // Verify that storage succeeded.
+            // Normalize user ID
 
-        if (
-            localStorage.getItem('token') !== result.token ||
-            !localStorage.getItem('user')
-        ) {
+            const userData = {
+                ...user,
+                id: String(userId)
+            };
+
+
+            try {
+
+                // Main token used by TemplateCraft
+
+                localStorage.setItem(
+                    'token',
+                    token
+                );
+
+
+                // Compatibility with client-api.js
+
+                localStorage.setItem(
+                    'authToken',
+                    token
+                );
+
+
+                // Save user data
+
+                localStorage.setItem(
+                    'user',
+                    JSON.stringify(userData)
+                );
+
+
+                // Verify storage
+
+                if (
+                    localStorage.getItem('token') !== token ||
+                    localStorage.getItem('authToken') !== token
+                ) {
+
+                    throw new Error(
+                        'تعذر حفظ رمز الدخول.'
+                    );
+
+                }
+
+
+                const savedUser = getStoredUser();
+
+                if (
+                    !savedUser ||
+                    String(savedUser.id) !== String(userId)
+                ) {
+
+                    throw new Error(
+                        'تعذر حفظ معلومات المستخدم.'
+                    );
+
+                }
+
+            } catch (error) {
+
+                localStorage.removeItem('token');
+                localStorage.removeItem('authToken');
+                localStorage.removeItem('user');
+
+                throw error;
+
+            }
+
+        }
+
+
+        // ==========================================
+        // 6. CLEAR AUTHENTICATION
+        // ==========================================
+
+        function clearAuthentication() {
 
             localStorage.removeItem('token');
+
+            localStorage.removeItem('authToken');
+
             localStorage.removeItem('user');
 
-            throw new Error(
-                'تعذر حفظ بيانات تسجيل الدخول في المتصفح.'
-            );
-
-        }
-
-    }
-
-
-    // ==========================================
-    // 7. FORM SUBMIT
-    // ==========================================
-
-    form.addEventListener('submit', async (event) => {
-
-        event.preventDefault();
-
-
-        if (submitButton.disabled) {
-            return;
         }
 
 
-        const email =
-            emailInput.value.trim().toLowerCase();
+        // ==========================================
+        // 7. VALIDATE AUTH RESPONSE
+        // ==========================================
 
-        const password =
-            passwordInput.value;
+        function validateAuthResponse(result) {
 
+            if (!result || typeof result !== 'object') {
 
-        const username =
-            usernameInput.value.trim();
+                throw new Error(
+                    'السيرفر لم يرجع استجابة صحيحة.'
+                );
 
-
-        if (!email || !password) {
-
-            showMessage(
-                'يرجى إدخال البريد الإلكتروني وكلمة المرور.'
-            );
-
-            return;
-
-        }
+            }
 
 
-        if (isSignup && !username) {
+            if (result.success !== true) {
 
-            showMessage(
-                '⚠️ أدخل اسم المستخدم.'
-            );
+                throw new Error(
+                    result.message ||
+                    result.error ||
+                    'تعذر إتمام العملية.'
+                );
 
-            usernameInput.focus();
+            }
 
-            return;
-
-        }
-
-
-        // Disable button.
-
-        submitButton.disabled = true;
-
-        submitButton.textContent =
-            '⏳ جاري الاتصال...';
-
-
-        showMessage(
-            'جاري الاتصال بالسيرفر...',
-            'info'
-        );
-
-
-        try {
-
-            // Make sure API client exists.
 
             if (
-                typeof TemplateCraftAPI === 'undefined'
+                typeof result.token !== 'string' ||
+                !result.token.trim()
             ) {
 
                 throw new Error(
-                    'ملف client-api.js غير متوفر أو لم يتم تحميله.'
+                    'السيرفر لم يرجع JWT Token. راجع استجابة API.'
                 );
 
             }
 
 
-            let result;
+            if (
+                !result.user ||
+                typeof result.user !== 'object'
+            ) {
 
-
-            // ==========================================
-            // SIGNUP
-            // ==========================================
-
-            if (isSignup) {
-
-                result = await TemplateCraftAPI.signup({
-
-                    username: username,
-
-                    email: email,
-
-                    password: password
-
-                });
-
-            }
-
-
-            // ==========================================
-            // LOGIN
-            // ==========================================
-
-            else {
-
-                result = await TemplateCraftAPI.login({
-
-                    email: email,
-
-                    password: password
-
-                });
-
-            }
-
-
-            // ==========================================
-            // VALIDATE RESPONSE
-            // ==========================================
-
-            validateAuthResponse(result);
-
-
-            // ==========================================
-            // SAVE JWT + USER
-            // ==========================================
-
-            saveAuthentication(result);
-
-
-            // ==========================================
-            // SUCCESS
-            // ==========================================
-
-            showMessage(
-                '✅ ' +
-                (
-                    result.message ||
-                    (isSignup
-                        ? 'تم إنشاء الحساب بنجاح'
-                        : 'تم تسجيل الدخول بنجاح')
-                ),
-                'success'
-            );
-
-
-            submitButton.textContent =
-                '✅ تم بنجاح';
-
-
-            // Redirect to dashboard.
-
-            setTimeout(() => {
-
-                window.location.replace(
-                    'profile.html'
+                throw new Error(
+                    'السيرفر لم يرجع بيانات المستخدم.'
                 );
 
-            }, 700);
+            }
 
 
-        } catch (error) {
+            const userId =
+                result.user.id ||
+                result.user._id;
 
-            console.error(
-                'Authentication error:',
-                error
-            );
+            if (!userId) {
 
+                throw new Error(
+                    'معرف المستخدم غير موجود في استجابة السيرفر.'
+                );
 
-            // Do not leave an old or invalid token.
-
-            localStorage.removeItem('token');
-
-            localStorage.removeItem('user');
+            }
 
 
-            showMessage(
-                '❌ ' +
-                (
-                    error.message ||
-                    'تعذر الاتصال بالسيرفر.'
-                )
-            );
+            return true;
+
+        }
 
 
-        } finally {
+        // ==========================================
+        // 8. TOGGLE LOGIN / SIGNUP
+        // ==========================================
 
-            submitButton.disabled = false;
+        toggleButton.addEventListener(
+            'click',
+            function () {
 
-            submitButton.textContent =
-                isSignup
+                if (isSubmitting) return;
+
+                isSignup = !isSignup;
+
+                clearMessage();
+
+
+                if (isSignup) {
+
+                    subtitle.textContent =
+                        'أنشئ حساباً جديداً وابدأ رحلتك معنا';
+
+                    nameContainer.classList.remove('hidden');
+
+                    usernameInput.required = true;
+
+                    usernameInput.autocomplete = 'username';
+
+                    passwordInput.autocomplete = 'new-password';
+
+                    submitButton.textContent =
+                        'إنشاء الحساب';
+
+                    toggleText.textContent =
+                        'لديك حساب بالفعل؟';
+
+                    toggleButton.textContent =
+                        'تسجيل الدخول';
+
+                } else {
+
+                    subtitle.textContent =
+                        'سجل دخولك لإدارة مشاريعك وقوالبك الرقمية';
+
+                    nameContainer.classList.add('hidden');
+
+                    usernameInput.required = false;
+
+                    passwordInput.autocomplete =
+                        'current-password';
+
+                    submitButton.textContent =
+                        'تسجيل الدخول';
+
+                    toggleText.textContent =
+                        'ليس لديك حساب؟';
+
+                    toggleButton.textContent =
+                        'إنشاء حساب جديد';
+
+                }
+
+            }
+        );
+
+
+        // ==========================================
+        // 9. FORM VALIDATION
+        // ==========================================
+
+        function validateForm() {
+
+            const email =
+                emailInput.value.trim().toLowerCase();
+
+            const password =
+                passwordInput.value;
+
+            const username =
+                usernameInput.value.trim();
+
+
+            if (!email || !password) {
+
+                throw new Error(
+                    'يرجى إدخال البريد الإلكتروني وكلمة المرور.'
+                );
+
+            }
+
+
+            if (!emailInput.validity.valid) {
+
+                throw new Error(
+                    'يرجى إدخال بريد إلكتروني صحيح.'
+                );
+
+            }
+
+
+            if (password.length < 6) {
+
+                throw new Error(
+                    'كلمة المرور يجب أن تحتوي على 6 أحرف على الأقل.'
+                );
+
+            }
+
+
+            if (isSignup && !username) {
+
+                usernameInput.focus();
+
+                throw new Error(
+                    'يرجى إدخال اسم المستخدم.'
+                );
+
+            }
+
+
+            if (isSignup && username.length < 2) {
+
+                usernameInput.focus();
+
+                throw new Error(
+                    'اسم المستخدم قصير جداً.'
+                );
+
+            }
+
+
+            return {
+                email,
+                password,
+                username
+            };
+
+        }
+
+
+        // ==========================================
+        // 10. BUTTON LOADING
+        // ==========================================
+
+        function setLoading(loading) {
+
+            isSubmitting = loading;
+
+            submitButton.disabled = loading;
+
+            toggleButton.disabled = loading;
+
+            submitButton.textContent = loading
+                ? '⏳ جاري الاتصال...'
+                : isSignup
                     ? 'إنشاء الحساب'
                     : 'تسجيل الدخول';
 
         }
 
-    });
 
+        // ==========================================
+        // 11. CHECK API
+        // ==========================================
 
-    // ==========================================
-    // 8. INITIAL CHECK
-    // ==========================================
-
-    // If a previous valid session exists,
-    // the dashboard can be opened directly.
-
-    const existingToken =
-        localStorage.getItem('token');
-
-    const existingUser =
-        localStorage.getItem('user');
-
-
-    if (existingToken && existingUser) {
-
-        try {
-
-            const parsedUser =
-                JSON.parse(existingUser);
+        function checkAPI() {
 
             if (
-                parsedUser &&
-                typeof parsedUser === 'object'
+                typeof window.TemplateCraftAPI === 'undefined'
             ) {
 
-                window.location.replace(
-                    'profile.html'
+                throw new Error(
+                    'ملف client-api.js غير محمّل بشكل صحيح.'
                 );
 
             }
 
-        } catch (error) {
 
-            localStorage.removeItem('token');
+            if (
+                typeof window.TemplateCraftAPI.login !== 'function' ||
+                typeof window.TemplateCraftAPI.signup !== 'function'
+            ) {
 
-            localStorage.removeItem('user');
+                throw new Error(
+                    'دوال تسجيل الدخول والتسجيل غير موجودة في client-api.js.'
+                );
+
+            }
 
         }
 
-    }
 
-</script>
+        // ==========================================
+        // 12. SIGNUP
+        // ==========================================
+
+        async function signup(data) {
+
+            const result =
+                await window.TemplateCraftAPI.signup({
+
+                    username: data.username,
+
+                    email: data.email,
+
+                    password: data.password
+
+                });
+
+            return result;
+
+        }
+
+
+        // ==========================================
+        // 13. LOGIN
+        // ==========================================
+
+        async function login(data) {
+
+            const result =
+                await window.TemplateCraftAPI.login({
+
+                    email: data.email,
+
+                    password: data.password
+
+                });
+
+            return result;
+
+        }
+
+
+        // ==========================================
+        // 14. FORM SUBMIT
+        // ==========================================
+
+        form.addEventListener(
+            'submit',
+            async function (event) {
+
+                event.preventDefault();
+
+                if (isSubmitting) return;
+
+                clearMessage();
+
+                try {
+
+                    // Validate form
+
+                    const data = validateForm();
+
+
+                    // Check API
+
+                    checkAPI();
+
+
+                    // Loading state
+
+                    setLoading(true);
+
+                    showMessage(
+                        isSignup
+                            ? 'جاري إنشاء حسابك...'
+                            : 'جاري التحقق من بيانات الدخول...',
+                        'info'
+                    );
+
+
+                    // Request backend
+
+                    let result;
+
+                    if (isSignup) {
+
+                        result = await signup(data);
+
+                    } else {
+
+                        result = await login(data);
+
+                    }
+
+
+                    // Validate backend response
+
+                    validateAuthResponse(result);
+
+
+                    // Save JWT and user
+
+                    saveAuthentication(result);
+
+
+                    // Success message
+
+                    showMessage(
+                        result.message ||
+                        (
+                            isSignup
+                                ? 'تم إنشاء الحساب بنجاح.'
+                                : 'تم تسجيل الدخول بنجاح.'
+                        ),
+                        'success'
+                    );
+
+
+                    submitButton.textContent =
+                        '✅ تم بنجاح';
+
+
+                    // Redirect to dashboard
+
+                    window.setTimeout(
+                        function () {
+
+                            window.location.replace(
+                                DASHBOARD_URL
+                            );
+
+                        },
+                        700
+                    );
+
+
+                } catch (error) {
+
+                    console.error(
+                        'TemplateCraft Authentication Error:',
+                        error
+                    );
+
+
+                    showMessage(
+                        error.message ||
+                        'تعذر الاتصال بالسيرفر.'
+                    );
+
+
+                } finally {
+
+                    setLoading(false);
+
+                }
+
+            }
+        );
+
+
+        // ==========================================
+        // 15. INITIAL SESSION CHECK
+        // ==========================================
+
+        function checkExistingSession() {
+
+            const token = getStoredToken();
+
+            const user = getStoredUser();
+
+
+            if (!token || !user) {
+
+                return;
+
+            }
+
+
+            const userId =
+                user.id ||
+                user._id;
+
+
+            if (!userId) {
+
+                clearAuthentication();
+
+                return;
+
+            }
+
+
+            // Keep token keys synchronized
+
+            localStorage.setItem(
+                'token',
+                token
+            );
+
+            localStorage.setItem(
+                'authToken',
+                token
+            );
+
+
+            window.location.replace(
+                DASHBOARD_URL
+            );
+
+        }
+
+
+        // ==========================================
+        // 16. INITIALIZATION
+        // ==========================================
+
+        checkExistingSession();
+
+
+        console.log(
+            'TemplateCraft Authentication initialized'
+        );
+
+    })();
+    </script>
 
 </body>
 </html>
