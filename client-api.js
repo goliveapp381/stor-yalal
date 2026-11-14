@@ -1,4 +1,3 @@
-
 /*
 ============================================
  TEMPLATECRAFT PRO - CLIENT API
@@ -32,7 +31,9 @@ function getAuthToken() {
 
 function getStoredUser() {
     try {
-        return JSON.parse(localStorage.getItem('user') || 'null');
+        return JSON.parse(
+            localStorage.getItem('user') || 'null'
+        );
     } catch (error) {
         console.error('User data error:', error);
         return null;
@@ -43,11 +44,11 @@ function getAuthHeaders() {
     const token = getAuthToken();
 
     const headers = {
-        'Accept': 'application/json'
+        Accept: 'application/json'
     };
 
     if (token) {
-        headers['Authorization'] = `Bearer ${token}`;
+        headers.Authorization = `Bearer ${token}`;
     }
 
     return headers;
@@ -77,23 +78,28 @@ async function apiRequest(endpoint, options = {}) {
         !(requestOptions.body instanceof FormData)
     ) {
         headers['Content-Type'] = 'application/json';
-        requestOptions.body = JSON.stringify(requestOptions.body);
+
+        requestOptions.body = JSON.stringify(
+            requestOptions.body
+        );
     }
 
     try {
         const response = await fetch(url, requestOptions);
 
-        const contentType = response.headers.get('content-type') || '';
+        const contentType =
+            response.headers.get('content-type') || '';
 
         let data;
 
         if (contentType.includes('application/json')) {
             data = await response.json();
         } else {
-            const text = await response.text();
+            const responseText = await response.text();
+
             data = {
                 success: response.ok,
-                message: text
+                message: responseText
             };
         }
 
@@ -113,12 +119,17 @@ async function apiRequest(endpoint, options = {}) {
         return data;
 
     } catch (error) {
-        console.error(`API Error [${endpoint}]:`, error);
+        console.error(
+            `API Error [${endpoint}]:`,
+            error
+        );
 
         return {
             success: false,
-            error: error.message || 'وقع خطأ في الاتصال بالسيرفر.',
-            message: error.message || 'وقع خطأ في الاتصال بالسيرفر.',
+            error: error.message ||
+                'وقع خطأ في الاتصال بالسيرفر.',
+            message: error.message ||
+                'وقع خطأ في الاتصال بالسيرفر.',
             status: error.status || 0
         };
     }
@@ -132,9 +143,19 @@ async function apiRequest(endpoint, options = {}) {
 function addUserId(data = {}) {
     const user = getStoredUser();
 
+    if (
+        !data ||
+        typeof data !== 'object' ||
+        Array.isArray(data)
+    ) {
+        data = {};
+    }
+
     return {
         ...data,
-        ...(user && user._id ? { userId: user._id } : {})
+        ...(user && (user._id || user.id)
+            ? { userId: user._id || user.id }
+            : {})
     };
 }
 
@@ -150,13 +171,28 @@ function normalizeSite(site = {}) {
 
     return {
         ...site,
+
         id: site._id || site.id || site.siteId || null,
-        siteName: site.siteName || site.name || '',
+
+        siteName:
+            site.siteName ||
+            site.name ||
+            '',
+
         templateId: site.templateId || '',
+
         status: site.status || 'unknown',
-        url: site.url || site.siteUrl || site.deployUrl || '',
+
+        url:
+            site.url ||
+            site.siteUrl ||
+            site.deployUrl ||
+            '',
+
         customDomain: site.customDomain || '',
+
         createdAt: site.createdAt || null,
+
         updatedAt: site.updatedAt || null
     };
 }
@@ -171,6 +207,7 @@ function normalizeSiteResponse(response = {}) {
 
     return {
         ...response,
+
         sites: Array.isArray(sites)
             ? sites.map(normalizeSite)
             : []
@@ -197,6 +234,14 @@ function normalizeDeployResponse(response = {}) {
 // ============================================
 
 function buildQuery(params = {}) {
+    if (
+        !params ||
+        typeof params !== 'object' ||
+        Array.isArray(params)
+    ) {
+        return '';
+    }
+
     const query = new URLSearchParams();
 
     Object.entries(params).forEach(([key, value]) => {
@@ -205,7 +250,13 @@ function buildQuery(params = {}) {
             value !== null &&
             value !== ''
         ) {
-            query.append(key, value);
+            if (
+                typeof value === 'object'
+            ) {
+                query.append(key, JSON.stringify(value));
+            } else {
+                query.append(key, String(value));
+            }
         }
     });
 
@@ -236,7 +287,7 @@ const TemplateCraftAPI = {
     // AUTHENTICATION
     // ========================================
 
-    async signup(userData) {
+    async signup(userData = {}) {
         return apiRequest('/api/auth/signup', {
             method: 'POST',
             body: userData
@@ -244,7 +295,7 @@ const TemplateCraftAPI = {
     },
 
 
-    async login(credentials) {
+    async login(credentials = {}) {
         return apiRequest('/api/auth/login', {
             method: 'POST',
             body: credentials
@@ -256,7 +307,7 @@ const TemplateCraftAPI = {
     // CREATE / DEPLOY PROJECT
     // ========================================
 
-    async deploy(projectData) {
+    async deploy(projectData = {}) {
         const response = await apiRequest('/api/deploy', {
             method: 'POST',
             body: addUserId(projectData)
@@ -275,6 +326,15 @@ const TemplateCraftAPI = {
     // ========================================
 
     async getSites(options = {}) {
+        // إصلاح مشكل تمرير token كنص
+        if (
+            !options ||
+            typeof options !== 'object' ||
+            Array.isArray(options)
+        ) {
+            options = {};
+        }
+
         const query = buildQuery(options);
 
         const response = await apiRequest(
@@ -319,7 +379,7 @@ const TemplateCraftAPI = {
     // UPDATE PROJECT
     // ========================================
 
-    async updateSite(siteId, updates) {
+    async updateSite(siteId, updates = {}) {
         if (!siteId) {
             return {
                 success: false,
@@ -365,7 +425,7 @@ const TemplateCraftAPI = {
     // SAVE PROJECT FILE
     // ========================================
 
-    async saveSiteFile(siteId, fileData) {
+    async saveSiteFile(siteId, fileData = {}) {
         if (!siteId) {
             return {
                 success: false,
@@ -383,7 +443,7 @@ const TemplateCraftAPI = {
     },
 
 
-    async saveProjectFile(siteId, fileData) {
+    async saveProjectFile(siteId, fileData = {}) {
         return this.saveSiteFile(siteId, fileData);
     },
 
@@ -423,7 +483,9 @@ const TemplateCraftAPI = {
     // ========================================
 
     getTemplatePreviewUrl(templateId) {
-        if (!templateId) return '';
+        if (!templateId) {
+            return '';
+        }
 
         return (
             `${TEMPLATECRAFT_API_BASE_URL}/api/templates/` +
@@ -437,7 +499,9 @@ const TemplateCraftAPI = {
     // ========================================
 
     getProjectPreviewUrl(siteId) {
-        if (!siteId) return '';
+        if (!siteId) {
+            return '';
+        }
 
         return (
             `${TEMPLATECRAFT_API_BASE_URL}/api/sites/` +
