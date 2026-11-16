@@ -1,3 +1,4 @@
+
 :root {
     --bg: #080b16;
     --panel: #111629;
@@ -7,6 +8,11 @@
     --cyan: #36d9ed;
     --text: #f8fafc;
     --muted: #94a3b8;
+
+    --ssl-success: #34d399;
+    --ssl-warning: #fbbf24;
+    --ssl-error: #f87171;
+    --ssl-info: #60a5fa;
 }
 
 * {
@@ -30,6 +36,10 @@ button:disabled {
     cursor: not-allowed;
     opacity: .55;
 }
+
+/* =========================================
+   BACKGROUND
+========================================= */
 
 .background-glow {
     position: fixed;
@@ -72,6 +82,10 @@ button:disabled {
     }
 }
 
+/* =========================================
+   HEADER
+========================================= */
+
 .topbar {
     background: rgba(8,11,22,.88);
     border-bottom: 1px solid var(--border);
@@ -110,6 +124,10 @@ button:disabled {
     background: rgba(139,92,246,.13);
 }
 
+/* =========================================
+   BUTTONS
+========================================= */
+
 .btn-primary {
     background: linear-gradient(120deg,#9b7bff,#6551db);
     color: white;
@@ -132,6 +150,10 @@ button:disabled {
 .btn-secondary:hover {
     background: rgba(255,255,255,.09);
 }
+
+/* =========================================
+   HERO
+========================================= */
 
 .hero {
     position: relative;
@@ -183,6 +205,10 @@ button:disabled {
     }
 }
 
+/* =========================================
+   STATISTICS
+========================================= */
+
 .stat-card {
     background: linear-gradient(145deg,#151b30,#101526);
     border: 1px solid var(--border);
@@ -210,6 +236,10 @@ button:disabled {
     font-size: 18px;
 }
 
+/* =========================================
+   SECTIONS
+========================================= */
+
 .section-panel {
     background: rgba(17,22,41,.83);
     border: 1px solid var(--border);
@@ -217,6 +247,10 @@ button:disabled {
     padding: 24px;
     backdrop-filter: blur(12px);
 }
+
+/* =========================================
+   PROJECT CARDS
+========================================= */
 
 .project-card {
     background: linear-gradient(145deg,#171e33,#111729) !important;
@@ -275,6 +309,14 @@ button:disabled {
     background: rgba(239,68,68,.09) !important;
 }
 
+.project-card .text-gray-800 {
+    color: #f1f5f9 !important;
+}
+
+/* =========================================
+   DOMAIN STATUS CARDS
+========================================= */
+
 .domain-waiting-card {
     position: relative;
     border: 2px solid transparent !important;
@@ -317,9 +359,213 @@ button:disabled {
     border: 2px solid transparent !important;
 }
 
-.project-card .text-gray-800 {
-    color: #f1f5f9 !important;
+/* =========================================
+   CHECK SSL BUTTON
+========================================= */
+
+.btn-check-ssl,
+button[data-check-ssl] {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+
+    min-height: 40px;
+    padding: 9px 15px;
+
+    border: 1px solid rgba(54,217,237,.25);
+    border-radius: 11px;
+
+    background: linear-gradient(
+        120deg,
+        rgba(54,217,237,.12),
+        rgba(155,123,255,.15)
+    );
+
+    color: #d8faff;
+
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 800;
+
+    cursor: pointer;
+
+    transition:
+        background .25s ease,
+        border-color .25s ease,
+        transform .25s ease,
+        box-shadow .25s ease;
 }
+
+.btn-check-ssl:hover,
+button[data-check-ssl]:hover {
+    background: linear-gradient(
+        120deg,
+        rgba(54,217,237,.22),
+        rgba(155,123,255,.25)
+    );
+
+    border-color: rgba(54,217,237,.55);
+
+    box-shadow: 0 6px 20px rgba(54,217,237,.10);
+
+    transform: translateY(-2px);
+}
+
+.btn-check-ssl:active,
+button[data-check-ssl]:active {
+    transform: scale(.97);
+}
+
+.btn-check-ssl:disabled,
+button[data-check-ssl]:disabled {
+    opacity: .55;
+    cursor: wait;
+    transform: none;
+    box-shadow: none;
+}
+
+.btn-check-ssl .fa-shield-halved,
+button[data-check-ssl] .fa-shield-halved {
+    color: var(--cyan);
+}
+
+/* SSL loading */
+
+.btn-check-ssl.is-loading,
+button[data-check-ssl].is-loading {
+    pointer-events: none;
+    opacity: .7;
+}
+
+.btn-check-ssl.is-loading i,
+button[data-check-ssl].is-loading i {
+    animation: ssl-rotate 1s linear infinite;
+}
+
+@keyframes ssl-rotate {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* =========================================
+   SSL RESULT PANEL
+========================================= */
+
+.ssl-result,
+.ssl-diagnostics-result {
+    margin-top: 12px;
+    padding: 13px 14px;
+
+    border: 1px solid var(--border);
+    border-radius: 13px;
+
+    background: rgba(255,255,255,.035);
+
+    color: #dbeafe;
+
+    font-size: 12px;
+    line-height: 1.9;
+
+    overflow-wrap: anywhere;
+}
+
+.ssl-result:empty,
+.ssl-diagnostics-result:empty {
+    display: none;
+}
+
+.ssl-result-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 7px;
+    font-weight: 800;
+}
+
+.ssl-result-success {
+    border-color: rgba(52,211,153,.3);
+    background: rgba(52,211,153,.07);
+}
+
+.ssl-result-success .ssl-result-title {
+    color: var(--ssl-success);
+}
+
+.ssl-result-warning {
+    border-color: rgba(251,191,36,.3);
+    background: rgba(251,191,36,.07);
+}
+
+.ssl-result-warning .ssl-result-title {
+    color: var(--ssl-warning);
+}
+
+.ssl-result-error {
+    border-color: rgba(248,113,113,.3);
+    background: rgba(248,113,113,.07);
+}
+
+.ssl-result-error .ssl-result-title {
+    color: var(--ssl-error);
+}
+
+.ssl-result-info {
+    border-color: rgba(96,165,250,.3);
+    background: rgba(96,165,250,.07);
+}
+
+.ssl-result-info .ssl-result-title {
+    color: var(--ssl-info);
+}
+
+/* =========================================
+   SSL STATUS BADGES
+========================================= */
+
+.ssl-status-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+
+    padding: 5px 10px;
+
+    border-radius: 999px;
+
+    font-size: 11px;
+    font-weight: 800;
+    white-space: nowrap;
+}
+
+.ssl-status-ready {
+    color: #6ee7b7;
+    background: rgba(16,185,129,.12);
+    border: 1px solid rgba(16,185,129,.22);
+}
+
+.ssl-status-pending {
+    color: #fcd34d;
+    background: rgba(245,158,11,.12);
+    border: 1px solid rgba(245,158,11,.22);
+}
+
+.ssl-status-error {
+    color: #fca5a5;
+    background: rgba(239,68,68,.12);
+    border: 1px solid rgba(239,68,68,.22);
+}
+
+.ssl-status-unknown {
+    color: #93c5fd;
+    background: rgba(59,130,246,.12);
+    border: 1px solid rgba(59,130,246,.22);
+}
+
+/* =========================================
+   ANIMATIONS
+========================================= */
 
 @keyframes slideUp {
     from {
@@ -385,6 +631,10 @@ button:disabled {
     }
 }
 
+/* =========================================
+   EMPTY STATE
+========================================= */
+
 .empty-icon {
     width: 75px;
     height: 75px;
@@ -398,10 +648,18 @@ button:disabled {
     font-size: 28px;
 }
 
+/* =========================================
+   FOOTER
+========================================= */
+
 footer {
     border-top: 1px solid var(--border);
     color: #64748b;
 }
+
+/* =========================================
+   RESPONSIVE
+========================================= */
 
 @media(max-width:700px) {
 
@@ -420,6 +678,16 @@ footer {
     .desktop-nav {
         display: none;
     }
+
+    .btn-check-ssl,
+    button[data-check-ssl] {
+        width: 100%;
+        min-height: 43px;
+    }
+
+    .project-card {
+        width: 100%;
+    }
 }
 
 @media(min-width:701px) {
@@ -427,6 +695,16 @@ footer {
     .mobile-nav {
         display: none;
     }
+}
+
+/* =========================================
+   ACCESSIBILITY
+========================================= */
+
+button:focus-visible,
+a:focus-visible {
+    outline: 2px solid var(--cyan);
+    outline-offset: 3px;
 }
 
 @media(prefers-reduced-motion:reduce) {
