@@ -12,22 +12,19 @@
             localStorage.removeItem('token');
             localStorage.removeItem('authToken');
         } catch (error) {
-            console.error('Clear authentication error:', error);
+            console.error('Authentication cleanup:', error);
         }
     }
 
-    let storedUser;
-    let authToken;
     let user;
 
     try {
-        storedUser = localStorage.getItem('user');
-
-        authToken =
+        const storedUser = localStorage.getItem('user');
+        const token =
             localStorage.getItem('token') ||
             localStorage.getItem('authToken');
 
-        if (!storedUser || !authToken) {
+        if (!storedUser || !token) {
             throw new Error('بيانات تسجيل الدخول غير موجودة');
         }
 
@@ -42,7 +39,7 @@
         }
 
         if (!localStorage.getItem('token')) {
-            localStorage.setItem('token', authToken);
+            localStorage.setItem('token', token);
         }
 
     } catch (error) {
@@ -73,12 +70,15 @@
     // 3. CONFIGURATION
     // ==========================================
 
-    const CURRENT_DOMAIN_ROOT = 'templatecraftpro.com';
-
     const AUTO_REFRESH_INTERVAL = 30000;
 
-    const DOMAIN_DIAGNOSTICS_ENDPOINT = siteId =>
+    const DOMAIN_ROOT = 'templatecraftpro.com';
+
+    const DOMAIN_STATUS_ENDPOINT = siteId =>
         `/api/site/${encodeURIComponent(siteId)}/domain-status`;
+
+    const DOMAIN_DIAGNOSTICS_ENDPOINT = siteId =>
+        `/api/sites/${encodeURIComponent(siteId)}/domain/diagnostics`;
 
     let isLoading = false;
     let autoRefreshTimer = null;
@@ -86,6 +86,8 @@
 
     const diagnosticsCache = new Map();
     const diagnosticsInProgress = new Set();
+
+    const domainStatusInProgress = new Set();
 
 
     // ==========================================
@@ -116,21 +118,69 @@
 
 
     function isAllowedCustomDomain(hostname) {
-        const normalized =
-            normalizeHostname(hostname);
+        const normalized = normalizeHostname(hostname);
 
-        if (
-            !normalized ||
-            normalized === CURRENT_DOMAIN_ROOT
-        ) {
-            return false;
-        }
-
-        return normalized.endsWith(
-            '.' + CURRENT_DOMAIN_ROOT
+        return Boolean(
+            normalized &&
+            normalized !== DOMAIN_ROOT &&
+            normalized.endsWith('.' + DOMAIN_ROOT)
         );
     }
 
+
+    function getProjectId(site) {
+        return (
+            site?._id ||
+            site?.id ||
+            site?.siteId ||
+            null
+        );
+    }
+
+
+    function getProjectName(site) {
+        return (
+            site?.variables?.displayName ||
+            site?.siteName ||
+            site?.name ||
+            'مشروع بدون اسم'
+        );
+    }
+
+
+    function getProjectState(site) {
+        return String(
+            site?.publishStatus ||
+            site?.status ||
+            ''
+        ).toLowerCase();
+    }
+
+
+    function isProjectDeleting(site) {
+        return getProjectState(site) === 'deleting';
+    }
+
+
+    function isProjectPublishing(site) {
+        return getProjectState(site) === 'publishing';
+    }
+
+
+    function getProjectDate(site) {
+        if (!site?.createdAt) return '-';
+
+        const date = new Date(site.createdAt);
+
+        if (Number.isNaN(date.getTime())) return '-';
+
+        return date.toLocaleDateString('ar-MA');
+    }
+
+
+    // ==========================================
+    // 5. SAFE PROJECT URL
+    // ==========================================
 
     function getSafeProjectUrl(site) {
         if (!site || typeof site !== 'object') {
@@ -146,7 +196,8 @@
 
         const rawUrl =
             site.customUrl ||
-            site.customDomain;
+            site.customDomain ||
+            '';
 
         if (
             !rawUrl ||
@@ -184,103 +235,229 @@
             return parsed.href;
 
         } catch (error) {
-            console.warn('Invalid project URL:', error);
+            console.warn('Invalid custom domain:', error);
             return null;
         }
     }
 
 
-    function getProjectState(site) {
-        return String(
-            site?.publishStatus || ''
-        ).toLowerCase();
-    }
+    // ==========================================
+    // 6. API RESPONSE HELPERS
+    // ==========================================
 
-
-    function isProjectDeleting(site) {
-        return getProjectState(site) === 'deleting';
-    }
-
-
-    function isProjectPublishing(site) {
-        return getProjectState(site) === 'publishing';
-    }
-
-
-    function getProjectId(site) {
-        return (
-            site?._id ||
-            site?.id ||
-            site?.siteId ||
-            null
+    function getResponseStatus(result) {
+        return Number(
+            result?.status ||
+            result?.statusCode ||
+            result?.response?.status ||
+            0
         );
     }
 
 
-    function getProjectName(site) {
-        return (
-            site?.variables?.displayName ||
-            site?.siteName ||
-            'مشروع بدون اسم'
-        );
+    function handleAuthenticationError(result) {
+        if (getResponseStatus(result) !== 401) {
+            return false;
+        }
+
+        clearAuthentication();
+        window.location.replace('login.html');
+
+        return true;
     }
 
 
-    function getProjectDate(site) {
-        if (!site?.createdAt) {
-            return '-';
+    function unwrapResponse(result) {
+        let payload = result;
+
+        for (let i = 0; i < 4; i++) {
+            if (
+                payload &&
+                typeof payload === 'object' &&
+                !Array.isArray(payload) &&
+                payload.data &&
+                typeof payload.data === 'object'
+            ) {
+                payload = {
+                    ...payload.data,
+                    requestId:
+                        payload.requestId ||
+                        payload.data.requestId,
+                    success:
+                        payload.success === false
+                            ? false
+                            : payload.data.success
+                };
+            } else {
+                break;
+            }
         }
 
-        const date = new Date(site.createdAt);
-
-        if (Number.isNaN(date.getTime())) {
-            return '-';
-        }
-
-        return date.toLocaleDateString('ar-MA');
+        return payload || {};
     }
 
 
     function normalizeSitesResponse(result) {
-        if (!result || typeof result !== 'object') {
-            return null;
+        const payload = unwrapResponse(result);
+
+        if (Array.isArray(payload)) {
+            return payload;
         }
 
-        if (Array.isArray(result.sites)) {
-            return result.sites;
+        if (Array.isArray(payload.sites)) {
+            return payload.sites;
         }
 
-        if (Array.isArray(result.projects)) {
-            return result.projects;
+        if (Array.isArray(payload.projects)) {
+            return payload.projects;
         }
 
-        if (Array.isArray(result.data)) {
-            return result.data;
-        }
-
-        if (
-            result.data &&
-            typeof result.data === 'object'
-        ) {
-            if (Array.isArray(result.data.sites)) {
-                return result.data.sites;
-            }
-
-            if (Array.isArray(result.data.projects)) {
-                return result.data.projects;
-            }
-
-            if (Array.isArray(result.data.data)) {
-                return result.data.data;
-            }
+        if (Array.isArray(payload.data)) {
+            return payload.data;
         }
 
         return null;
     }
 
 
+    function normalizeDomainStatus(result) {
+        const payload = unwrapResponse(result);
+
+        return payload &&
+            typeof payload === 'object'
+            ? payload
+            : {};
+    }
+
+
     // ==========================================
-    // 5. STATISTICS
+    // 7. CUSTOM DOMAIN SERVICE CONNECTION
+    // ==========================================
+
+    async function requestDomainStatus(siteId) {
+        if (!siteId) {
+            throw new Error('معرف المشروع غير موجود.');
+        }
+
+        if (
+            typeof TemplateCraftAPI === 'undefined' ||
+            typeof TemplateCraftAPI.getDomainStatus !== 'function'
+        ) {
+            throw new Error(
+                'getDomainStatus غير موجودة في client-api.js'
+            );
+        }
+
+        return TemplateCraftAPI.getDomainStatus(siteId);
+    }
+
+
+    async function refreshProjectDomainStatus(site) {
+        const siteId = getProjectId(site);
+
+        if (!siteId) return site;
+
+        const key = String(siteId);
+
+        if (domainStatusInProgress.has(key)) {
+            return site;
+        }
+
+        domainStatusInProgress.add(key);
+
+        try {
+            const result = await requestDomainStatus(siteId);
+
+            if (handleAuthenticationError(result)) {
+                return site;
+            }
+
+            if (
+                !result ||
+                result.success === false
+            ) {
+                console.warn(
+                    'Domain status unavailable:',
+                    result?.error || result?.message
+                );
+
+                return site;
+            }
+
+            const status = normalizeDomainStatus(result);
+
+            return {
+                ...site,
+
+                customDomain:
+                    status.customDomain ||
+                    site.customDomain ||
+                    '',
+
+                customUrl:
+                    status.customUrl ||
+                    site.customUrl ||
+                    '',
+
+                domainStatus:
+                    status.domainStatus ||
+                    site.domainStatus ||
+                    'unknown',
+
+                sslReady:
+                    status.sslReady ??
+                    site.sslReady ??
+                    false,
+
+                sslState:
+                    status.sslState ||
+                    site.sslState ||
+                    'unknown',
+
+                cnameVisible:
+                    status.cnameVisible ??
+                    site.cnameVisible,
+
+                liveUrl:
+                    status.liveUrl ||
+                    site.liveUrl ||
+                    '',
+
+                domainError:
+                    status.error ||
+                    status.reason ||
+                    site.domainError ||
+                    ''
+            };
+
+        } catch (error) {
+            console.error(
+                'Domain status refresh error:',
+                error
+            );
+
+            return site;
+
+        } finally {
+            domainStatusInProgress.delete(key);
+        }
+    }
+
+
+    async function refreshAllDomainStatuses(sites) {
+        if (!Array.isArray(sites)) return [];
+
+        const results = await Promise.all(
+            sites.map(site => refreshProjectDomainStatus(site))
+        );
+
+        return results;
+    }
+
+
+    // ==========================================
+    // 8. STATISTICS
+    // Compatible with profile.html
     // ==========================================
 
     function updateStatistics(sites) {
@@ -289,55 +466,59 @@
 
         const total = safeSites.length;
 
-        const published =
-            safeSites.filter(site =>
-                Boolean(getSafeProjectUrl(site))
-            ).length;
+        const published = safeSites.filter(site =>
+            Boolean(getSafeProjectUrl(site))
+        ).length;
 
-        const pending =
-            safeSites.filter(site =>
-                !getSafeProjectUrl(site) &&
-                !isProjectDeleting(site)
-            ).length;
+        const unpublished = safeSites.filter(site =>
+            !getSafeProjectUrl(site) &&
+            !isProjectDeleting(site)
+        ).length;
 
-        const totalElement =
-            document.getElementById('total-projects');
+        const customDomains = safeSites.filter(site =>
+            Boolean(
+                site.customDomain ||
+                site.customUrl
+            )
+        ).length;
 
-        const publishedElement =
-            document.getElementById('published-projects');
+        const elements = {
+            total: document.getElementById('total-sites'),
+            published: document.getElementById('published-sites'),
+            unpublished: document.getElementById('unpublished-sites'),
+            customDomains: document.getElementById('custom-domains')
+        };
 
-        const pendingElement =
-            document.getElementById('pending-projects');
-
-        if (totalElement) {
-            totalElement.textContent = total;
+        if (elements.total) {
+            elements.total.textContent = total;
         }
 
-        if (publishedElement) {
-            publishedElement.textContent = published;
+        if (elements.published) {
+            elements.published.textContent = published;
         }
 
-        if (pendingElement) {
-            pendingElement.textContent = pending;
+        if (elements.unpublished) {
+            elements.unpublished.textContent = unpublished;
+        }
+
+        if (elements.customDomains) {
+            elements.customDomains.textContent = customDomains;
         }
     }
 
 
     // ==========================================
-    // 6. DOMAIN STATUS DISPLAY
+    // 9. DOMAIN STATUS DISPLAY
     // ==========================================
 
     function getDomainStatus(site, projectUrl) {
-        if (projectUrl) {
-            return null;
-        }
+        if (projectUrl) return null;
 
         if (isProjectDeleting(site)) {
             return {
                 type: 'deleting',
                 label: 'جاري حذف المشروع',
-                description:
-                    'يتم الآن حذف المشروع. يرجى الانتظار.',
+                description: 'يتم الآن حذف المشروع.',
                 icon: '🗑️'
             };
         }
@@ -346,8 +527,7 @@
             return {
                 type: 'publishing',
                 label: 'جاري نشر المشروع',
-                description:
-                    'يتم الآن نشر المشروع.',
+                description: 'يتم الآن نشر المشروع.',
                 icon: '🚀'
             };
         }
@@ -365,7 +545,7 @@
                 description:
                     site.domainError ||
                     site.error ||
-                    'تعذر إكمال إعداد الدومين. يرجى مراجعة حالة المشروع.',
+                    'راجع إعدادات الدومين في السيرفر.',
                 icon: '⚠️'
             };
         }
@@ -373,62 +553,58 @@
         if (status === 'active') {
             return {
                 type: 'waiting',
-                label: 'الدومين يحتاج إلى مراجعة',
+                label: 'الدومين نشط لكن الرابط غير متاح',
                 description:
-                    'حالة الدومين نشطة لكن الرابط لم يجتز التحقق الأمني.',
+                    'تحقق من HTTPS وحالة الدومين.',
                 icon: '⚠️'
+            };
+        }
+
+        if (
+            status === 'pending' ||
+            status === 'provisioning'
+        ) {
+            return {
+                type: 'waiting',
+                label: 'جاري تجهيز الدومين',
+                description:
+                    'السيرفر يقوم بإعداد الدومين والتحقق منه.',
+                icon: '⏳'
+            };
+        }
+
+        if (
+            !site.customDomain &&
+            !site.customUrl
+        ) {
+            return {
+                type: 'waiting',
+                label: 'الدومين غير مجهز بعد',
+                description:
+                    'سيظهر الدومين بعد إتمام عملية نشر المشروع وتجهيزه.',
+                icon: '🌐'
             };
         }
 
         return {
             type: 'waiting',
-            label: 'جاري تجهيز الدومين',
+            label: 'في انتظار التحقق من الدومين',
             description:
-                'يتم التحقق من إعداد الدومين وشهادة SSL. سيظهر الرابط عند اكتمال العملية.',
+                'يتم التحقق من إعدادات الدومين وDNS وSSL.',
             icon: '⏳'
         };
     }
 
 
     // ==========================================
-    // 7. AUTHENTICATION ERROR
-    // ==========================================
-
-    function getResponseStatus(result) {
-        return Number(
-            result?.status ||
-            result?.statusCode ||
-            result?.response?.status ||
-            result?.response?.statusCode ||
-            0
-        );
-    }
-
-
-    function handleAuthenticationError(result) {
-        const status = getResponseStatus(result);
-
-        if (status === 401) {
-            clearAuthentication();
-            window.location.replace('login.html');
-            return true;
-        }
-
-        return false;
-    }
-
-
-    // ==========================================
-    // 8. EMPTY STATE
+    // 10. EMPTY STATE
     // ==========================================
 
     function renderEmptyState() {
         const grid =
             document.getElementById('sites-grid');
 
-        if (!grid) {
-            return;
-        }
+        if (!grid) return;
 
         grid.innerHTML = `
             <div class="col-span-full text-center py-16">
@@ -459,75 +635,29 @@
 
 
     // ==========================================
-    // 9. SSL DIAGNOSTICS API
+    // 11. SSL DIAGNOSTICS API
     // ==========================================
 
     async function requestDomainDiagnostics(siteId) {
-        if (typeof TemplateCraftAPI === 'undefined') {
-            throw new Error(
-                'نظام الاتصال بالخادم غير متوفر.'
-            );
-        }
-
         if (!siteId) {
+            throw new Error('معرف المشروع غير موجود.');
+        }
+
+        if (
+            typeof TemplateCraftAPI === 'undefined' ||
+            typeof TemplateCraftAPI.getDomainDiagnostics !== 'function'
+        ) {
             throw new Error(
-                'معرف المشروع غير موجود.'
+                'getDomainDiagnostics غير موجودة في client-api.js'
             );
         }
 
-        // الطريقة الأولى: الدالة المخصصة
-        if (
-            typeof TemplateCraftAPI.getDomainDiagnostics ===
-            'function'
-        ) {
-            return await TemplateCraftAPI.getDomainDiagnostics(
-                siteId
-            );
-        }
-
-        // الطريقة الثانية: request العام
-        if (
-            typeof TemplateCraftAPI.request === 'function'
-        ) {
-            return await TemplateCraftAPI.request(
-                DOMAIN_DIAGNOSTICS_ENDPOINT(siteId),
-                {
-                    method: 'GET'
-                }
-            );
-        }
-
-        throw new Error(
-            'دالة الاتصال بفحص SSL غير موجودة في client-api.js.'
-        );
+        return TemplateCraftAPI.getDomainDiagnostics(siteId);
     }
 
 
     function getDiagnosticPayload(result) {
-        if (!result || typeof result !== 'object') {
-            return {};
-        }
-
-        let payload = result;
-
-        for (let i = 0; i < 3; i++) {
-            if (
-                payload.data &&
-                typeof payload.data === 'object' &&
-                !Array.isArray(payload.data)
-            ) {
-                payload = {
-                    ...payload.data,
-                    requestId:
-                        payload.requestId ||
-                        payload.data.requestId
-                };
-            } else {
-                break;
-            }
-        }
-
-        return payload;
+        return unwrapResponse(result);
     }
 
 
@@ -541,10 +671,21 @@
     }
 
 
+    // ==========================================
+    // 12. DIAGNOSTICS STATES
+    // ==========================================
+
     function getCheckState(check) {
         if (
             !check ||
             typeof check !== 'object'
+        ) {
+            return 'unknown';
+        }
+
+        if (
+            check.state === 'unknown' ||
+            check.statusCheckSucceeded === false
         ) {
             return 'unknown';
         }
@@ -558,25 +699,21 @@
         }
 
         if (
-            check.statusCheckSucceeded === false
-        ) {
-            return 'unknown';
-        }
-
-        if (
             check.ok === false ||
             check.success === false ||
             check.error ||
-            check.readError
+            check.readError ||
+            check.attached === false ||
+            check.present === false ||
+            check.matches === false ||
+            check.domainMatches === false
         ) {
             return 'error';
         }
 
         if (
-            check.attached === false ||
-            check.present === false ||
-            check.matches === false ||
-            check.domainMatches === false
+            check.state === 'failed' ||
+            check.state === 'error'
         ) {
             return 'error';
         }
@@ -586,18 +723,9 @@
 
 
     function getCheckIcon(state) {
-        if (state === 'success') {
-            return '✅';
-        }
-
-        if (state === 'error') {
-            return '❌';
-        }
-
-        if (state === 'unknown') {
-            return '❔';
-        }
-
+        if (state === 'success') return '✅';
+        if (state === 'error') return '❌';
+        if (state === 'unknown') return '❔';
         return '⏳';
     }
 
@@ -607,7 +735,7 @@
             database: 'اتصال قاعدة البيانات',
             netlifyCredentials: 'حساب Netlify OAuth',
             credentials: 'بيانات Netlify',
-            netlifySite: 'وجود موقع Netlify',
+            netlifySite: 'موقع Netlify',
             site: 'موقع Netlify',
             customDomain: 'ربط الدومين',
             domain: 'الدومين الخاص',
@@ -615,7 +743,7 @@
             cname: 'سجل CNAME',
             a: 'سجل A',
             aaaa: 'سجل AAAA',
-            txt: 'سجل TXT للتحقق',
+            txt: 'سجل TXT',
             txtChallenge: 'التحقق من TXT',
             challenge: 'التحقق من TXT',
             ssl: 'حالة SSL',
@@ -629,8 +757,7 @@
     }
 
 
-    // إخفاء الأسرار والقيم الحساسة فقط
-    // مع السماح بعرض حالة فحص Netlify Credentials
+    // لا تعرض الأسرار أو بيانات التحقق
     function isSensitiveDiagnosticKey(key) {
         return /access[_-]?token|refresh[_-]?token|client[_-]?secret|password|authorization|rawstatus|rawresponse|verification(?:value|token)|txt(?:content|value)|accesskey|privatekey|cookie|certificatepem|credential(?:value|secret)/i
             .test(String(key));
@@ -643,12 +770,9 @@
 
         if (
             value === null ||
-            value === undefined
+            value === undefined ||
+            typeof value === 'object'
         ) {
-            return '-';
-        }
-
-        if (typeof value === 'object') {
             return '';
         }
 
@@ -668,9 +792,7 @@
         let html = '';
 
         Object.entries(object).forEach(([key, value]) => {
-            if (isSensitiveDiagnosticKey(key)) {
-                return;
-            }
+            if (isSensitiveDiagnosticKey(key)) return;
 
             if (
                 key === 'ok' ||
@@ -690,7 +812,6 @@
                         <div class="text-xs font-bold text-slate-300 mb-1">
                             ${escapeHtml(getCheckLabel(key))}
                         </div>
-
                         ${renderDiagnosticDetails(value, depth + 1)}
                     </div>
                 `;
@@ -699,16 +820,10 @@
             }
 
             if (Array.isArray(value)) {
-                if (!value.length) {
-                    return;
-                }
-
-                const safeValues = value
-                    .filter(item =>
-                        typeof item !== 'object' &&
-                        !isSensitiveDiagnosticKey(key)
-                    )
-                    .map(item => String(item));
+                const safeValues = value.filter(item =>
+                    item === null ||
+                    ['string', 'number', 'boolean'].includes(typeof item)
+                );
 
                 if (safeValues.length) {
                     html += `
@@ -722,12 +837,9 @@
                 return;
             }
 
-            const formatted =
-                formatDiagnosticValue(value);
+            const formatted = formatDiagnosticValue(value);
 
-            if (!formatted) {
-                return;
-            }
+            if (!formatted) return;
 
             html += `
                 <div class="text-xs text-slate-400 mt-1 break-words">
@@ -757,11 +869,8 @@
         let html = '';
 
         Object.entries(checks).forEach(([key, check]) => {
-            if (isSensitiveDiagnosticKey(key)) {
-                return;
-            }
-
             if (
+                isSensitiveDiagnosticKey(key) ||
                 !check ||
                 typeof check !== 'object' ||
                 Array.isArray(check)
@@ -775,13 +884,11 @@
                 <div class="rounded-lg border border-white/10 bg-black/10 p-3 mb-2">
 
                     <div class="flex items-center gap-2">
-
                         <span>${getCheckIcon(state)}</span>
 
                         <strong class="text-sm text-white">
                             ${escapeHtml(getCheckLabel(key))}
                         </strong>
-
                     </div>
 
                     ${renderDiagnosticDetails(check)}
@@ -799,41 +906,38 @@
 
 
     function getOverallDiagnosticState(payload) {
-        const overall =
-            String(
-                payload?.overall ||
-                payload?.status ||
-                ''
-            ).toLowerCase();
+        const overall = String(
+            payload?.overall ||
+            payload?.status ||
+            ''
+        ).toLowerCase();
 
         if (
-            overall === 'ready' ||
-            overall === 'active' ||
-            overall === 'success'
+            ['ready', 'active', 'success'].includes(overall)
         ) {
             return 'success';
         }
 
         if (
-            overall === 'unknown' ||
-            overall === 'unavailable'
+            ['unknown', 'unavailable'].includes(overall)
         ) {
             return 'unknown';
         }
 
-        if (
-            overall === 'failed' ||
-            overall === 'error'
-        ) {
-            const checks =
-                getDiagnosticChecks(payload);
+        const checks = getDiagnosticChecks(payload);
 
-            const ssl = checks?.ssl;
+        const states = Object.values(checks)
+            .filter(item =>
+                item && typeof item === 'object'
+            )
+            .map(getCheckState);
+
+        if (overall === 'failed' || overall === 'error') {
+            if (states.includes('error')) return 'error';
 
             if (
-                ssl &&
-                typeof ssl === 'object' &&
-                ssl.state === 'unknown'
+                states.includes('unknown') &&
+                !states.includes('pending')
             ) {
                 return 'unknown';
             }
@@ -841,19 +945,11 @@
             return 'error';
         }
 
-        const checks =
-            getDiagnosticChecks(payload);
-
-        const states =
-            Object.values(checks)
-                .filter(item =>
-                    item && typeof item === 'object'
-                )
-                .map(getCheckState);
-
-        if (states.includes('error')) {
-            return 'error';
+        if (overall === 'pending') {
+            return 'pending';
         }
+
+        if (states.includes('error')) return 'error';
 
         if (
             states.length &&
@@ -886,21 +982,19 @@
             return 'تعذر التأكد من حالة SSL';
         }
 
-        return 'الفحص مكتمل جزئياً أو ما زال قيد الانتظار';
+        return 'الفحص قيد الانتظار أو مكتمل جزئياً';
     }
 
 
     // ==========================================
-    // 10. DIAGNOSTICS PANEL
+    // 13. DIAGNOSTICS PANEL
     // ==========================================
 
     function renderDiagnosticsPanel(siteId) {
         const state =
             diagnosticsCache.get(String(siteId));
 
-        if (!state) {
-            return '';
-        }
+        if (!state) return '';
 
         if (state.loading) {
             return `
@@ -912,23 +1006,19 @@
                     </div>
 
                     <p class="text-xs text-slate-400 mt-2">
-                        يتم إجراء فحوصات قراءة فقط. لن يتم تعديل DNS أو إصدار شهادة جديدة.
+                        الفحص للقراءة فقط، ولا يغير DNS أو يصدر شهادة SSL.
                     </p>
 
                 </div>
             `;
         }
 
-        const payload =
-            state.payload || {};
+        const payload = state.payload || {};
+        const result = state.result || {};
 
-        const result =
-            state.result || {};
-
-        const overallState =
-            state.error
-                ? 'unknown'
-                : getOverallDiagnosticState(payload);
+        const overallState = state.error
+            ? 'unknown'
+            : getOverallDiagnosticState(payload);
 
         const requestId =
             payload.requestId ||
@@ -942,8 +1032,7 @@
             result.message ||
             '';
 
-        const checks =
-            getDiagnosticChecks(payload);
+        const checks = getDiagnosticChecks(payload);
 
         const borderClass =
             overallState === 'success'
@@ -958,9 +1047,7 @@
                 <div class="flex items-center justify-between gap-2 mb-3">
 
                     <strong class="text-sm text-white">
-                        ${escapeHtml(
-                            getOverallDiagnosticLabel(overallState)
-                        )}
+                        ${escapeHtml(getOverallDiagnosticLabel(overallState))}
                     </strong>
 
                     <span class="text-lg">
@@ -1005,7 +1092,7 @@
                 }
 
                 <div class="text-xs text-slate-500 mt-3">
-                    هذا الفحص لا يغير إعدادات DNS ولا يطلب إصدار شهادة SSL.
+                    الفحص لا يغير DNS ولا يضيف الدومين ولا يطلب إصدار شهادة SSL.
                 </div>
 
             </div>
@@ -1014,28 +1101,24 @@
 
 
     // ==========================================
-    // 11. FIND CURRENT PROJECT CARD
+    // 14. FIND CURRENT PROJECT CARD
     // ==========================================
 
     function findProjectCard(siteId) {
-        const grid =
-            document.getElementById('sites-grid');
+        const grid = document.getElementById('sites-grid');
 
-        if (!grid) {
-            return null;
-        }
+        if (!grid) return null;
 
-        const cards =
-            grid.querySelectorAll('.project-card');
-
-        return Array.from(cards).find(card =>
+        return Array.from(
+            grid.querySelectorAll('.project-card')
+        ).find(card =>
             card.dataset.projectId === String(siteId)
         ) || null;
     }
 
 
     // ==========================================
-    // 12. CHECK SSL ACTION
+    // 15. CHECK SSL
     // ==========================================
 
     async function checkProjectSSL(site, button) {
@@ -1050,17 +1133,13 @@
             isProjectDeleting(site) ||
             isProjectPublishing(site)
         ) {
-            alert(
-                'لا يمكن فحص SSL أثناء حذف المشروع أو نشره.'
-            );
+            alert('لا يمكن فحص SSL أثناء حذف المشروع أو نشره.');
             return;
         }
 
         const key = String(siteId);
 
-        if (diagnosticsInProgress.has(key)) {
-            return;
-        }
+        if (diagnosticsInProgress.has(key)) return;
 
         diagnosticsInProgress.add(key);
 
@@ -1076,13 +1155,9 @@
         button.innerHTML =
             '<span class="loading-spinner ml-1"></span> جاري الفحص';
 
-        const originalCard =
-            button.closest('.project-card');
-
-        const originalPanel =
-            originalCard?.querySelector(
-                '.ssl-diagnostics-container'
-            );
+        const originalPanel = button
+            .closest('.project-card')
+            ?.querySelector('.ssl-diagnostics-container');
 
         if (originalPanel) {
             originalPanel.innerHTML =
@@ -1093,12 +1168,9 @@
             const result =
                 await requestDomainDiagnostics(siteId);
 
-            if (handleAuthenticationError(result)) {
-                return;
-            }
+            if (handleAuthenticationError(result)) return;
 
-            const payload =
-                getDiagnosticPayload(result);
+            const payload = getDiagnosticPayload(result);
 
             if (
                 !result ||
@@ -1126,14 +1198,9 @@
             }
 
         } catch (error) {
-            console.error(
-                'SSL diagnostics error:',
-                error
-            );
+            console.error('SSL diagnostics error:', error);
 
-            if (handleAuthenticationError(error)) {
-                return;
-            }
+            if (handleAuthenticationError(error)) return;
 
             diagnosticsCache.set(key, {
                 loading: false,
@@ -1153,25 +1220,17 @@
                 button.innerHTML = oldText;
             }
 
-            // تحديث البطاقة الحالية حتى لو أعاد التحديث التلقائي
-            // إنشاء البطاقة من جديد أثناء فحص SSL.
-            const currentCard =
-                findProjectCard(siteId);
+            const currentCard = findProjectCard(siteId);
 
             const currentButton =
-                currentCard?.querySelector(
-                    '.check-project-ssl'
-                );
+                currentCard?.querySelector('.check-project-ssl');
 
             const currentPanel =
-                currentCard?.querySelector(
-                    '.ssl-diagnostics-container'
-                );
+                currentCard?.querySelector('.ssl-diagnostics-container');
 
             if (currentButton) {
                 currentButton.disabled = false;
                 currentButton.classList.remove('is-loading');
-
                 currentButton.innerHTML = `
                     <i class="fa-solid fa-shield-halved"></i>
                     Check SSL
@@ -1187,12 +1246,11 @@
 
 
     // ==========================================
-    // 13. PROJECT CARD
+    // 16. PROJECT CARD
     // ==========================================
 
     function createProjectCard(site, index) {
         const siteId = getProjectId(site);
-
         const projectName = getProjectName(site);
 
         const projectType =
@@ -1204,17 +1262,12 @@
             'غير محدد';
 
         const date = getProjectDate(site);
+        const projectUrl = getSafeProjectUrl(site);
+        const domainStatus = getDomainStatus(site, projectUrl);
 
-        const projectUrl =
-            getSafeProjectUrl(site);
-
-        const domainStatus =
-            getDomainStatus(site, projectUrl);
-
-        const editorUrl =
-            siteId
-                ? `editor.html?siteId=${encodeURIComponent(siteId)}`
-                : null;
+        const editorUrl = siteId
+            ? `editor.html?siteId=${encodeURIComponent(siteId)}`
+            : null;
 
         const deleting = isProjectDeleting(site);
         const publishing = isProjectPublishing(site);
@@ -1232,10 +1285,6 @@
             `${Math.min(index * 0.07, 0.5)}s`;
 
 
-        // --------------------------------------
-        // DOMAIN STATUS
-        // --------------------------------------
-
         const statusHtml = domainStatus
             ? `
                 <div class="${
@@ -1248,17 +1297,13 @@
                 } rounded-xl p-3 mb-4">
 
                     <div class="flex items-center gap-2 mb-1">
-
-                        ${
-                            domainStatus.type === 'waiting'
-                                ? '<span class="hourglass-animation text-lg">⏳</span>'
-                                : `<span class="text-lg">${escapeHtml(domainStatus.icon)}</span>`
-                        }
+                        <span class="text-lg">
+                            ${escapeHtml(domainStatus.icon)}
+                        </span>
 
                         <strong class="text-sm">
                             ${escapeHtml(domainStatus.label)}
                         </strong>
-
                     </div>
 
                     <p class="text-xs leading-6 text-slate-400">
@@ -1269,10 +1314,6 @@
             `
             : '';
 
-
-        // --------------------------------------
-        // EDIT BUTTON
-        // --------------------------------------
 
         const editorButton =
             editorUrl && !deleting && !publishing
@@ -1302,10 +1343,6 @@
                 `;
 
 
-        // --------------------------------------
-        // PREVIEW BUTTON
-        // --------------------------------------
-
         const previewButton =
             projectUrl && !deleting
                 ? `
@@ -1330,10 +1367,6 @@
                 `;
 
 
-        // --------------------------------------
-        // SSL BUTTON
-        // --------------------------------------
-
         const sslButton =
             siteId && !deleting && !publishing
                 ? `
@@ -1349,12 +1382,13 @@
                 : '';
 
 
-        // --------------------------------------
-        // CARD HTML
-        // --------------------------------------
+        const domainName =
+            site.customDomain ||
+            site.customUrl ||
+            'الدومين قيد التجهيز';
+
 
         card.innerHTML = `
-
             <div>
 
                 <div class="flex justify-between items-start gap-3 mb-4">
@@ -1369,44 +1403,40 @@
 
                 </div>
 
-
                 <div class="text-sm text-gray-500 mb-2">
-
                     الصنف:
-
                     <strong class="text-gray-700">
                         ${escapeHtml(projectType)}
                     </strong>
-
                 </div>
-
 
                 <div class="text-xs text-gray-400 mb-4">
                     تاريخ الإنشاء:
                     ${escapeHtml(date)}
                 </div>
 
-
                 ${statusHtml}
-
 
                 <div
                     class="${projectUrl ? 'domain-active-card' : ''} bg-gray-50 p-3 rounded-xl border text-xs font-mono truncate mb-5"
                     dir="ltr"
-                    title="${escapeHtml(projectUrl || 'الدومين قيد التجهيز')}"
+                    title="${escapeHtml(domainName)}"
                 >
-                    ${
-                        projectUrl
-                            ? escapeHtml(projectUrl)
-                            : deleting
-                                ? 'المشروع قيد الحذف...'
-                                : 'الدومين الخاص قيد التجهيز...'
-                    }
+                    ${escapeHtml(domainName)}
                 </div>
 
+                ${
+                    site.sslReady === true
+                        ? `
+                            <div class="text-xs text-green-400 mb-3">
+                                <i class="fa-solid fa-lock"></i>
+                                SSL جاهز
+                            </div>
+                        `
+                        : ''
+                }
 
                 ${sslButton}
-
 
                 <div class="ssl-diagnostics-container">
                     ${
@@ -1418,13 +1448,11 @@
 
             </div>
 
-
             <div class="grid grid-cols-2 gap-2 mt-4">
 
                 ${editorButton}
 
                 ${previewButton}
-
 
                 <button
                     type="button"
@@ -1439,7 +1467,6 @@
                     <i class="fa-regular fa-copy ml-1"></i>
                     نسخ الرابط
                 </button>
-
 
                 <button
                     type="button"
@@ -1459,9 +1486,7 @@
         `;
 
 
-        // --------------------------------------
-        // DELETE BUTTON EVENT
-        // --------------------------------------
+        // DELETE
 
         const deleteButton =
             card.querySelector('.delete-project-button');
@@ -1472,91 +1497,63 @@
             !publishing &&
             siteId
         ) {
-            deleteButton.addEventListener(
-                'click',
-                () => {
-                    deleteProject(site, deleteButton);
-                }
-            );
+            deleteButton.addEventListener('click', () => {
+                deleteProject(site, deleteButton);
+            });
         }
 
 
-        // --------------------------------------
-        // COPY BUTTON EVENT
-        // --------------------------------------
+        // COPY URL
 
         const copyButton =
             card.querySelector('.copy-project-link');
 
         if (copyButton && projectUrl) {
-            copyButton.addEventListener(
-                'click',
-                async () => {
-                    try {
-                        if (!navigator.clipboard?.writeText) {
-                            throw new Error(
-                                'Clipboard API غير متوفر'
-                            );
-                        }
-
-                        await navigator.clipboard.writeText(
-                            projectUrl
-                        );
-
-                        const oldText =
-                            copyButton.innerHTML;
-
-                        copyButton.innerHTML =
-                            '<i class="fa-solid fa-check ml-1"></i> تم النسخ';
-
-                        setTimeout(() => {
-                            if (copyButton.isConnected) {
-                                copyButton.innerHTML = oldText;
-                            }
-                        }, 2000);
-
-                    } catch (error) {
-                        console.error(
-                            'Copy URL error:',
-                            error
-                        );
-
-                        window.prompt(
-                            'انسخ الرابط:',
-                            projectUrl
-                        );
+            copyButton.addEventListener('click', async () => {
+                try {
+                    if (!navigator.clipboard?.writeText) {
+                        throw new Error('Clipboard API غير متوفر');
                     }
+
+                    await navigator.clipboard.writeText(projectUrl);
+
+                    const oldText = copyButton.innerHTML;
+
+                    copyButton.innerHTML =
+                        '<i class="fa-solid fa-check ml-1"></i> تم النسخ';
+
+                    setTimeout(() => {
+                        if (copyButton.isConnected) {
+                            copyButton.innerHTML = oldText;
+                        }
+                    }, 2000);
+
+                } catch (error) {
+                    console.error('Copy URL error:', error);
+
+                    window.prompt('انسخ الرابط:', projectUrl);
                 }
-            );
+            });
         }
 
 
-        // --------------------------------------
-        // CHECK SSL BUTTON EVENT
-        // --------------------------------------
+        // CHECK SSL
 
         const sslCheckButton =
             card.querySelector('.check-project-ssl');
 
         if (sslCheckButton && siteId) {
-            sslCheckButton.addEventListener(
-                'click',
-                () => {
-                    checkProjectSSL(
-                        site,
-                        sslCheckButton
-                    );
-                }
-            );
+            sslCheckButton.addEventListener('click', () => {
+                checkProjectSSL(site, sslCheckButton);
+            });
         }
-
 
         return card;
     }
 
 
     // ==========================================
-    // 14. DELETE PROJECT
+    // 17. DELETE PROJECT
     // ==========================================
 
     async function deleteProject(site, button) {
@@ -1571,9 +1568,7 @@
             isProjectDeleting(site) ||
             isProjectPublishing(site)
         ) {
-            alert(
-                'المشروع قيد عملية أخرى حالياً.'
-            );
+            alert('المشروع قيد عملية أخرى حالياً.');
             return;
         }
 
@@ -1585,9 +1580,7 @@
             'هذا الإجراء لا يمكن التراجع عنه.'
         );
 
-        if (!confirmed) {
-            return;
-        }
+        if (!confirmed) return;
 
         const oldText = button.innerHTML;
 
@@ -1601,17 +1594,13 @@
                 typeof TemplateCraftAPI === 'undefined' ||
                 typeof TemplateCraftAPI.deleteSite !== 'function'
             ) {
-                throw new Error(
-                    'Delete API غير متوفر'
-                );
+                throw new Error('Delete API غير متوفر');
             }
 
             const result =
                 await TemplateCraftAPI.deleteSite(siteId);
 
-            if (handleAuthenticationError(result)) {
-                return;
-            }
+            if (handleAuthenticationError(result)) return;
 
             if (!result || !result.success) {
                 throw new Error(
@@ -1630,14 +1619,9 @@
             });
 
         } catch (error) {
-            console.error(
-                'Delete project error:',
-                error
-            );
+            console.error('Delete project error:', error);
 
-            if (handleAuthenticationError(error)) {
-                return;
-            }
+            if (handleAuthenticationError(error)) return;
 
             alert(
                 error.message ||
@@ -1654,13 +1638,11 @@
 
 
     // ==========================================
-    // 15. LOAD USER PROJECTS
+    // 18. LOAD USER PROJECTS
     // ==========================================
 
     async function loadUserSites(options = {}) {
-        if (isLoading) {
-            return;
-        }
+        if (isLoading) return;
 
         isLoading = true;
 
@@ -1703,36 +1685,34 @@
                 typeof TemplateCraftAPI.getSites !== 'function'
             ) {
                 throw new Error(
-                    'نظام الاتصال بالخادم غير متوفر'
+                    'نظام الاتصال بالخادم غير متوفر.'
                 );
             }
 
             const result =
                 await TemplateCraftAPI.getSites();
 
-            if (handleAuthenticationError(result)) {
-                return;
-            }
+            if (handleAuthenticationError(result)) return;
 
-            if (
-                !result ||
-                result.success === false
-            ) {
+            if (!result || result.success === false) {
                 throw new Error(
                     result?.error ||
                     result?.message ||
-                    'تعذر جلب المشاريع'
+                    'تعذر جلب المشاريع.'
                 );
             }
 
-            const sites =
-                normalizeSitesResponse(result);
+            let sites = normalizeSitesResponse(result);
 
             if (!Array.isArray(sites)) {
                 throw new Error(
-                    'صيغة بيانات المشاريع غير صحيحة'
+                    'صيغة بيانات المشاريع غير صحيحة.'
                 );
             }
+
+            // قراءة حالة كل دومين من custom-domain routes.
+            // هذه الطلبات GET فقط.
+            sites = await refreshAllDomainStatuses(sites);
 
             lastSites = sites;
 
@@ -1758,14 +1738,9 @@
             }
 
         } catch (error) {
-            console.error(
-                'Load projects error:',
-                error
-            );
+            console.error('Load projects error:', error);
 
-            if (handleAuthenticationError(error)) {
-                return;
-            }
+            if (handleAuthenticationError(error)) return;
 
             if (!lastSites.length) {
                 grid.innerHTML = `
@@ -1791,19 +1766,16 @@
 
                 document
                     .getElementById('retry-projects')
-                    ?.addEventListener(
-                        'click',
-                        () => {
-                            loadUserSites({
-                                force: true,
-                                showLoading: true
-                            });
-                        }
-                    );
+                    ?.addEventListener('click', () => {
+                        loadUserSites({
+                            force: true,
+                            showLoading: true
+                        });
+                    });
 
             } else if (lastUpdated) {
                 lastUpdated.textContent =
-                    'تعذر تحديث البيانات. يتم عرض آخر بيانات تم تحميلها.';
+                    'تعذر التحديث. يتم عرض آخر بيانات محملة.';
             }
 
         } finally {
@@ -1813,56 +1785,50 @@
                 refreshButton.disabled = false;
 
                 refreshButton.innerHTML =
-                    '<i class="fa-solid fa-rotate ml-1"></i> تحديث';
+                    '<i class="fa-solid fa-rotate ml-1"></i> تحديث المشاريع';
             }
         }
     }
 
 
     // ==========================================
-    // 16. LOGOUT
+    // 19. LOGOUT
     // ==========================================
 
     const logoutButton =
         document.getElementById('logout-button');
 
     if (logoutButton) {
-        logoutButton.addEventListener(
-            'click',
-            () => {
-                if (autoRefreshTimer) {
-                    clearInterval(autoRefreshTimer);
-                }
-
-                clearAuthentication();
-
-                window.location.replace('login.html');
+        logoutButton.addEventListener('click', () => {
+            if (autoRefreshTimer) {
+                clearInterval(autoRefreshTimer);
             }
-        );
+
+            clearAuthentication();
+
+            window.location.replace('login.html');
+        });
     }
 
 
     // ==========================================
-    // 17. MANUAL REFRESH
+    // 20. MANUAL REFRESH
     // ==========================================
 
     const refreshButton =
         document.getElementById('refresh-projects');
 
     if (refreshButton) {
-        refreshButton.addEventListener(
-            'click',
-            () => {
-                loadUserSites({
-                    force: true
-                });
-            }
-        );
+        refreshButton.addEventListener('click', () => {
+            loadUserSites({
+                force: true
+            });
+        });
     }
 
 
     // ==========================================
-    // 18. AUTOMATIC REFRESH
+    // 21. AUTOMATIC REFRESH
     // ==========================================
 
     function startAutoRefresh() {
@@ -1870,45 +1836,36 @@
             clearInterval(autoRefreshTimer);
         }
 
-        autoRefreshTimer = setInterval(
-            () => {
-                if (
-                    !document.hidden &&
-                    !isLoading
-                ) {
-                    loadUserSites();
-                }
-            },
-            AUTO_REFRESH_INTERVAL
-        );
-    }
-
-
-    document.addEventListener(
-        'visibilitychange',
-        () => {
+        autoRefreshTimer = setInterval(() => {
             if (
                 !document.hidden &&
                 !isLoading
             ) {
                 loadUserSites();
             }
-        }
-    );
+        }, AUTO_REFRESH_INTERVAL);
+    }
 
 
-    window.addEventListener(
-        'beforeunload',
-        () => {
-            if (autoRefreshTimer) {
-                clearInterval(autoRefreshTimer);
-            }
+    document.addEventListener('visibilitychange', () => {
+        if (
+            !document.hidden &&
+            !isLoading
+        ) {
+            loadUserSites();
         }
-    );
+    });
+
+
+    window.addEventListener('beforeunload', () => {
+        if (autoRefreshTimer) {
+            clearInterval(autoRefreshTimer);
+        }
+    });
 
 
     // ==========================================
-    // 19. START DASHBOARD
+    // 22. START DASHBOARD
     // ==========================================
 
     loadUserSites({
