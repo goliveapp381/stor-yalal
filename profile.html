@@ -1,9 +1,11 @@
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#080b16">
 
     <title>Dashboard | TemplateCraft Pro</title>
 
@@ -43,7 +45,14 @@
             overflow-x: hidden;
         }
 
-        /* BACKGROUND */
+        button, a {
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        button:disabled {
+            cursor: not-allowed;
+            opacity: .55;
+        }
 
         .background-glow {
             position: fixed;
@@ -77,19 +86,12 @@
         }
 
         @keyframes floatGlow {
-            from {
-                transform: translate(0,0) scale(1);
-            }
-
-            to {
-                transform: translate(60px,50px) scale(1.2);
-            }
+            from { transform: translate(0,0) scale(1); }
+            to { transform: translate(60px,50px) scale(1.2); }
         }
 
-        /* HEADER */
-
         .topbar {
-            background: rgba(8,11,22,.78);
+            background: rgba(8,11,22,.88);
             border-bottom: 1px solid var(--border);
             backdrop-filter: blur(20px);
             position: sticky;
@@ -117,6 +119,7 @@
             font-size: 13px;
             font-weight: 700;
             transition: .25s;
+            white-space: nowrap;
         }
 
         .nav-link:hover,
@@ -124,8 +127,6 @@
             color: white;
             background: rgba(139,92,246,.13);
         }
-
-        /* BUTTONS */
 
         .btn-primary {
             background: linear-gradient(120deg,#9b7bff,#6551db);
@@ -150,23 +151,12 @@
             background: rgba(255,255,255,.09);
         }
 
-        /* HERO */
-
         .hero {
             position: relative;
             overflow: hidden;
             background:
-                radial-gradient(
-                    circle at 90% 10%,
-                    rgba(139,92,246,.22),
-                    transparent 35%
-                ),
-                linear-gradient(
-                    120deg,
-                    #17152e,
-                    #11182b 65%,
-                    #101d2d
-                );
+                radial-gradient(circle at 90% 10%,rgba(139,92,246,.22),transparent 35%),
+                linear-gradient(120deg,#17152e,#11182b 65%,#101d2d);
             border: 1px solid rgba(167,139,250,.18);
             border-radius: 25px;
             padding: 34px;
@@ -185,6 +175,7 @@
             box-shadow:
                 0 0 0 35px rgba(255,255,255,.018),
                 0 0 0 70px rgba(255,255,255,.012);
+            pointer-events: none;
         }
 
         .hero-icon {
@@ -201,16 +192,9 @@
         }
 
         @keyframes floatIcon {
-            0%,100% {
-                transform: translateY(0);
-            }
-
-            50% {
-                transform: translateY(-8px);
-            }
+            0%,100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
         }
-
-        /* STATS */
 
         .stat-card {
             background: linear-gradient(145deg,#151b30,#101526);
@@ -239,8 +223,6 @@
             font-size: 18px;
         }
 
-        /* SECTION */
-
         .section-panel {
             background: rgba(17,22,41,.83);
             border: 1px solid var(--border);
@@ -249,19 +231,15 @@
             backdrop-filter: blur(12px);
         }
 
-        /* PROJECT CARDS */
-
         .project-card {
             background: linear-gradient(145deg,#171e33,#111729) !important;
             border: 1px solid rgba(148,163,184,.15) !important;
             border-radius: 19px !important;
             color: #f8fafc !important;
             box-shadow: 0 10px 30px rgba(0,0,0,.13) !important;
-            transition:
-                transform .3s ease,
-                border-color .3s,
-                box-shadow .3s !important;
+            transition: transform .3s ease,border-color .3s,box-shadow .3s !important;
             animation: slideUp .5s ease both;
+            min-width: 0;
         }
 
         .project-card:hover {
@@ -307,51 +285,36 @@
             background: rgba(239,68,68,.09) !important;
         }
 
-        .project-card .domain-waiting-card {
+        .domain-waiting-card {
+            position: relative;
+            border: 2px solid transparent !important;
+            border-radius: 14px;
             background:
                 linear-gradient(#151c30,#151c30) padding-box,
-                linear-gradient(
-                    120deg,
-                    #9333ea,
-                    #3b82f6,
-                    #22c55e,
-                    #9333ea
-                ) border-box !important;
+                linear-gradient(120deg,#9333ea,#3b82f6,#22c55e,#9333ea) border-box;
+            background-size: 100% 100%,300% 300%;
+            animation: domain-wave 4s ease infinite;
+        }
+
+        @keyframes domain-wave {
+            0%,100% { background-position: 0 0,0% 50%; }
+            50% { background-position: 0 0,100% 50%; }
+        }
+
+        .domain-active-card {
+            background:
+                linear-gradient(rgba(16,185,129,.08),rgba(16,185,129,.08)) padding-box,
+                linear-gradient(120deg,rgba(16,185,129,.6),rgba(34,197,94,.25)) border-box !important;
+            border: 2px solid transparent !important;
         }
 
         .project-card .text-gray-800 {
             color: #f1f5f9 !important;
         }
 
-        /* ACTIVE DOMAIN */
-
-        .domain-active-card {
-            background:
-                linear-gradient(
-                    rgba(16,185,129,.08),
-                    rgba(16,185,129,.08)
-                ) padding-box,
-                linear-gradient(
-                    120deg,
-                    rgba(16,185,129,.6),
-                    rgba(34,197,94,.25)
-                ) border-box !important;
-
-            border: 2px solid transparent !important;
-        }
-
-        /* ANIMATIONS */
-
         @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(18px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(18px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .loading-spinner,
@@ -367,9 +330,7 @@
         }
 
         @keyframes spin {
-            to {
-                transform: rotate(360deg);
-            }
+            to { transform: rotate(360deg); }
         }
 
         .pulse-dot {
@@ -382,43 +343,7 @@
         }
 
         @keyframes pulse {
-            50% {
-                box-shadow: 0 0 0 9px rgba(52,211,153,0);
-            }
-        }
-
-        /* DOMAIN ANIMATION */
-
-        .domain-waiting-card {
-            position: relative;
-            border: 2px solid transparent;
-            border-radius: 14px;
-
-            background:
-                linear-gradient(#151c30,#151c30) padding-box,
-                linear-gradient(
-                    120deg,
-                    #9333ea,
-                    #3b82f6,
-                    #22c55e,
-                    #9333ea
-                ) border-box;
-
-            background-size:
-                100% 100%,
-                300% 300%;
-
-            animation: domain-wave 4s ease infinite;
-        }
-
-        @keyframes domain-wave {
-            0%,100% {
-                background-position: 0 0,0% 50%;
-            }
-
-            50% {
-                background-position: 0 0,100% 50%;
-            }
+            50% { box-shadow: 0 0 0 9px rgba(52,211,153,0); }
         }
 
         .hourglass-animation {
@@ -427,20 +352,10 @@
         }
 
         @keyframes hourglass {
-            0% {
-                transform: rotate(0);
-            }
-
-            40%,80% {
-                transform: rotate(180deg);
-            }
-
-            100% {
-                transform: rotate(360deg);
-            }
+            0% { transform: rotate(0); }
+            40%,80% { transform: rotate(180deg); }
+            100% { transform: rotate(360deg); }
         }
-
-        /* EMPTY STATE */
 
         .empty-icon {
             width: 75px;
@@ -455,44 +370,24 @@
             font-size: 28px;
         }
 
-        /* FOOTER */
-
         footer {
             border-top: 1px solid var(--border);
             color: #64748b;
         }
 
         @media(max-width:700px) {
-
-            .hero {
-                padding: 24px;
-            }
-
-            .section-panel {
-                padding: 15px;
-            }
-
-            .mobile-nav {
-                display: flex;
-            }
-
-            .desktop-nav {
-                display: none;
-            }
+            .hero { padding: 24px; }
+            .section-panel { padding: 15px; }
+            .mobile-nav { display: flex; }
+            .desktop-nav { display: none; }
         }
 
         @media(min-width:701px) {
-
-            .mobile-nav {
-                display: none;
-            }
+            .mobile-nav { display: none; }
         }
 
         @media(prefers-reduced-motion:reduce) {
-
-            *,
-            *::before,
-            *::after {
+            *,*::before,*::after {
                 animation-duration: .01ms !important;
                 animation-iteration-count: 1 !important;
                 scroll-behavior: auto !important;
@@ -509,61 +404,45 @@
     <div class="glow two"></div>
 </div>
 
-<!-- HEADER -->
-
 <header class="topbar">
-
     <div class="max-w-7xl mx-auto px-5 lg:px-7 py-4">
-
         <div class="flex items-center justify-between gap-4">
 
             <div class="flex items-center gap-3">
-
                 <div class="brand-mark">
                     <i class="fa-solid fa-cubes-stacked"></i>
                 </div>
 
                 <div>
-
                     <h1 class="font-black text-lg tracking-tight">
-                        TemplateCraft
-                        <span class="text-purple-400">Pro</span>
+                        TemplateCraft <span class="text-purple-400">Pro</span>
                     </h1>
-
                     <p class="text-[10px] text-slate-500 font-bold tracking-widest">
                         WEBSITE MANAGEMENT PLATFORM
                     </p>
-
                 </div>
-
             </div>
 
             <nav class="desktop-nav items-center gap-1">
-
                 <a href="dashboard.html" class="nav-link active">
                     <i class="fa-solid fa-grid-2 ml-1"></i>
                     لوحة التحكم
                 </a>
-
                 <a href="create-project.html" class="nav-link">
                     <i class="fa-solid fa-plus ml-1"></i>
                     مشروع جديد
                 </a>
-
                 <a href="netlify-connect.html" class="nav-link">
                     <i class="fa-solid fa-cloud ml-1"></i>
                     Netlify
                 </a>
-
                 <a href="profile.html" class="nav-link">
                     <i class="fa-regular fa-user ml-1"></i>
                     الملف الشخصي
                 </a>
-
             </nav>
 
             <div class="flex items-center gap-3">
-
                 <div class="hidden sm:flex items-center gap-2 text-xs text-slate-400">
                     <span class="pulse-dot"></span>
                     النظام متاح
@@ -577,636 +456,294 @@
                     <i class="fa-solid fa-right-from-bracket ml-1"></i>
                     خروج
                 </button>
-
             </div>
-
         </div>
 
         <nav class="mobile-nav items-center gap-2 mt-4 overflow-x-auto pb-1">
-
-            <a
-                href="dashboard.html"
-                class="nav-link active whitespace-nowrap"
-            >
-                <i class="fa-solid fa-grid-2 ml-1"></i>
-                الرئيسية
+            <a href="dashboard.html" class="nav-link active">
+                <i class="fa-solid fa-grid-2 ml-1"></i> الرئيسية
             </a>
-
-            <a
-                href="create-project.html"
-                class="nav-link whitespace-nowrap"
-            >
-                <i class="fa-solid fa-plus ml-1"></i>
-                مشروع جديد
+            <a href="create-project.html" class="nav-link">
+                <i class="fa-solid fa-plus ml-1"></i> مشروع جديد
             </a>
-
-            <a
-                href="netlify-connect.html"
-                class="nav-link whitespace-nowrap"
-            >
-                <i class="fa-solid fa-cloud ml-1"></i>
-                Netlify
+            <a href="netlify-connect.html" class="nav-link">
+                <i class="fa-solid fa-cloud ml-1"></i> Netlify
             </a>
-
-            <a
-                href="profile.html"
-                class="nav-link whitespace-nowrap"
-            >
-                <i class="fa-regular fa-user ml-1"></i>
-                حسابي
+            <a href="profile.html" class="nav-link">
+                <i class="fa-regular fa-user ml-1"></i> حسابي
             </a>
-
         </nav>
-
     </div>
-
 </header>
-
-
-<!-- MAIN -->
 
 <main class="max-w-7xl mx-auto px-5 lg:px-7 py-8 lg:py-10">
 
-    <!-- HERO -->
-
     <section class="hero mb-7">
-
         <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-7">
 
             <div class="flex items-start gap-4">
-
                 <div class="hero-icon shrink-0">
                     <i class="fa-solid fa-wand-magic-sparkles"></i>
                 </div>
 
                 <div>
-
                     <div class="text-xs text-purple-300 font-bold mb-2">
                         WORKSPACE OVERVIEW
                     </div>
 
                     <h2 class="text-2xl md:text-3xl font-black mb-2">
                         مرحباً بك،
-                        <span id="user-welcome" class="text-purple-300">
-                            مستخدم
-                        </span>
+                        <span id="user-welcome" class="text-purple-300">مستخدم</span>
                     </h2>
 
                     <p class="text-slate-400 text-sm leading-7 max-w-xl">
                         كل مشاريعك ومواقعك في مكان واحد.
                         أنشئ، عدّل، وانشر مواقعك بسهولة من خلال TemplateCraft Pro.
                     </p>
-
                 </div>
-
             </div>
 
             <div class="flex flex-wrap gap-3">
-
-                <a
-                    href="create-project.html"
-                    class="btn-primary px-5 py-3 rounded-xl text-sm font-extrabold"
-                >
+                <a href="create-project.html"
+                   class="btn-primary px-5 py-3 rounded-xl text-sm font-extrabold">
                     <i class="fa-solid fa-plus ml-2"></i>
                     إنشاء مشروع
                 </a>
 
-                <a
-                    href="netlify-connect.html"
-                    class="btn-secondary px-5 py-3 rounded-xl text-sm font-bold"
-                >
+                <a href="netlify-connect.html"
+                   class="btn-secondary px-5 py-3 rounded-xl text-sm font-bold">
                     <i class="fa-solid fa-cloud ml-2 text-cyan-300"></i>
                     ربط Netlify
                 </a>
-
             </div>
-
         </div>
-
     </section>
-
-
-    <!-- STATS -->
 
     <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
 
         <div class="stat-card">
-
             <div class="flex items-center justify-between">
-
                 <div>
-
-                    <p class="text-slate-400 text-xs font-bold mb-2">
-                        إجمالي المشاريع
-                    </p>
-
-                    <h3
-                        id="total-projects"
-                        class="text-3xl font-black"
-                    >
-                        --
-                    </h3>
-
+                    <p class="text-slate-400 text-xs font-bold mb-2">إجمالي المشاريع</p>
+                    <h3 id="total-projects" class="text-3xl font-black">--</h3>
                 </div>
-
                 <div class="stat-icon bg-purple-500/15 text-purple-300">
                     <i class="fa-solid fa-layer-group"></i>
                 </div>
-
             </div>
-
-            <p class="text-xs text-slate-500 mt-4">
-                جميع المشاريع المرتبطة بحسابك
-            </p>
-
+            <p class="text-xs text-slate-500 mt-4">جميع المشاريع المرتبطة بحسابك</p>
         </div>
 
-
-        <div
-            class="stat-card"
-            style="animation-delay:.1s"
-        >
-
+        <div class="stat-card" style="animation-delay:.1s">
             <div class="flex items-center justify-between">
-
                 <div>
-
-                    <p class="text-slate-400 text-xs font-bold mb-2">
-                        مشاريع منشورة
-                    </p>
-
-                    <h3
-                        id="published-projects"
-                        class="text-3xl font-black"
-                    >
-                        --
-                    </h3>
-
+                    <p class="text-slate-400 text-xs font-bold mb-2">مشاريع منشورة</p>
+                    <h3 id="published-projects" class="text-3xl font-black">--</h3>
                 </div>
-
                 <div class="stat-icon bg-emerald-500/15 text-emerald-300">
                     <i class="fa-solid fa-globe"></i>
                 </div>
-
             </div>
-
-            <p class="text-xs text-slate-500 mt-4">
-                مشاريع لديها دومين نشط
-            </p>
-
+            <p class="text-xs text-slate-500 mt-4">مشاريع لديها دومين نشط</p>
         </div>
 
-
-        <div
-            class="stat-card"
-            style="animation-delay:.2s"
-        >
-
+        <div class="stat-card" style="animation-delay:.2s">
             <div class="flex items-center justify-between">
-
                 <div>
-
-                    <p class="text-slate-400 text-xs font-bold mb-2">
-                        قيد التجهيز
-                    </p>
-
-                    <h3
-                        id="pending-projects"
-                        class="text-3xl font-black"
-                    >
-                        --
-                    </h3>
-
+                    <p class="text-slate-400 text-xs font-bold mb-2">قيد التجهيز</p>
+                    <h3 id="pending-projects" class="text-3xl font-black">--</h3>
                 </div>
-
                 <div class="stat-icon bg-amber-500/15 text-amber-300">
                     <i class="fa-solid fa-clock"></i>
                 </div>
-
             </div>
-
-            <p class="text-xs text-slate-500 mt-4">
-                مشاريع تنتظر اكتمال الإعداد
-            </p>
-
+            <p class="text-xs text-slate-500 mt-4">مشاريع تنتظر اكتمال الإعداد</p>
         </div>
-
     </section>
-
-
-    <!-- PROJECTS -->
 
     <section class="section-panel">
 
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-7">
-
             <div>
-
                 <div class="flex items-center gap-2 mb-1">
-
                     <span class="w-1.5 h-6 rounded-full bg-purple-400"></span>
-
-                    <h2 class="text-xl font-black">
-                        مشاريعي
-                    </h2>
-
+                    <h2 class="text-xl font-black">مشاريعي</h2>
                 </div>
-
                 <p class="text-slate-400 text-xs mr-4">
                     إدارة ومتابعة جميع المواقع الخاصة بك
                 </p>
-
             </div>
 
             <div class="flex items-center gap-2">
-
-                <button
-                    id="refresh-projects"
-                    type="button"
-                    class="btn-secondary px-4 py-2.5 rounded-xl text-sm font-bold"
-                >
+                <button id="refresh-projects" type="button"
+                        class="btn-secondary px-4 py-2.5 rounded-xl text-sm font-bold">
                     <i class="fa-solid fa-rotate ml-1"></i>
                     تحديث
                 </button>
 
-                <a
-                    href="create-project.html"
-                    class="btn-primary px-4 py-2.5 rounded-xl text-sm font-bold"
-                >
+                <a href="create-project.html"
+                   class="btn-primary px-4 py-2.5 rounded-xl text-sm font-bold">
                     <i class="fa-solid fa-plus ml-1"></i>
                     جديد
                 </a>
-
             </div>
-
         </div>
 
-
-        <div
-            id="sites-grid"
-            class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5"
-        >
-
+        <div id="sites-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
             <div class="col-span-full text-center py-16 text-slate-400">
                 <span class="loading-spinner ml-2"></span>
                 جاري تحميل مشاريعك...
             </div>
-
         </div>
 
+        <p id="last-updated" class="text-center text-xs text-slate-600 mt-5"></p>
     </section>
-
-
-    <!-- QUICK LINKS -->
 
     <section class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-7">
 
-        <a
-            href="netlify-connect.html"
-            class="stat-card group"
-        >
-
+        <a href="netlify-connect.html" class="stat-card group">
             <div class="flex items-center gap-4">
-
                 <div class="stat-icon bg-cyan-500/15 text-cyan-300">
                     <i class="fa-solid fa-cloud"></i>
                 </div>
-
                 <div class="flex-1">
-
-                    <h3 class="font-bold text-sm mb-1">
-                        إعدادات Netlify
-                    </h3>
-
-                    <p class="text-xs text-slate-400">
-                        ربط حسابك واختيار Team للنشر
-                    </p>
-
+                    <h3 class="font-bold text-sm mb-1">إعدادات Netlify</h3>
+                    <p class="text-xs text-slate-400">ربط حسابك واختيار Team للنشر</p>
                 </div>
-
                 <i class="fa-solid fa-arrow-left text-slate-500 group-hover:text-purple-300 transition"></i>
-
             </div>
-
         </a>
 
-
-        <a
-            href="profile.html"
-            class="stat-card group"
-        >
-
+        <a href="profile.html" class="stat-card group">
             <div class="flex items-center gap-4">
-
                 <div class="stat-icon bg-purple-500/15 text-purple-300">
                     <i class="fa-solid fa-user-gear"></i>
                 </div>
-
                 <div class="flex-1">
-
-                    <h3 class="font-bold text-sm mb-1">
-                        إعدادات الحساب
-                    </h3>
-
-                    <p class="text-xs text-slate-400">
-                        إدارة معلوماتك الشخصية
-                    </p>
-
+                    <h3 class="font-bold text-sm mb-1">إعدادات الحساب</h3>
+                    <p class="text-xs text-slate-400">إدارة معلوماتك الشخصية</p>
                 </div>
-
                 <i class="fa-solid fa-arrow-left text-slate-500 group-hover:text-purple-300 transition"></i>
-
             </div>
-
         </a>
-
     </section>
-
 </main>
 
-
 <footer class="mt-12 py-7 text-center">
-
-    <p class="text-xs">
-        © 2026 TemplateCraft Pro — جميع الحقوق محفوظة
-    </p>
-
+    <p class="text-xs">© 2026 TemplateCraft Pro — جميع الحقوق محفوظة</p>
     <p class="text-[10px] text-slate-600 mt-2">
         Designed for creators. Built for growth.
     </p>
-
 </footer>
-
 
 <script src="./client-api.js"></script>
 
 <script>
+(() => {
+    'use strict';
 
     // ==========================================
     // 1. AUTHENTICATION
     // ==========================================
 
     function clearAuthentication() {
-
         localStorage.removeItem('user');
         localStorage.removeItem('token');
-
     }
 
-
-    const storedUser =
-        localStorage.getItem('user');
-
-    const authToken =
-        localStorage.getItem('token');
-
+    const storedUser = localStorage.getItem('user');
+    const authToken = localStorage.getItem('token');
 
     if (!storedUser || !authToken) {
-
         clearAuthentication();
-
         window.location.replace('login.html');
-
-        throw new Error('Authentication required');
-
+        return;
     }
 
-
-    let user = null;
-
+    let user;
 
     try {
-
         user = JSON.parse(storedUser);
 
         if (!user || typeof user !== 'object') {
             throw new Error('بيانات المستخدم غير صالحة');
         }
-
     } catch (error) {
-
         clearAuthentication();
-
         window.location.replace('login.html');
-
-        throw error;
-
+        return;
     }
-
 
     // ==========================================
     // 2. USER INFORMATION
     // ==========================================
 
-    const userWelcome =
-        document.getElementById('user-welcome');
-
-
-    userWelcome.textContent =
-        user.username ||
-        user.email ||
-        'مستخدم';
-
+    document.getElementById('user-welcome').textContent =
+        user.username || user.email || 'مستخدم';
 
     // ==========================================
-    // 3. HELPERS
+    // 3. CONFIGURATION
+    // ==========================================
+
+    const CURRENT_DOMAIN_ROOT = 'templatecraftpro.com';
+    const LEGACY_DOMAIN_ROOT = 'gollivetv.com';
+
+    const AUTO_REFRESH_INTERVAL = 30000;
+
+    let isLoading = false;
+    let autoRefreshTimer = null;
+    let lastSites = [];
+
+    // ==========================================
+    // 4. HELPERS
     // ==========================================
 
     function escapeHtml(value) {
-
         return String(value ?? '')
             .replaceAll('&', '&amp;')
             .replaceAll('<', '&lt;')
             .replaceAll('>', '&gt;')
             .replaceAll('"', '&quot;')
             .replaceAll("'", '&#039;');
-
     }
-
 
     function getUserId() {
-
-        return user.id ||
-            user._id ||
-            null;
-
+        return user.id || user._id || null;
     }
 
-
-    // ==========================================
-    // 4. DOMAIN ROOT CONFIGURATION
-    // ==========================================
-    //
-    // NEW DOMAIN ROOT:
-    // templatecraftpro.com
-    //
-    // LEGACY DOMAIN ROOT:
-    // gollivetv.com
-    //
-    // IMPORTANT:
-    // We keep both roots so old projects
-    // continue working normally.
-    // ==========================================
-
-    const CURRENT_DOMAIN_ROOT =
-        'templatecraftpro.com';
-
-    const LEGACY_DOMAIN_ROOT =
-        'gollivetv.com';
-
-
-    // ==========================================
-    // 5. NORMALIZE HOSTNAME
-    // ==========================================
-
     function normalizeHostname(hostname) {
-
         return String(hostname || '')
             .trim()
             .toLowerCase()
             .replace(/\.$/, '');
-
     }
-
-
-    // ==========================================
-    // 6. CHECK TEMPLATECRAFT DOMAIN
-    // ==========================================
 
     function isAllowedCustomDomain(hostname) {
+        const normalized = normalizeHostname(hostname);
 
-        const normalized =
-            normalizeHostname(hostname);
+        if (!normalized) return false;
 
-
-        if (!normalized) {
-            return false;
-        }
-
-
-        const isCurrentDomain =
-            normalized.endsWith(
-                `.${CURRENT_DOMAIN_ROOT}`
-            ) &&
+        const current =
+            normalized.endsWith('.' + CURRENT_DOMAIN_ROOT) &&
             normalized !== CURRENT_DOMAIN_ROOT;
 
-
-        const isLegacyDomain =
-            normalized.endsWith(
-                `.${LEGACY_DOMAIN_ROOT}`
-            ) &&
+        const legacy =
+            normalized.endsWith('.' + LEGACY_DOMAIN_ROOT) &&
             normalized !== LEGACY_DOMAIN_ROOT;
 
-
-        return (
-            isCurrentDomain ||
-            isLegacyDomain
-        );
-
+        return current || legacy;
     }
-
-
-    // ==========================================
-    // 7. UPDATE STATISTICS
-    // ==========================================
-
-    function updateStatistics(sites) {
-
-        const safeSites =
-            Array.isArray(sites)
-                ? sites
-                : [];
-
-
-        const total =
-            safeSites.length;
-
-
-        const published =
-            safeSites.filter(site => {
-
-                return (
-                    String(
-                        site?.domainStatus || ''
-                    ).toLowerCase() === 'active'
-                    &&
-                    Boolean(
-                        getSafeProjectUrl(site)
-                    )
-                );
-
-            }).length;
-
-
-        const pending =
-            safeSites.filter(site => {
-
-                const status =
-                    String(
-                        site?.domainStatus || ''
-                    ).toLowerCase();
-
-
-                return (
-                    status !== 'active'
-                    &&
-                    !isProjectDeleting(site)
-                );
-
-            }).length;
-
-
-        document.getElementById(
-            'total-projects'
-        ).textContent = total;
-
-
-        document.getElementById(
-            'published-projects'
-        ).textContent = published;
-
-
-        document.getElementById(
-            'pending-projects'
-        ).textContent = pending;
-
-    }
-
-
-    // ==========================================
-    // 8. SAFE CUSTOM DOMAIN URL
-    // ==========================================
-    //
-    // FIX:
-    // Previously this function accepted only:
-    // *.gollivetv.com
-    //
-    // Now it accepts:
-    // *.templatecraftpro.com
-    // AND
-    // *.gollivetv.com
-    //
-    // This keeps old projects working while
-    // allowing all new TemplateCraft Pro domains.
-    // ==========================================
 
     function getSafeProjectUrl(site) {
-
         if (!site || typeof site !== 'object') {
             return null;
         }
 
-
-        const status =
-            String(
-                site.domainStatus || ''
-            ).toLowerCase();
-
-
-        if (status !== 'active') {
+        if (
+            String(site.domainStatus || '').toLowerCase() !== 'active'
+        ) {
             return null;
         }
-
 
         if (
             !site.customUrl ||
@@ -1215,1219 +752,594 @@
             return null;
         }
 
-
         try {
+            const parsed = new URL(site.customUrl);
 
-            const parsed =
-                new URL(site.customUrl);
-
-
-            // Only HTTPS project URLs are allowed.
             if (parsed.protocol !== 'https:') {
                 return null;
             }
 
-
-            const hostname =
-                normalizeHostname(
-                    parsed.hostname
-                );
-
+            const hostname = normalizeHostname(parsed.hostname);
 
             if (!isAllowedCustomDomain(hostname)) {
                 return null;
             }
 
-
-            // Return normalized URL.
-            // Remove hash and query parameters
-            // so the project link remains clean.
             parsed.hash = '';
             parsed.search = '';
 
-
             return parsed.href;
-
         } catch (error) {
-
-            console.warn(
-                'Invalid project URL:',
-                site.customUrl,
-                error
-            );
-
+            console.warn('Invalid project URL:', error);
             return null;
-
         }
-
     }
-
-
-    // ==========================================
-    // 9. PROJECT STATE
-    // ==========================================
 
     function getProjectState(site) {
-
-        return String(
-            site?.publishStatus || ''
-        ).toLowerCase();
-
+        return String(site?.publishStatus || '').toLowerCase();
     }
-
 
     function isProjectDeleting(site) {
-
-        return (
-            getProjectState(site) === 'deleting'
-        );
-
+        return getProjectState(site) === 'deleting';
     }
-
 
     function isProjectPublishing(site) {
-
-        return (
-            getProjectState(site) === 'publishing'
-        );
-
+        return getProjectState(site) === 'publishing';
     }
 
+    function getProjectId(site) {
+        return site?._id || site?.id || null;
+    }
 
     // ==========================================
-    // 10. DOMAIN STATUS
+    // 5. STATISTICS
+    // ==========================================
+
+    function updateStatistics(sites) {
+        const safeSites = Array.isArray(sites) ? sites : [];
+
+        const total = safeSites.length;
+
+        const published = safeSites.filter(site =>
+            Boolean(getSafeProjectUrl(site))
+        ).length;
+
+        const pending = safeSites.filter(site =>
+            !getSafeProjectUrl(site) &&
+            !isProjectDeleting(site)
+        ).length;
+
+        document.getElementById('total-projects').textContent = total;
+        document.getElementById('published-projects').textContent = published;
+        document.getElementById('pending-projects').textContent = pending;
+    }
+
+    // ==========================================
+    // 6. DOMAIN STATUS DISPLAY
     // ==========================================
 
     function getDomainStatus(site, projectUrl) {
-
-        // If project has an active valid URL,
-        // no waiting card is needed.
-        if (projectUrl) {
-            return null;
-        }
-
+        if (projectUrl) return null;
 
         if (isProjectDeleting(site)) {
-
             return {
-
                 type: 'deleting',
-
                 label: 'جاري حذف المشروع',
-
-                description:
-                    'يتم الآن حذف المشروع. يرجى الانتظار.',
-
+                description: 'يتم الآن حذف المشروع. يرجى الانتظار.',
                 icon: '🗑️'
-
             };
-
         }
-
 
         if (isProjectPublishing(site)) {
-
             return {
-
                 type: 'publishing',
-
                 label: 'جاري نشر المشروع',
-
-                description:
-                    'يتم الآن نشر المشروع.',
-
+                description: 'يتم الآن نشر المشروع.',
                 icon: '🚀'
-
             };
-
         }
 
+        const status = String(site?.domainStatus || '').toLowerCase();
 
-        const status =
-            String(
-                site?.domainStatus || ''
-            ).toLowerCase();
-
-
-        const hasDomainSetup =
-            Boolean(
-                site?.netlifySiteId ||
-                site?.customDomain ||
-                site?.customUrl
-            );
-
-
-        if (
-            (
-                status === 'failed' ||
-                status === 'error'
-            )
-            &&
-            !hasDomainSetup
-        ) {
-
+        if (status === 'failed' || status === 'error') {
             return {
-
                 type: 'error',
-
                 label: 'تعذر تجهيز الدومين',
-
-                description:
-                    'لم يتم إعداد الدومين. يرجى إعادة المحاولة.',
-
+                description: site.domainError ||
+                    'تعذر إكمال إعداد الدومين. يرجى مراجعة حالة المشروع.',
                 icon: '⚠️'
-
             };
-
         }
-
 
         return {
-
             type: 'waiting',
-
             label: 'جاري تجهيز الدومين',
-
             description:
-                'يتم إعداد الدومين وشهادة SSL. سيظهر الرابط عند اكتمال العملية.',
-
+                'يتم التحقق من إعداد الدومين وشهادة SSL. سيظهر الرابط عند اكتمال العملية.',
             icon: '⏳'
-
         };
-
     }
 
-
     // ==========================================
-    // 11. AUTHENTICATION ERROR
+    // 7. AUTHENTICATION ERROR
     // ==========================================
 
     function handleAuthenticationError(result) {
-
         if (
             result &&
-            (
-                result.status === 401 ||
-                result.status === 403
-            )
+            (result.status === 401 || result.status === 403)
         ) {
-
             clearAuthentication();
-
-            window.location.replace(
-                'login.html'
-            );
-
+            window.location.replace('login.html');
             return true;
-
         }
 
-
         return false;
-
     }
 
+    // ==========================================
+    // 8. EMPTY STATE
+    // ==========================================
+
+    function renderEmptyState() {
+        const grid = document.getElementById('sites-grid');
+
+        grid.innerHTML = `
+            <div class="col-span-full text-center py-16">
+                <div class="empty-icon">
+                    <i class="fa-solid fa-rocket"></i>
+                </div>
+
+                <h3 class="text-lg font-bold mb-2">
+                    مساحة عملك جاهزة!
+                </h3>
+
+                <p class="text-slate-400 text-sm mb-6">
+                    لم تنشئ أي مشروع بعد. ابدأ مشروعك الأول الآن.
+                </p>
+
+                <a href="create-project.html"
+                   class="btn-primary inline-block px-6 py-3 rounded-xl text-sm font-bold">
+                    <i class="fa-solid fa-plus ml-2"></i>
+                    إنشاء أول مشروع
+                </a>
+            </div>
+        `;
+    }
 
     // ==========================================
-    // 12. DELETE PROJECT
+    // 9. PROJECT CARD
+    // ==========================================
+
+    function createProjectCard(site, index) {
+        const siteId = getProjectId(site);
+
+        const projectName =
+            site.variables?.displayName ||
+            site.siteName ||
+            'مشروع بدون اسم';
+
+        const projectType =
+            site.variables?.projectType || 'غير محدد';
+
+        const templateId =
+            site.templateId || 'غير محدد';
+
+        const date = site.createdAt
+            ? new Date(site.createdAt).toLocaleDateString('ar-MA')
+            : '-';
+
+        const projectUrl = getSafeProjectUrl(site);
+        const domainStatus = getDomainStatus(site, projectUrl);
+
+        const editorUrl = siteId
+            ? `editor.html?siteId=${encodeURIComponent(siteId)}`
+            : null;
+
+        const deleting = isProjectDeleting(site);
+        const publishing = isProjectPublishing(site);
+
+        const card = document.createElement('div');
+
+        card.className =
+            'project-card p-6 flex flex-col justify-between';
+
+        card.style.animationDelay =
+            `${Math.min(index * 0.07, 0.5)}s`;
+
+        const statusHtml = domainStatus ? `
+            <div class="${
+                domainStatus.type === 'waiting'
+                    ? 'domain-waiting-card'
+                    : domainStatus.type === 'error' ||
+                      domainStatus.type === 'deleting'
+                        ? 'border border-red-500/30 bg-red-500/10'
+                        : 'border border-blue-500/30 bg-blue-500/10'
+            } rounded-xl p-3 mb-4">
+
+                <div class="flex items-center gap-2 mb-1">
+                    ${
+                        domainStatus.type === 'waiting'
+                            ? '<span class="hourglass-animation text-lg">⏳</span>'
+                            : `<span class="text-lg">${escapeHtml(domainStatus.icon)}</span>`
+                    }
+
+                    <strong class="text-sm">
+                        ${escapeHtml(domainStatus.label)}
+                    </strong>
+                </div>
+
+                <p class="text-xs leading-6 text-slate-400">
+                    ${escapeHtml(domainStatus.description)}
+                </p>
+            </div>
+        ` : '';
+
+        const editorButton = editorUrl && !deleting && !publishing
+            ? `
+                <a href="${escapeHtml(editorUrl)}"
+                   class="col-span-2 block text-center bg-purple-600 hover:bg-purple-700 text-white py-2.5 rounded-xl text-sm font-bold transition">
+                    <i class="fa-solid fa-pen-to-square ml-1"></i>
+                    تعديل المشروع
+                </a>
+            `
+            : `
+                <button disabled class="col-span-2 bg-gray-200 text-gray-400 py-2.5 rounded-xl text-sm font-bold">
+                    ${deleting ? 'المشروع قيد الحذف' :
+                      publishing ? 'المشروع قيد النشر' :
+                      'التعديل غير متاح'}
+                </button>
+            `;
+
+        const previewButton = projectUrl && !deleting
+            ? `
+                <a href="${escapeHtml(projectUrl)}"
+                   target="_blank"
+                   rel="noopener noreferrer"
+                   class="block text-center bg-gray-100 hover:bg-gray-200 text-gray-700 py-2.5 rounded-xl text-sm font-bold transition">
+                    <i class="fa-regular fa-eye ml-1"></i>
+                    معاينة
+                </a>
+            `
+            : `
+                <button disabled class="bg-gray-100 text-gray-400 py-2.5 rounded-xl text-sm font-bold">
+                    المعاينة غير متاحة
+                </button>
+            `;
+
+        card.innerHTML = `
+            <div>
+                <div class="flex justify-between items-start gap-3 mb-4">
+                    <h3 class="font-bold text-lg break-words">
+                        ${escapeHtml(projectName)}
+                    </h3>
+
+                    <span class="text-xs bg-purple-50 text-purple-700 px-2.5 py-1 rounded-md font-bold whitespace-nowrap">
+                        ${escapeHtml(templateId)}
+                    </span>
+                </div>
+
+                <div class="text-sm text-gray-500 mb-2">
+                    الصنف:
+                    <strong class="text-gray-700">
+                        ${escapeHtml(projectType)}
+                    </strong>
+                </div>
+
+                <div class="text-xs text-gray-400 mb-4">
+                    تاريخ الإنشاء: ${escapeHtml(date)}
+                </div>
+
+                ${statusHtml}
+
+                <div
+                    class="${projectUrl ? 'domain-active-card' : ''} bg-gray-50 p-3 rounded-xl border text-xs font-mono truncate mb-5"
+                    dir="ltr"
+                    title="${escapeHtml(projectUrl || 'الدومين قيد التجهيز')}"
+                >
+                    ${
+                        projectUrl
+                            ? escapeHtml(projectUrl)
+                            : deleting
+                                ? 'المشروع قيد الحذف...'
+                                : 'الدومين الخاص قيد التجهيز...'
+                    }
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2">
+                ${editorButton}
+                ${previewButton}
+
+                <button
+                    type="button"
+                    class="copy-project-link bg-gray-100 hover:bg-gray-200 text-gray-700 py-2.5 rounded-xl text-sm font-bold transition ${
+                        !projectUrl || deleting ? 'opacity-50 cursor-not-allowed' : ''
+                    }"
+                    data-url="${escapeHtml(projectUrl || '')}"
+                    ${!projectUrl || deleting ? 'disabled' : ''}
+                >
+                    <i class="fa-regular fa-copy ml-1"></i>
+                    نسخ الرابط
+                </button>
+
+                <button
+                    type="button"
+                    class="delete-project-button col-span-2 bg-red-50 hover:bg-red-100 text-red-500 border border-red-500/20 py-2.5 rounded-xl text-sm font-bold transition"
+                    ${deleting || publishing ? 'disabled' : ''}
+                >
+                    ${
+                        deleting
+                            ? 'جاري الحذف...'
+                            : publishing
+                                ? 'النشر جارٍ...'
+                                : '<i class="fa-regular fa-trash-can ml-1"></i> حذف المشروع'
+                    }
+                </button>
+            </div>
+        `;
+
+        const deleteButton = card.querySelector('.delete-project-button');
+
+        if (deleteButton && !deleting && !publishing) {
+            deleteButton.addEventListener('click', () => {
+                deleteProject(site, deleteButton);
+            });
+        }
+
+        const copyButton = card.querySelector('.copy-project-link');
+
+        if (copyButton && projectUrl) {
+            copyButton.addEventListener('click', async () => {
+                try {
+                    await navigator.clipboard.writeText(projectUrl);
+
+                    const oldText = copyButton.innerHTML;
+                    copyButton.innerHTML =
+                        '<i class="fa-solid fa-check ml-1"></i> تم النسخ';
+
+                    setTimeout(() => {
+                        copyButton.innerHTML = oldText;
+                    }, 2000);
+                } catch (error) {
+                    console.error('Copy URL error:', error);
+                    window.prompt('انسخ الرابط:', projectUrl);
+                }
+            });
+        }
+
+        return card;
+    }
+
+    // ==========================================
+    // 10. DELETE PROJECT
     // ==========================================
 
     async function deleteProject(site, button) {
-
-        const siteId =
-            site?._id ||
-            site?.id ||
-            null;
-
+        const siteId = getProjectId(site);
 
         if (!siteId) {
-
-            alert(
-                'معرف المشروع غير موجود.'
-            );
-
+            alert('معرف المشروع غير موجود.');
             return;
-
         }
 
-
-        if (
-            isProjectDeleting(site) ||
-            isProjectPublishing(site)
-        ) {
-
-            alert(
-
-                isProjectDeleting(site)
-
-                    ? 'المشروع قيد الحذف حالياً.'
-
-                    : 'المشروع قيد النشر حالياً. لا يمكن حذفه الآن.'
-
-            );
-
+        if (isProjectDeleting(site) || isProjectPublishing(site)) {
+            alert('المشروع قيد عملية أخرى حالياً.');
             return;
-
         }
-
 
         const projectName =
             site.variables?.displayName ||
             site.siteName ||
             'هذا المشروع';
 
+        const confirmed = window.confirm(
+            `هل أنت متأكد من حذف المشروع "${projectName}"؟\n\n` +
+            'سيتم حذف المشروع والموارد المرتبطة به حسب إعدادات السيرفر.\n\n' +
+            'هذا الإجراء لا يمكن التراجع عنه.'
+        );
 
-        const confirmed =
-            window.confirm(
+        if (!confirmed) return;
 
-                `هل أنت متأكد من حذف المشروع "${projectName}"؟\n\n` +
-
-                'سيتم حذف المشروع والموارد المرتبطة به حسب إعدادات السيرفر.\n\n' +
-
-                'هذا الإجراء لا يمكن التراجع عنه.'
-
-            );
-
-
-        if (!confirmed) {
-            return;
-        }
-
-
-        const oldText =
-            button.innerHTML;
-
+        const oldText = button.innerHTML;
 
         button.disabled = true;
-
         button.innerHTML =
             '<span class="delete-spinner ml-1"></span> جاري الحذف';
 
-
         try {
-
-            const userId =
-                getUserId();
-
-
-            const result =
-                await TemplateCraftAPI.deleteSite(
-                    siteId,
-                    userId
-                );
-
-
-            if (
-                handleAuthenticationError(result)
-            ) {
-
-                return;
-
+            if (typeof TemplateCraftAPI?.deleteSite !== 'function') {
+                throw new Error('Delete API غير متوفر');
             }
 
-
-            if (
-                !result ||
-                !result.success
-            ) {
-
-                alert(
-                    result?.error ||
-                    'تعذر حذف المشروع.'
-                );
-
-                return;
-
-            }
-
-
-            alert(
-                '✅ تم حذف المشروع بنجاح.'
+            const result = await TemplateCraftAPI.deleteSite(
+                siteId,
+                getUserId()
             );
 
+            if (handleAuthenticationError(result)) return;
 
-            await loadUserSites();
+            if (!result || !result.success) {
+                alert(result?.error || 'تعذر حذف المشروع.');
+                return;
+            }
+
+            alert('تم حذف المشروع بنجاح.');
+            await loadUserSites({ force: true });
 
         } catch (error) {
-
-            console.error(
-                'Delete project error:',
-                error
-            );
-
-            alert(
-                'حدث خطأ أثناء حذف المشروع.'
-            );
-
+            console.error('Delete project error:', error);
+            alert('حدث خطأ أثناء حذف المشروع.');
         } finally {
-
             button.disabled = false;
-
-            button.innerHTML =
-                oldText;
-
+            button.innerHTML = oldText;
         }
-
     }
 
-
     // ==========================================
-    // 13. LOAD USER PROJECTS
+    // 11. LOAD USER PROJECTS
     // ==========================================
 
-    let isLoading = false;
-
-
-    async function loadUserSites() {
-
-        if (isLoading) {
-            return;
-        }
-
+    async function loadUserSites(options = {}) {
+        if (isLoading) return;
 
         isLoading = true;
 
-
-        const grid =
-            document.getElementById(
-                'sites-grid'
-            );
-
-
-        const refreshButton =
-            document.getElementById(
-                'refresh-projects'
-            );
-
+        const grid = document.getElementById('sites-grid');
+        const refreshButton = document.getElementById('refresh-projects');
+        const lastUpdated = document.getElementById('last-updated');
 
         refreshButton.disabled = true;
-
-
         refreshButton.innerHTML =
             '<span class="loading-spinner ml-1"></span> جاري التحديث';
 
-
-        grid.innerHTML = `
-
-            <div class="col-span-full text-center py-16 text-slate-400">
-
-                <span class="loading-spinner ml-2"></span>
-
-                جاري تحميل مشاريعك...
-
-            </div>
-
-        `;
-
+        if (!lastSites.length || options.showLoading) {
+            grid.innerHTML = `
+                <div class="col-span-full text-center py-16 text-slate-400">
+                    <span class="loading-spinner ml-2"></span>
+                    جاري تحميل مشاريعك...
+                </div>
+            `;
+        }
 
         try {
-
-            const userId =
-                getUserId();
-
+            const userId = getUserId();
 
             if (!userId) {
-
-                grid.innerHTML = `
-
-                    <div class="col-span-full text-center py-12 text-red-400">
-
-                        معرف المستخدم غير موجود.
-
-                    </div>
-
-                `;
-
-                return;
-
+                throw new Error('معرف المستخدم غير موجود');
             }
-
 
             if (
                 typeof TemplateCraftAPI === 'undefined' ||
                 typeof TemplateCraftAPI.getSites !== 'function'
             ) {
-
-                grid.innerHTML = `
-
-                    <div class="col-span-full text-center py-12 text-red-400">
-
-                        تعذر تحميل نظام الاتصال بالخادم.
-
-                    </div>
-
-                `;
-
-                return;
-
+                throw new Error('نظام الاتصال بالخادم غير متوفر');
             }
 
+            const result = await TemplateCraftAPI.getSites(userId);
 
-            const result =
-                await TemplateCraftAPI.getSites(
-                    userId
-                );
+            if (handleAuthenticationError(result)) return;
 
-
-            if (
-                handleAuthenticationError(result)
-            ) {
-
-                return;
-
+            if (!result || !result.success) {
+                throw new Error(result?.error || 'تعذر جلب المشاريع');
             }
 
-
-            if (
-                !result ||
-                !result.success
-            ) {
-
-                grid.innerHTML = `
-
-                    <div class="col-span-full text-center py-12">
-
-                        <p class="text-red-400 font-bold mb-4">
-
-                            ${escapeHtml(
-                                result?.error ||
-                                'تعذر جلب المشاريع'
-                            )}
-
-                        </p>
-
-                        <button
-                            type="button"
-                            onclick="loadUserSites()"
-                            class="btn-primary px-5 py-2 rounded-xl"
-                        >
-                            إعادة المحاولة
-                        </button>
-
-                    </div>
-
-                `;
-
-                return;
-
+            if (!Array.isArray(result.sites)) {
+                throw new Error('صيغة بيانات المشاريع غير صحيحة');
             }
 
+            lastSites = result.sites;
 
-            if (
-                !Array.isArray(result.sites) ||
-                result.sites.length === 0
-            ) {
+            updateStatistics(lastSites);
 
-                updateStatistics([]);
+            if (lastSites.length === 0) {
+                renderEmptyState();
+            } else {
+                grid.innerHTML = '';
 
-
-                grid.innerHTML = `
-
-                    <div class="col-span-full text-center py-16">
-
-                        <div class="empty-icon">
-
-                            <i class="fa-solid fa-rocket"></i>
-
-                        </div>
-
-                        <h3 class="text-lg font-bold mb-2">
-                            مساحة عملك جاهزة!
-                        </h3>
-
-                        <p class="text-slate-400 text-sm mb-6">
-                            لم تنشئ أي مشروع بعد. ابدأ مشروعك الأول الآن.
-                        </p>
-
-                        <a
-                            href="create-project.html"
-                            class="btn-primary inline-block px-6 py-3 rounded-xl text-sm font-bold"
-                        >
-
-                            <i class="fa-solid fa-plus ml-2"></i>
-
-                            إنشاء أول مشروع
-
-                        </a>
-
-                    </div>
-
-                `;
-
-                return;
-
+                lastSites.forEach((site, index) => {
+                    grid.appendChild(createProjectCard(site, index));
+                });
             }
 
-
-            updateStatistics(
-                result.sites
-            );
-
-
-            grid.innerHTML = '';
-
-
-            // ==========================================
-            // CREATE PROJECT CARDS
-            // ==========================================
-
-            result.sites.forEach(
-                (site, index) => {
-
-                    const siteId =
-                        site._id ||
-                        site.id;
-
-
-                    const projectName =
-                        site.variables?.displayName ||
-                        site.siteName ||
-                        'مشروع بدون اسم';
-
-
-                    const projectType =
-                        site.variables?.projectType ||
-                        'غير محدد';
-
-
-                    const templateId =
-                        site.templateId ||
-                        'غير محدد';
-
-
-                    const date =
-                        site.createdAt
-                            ? new Date(
-                                site.createdAt
-                            ).toLocaleDateString(
-                                'ar-MA'
-                            )
-                            : '-';
-
-
-                    const projectUrl =
-                        getSafeProjectUrl(
-                            site
-                        );
-
-
-                    const domainStatus =
-                        getDomainStatus(
-                            site,
-                            projectUrl
-                        );
-
-
-                    const editorUrl =
-                        siteId
-                            ? `editor.html?siteId=${encodeURIComponent(siteId)}`
-                            : null;
-
-
-                    const deleting =
-                        isProjectDeleting(site);
-
-
-                    const publishing =
-                        isProjectPublishing(site);
-
-
-                    const card =
-                        document.createElement(
-                            'div'
-                        );
-
-
-                    card.className =
-                        'project-card p-6 flex flex-col justify-between';
-
-
-                    card.style.animationDelay =
-                        `${Math.min(
-                            index * 0.07,
-                            .5
-                        )}s`;
-
-
-                    card.innerHTML = `
-
-                        <div>
-
-                            <div class="flex justify-between items-start gap-3 mb-4">
-
-                                <h3 class="font-bold text-lg break-words">
-                                    ${escapeHtml(
-                                        projectName
-                                    )}
-                                </h3>
-
-                                <span
-                                    class="
-                                        text-xs
-                                        bg-purple-50
-                                        text-purple-700
-                                        px-2.5
-                                        py-1
-                                        rounded-md
-                                        font-bold
-                                        whitespace-nowrap
-                                    "
-                                >
-                                    ${escapeHtml(
-                                        templateId
-                                    )}
-                                </span>
-
-                            </div>
-
-
-                            <div class="text-sm text-gray-500 mb-2">
-
-                                الصنف:
-
-                                <strong class="text-gray-700">
-
-                                    ${escapeHtml(
-                                        projectType
-                                    )}
-
-                                </strong>
-
-                            </div>
-
-
-                            <div class="text-xs text-gray-400 mb-4">
-
-                                تاريخ الإنشاء:
-
-                                ${escapeHtml(
-                                    date
-                                )}
-
-                            </div>
-
-
-                            ${
-                                domainStatus
-                                    ? `
-
-                                        <div
-                                            class="${
-                                                domainStatus.type === 'waiting'
-
-                                                    ? 'domain-waiting-card'
-
-                                                    : domainStatus.type === 'error' ||
-                                                      domainStatus.type === 'deleting'
-
-                                                        ? 'border border-red-500/30 bg-red-500/10'
-
-                                                        : 'border border-blue-500/30 bg-blue-500/10'
-                                            } rounded-xl p-3 mb-4"
-                                        >
-
-                                            <div class="flex items-center gap-2 mb-1">
-
-                                                ${
-                                                    domainStatus.type === 'waiting'
-
-                                                        ? '<span class="hourglass-animation text-lg">⏳</span>'
-
-                                                        : `<span class="text-lg">${escapeHtml(
-                                                            domainStatus.icon
-                                                        )}</span>`
-                                                }
-
-                                                <strong class="text-sm">
-
-                                                    ${escapeHtml(
-                                                        domainStatus.label
-                                                    )}
-
-                                                </strong>
-
-                                            </div>
-
-
-                                            <p class="text-xs leading-6 text-slate-400">
-
-                                                ${escapeHtml(
-                                                    domainStatus.description
-                                                )}
-
-                                            </p>
-
-                                        </div>
-
-                                    `
-                                    : ''
-                            }
-
-
-                            <div
-                                class="
-                                    ${
-                                        projectUrl
-                                            ? 'domain-active-card'
-                                            : ''
-                                    }
-                                    bg-gray-50
-                                    p-3
-                                    rounded-xl
-                                    border
-                                    text-xs
-                                    font-mono
-                                    truncate
-                                    mb-5
-                                "
-                                dir="ltr"
-                                title="${escapeHtml(
-                                    projectUrl ||
-                                    'الدومين قيد التجهيز'
-                                )}"
-                            >
-
-                                ${
-                                    projectUrl
-
-                                        ? escapeHtml(
-                                            projectUrl
-                                        )
-
-                                        : deleting
-
-                                            ? 'المشروع قيد الحذف...'
-
-                                            : 'الدومين الخاص قيد التجهيز...'
-                                }
-
-                            </div>
-
-                        </div>
-
-
-                        <div class="grid grid-cols-2 gap-2">
-
-
-                            ${
-                                editorUrl &&
-                                !deleting &&
-                                !publishing
-
-                                    ? `
-
-                                        <a
-                                            href="${escapeHtml(
-                                                editorUrl
-                                            )}"
-                                            class="
-                                                col-span-2
-                                                block
-                                                text-center
-                                                bg-purple-600
-                                                hover:bg-purple-700
-                                                text-white
-                                                py-2.5
-                                                rounded-xl
-                                                text-sm
-                                                font-bold
-                                                transition
-                                            "
-                                        >
-
-                                            <i class="fa-solid fa-pen-to-square ml-1"></i>
-
-                                            تعديل المشروع
-
-                                        </a>
-
-                                    `
-
-                                    : `
-
-                                        <button
-                                            disabled
-                                            class="
-                                                col-span-2
-                                                bg-gray-200
-                                                text-gray-400
-                                                py-2.5
-                                                rounded-xl
-                                                text-sm
-                                                font-bold
-                                            "
-                                        >
-
-                                            ${
-                                                deleting
-
-                                                    ? 'المشروع قيد الحذف'
-
-                                                    : publishing
-
-                                                        ? 'المشروع قيد النشر'
-
-                                                        : 'التعديل غير متاح'
-                                            }
-
-                                        </button>
-
-                                    `
-                            }
-
-
-                            ${
-                                projectUrl &&
-                                !deleting
-
-                                    ? `
-
-                                        <a
-                                            href="${escapeHtml(
-                                                projectUrl
-                                            )}"
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            class="
-                                                block
-                                                text-center
-                                                bg-gray-100
-                                                hover:bg-gray-200
-                                                text-gray-700
-                                                py-2.5
-                                                rounded-xl
-                                                text-sm
-                                                font-bold
-                                                transition
-                                            "
-                                        >
-
-                                            <i class="fa-regular fa-eye ml-1"></i>
-
-                                            معاينة
-
-                                        </a>
-
-                                    `
-
-                                    : `
-
-                                        <button
-                                            disabled
-                                            class="
-                                                bg-gray-100
-                                                text-gray-400
-                                                py-2.5
-                                                rounded-xl
-                                                text-sm
-                                                font-bold
-                                            "
-                                        >
-
-                                            المعاينة غير متاحة
-
-                                        </button>
-
-                                    `
-                            }
-
-
-                            <button
-                                type="button"
-                                class="
-                                    copy-project-link
-                                    bg-gray-100
-                                    hover:bg-gray-200
-                                    text-gray-700
-                                    py-2.5
-                                    rounded-xl
-                                    text-sm
-                                    font-bold
-                                    transition
-                                    ${
-                                        !projectUrl ||
-                                        deleting
-
-                                            ? 'opacity-50 cursor-not-allowed'
-
-                                            : ''
-                                    }
-                                "
-                                data-url="${escapeHtml(
-                                    projectUrl || ''
-                                )}"
-                                ${
-                                    !projectUrl ||
-                                    deleting
-
-                                        ? 'disabled'
-
-                                        : ''
-                                }
-                            >
-
-                                <i class="fa-regular fa-copy ml-1"></i>
-
-                                نسخ الرابط
-
-                            </button>
-
-
-                            <button
-                                type="button"
-                                class="
-                                    delete-project-button
-                                    col-span-2
-                                    bg-red-50
-                                    hover:bg-red-100
-                                    text-red-500
-                                    border
-                                    border-red-500/20
-                                    py-2.5
-                                    rounded-xl
-                                    text-sm
-                                    font-bold
-                                    transition
-                                    ${
-                                        deleting ||
-                                        publishing
-
-                                            ? 'opacity-50 cursor-not-allowed'
-
-                                            : ''
-                                    }
-                                "
-                                ${
-                                    deleting ||
-                                    publishing
-
-                                        ? 'disabled'
-
-                                        : ''
-                                }
-                            >
-
-                                ${
-                                    deleting
-
-                                        ? 'جاري الحذف...'
-
-                                        : publishing
-
-                                            ? 'النشر جارٍ...'
-
-                                            : '<i class="fa-regular fa-trash-can ml-1"></i> حذف المشروع'
-                                }
-
-                            </button>
-
-
-                        </div>
-
-                    `;
-
-
-                    grid.appendChild(
-                        card
-                    );
-
-
-                    // ==========================================
-                    // DELETE BUTTON
-                    // ==========================================
-
-                    const deleteButton =
-                        card.querySelector(
-                            '.delete-project-button'
-                        );
-
-
-                    if (
-                        deleteButton &&
-                        !deleting &&
-                        !publishing
-                    ) {
-
-                        deleteButton.addEventListener(
-                            'click',
-                            () => {
-
-                                deleteProject(
-                                    site,
-                                    deleteButton
-                                );
-
-                            }
-                        );
-
-                    }
-
-                }
-            );
-
-
-            // ==========================================
-            // COPY PROJECT URL
-            // ==========================================
-
-            grid
-                .querySelectorAll(
-                    '.copy-project-link'
-                )
-                .forEach(
-                    button => {
-
-                        button.addEventListener(
-                            'click',
-                            async () => {
-
-                                const url =
-                                    button.dataset.url;
-
-
-                                if (!url) {
-
-                                    alert(
-                                        'الدومين الخاص بالمشروع مازال قيد التجهيز.'
-                                    );
-
-                                    return;
-
-                                }
-
-
-                                try {
-
-                                    await navigator
-                                        .clipboard
-                                        .writeText(
-                                            url
-                                        );
-
-
-                                    const oldText =
-                                        button.innerHTML;
-
-
-                                    button.innerHTML =
-                                        '<i class="fa-solid fa-check ml-1"></i> تم النسخ';
-
-
-                                    setTimeout(
-                                        () => {
-
-                                            button.innerHTML =
-                                                oldText;
-
-                                        },
-                                        2000
-                                    );
-
-
-                                } catch (error) {
-
-                                    console.error(
-                                        'Copy URL error:',
-                                        error
-                                    );
-
-
-                                    alert(
-                                        'تعذر نسخ الرابط. يمكنك نسخه يدوياً.'
-                                    );
-
-                                }
-
-                            }
-                        );
-
-                    }
-                );
-
+            lastUpdated.textContent =
+                'آخر تحديث: ' + new Date().toLocaleTimeString('ar-MA');
 
         } catch (error) {
+            console.error('Load projects error:', error);
 
-            console.error(
-                'Load projects error:',
-                error
-            );
+            if (!lastSites.length) {
+                grid.innerHTML = `
+                    <div class="col-span-full text-center py-12">
+                        <p class="text-red-400 font-bold mb-4">
+                            ${escapeHtml(error.message || 'حدث خطأ أثناء تحميل المشاريع.')}
+                        </p>
 
+                        <button type="button" id="retry-projects"
+                                class="btn-primary px-5 py-2 rounded-xl">
+                            إعادة المحاولة
+                        </button>
+                    </div>
+                `;
 
-            grid.innerHTML = `
-
-                <div class="col-span-full text-center py-12">
-
-                    <p class="text-red-400 font-bold mb-4">
-                        حدث خطأ أثناء تحميل المشاريع.
-                    </p>
-
-                    <button
-                        type="button"
-                        onclick="loadUserSites()"
-                        class="btn-primary px-5 py-2 rounded-xl"
-                    >
-                        إعادة المحاولة
-                    </button>
-
-                </div>
-
-            `;
+                document.getElementById('retry-projects')
+                    ?.addEventListener('click', () => {
+                        loadUserSites({ force: true, showLoading: true });
+                    });
+            } else {
+                lastUpdated.textContent =
+                    'تعذر تحديث البيانات. يتم عرض آخر بيانات تم تحميلها.';
+            }
 
         } finally {
-
             isLoading = false;
 
-
             refreshButton.disabled = false;
-
-
             refreshButton.innerHTML =
                 '<i class="fa-solid fa-rotate ml-1"></i> تحديث';
-
         }
-
     }
 
-
     // ==========================================
-    // 14. LOGOUT
+    // 12. LOGOUT
     // ==========================================
 
-    document
-        .getElementById('logout-button')
-        .addEventListener(
-            'click',
-            () => {
-
-                clearAuthentication();
-
-                window.location.replace(
-                    'login.html'
-                );
-
+    document.getElementById('logout-button')
+        .addEventListener('click', () => {
+            if (autoRefreshTimer) {
+                clearInterval(autoRefreshTimer);
             }
-        );
 
-
-    // ==========================================
-    // 15. REFRESH PROJECTS
-    // ==========================================
-
-    document
-        .getElementById('refresh-projects')
-        .addEventListener(
-            'click',
-            loadUserSites
-        );
-
+            clearAuthentication();
+            window.location.replace('login.html');
+        });
 
     // ==========================================
-    // 16. START
+    // 13. MANUAL REFRESH
     // ==========================================
 
-    loadUserSites();
+    document.getElementById('refresh-projects')
+        .addEventListener('click', () => {
+            loadUserSites({ force: true });
+        });
 
+    // ==========================================
+    // 14. AUTOMATIC REFRESH
+    // ==========================================
+
+    function startAutoRefresh() {
+        if (autoRefreshTimer) {
+            clearInterval(autoRefreshTimer);
+        }
+
+        autoRefreshTimer = setInterval(() => {
+            if (!document.hidden && !isLoading) {
+                loadUserSites();
+            }
+        }, AUTO_REFRESH_INTERVAL);
+    }
+
+    document.addEventListener('visibilitychange', () => {
+        if (!document.hidden && !isLoading) {
+            loadUserSites();
+        }
+    });
+
+    window.addEventListener('beforeunload', () => {
+        if (autoRefreshTimer) {
+            clearInterval(autoRefreshTimer);
+        }
+    });
+
+    // ==========================================
+    // 15. START DASHBOARD
+    // ==========================================
+
+    loadUserSites({ showLoading: true });
+    startAutoRefresh();
+
+})();
 </script>
 
 </body>
-                        </html>
+</html>
