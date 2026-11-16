@@ -1,426 +1,282 @@
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#080b16">
 
-    <title>Dashboard | TemplateCraft Pro</title>
+    <title>لوحة التحكم - TemplateCraft Pro</title>
 
+    <meta name="description" content="إدارة مشاريعك ومواقعك في TemplateCraft Pro">
+
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
 
-    <link
-        href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap"
-        rel="stylesheet"
-    >
+    <!-- Google Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-    <link
-        rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
-    >
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
+    <!-- Dashboard CSS -->
     <link rel="stylesheet" href="./profile.css">
+
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+        }
+
+        .btn-secondary {
+            background: #334155;
+            color: white;
+            transition: all 0.2s ease;
+        }
+
+        .btn-secondary:hover {
+            background: #475569;
+        }
+
+        .btn-check-ssl {
+            background: #1e293b;
+            color: #e2e8f0;
+            border: 1px solid #475569;
+            transition: all 0.2s ease;
+        }
+
+        .btn-check-ssl:hover {
+            background: #334155;
+            border-color: #64748b;
+        }
+
+        .btn-check-ssl:disabled {
+            opacity: 0.6;
+            cursor: wait;
+        }
+    </style>
 </head>
 
-<body>
+<body class="bg-slate-950 text-white min-h-screen">
 
-<div class="background-glow">
-    <div class="glow one"></div>
-    <div class="glow two"></div>
-</div>
+    <!-- ================= HEADER ================= -->
 
-<header class="topbar">
-    <div class="max-w-7xl mx-auto px-5 lg:px-7 py-4">
+    <header class="border-b border-slate-800 bg-slate-900">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between gap-4">
 
-        <div class="flex items-center justify-between gap-4">
-
-            <div class="flex items-center gap-3">
-
-                <div class="brand-mark">
-                    <i class="fa-solid fa-cubes-stacked"></i>
+            <a href="./index.html" class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center">
+                    <i class="fa-solid fa-layer-group text-xl"></i>
                 </div>
 
                 <div>
-                    <h1 class="font-black text-lg tracking-tight">
-                        TemplateCraft <span class="text-purple-400">Pro</span>
+                    <h1 class="font-extrabold text-lg">
+                        TemplateCraft Pro
                     </h1>
+                    <p class="text-xs text-slate-400">
+                        لوحة التحكم
+                    </p>
+                </div>
+            </a>
 
-                    <p class="text-[10px] text-slate-500 font-bold tracking-widest">
-                        WEBSITE MANAGEMENT PLATFORM
+            <nav class="flex items-center gap-3">
+                <a href="./index.html"
+                   class="text-sm text-slate-300 hover:text-white">
+                    <i class="fa-solid fa-house ml-1"></i>
+                    الرئيسية
+                </a>
+
+                <button
+                    type="button"
+                    id="logout-button"
+                    class="text-sm text-red-400 hover:text-red-300">
+                    <i class="fa-solid fa-right-from-bracket ml-1"></i>
+                    تسجيل الخروج
+                </button>
+            </nav>
+
+        </div>
+    </header>
+
+
+    <!-- ================= MAIN ================= -->
+
+    <main class="max-w-7xl mx-auto px-4 py-8">
+
+        <!-- PAGE TITLE -->
+
+        <section class="mb-8">
+            <h2 class="text-2xl md:text-3xl font-extrabold mb-2">
+                مرحباً بك في لوحة التحكم
+            </h2>
+
+            <p class="text-slate-400">
+                يمكنك إدارة مشاريعك ومتابعة حالة النشر والنطاقات وشهادة SSL.
+            </p>
+        </section>
+
+
+        <!-- ================= STATISTICS ================= -->
+
+        <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5">
+                <div class="flex items-center justify-between mb-3">
+                    <span class="text-slate-400 text-sm">جميع المشاريع</span>
+                    <i class="fa-solid fa-folder-open text-blue-400 text-xl"></i>
+                </div>
+
+                <p id="total-sites" class="text-3xl font-extrabold">0</p>
+            </div>
+
+
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5">
+                <div class="flex items-center justify-between mb-3">
+                    <span class="text-slate-400 text-sm">المواقع المنشورة</span>
+                    <i class="fa-solid fa-globe text-green-400 text-xl"></i>
+                </div>
+
+                <p id="published-sites" class="text-3xl font-extrabold">0</p>
+            </div>
+
+
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5">
+                <div class="flex items-center justify-between mb-3">
+                    <span class="text-slate-400 text-sm">المشاريع غير المنشورة</span>
+                    <i class="fa-solid fa-clock text-yellow-400 text-xl"></i>
+                </div>
+
+                <p id="unpublished-sites" class="text-3xl font-extrabold">0</p>
+            </div>
+
+
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5">
+                <div class="flex items-center justify-between mb-3">
+                    <span class="text-slate-400 text-sm">النطاقات المخصصة</span>
+                    <i class="fa-solid fa-shield-halved text-purple-400 text-xl"></i>
+                </div>
+
+                <p id="custom-domains" class="text-3xl font-extrabold">0</p>
+            </div>
+
+        </section>
+
+
+        <!-- ================= PROJECTS HEADER ================= -->
+
+        <section class="mb-6">
+
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+
+                <div>
+                    <h3 class="text-xl font-extrabold mb-1">
+                        <i class="fa-solid fa-folder-open text-blue-400 ml-2"></i>
+                        مشاريعي
+                    </h3>
+
+                    <p class="text-sm text-slate-400">
+                        جميع المواقع والمشاريع الخاصة بك
                     </p>
                 </div>
 
-            </div>
 
-            <nav class="desktop-nav items-center gap-1">
+                <div class="flex items-center gap-3">
 
-                <a href="profile.html" class="nav-link active">
-                    <i class="fa-solid fa-grid-2 ml-1"></i>
-                    لوحة التحكم
-                </a>
+                    <span
+                        id="last-updated"
+                        class="text-xs text-slate-500">
+                        آخر تحديث: --
+                    </span>
 
-                <a href="create-project.html" class="nav-link">
-                    <i class="fa-solid fa-plus ml-1"></i>
-                    مشروع جديد
-                </a>
+                    <button
+                        type="button"
+                        id="refresh-projects"
+                        class="btn-secondary px-4 py-2 rounded-xl text-sm font-bold">
 
-                <a href="netlify-connect.html" class="nav-link">
-                    <i class="fa-solid fa-cloud ml-1"></i>
-                    Netlify
-                </a>
+                        <i class="fa-solid fa-rotate ml-1"></i>
+                        تحديث المشاريع
 
-                <a href="account.html" class="nav-link">
-                    <i class="fa-regular fa-user ml-1"></i>
-                    الملف الشخصي
-                </a>
+                    </button>
 
-            </nav>
-
-            <div class="flex items-center gap-3">
-
-                <div class="hidden sm:flex items-center gap-2 text-xs text-slate-400">
-                    <span class="pulse-dot"></span>
-                    النظام متاح
                 </div>
 
-                <button
-                    id="logout-button"
-                    type="button"
-                    class="text-red-400 hover:bg-red-500/10 px-3 py-2 rounded-xl text-sm font-bold transition"
-                >
-                    <i class="fa-solid fa-right-from-bracket ml-1"></i>
-                    خروج
-                </button>
+            </div>
+
+        </section>
+
+
+        <!-- ================= PROJECTS GRID ================= -->
+
+        <section>
+
+            <div
+                id="sites-grid"
+                class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+
+                <!-- profile.js سيعرض بطاقات المشاريع هنا -->
+
+                <div class="col-span-full text-center py-16 bg-slate-900 border border-slate-800 rounded-2xl">
+
+                    <i class="fa-solid fa-folder-open text-4xl text-slate-600 mb-4"></i>
+
+                    <p class="text-slate-400">
+                        جاري تحميل المشاريع...
+                    </p>
+
+                </div>
 
             </div>
 
-        </div>
-
-        <nav class="mobile-nav items-center gap-2 mt-4 overflow-x-auto pb-1">
-
-            <a href="profile.html" class="nav-link active">
-                <i class="fa-solid fa-grid-2 ml-1"></i>
-                الرئيسية
-            </a>
-
-            <a href="create-project.html" class="nav-link">
-                <i class="fa-solid fa-plus ml-1"></i>
-                مشروع جديد
-            </a>
-
-            <a href="netlify-connect.html" class="nav-link">
-                <i class="fa-solid fa-cloud ml-1"></i>
-                Netlify
-            </a>
-
-            <a href="account.html" class="nav-link">
-                <i class="fa-regular fa-user ml-1"></i>
-                حسابي
-            </a>
-
-        </nav>
-
-    </div>
-</header>
+        </section>
 
 
-<main class="max-w-7xl mx-auto px-5 lg:px-7 py-8 lg:py-10">
+        <!-- ================= SSL INFORMATION ================= -->
 
-    <section class="hero mb-7">
-
-        <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-7">
+        <section class="mt-10 bg-slate-900 border border-slate-800 rounded-2xl p-5">
 
             <div class="flex items-start gap-4">
 
-                <div class="hero-icon shrink-0">
-                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+                <div class="w-12 h-12 shrink-0 rounded-xl bg-blue-500/10 flex items-center justify-center">
+                    <i class="fa-solid fa-shield-halved text-blue-400 text-xl"></i>
                 </div>
 
                 <div>
-
-                    <div class="text-xs text-purple-300 font-bold mb-2">
-                        WORKSPACE OVERVIEW
-                    </div>
-
-                    <h2 class="text-2xl md:text-3xl font-black mb-2">
-                        مرحباً بك،
-                        <span id="user-welcome" class="text-purple-300">
-                            مستخدم
-                        </span>
-                    </h2>
-
-                    <p class="text-slate-400 text-sm leading-7 max-w-xl">
-                        كل مشاريعك ومواقعك في مكان واحد.
-                        أنشئ، عدّل، وانشر مواقعك بسهولة من خلال TemplateCraft Pro.
-                    </p>
-
-                </div>
-
-            </div>
-
-            <div class="flex flex-wrap gap-3">
-
-                <a
-                    href="create-project.html"
-                    class="btn-primary px-5 py-3 rounded-xl text-sm font-extrabold"
-                >
-                    <i class="fa-solid fa-plus ml-2"></i>
-                    إنشاء مشروع
-                </a>
-
-                <a
-                    href="netlify-connect.html"
-                    class="btn-secondary px-5 py-3 rounded-xl text-sm font-bold"
-                >
-                    <i class="fa-solid fa-cloud ml-2 text-cyan-300"></i>
-                    ربط Netlify
-                </a>
-
-            </div>
-
-        </div>
-
-    </section>
-
-
-    <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
-
-        <div class="stat-card">
-
-            <div class="flex items-center justify-between">
-
-                <div>
-                    <p class="text-slate-400 text-xs font-bold mb-2">
-                        إجمالي المشاريع
-                    </p>
-
-                    <h3 id="total-projects" class="text-3xl font-black">
-                        --
+                    <h3 class="font-bold text-lg mb-2">
+                        فحص SSL والنطاقات
                     </h3>
-                </div>
 
-                <div class="stat-icon bg-purple-500/15 text-purple-300">
-                    <i class="fa-solid fa-layer-group"></i>
+                    <p class="text-sm text-slate-400 leading-7">
+                        يمكنك استعمال زر Check SSL الموجود داخل بطاقة كل مشروع
+                        للتحقق من حالة النطاق وشهادة SSL واتصال DNS.
+                        عملية الفحص مخصصة للتشخيص وقراءة الحالة فقط،
+                        ولا تقوم بتغيير إعدادات النطاق أو شهادة SSL.
+                    </p>
                 </div>
 
             </div>
 
-            <p class="text-xs text-slate-500 mt-4">
-                جميع المشاريع المرتبطة بحسابك
+        </section>
+
+    </main>
+
+
+    <!-- ================= FOOTER ================= -->
+
+    <footer class="border-t border-slate-800 mt-12">
+        <div class="max-w-7xl mx-auto px-4 py-6 text-center">
+
+            <p class="text-sm text-slate-500">
+                © 2026 TemplateCraft Pro. جميع الحقوق محفوظة.
             </p>
 
         </div>
+    </footer>
 
 
-        <div class="stat-card" style="animation-delay:.1s">
+    <!-- ================= SCRIPTS ================= -->
 
-            <div class="flex items-center justify-between">
-
-                <div>
-                    <p class="text-slate-400 text-xs font-bold mb-2">
-                        مشاريع منشورة
-                    </p>
-
-                    <h3 id="published-projects" class="text-3xl font-black">
-                        --
-                    </h3>
-                </div>
-
-                <div class="stat-icon bg-emerald-500/15 text-emerald-300">
-                    <i class="fa-solid fa-globe"></i>
-                </div>
-
-            </div>
-
-            <p class="text-xs text-slate-500 mt-4">
-                مشاريع لديها دومين نشط
-            </p>
-
-        </div>
-
-
-        <div class="stat-card" style="animation-delay:.2s">
-
-            <div class="flex items-center justify-between">
-
-                <div>
-                    <p class="text-slate-400 text-xs font-bold mb-2">
-                        قيد التجهيز
-                    </p>
-
-                    <h3 id="pending-projects" class="text-3xl font-black">
-                        --
-                    </h3>
-                </div>
-
-                <div class="stat-icon bg-amber-500/15 text-amber-300">
-                    <i class="fa-solid fa-clock"></i>
-                </div>
-
-            </div>
-
-            <p class="text-xs text-slate-500 mt-4">
-                مشاريع تنتظر اكتمال الإعداد
-            </p>
-
-        </div>
-
-    </section>
-
-
-    <section class="section-panel">
-
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-7">
-
-            <div>
-
-                <div class="flex items-center gap-2 mb-1">
-
-                    <span class="w-1.5 h-6 rounded-full bg-purple-400"></span>
-
-                    <h2 class="text-xl font-black">
-                        مشاريعي
-                    </h2>
-
-                </div>
-
-                <p class="text-slate-400 text-xs mr-4">
-                    إدارة ومتابعة جميع المواقع الخاصة بك
-                </p>
-
-            </div>
-
-
-            <div class="flex items-center gap-2">
-
-                <button
-                    id="refresh-projects"
-                    type="button"
-                    class="btn-secondary px-4 py-2.5 rounded-xl text-sm font-bold"
-                >
-                    <i class="fa-solid fa-rotate ml-1"></i>
-                    تحديث
-                </button>
-
-                <a
-                    href="create-project.html"
-                    class="btn-primary px-4 py-2.5 rounded-xl text-sm font-bold"
-                >
-                    <i class="fa-solid fa-plus ml-1"></i>
-                    جديد
-                </a>
-
-            </div>
-
-        </div>
-
-
-        <div
-            id="sites-grid"
-            class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5"
-        >
-
-            <div class="col-span-full text-center py-16 text-slate-400">
-
-                <span class="loading-spinner ml-2"></span>
-
-                جاري تحميل مشاريعك...
-
-            </div>
-
-        </div>
-
-
-        <p
-            id="last-updated"
-            class="text-center text-xs text-slate-600 mt-5"
-        ></p>
-
-    </section>
-
-
-    <section class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-7">
-
-        <a
-            href="netlify-connect.html"
-            class="stat-card group"
-        >
-
-            <div class="flex items-center gap-4">
-
-                <div class="stat-icon bg-cyan-500/15 text-cyan-300">
-                    <i class="fa-solid fa-cloud"></i>
-                </div>
-
-                <div class="flex-1">
-
-                    <h3 class="font-bold text-sm mb-1">
-                        إعدادات Netlify
-                    </h3>
-
-                    <p class="text-xs text-slate-400">
-                        ربط حسابك واختيار Team للنشر
-                    </p>
-
-                </div>
-
-                <i class="fa-solid fa-arrow-left text-slate-500 group-hover:text-purple-300 transition"></i>
-
-            </div>
-
-        </a>
-
-
-        <a
-            href="account.html"
-            class="stat-card group"
-        >
-
-            <div class="flex items-center gap-4">
-
-                <div class="stat-icon bg-purple-500/15 text-purple-300">
-                    <i class="fa-solid fa-user-gear"></i>
-                </div>
-
-                <div class="flex-1">
-
-                    <h3 class="font-bold text-sm mb-1">
-                        إعدادات الحساب
-                    </h3>
-
-                    <p class="text-xs text-slate-400">
-                        إدارة معلوماتك الشخصية
-                    </p>
-
-                </div>
-
-                <i class="fa-solid fa-arrow-left text-slate-500 group-hover:text-purple-300 transition"></i>
-
-            </div>
-
-        </a>
-
-    </section>
-
-</main>
-
-
-<footer class="mt-12 py-7 text-center">
-
-    <p class="text-xs">
-        © 2026 TemplateCraft Pro — جميع الحقوق محفوظة
-    </p>
-
-    <p class="text-[10px] text-slate-600 mt-2">
-        Designed for creators. Built for growth.
-    </p>
-
-</footer>
-
-
-<script src="./client-api.js"></script>
-<script src="./profile.js"></script>
+    <script src="./client-api.js"></script>
+    <script src="./profile.js"></script>
 
 </body>
-            </html>
+</html>
