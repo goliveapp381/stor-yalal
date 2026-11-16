@@ -41,7 +41,7 @@
             throw new Error('بيانات المستخدم غير صالحة');
         }
 
-        if (!localStorage.getItem('token') && authToken) {
+        if (!localStorage.getItem('token')) {
             localStorage.setItem('token', authToken);
         }
 
@@ -84,15 +84,12 @@
     let autoRefreshTimer = null;
     let lastSites = [];
 
-    // الاحتفاظ بنتائج SSL أثناء تحديث المشاريع
     const diagnosticsCache = new Map();
-
-    // منع تكرار فحص نفس المشروع
     const diagnosticsInProgress = new Set();
 
 
     // ==========================================
-    // 4. HELPERS
+    // 4. GENERAL HELPERS
     // ==========================================
 
     function escapeHtml(value) {
@@ -109,7 +106,12 @@
         return String(hostname || '')
             .trim()
             .toLowerCase()
-            .replace(/\.$/, '');
+            .replace(/^https?:\/\//i, '')
+            .split('/')[0]
+            .split('?')[0]
+            .split('#')[0]
+            .replace(/:\d+$/, '')
+            .replace(/\.+$/, '');
     }
 
 
@@ -206,10 +208,12 @@
 
 
     function getProjectId(site) {
-        return site?._id ||
+        return (
+            site?._id ||
             site?.id ||
             site?.siteId ||
-            null;
+            null
+        );
     }
 
 
@@ -264,6 +268,10 @@
 
             if (Array.isArray(result.data.projects)) {
                 return result.data.projects;
+            }
+
+            if (Array.isArray(result.data.data)) {
+                return result.data.data;
             }
         }
 
@@ -338,7 +346,8 @@
             return {
                 type: 'publishing',
                 label: 'جاري نشر المشروع',
-                description: 'يتم الآن نشر المشروع.',
+                description:
+                    'يتم الآن نشر المشروع.',
                 icon: '🚀'
             };
         }
@@ -385,17 +394,23 @@
     // 7. AUTHENTICATION ERROR
     // ==========================================
 
-    function handleAuthenticationError(result) {
-        const status =
+    function getResponseStatus(result) {
+        return Number(
             result?.status ||
             result?.statusCode ||
-            result?.response?.status;
+            result?.response?.status ||
+            result?.response?.statusCode ||
+            0
+        );
+    }
+
+
+    function handleAuthenticationError(result) {
+        const status = getResponseStatus(result);
 
         if (status === 401) {
             clearAuthentication();
-
             window.location.replace('login.html');
-
             return true;
         }
 
@@ -448,22 +463,29 @@
     // ==========================================
 
     async function requestDomainDiagnostics(siteId) {
-        if (
-            typeof TemplateCraftAPI === 'undefined'
-        ) {
+        if (typeof TemplateCraftAPI === 'undefined') {
             throw new Error(
                 'نظام الاتصال بالخادم غير متوفر.'
             );
         }
 
-        // الطريقة الأولى: دالة مخصصة في client-api.js
-        if (
-            typeof TemplateCraftAPI.getDomainDiagnostics === 'function'
-        ) {
-            return await TemplateCraftAPI.getDomainDiagnostics(siteId);
+        if (!siteId) {
+            throw new Error(
+                'معرف المشروع غير موجود.'
+            );
         }
 
-        // الطريقة الثانية: استعمال request العام
+        // الطريقة الأولى: الدالة المخصصة
+        if (
+            typeof TemplateCraftAPI.getDomainDiagnostics ===
+            'function'
+        ) {
+            return await TemplateCraftAPI.getDomainDiagnostics(
+                siteId
+            );
+        }
+
+        // الطريقة الثانية: request العام
         if (
             typeof TemplateCraftAPI.request === 'function'
         ) {
@@ -476,7 +498,7 @@
         }
 
         throw new Error(
-            'دالة فحص SSL غير موجودة في client-api.js. يجب إضافة getDomainDiagnostics أو request.'
+            'دالة الاتصال بفحص SSL غير موجودة في client-api.js.'
         );
     }
 
@@ -488,7 +510,6 @@
 
         let payload = result;
 
-        // فك أغلفة الاستجابة الشائعة
         for (let i = 0; i < 3; i++) {
             if (
                 payload.data &&
@@ -537,6 +558,12 @@
         }
 
         if (
+            check.statusCheckSucceeded === false
+        ) {
+            return 'unknown';
+        }
+
+        if (
             check.ok === false ||
             check.success === false ||
             check.error ||
@@ -552,12 +579,6 @@
             check.domainMatches === false
         ) {
             return 'error';
-        }
-
-        if (
-            check.statusCheckSucceeded === false
-        ) {
-            return 'unknown';
         }
 
         return 'pending';
@@ -592,7 +613,10 @@
             domain: 'الدومين الخاص',
             dns: 'إعدادات DNS',
             cname: 'سجل CNAME',
+            a: 'سجل A',
+            aaaa: 'سجل AAAA',
             txt: 'سجل TXT للتحقق',
+            txtChallenge: 'التحقق من TXT',
             challenge: 'التحقق من TXT',
             ssl: 'حالة SSL',
             certificate: 'شهادة SSL',
@@ -605,9 +629,10 @@
     }
 
 
-    // لا نعرض الأسرار أو محتويات TXT أو الاستجابات الخام
+    // إخفاء الأسرار والقيم الحساسة فقط
+    // مع السماح بعرض حالة فحص Netlify Credentials
     function isSensitiveDiagnosticKey(key) {
-        return /token|secret|password|authorization|rawstatus|rawresponse|verificationvalue|txtcontent|accesskey|privatekey|credential/i
+        return /access[_-]?token|refresh[_-]?token|client[_-]?secret|password|authorization|rawstatus|rawresponse|verification(?:value|token)|txt(?:content|value)|accesskey|privatekey|cookie|certificatepem|credential(?:value|secret)/i
             .test(String(key));
     }
 
@@ -615,7 +640,13 @@
     function formatDiagnosticValue(value) {
         if (value === true) return 'نعم';
         if (value === false) return 'لا';
-        if (value === null || value === undefined) return '-';
+
+        if (
+            value === null ||
+            value === undefined
+        ) {
+            return '-';
+        }
 
         if (typeof value === 'object') {
             return '';
@@ -629,7 +660,7 @@
         if (
             !object ||
             typeof object !== 'object' ||
-            depth > 2
+            depth > 3
         ) {
             return '';
         }
@@ -659,29 +690,35 @@
                         <div class="text-xs font-bold text-slate-300 mb-1">
                             ${escapeHtml(getCheckLabel(key))}
                         </div>
+
                         ${renderDiagnosticDetails(value, depth + 1)}
                     </div>
                 `;
+
                 return;
             }
 
             if (Array.isArray(value)) {
-                if (value.length) {
-                    const safeValues = value
-                        .filter(item =>
-                            typeof item !== 'object'
-                        )
-                        .map(item => String(item));
-
-                    if (safeValues.length) {
-                        html += `
-                            <div class="text-xs text-slate-400 mt-1 break-words">
-                                ${escapeHtml(getCheckLabel(key))}:
-                                ${escapeHtml(safeValues.join(', '))}
-                            </div>
-                        `;
-                    }
+                if (!value.length) {
+                    return;
                 }
+
+                const safeValues = value
+                    .filter(item =>
+                        typeof item !== 'object' &&
+                        !isSensitiveDiagnosticKey(key)
+                    )
+                    .map(item => String(item));
+
+                if (safeValues.length) {
+                    html += `
+                        <div class="text-xs text-slate-400 mt-1 break-words">
+                            ${escapeHtml(getCheckLabel(key))}:
+                            ${escapeHtml(safeValues.join(', '))}
+                        </div>
+                    `;
+                }
+
                 return;
             }
 
@@ -732,8 +769,7 @@
                 return;
             }
 
-            const state =
-                getCheckState(check);
+            const state = getCheckState(check);
 
             html += `
                 <div class="rounded-lg border border-white/10 bg-black/10 p-3 mb-2">
@@ -779,17 +815,30 @@
         }
 
         if (
-            overall === 'failed' ||
-            overall === 'error'
-        ) {
-            return 'error';
-        }
-
-        if (
             overall === 'unknown' ||
             overall === 'unavailable'
         ) {
             return 'unknown';
+        }
+
+        if (
+            overall === 'failed' ||
+            overall === 'error'
+        ) {
+            const checks =
+                getDiagnosticChecks(payload);
+
+            const ssl = checks?.ssl;
+
+            if (
+                ssl &&
+                typeof ssl === 'object' &&
+                ssl.state === 'unknown'
+            ) {
+                return 'unknown';
+            }
+
+            return 'error';
         }
 
         const checks =
@@ -840,6 +889,10 @@
         return 'الفحص مكتمل جزئياً أو ما زال قيد الانتظار';
     }
 
+
+    // ==========================================
+    // 10. DIAGNOSTICS PANEL
+    // ==========================================
 
     function renderDiagnosticsPanel(siteId) {
         const state =
@@ -892,14 +945,15 @@
         const checks =
             getDiagnosticChecks(payload);
 
+        const borderClass =
+            overallState === 'success'
+                ? 'border-green-500/30'
+                : overallState === 'error'
+                    ? 'border-red-500/30'
+                    : 'border-yellow-500/30';
+
         return `
-            <div class="ssl-diagnostics-panel rounded-xl border ${
-                overallState === 'success'
-                    ? 'border-green-500/30'
-                    : overallState === 'error'
-                        ? 'border-red-500/30'
-                        : 'border-yellow-500/30'
-            } bg-slate-900 p-4 mt-4">
+            <div class="ssl-diagnostics-panel rounded-xl border ${borderClass} bg-slate-900 p-4 mt-4">
 
                 <div class="flex items-center justify-between gap-2 mb-3">
 
@@ -960,7 +1014,28 @@
 
 
     // ==========================================
-    // 10. CHECK SSL ACTION
+    // 11. FIND CURRENT PROJECT CARD
+    // ==========================================
+
+    function findProjectCard(siteId) {
+        const grid =
+            document.getElementById('sites-grid');
+
+        if (!grid) {
+            return null;
+        }
+
+        const cards =
+            grid.querySelectorAll('.project-card');
+
+        return Array.from(cards).find(card =>
+            card.dataset.projectId === String(siteId)
+        ) || null;
+    }
+
+
+    // ==========================================
+    // 12. CHECK SSL ACTION
     // ==========================================
 
     async function checkProjectSSL(site, button) {
@@ -975,7 +1050,9 @@
             isProjectDeleting(site) ||
             isProjectPublishing(site)
         ) {
-            alert('لا يمكن فحص SSL أثناء حذف المشروع أو نشره.');
+            alert(
+                'لا يمكن فحص SSL أثناء حذف المشروع أو نشره.'
+            );
             return;
         }
 
@@ -991,11 +1068,6 @@
             loading: true
         });
 
-        const card = button.closest('.project-card');
-
-        const panel =
-            card?.querySelector('.ssl-diagnostics-container');
-
         const oldText = button.innerHTML;
 
         button.disabled = true;
@@ -1004,8 +1076,16 @@
         button.innerHTML =
             '<span class="loading-spinner ml-1"></span> جاري الفحص';
 
-        if (panel) {
-            panel.innerHTML =
+        const originalCard =
+            button.closest('.project-card');
+
+        const originalPanel =
+            originalCard?.querySelector(
+                '.ssl-diagnostics-container'
+            );
+
+        if (originalPanel) {
+            originalPanel.innerHTML =
                 renderDiagnosticsPanel(siteId);
         }
 
@@ -1027,13 +1107,15 @@
             ) {
                 diagnosticsCache.set(key, {
                     loading: false,
-                    result,
+                    result: result || {},
                     payload,
                     error:
+                        result?.reason ||
                         result?.error ||
                         result?.message ||
                         'فشل طلب تشخيص SSL.'
                 });
+
             } else {
                 diagnosticsCache.set(key, {
                     loading: false,
@@ -1044,7 +1126,14 @@
             }
 
         } catch (error) {
-            console.error('SSL diagnostics error:', error);
+            console.error(
+                'SSL diagnostics error:',
+                error
+            );
+
+            if (handleAuthenticationError(error)) {
+                return;
+            }
 
             diagnosticsCache.set(key, {
                 loading: false,
@@ -1064,8 +1153,33 @@
                 button.innerHTML = oldText;
             }
 
-            if (panel && panel.isConnected) {
-                panel.innerHTML =
+            // تحديث البطاقة الحالية حتى لو أعاد التحديث التلقائي
+            // إنشاء البطاقة من جديد أثناء فحص SSL.
+            const currentCard =
+                findProjectCard(siteId);
+
+            const currentButton =
+                currentCard?.querySelector(
+                    '.check-project-ssl'
+                );
+
+            const currentPanel =
+                currentCard?.querySelector(
+                    '.ssl-diagnostics-container'
+                );
+
+            if (currentButton) {
+                currentButton.disabled = false;
+                currentButton.classList.remove('is-loading');
+
+                currentButton.innerHTML = `
+                    <i class="fa-solid fa-shield-halved"></i>
+                    Check SSL
+                `;
+            }
+
+            if (currentPanel) {
+                currentPanel.innerHTML =
                     renderDiagnosticsPanel(siteId);
             }
         }
@@ -1073,7 +1187,7 @@
 
 
     // ==========================================
-    // 11. PROJECT CARD
+    // 13. PROJECT CARD
     // ==========================================
 
     function createProjectCard(site, index) {
@@ -1082,11 +1196,11 @@
         const projectName = getProjectName(site);
 
         const projectType =
-            site.variables?.projectType ||
+            site?.variables?.projectType ||
             'غير محدد';
 
         const templateId =
-            site.templateId ||
+            site?.templateId ||
             'غير محدد';
 
         const date = getProjectDate(site);
@@ -1110,9 +1224,17 @@
         card.className =
             'project-card p-6 flex flex-col justify-between';
 
+        if (siteId) {
+            card.dataset.projectId = String(siteId);
+        }
+
         card.style.animationDelay =
             `${Math.min(index * 0.07, 0.5)}s`;
 
+
+        // --------------------------------------
+        // DOMAIN STATUS
+        // --------------------------------------
 
         const statusHtml = domainStatus
             ? `
@@ -1148,6 +1270,10 @@
             : '';
 
 
+        // --------------------------------------
+        // EDIT BUTTON
+        // --------------------------------------
+
         const editorButton =
             editorUrl && !deleting && !publishing
                 ? `
@@ -1161,6 +1287,7 @@
                 `
                 : `
                     <button
+                        type="button"
                         disabled
                         class="col-span-2 bg-gray-200 text-gray-400 py-2.5 rounded-xl text-sm font-bold"
                     >
@@ -1174,6 +1301,10 @@
                     </button>
                 `;
 
+
+        // --------------------------------------
+        // PREVIEW BUTTON
+        // --------------------------------------
 
         const previewButton =
             projectUrl && !deleting
@@ -1190,6 +1321,7 @@
                 `
                 : `
                     <button
+                        type="button"
                         disabled
                         class="bg-gray-100 text-gray-400 py-2.5 rounded-xl text-sm font-bold"
                     >
@@ -1198,12 +1330,16 @@
                 `;
 
 
+        // --------------------------------------
+        // SSL BUTTON
+        // --------------------------------------
+
         const sslButton =
             siteId && !deleting && !publishing
                 ? `
                     <button
                         type="button"
-                        class="check-project-ssl btn-check-ssl w-full"
+                        class="check-project-ssl btn-check-ssl w-full py-3 px-4 rounded-xl text-sm font-bold transition"
                         data-check-ssl="${escapeHtml(siteId)}"
                     >
                         <i class="fa-solid fa-shield-halved"></i>
@@ -1212,6 +1348,10 @@
                 `
                 : '';
 
+
+        // --------------------------------------
+        // CARD HTML
+        // --------------------------------------
 
         card.innerHTML = `
 
@@ -1264,7 +1404,9 @@
                     }
                 </div>
 
+
                 ${sslButton}
+
 
                 <div class="ssl-diagnostics-container">
                     ${
@@ -1318,7 +1460,7 @@
 
 
         // --------------------------------------
-        // DELETE BUTTON
+        // DELETE BUTTON EVENT
         // --------------------------------------
 
         const deleteButton =
@@ -1340,7 +1482,7 @@
 
 
         // --------------------------------------
-        // COPY BUTTON
+        // COPY BUTTON EVENT
         // --------------------------------------
 
         const copyButton =
@@ -1352,12 +1494,17 @@
                 async () => {
                     try {
                         if (!navigator.clipboard?.writeText) {
-                            throw new Error('Clipboard API غير متوفر');
+                            throw new Error(
+                                'Clipboard API غير متوفر'
+                            );
                         }
 
-                        await navigator.clipboard.writeText(projectUrl);
+                        await navigator.clipboard.writeText(
+                            projectUrl
+                        );
 
-                        const oldText = copyButton.innerHTML;
+                        const oldText =
+                            copyButton.innerHTML;
 
                         copyButton.innerHTML =
                             '<i class="fa-solid fa-check ml-1"></i> تم النسخ';
@@ -1369,7 +1516,10 @@
                         }, 2000);
 
                     } catch (error) {
-                        console.error('Copy URL error:', error);
+                        console.error(
+                            'Copy URL error:',
+                            error
+                        );
 
                         window.prompt(
                             'انسخ الرابط:',
@@ -1382,7 +1532,7 @@
 
 
         // --------------------------------------
-        // CHECK SSL BUTTON
+        // CHECK SSL BUTTON EVENT
         // --------------------------------------
 
         const sslCheckButton =
@@ -1392,7 +1542,10 @@
             sslCheckButton.addEventListener(
                 'click',
                 () => {
-                    checkProjectSSL(site, sslCheckButton);
+                    checkProjectSSL(
+                        site,
+                        sslCheckButton
+                    );
                 }
             );
         }
@@ -1403,7 +1556,7 @@
 
 
     // ==========================================
-    // 12. DELETE PROJECT
+    // 14. DELETE PROJECT
     // ==========================================
 
     async function deleteProject(site, button) {
@@ -1418,7 +1571,9 @@
             isProjectDeleting(site) ||
             isProjectPublishing(site)
         ) {
-            alert('المشروع قيد عملية أخرى حالياً.');
+            alert(
+                'المشروع قيد عملية أخرى حالياً.'
+            );
             return;
         }
 
@@ -1446,7 +1601,9 @@
                 typeof TemplateCraftAPI === 'undefined' ||
                 typeof TemplateCraftAPI.deleteSite !== 'function'
             ) {
-                throw new Error('Delete API غير متوفر');
+                throw new Error(
+                    'Delete API غير متوفر'
+                );
             }
 
             const result =
@@ -1473,7 +1630,14 @@
             });
 
         } catch (error) {
-            console.error('Delete project error:', error);
+            console.error(
+                'Delete project error:',
+                error
+            );
+
+            if (handleAuthenticationError(error)) {
+                return;
+            }
 
             alert(
                 error.message ||
@@ -1490,7 +1654,7 @@
 
 
     // ==========================================
-    // 13. LOAD USER PROJECTS
+    // 15. LOAD USER PROJECTS
     // ==========================================
 
     async function loadUserSites(options = {}) {
@@ -1538,7 +1702,9 @@
                 typeof TemplateCraftAPI === 'undefined' ||
                 typeof TemplateCraftAPI.getSites !== 'function'
             ) {
-                throw new Error('نظام الاتصال بالخادم غير متوفر');
+                throw new Error(
+                    'نظام الاتصال بالخادم غير متوفر'
+                );
             }
 
             const result =
@@ -1563,7 +1729,9 @@
                 normalizeSitesResponse(result);
 
             if (!Array.isArray(sites)) {
-                throw new Error('صيغة بيانات المشاريع غير صحيحة');
+                throw new Error(
+                    'صيغة بيانات المشاريع غير صحيحة'
+                );
             }
 
             lastSites = sites;
@@ -1572,6 +1740,7 @@
 
             if (lastSites.length === 0) {
                 renderEmptyState();
+
             } else {
                 grid.innerHTML = '';
 
@@ -1589,7 +1758,14 @@
             }
 
         } catch (error) {
-            console.error('Load projects error:', error);
+            console.error(
+                'Load projects error:',
+                error
+            );
+
+            if (handleAuthenticationError(error)) {
+                return;
+            }
 
             if (!lastSites.length) {
                 grid.innerHTML = `
@@ -1644,7 +1820,7 @@
 
 
     // ==========================================
-    // 14. LOGOUT
+    // 16. LOGOUT
     // ==========================================
 
     const logoutButton =
@@ -1667,7 +1843,7 @@
 
 
     // ==========================================
-    // 15. MANUAL REFRESH
+    // 17. MANUAL REFRESH
     // ==========================================
 
     const refreshButton =
@@ -1686,7 +1862,7 @@
 
 
     // ==========================================
-    // 16. AUTOMATIC REFRESH
+    // 18. AUTOMATIC REFRESH
     // ==========================================
 
     function startAutoRefresh() {
@@ -1732,7 +1908,7 @@
 
 
     // ==========================================
-    // 17. START DASHBOARD
+    // 19. START DASHBOARD
     // ==========================================
 
     loadUserSites({
