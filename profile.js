@@ -77,6 +77,9 @@
 
     const AUTO_REFRESH_INTERVAL = 30000;
 
+    const DOMAIN_DIAGNOSTICS_ENDPOINT = siteId =>
+        `/api/site/${encodeURIComponent(siteId)}/domain-status`;
+
     let isLoading = false;
     let autoRefreshTimer = null;
     let lastSites = [];
@@ -84,7 +87,7 @@
     // الاحتفاظ بنتائج SSL أثناء تحديث المشاريع
     const diagnosticsCache = new Map();
 
-    // منع تكرار طلب فحص نفس المشروع
+    // منع تكرار فحص نفس المشروع
     const diagnosticsInProgress = new Set();
 
 
@@ -383,7 +386,12 @@
     // ==========================================
 
     function handleAuthenticationError(result) {
-        if (result && result.status === 401) {
+        const status =
+            result?.status ||
+            result?.statusCode ||
+            result?.response?.status;
+
+        if (status === 401) {
             clearAuthentication();
 
             window.location.replace('login.html');
@@ -436,28 +444,69 @@
 
 
     // ==========================================
-    // 9. SSL DIAGNOSTICS HELPERS
+    // 9. SSL DIAGNOSTICS API
     // ==========================================
+
+    async function requestDomainDiagnostics(siteId) {
+        if (
+            typeof TemplateCraftAPI === 'undefined'
+        ) {
+            throw new Error(
+                'نظام الاتصال بالخادم غير متوفر.'
+            );
+        }
+
+        // الطريقة الأولى: دالة مخصصة في client-api.js
+        if (
+            typeof TemplateCraftAPI.getDomainDiagnostics === 'function'
+        ) {
+            return await TemplateCraftAPI.getDomainDiagnostics(siteId);
+        }
+
+        // الطريقة الثانية: استعمال request العام
+        if (
+            typeof TemplateCraftAPI.request === 'function'
+        ) {
+            return await TemplateCraftAPI.request(
+                DOMAIN_DIAGNOSTICS_ENDPOINT(siteId),
+                {
+                    method: 'GET'
+                }
+            );
+        }
+
+        throw new Error(
+            'دالة فحص SSL غير موجودة في client-api.js. يجب إضافة getDomainDiagnostics أو request.'
+        );
+    }
+
 
     function getDiagnosticPayload(result) {
         if (!result || typeof result !== 'object') {
             return {};
         }
 
-        if (
-            result.data &&
-            typeof result.data === 'object' &&
-            !Array.isArray(result.data)
-        ) {
-            return {
-                ...result.data,
-                requestId:
-                    result.requestId ||
-                    result.data.requestId
-            };
+        let payload = result;
+
+        // فك أغلفة الاستجابة الشائعة
+        for (let i = 0; i < 3; i++) {
+            if (
+                payload.data &&
+                typeof payload.data === 'object' &&
+                !Array.isArray(payload.data)
+            ) {
+                payload = {
+                    ...payload.data,
+                    requestId:
+                        payload.requestId ||
+                        payload.data.requestId
+                };
+            } else {
+                break;
+            }
         }
 
-        return result;
+        return payload;
     }
 
 
@@ -480,9 +529,9 @@
         }
 
         if (
+            check.sslReady === true ||
             check.ok === true ||
-            check.success === true ||
-            check.sslReady === true
+            check.success === true
         ) {
             return 'success';
         }
@@ -508,7 +557,7 @@
         if (
             check.statusCheckSucceeded === false
         ) {
-            return 'error';
+            return 'unknown';
         }
 
         return 'pending';
@@ -522,6 +571,10 @@
 
         if (state === 'error') {
             return '❌';
+        }
+
+        if (state === 'unknown') {
+            return '❔';
         }
 
         return '⏳';
@@ -554,7 +607,7 @@
 
     // لا نعرض الأسرار أو محتويات TXT أو الاستجابات الخام
     function isSensitiveDiagnosticKey(key) {
-        return /token|secret|password|authorization|rawstatus|rawresponse|verificationvalue|txtcontent|accesskey|privatekey/i
+        return /token|secret|password|authorization|rawstatus|rawresponse|verificationvalue|txtcontent|accesskey|privatekey|credential/i
             .test(String(key));
     }
 
@@ -614,12 +667,20 @@
 
             if (Array.isArray(value)) {
                 if (value.length) {
-                    html += `
-                        <div class="text-xs text-slate-400 mt-1 break-words">
-                            ${escapeHtml(getCheckLabel(key))}:
-                            ${escapeHtml(value.join(', '))}
-                        </div>
-                    `;
+                    const safeValues = value
+                        .filter(item =>
+                            typeof item !== 'object'
+                        )
+                        .map(item => String(item));
+
+                    if (safeValues.length) {
+                        html += `
+                            <div class="text-xs text-slate-400 mt-1 break-words">
+                                ${escapeHtml(getCheckLabel(key))}:
+                                ${escapeHtml(safeValues.join(', '))}
+                            </div>
+                        `;
+                    }
                 }
                 return;
             }
@@ -724,6 +785,13 @@
             return 'error';
         }
 
+        if (
+            overall === 'unknown' ||
+            overall === 'unavailable'
+        ) {
+            return 'unknown';
+        }
+
         const checks =
             getDiagnosticChecks(payload);
 
@@ -745,6 +813,13 @@
             return 'success';
         }
 
+        if (
+            states.length &&
+            states.every(state => state === 'unknown')
+        ) {
+            return 'unknown';
+        }
+
         return 'pending';
     }
 
@@ -756,6 +831,10 @@
 
         if (state === 'error') {
             return 'تم العثور على مشكلة';
+        }
+
+        if (state === 'unknown') {
+            return 'تعذر التأكد من حالة SSL';
         }
 
         return 'الفحص مكتمل جزئياً أو ما زال قيد الانتظار';
@@ -794,12 +873,13 @@
             state.result || {};
 
         const overallState =
-            getOverallDiagnosticState(payload);
+            state.error
+                ? 'unknown'
+                : getOverallDiagnosticState(payload);
 
         const requestId =
             payload.requestId ||
             result.requestId ||
-            result.data?.requestId ||
             '';
 
         const message =
@@ -905,16 +985,6 @@
             return;
         }
 
-        if (
-            typeof TemplateCraftAPI === 'undefined' ||
-            typeof TemplateCraftAPI.getDomainDiagnostics !== 'function'
-        ) {
-            alert(
-                'دالة فحص SSL غير موجودة في client-api.js. تأكد من تحديث الملف.'
-            );
-            return;
-        }
-
         diagnosticsInProgress.add(key);
 
         diagnosticsCache.set(key, {
@@ -922,11 +992,15 @@
         });
 
         const card = button.closest('.project-card');
-        const panel = card?.querySelector('.ssl-diagnostics-container');
+
+        const panel =
+            card?.querySelector('.ssl-diagnostics-container');
 
         const oldText = button.innerHTML;
 
         button.disabled = true;
+        button.classList.add('is-loading');
+
         button.innerHTML =
             '<span class="loading-spinner ml-1"></span> جاري الفحص';
 
@@ -937,7 +1011,7 @@
 
         try {
             const result =
-                await TemplateCraftAPI.getDomainDiagnostics(siteId);
+                await requestDomainDiagnostics(siteId);
 
             if (handleAuthenticationError(result)) {
                 return;
@@ -948,7 +1022,8 @@
 
             if (
                 !result ||
-                result.success === false
+                result.success === false ||
+                result.ok === false
             ) {
                 diagnosticsCache.set(key, {
                     loading: false,
@@ -985,6 +1060,7 @@
 
             if (button.isConnected) {
                 button.disabled = false;
+                button.classList.remove('is-loading');
                 button.innerHTML = oldText;
             }
 
@@ -1127,10 +1203,11 @@
                 ? `
                     <button
                         type="button"
-                        class="check-project-ssl col-span-2 bg-sky-50 hover:bg-sky-100 text-sky-700 border border-sky-200 py-2.5 rounded-xl text-sm font-bold transition"
+                        class="check-project-ssl btn-check-ssl w-full"
+                        data-check-ssl="${escapeHtml(siteId)}"
                     >
-                        <i class="fa-solid fa-shield-halved ml-1"></i>
-                        فحص الدومين و SSL
+                        <i class="fa-solid fa-shield-halved"></i>
+                        Check SSL
                     </button>
                 `
                 : '';
