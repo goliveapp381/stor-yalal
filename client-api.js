@@ -1,3 +1,4 @@
+
 /*
 ============================================
  TEMPLATECRAFT PRO - CLIENT API
@@ -5,6 +6,7 @@
  Express + MongoDB Atlas + Netlify OAuth
  Authentication + Projects + Templates
  Publishing + Custom Domains + Cloudflare
+ Read-only SSL Diagnostics
 ============================================
 */
 
@@ -109,6 +111,7 @@ function createApiError(message, status = 0, data = {}) {
         message,
         status,
         code: data?.code || null,
+        requestId: data?.requestId || null,
         data
     };
 }
@@ -262,7 +265,8 @@ async function apiRequest(endpoint, options = {}) {
         console.error(
             `API request failed [${endpoint}]:`,
             response.status,
-            data?.code || ''
+            data?.code || '',
+            data?.requestId || ''
         );
 
         return createApiError(
@@ -714,7 +718,6 @@ const TemplateCraftAPI = {
 
     // ========================================
     // DELETE PROJECT
-    // Backend route:
     // DELETE /api/sites/:siteId
     // ========================================
 
@@ -786,7 +789,6 @@ const TemplateCraftAPI = {
 
     // ========================================
     // CUSTOM DOMAIN STATUS
-    // Confirmed backend route:
     // GET /api/site/:siteId/domain-status
     // ========================================
 
@@ -801,15 +803,49 @@ const TemplateCraftAPI = {
         return apiRequest(
             `/api/site/${encodeURIComponent(siteId)}/domain-status`,
             {
-                method: 'GET'
+                method: 'GET',
+                cache: 'no-store'
             }
         );
     },
 
 
     // ========================================
+    // READ-ONLY DOMAIN / SSL DIAGNOSTICS
+    // GET /api/sites/:siteId/domain/diagnostics
+    //
+    // هذا الطلب للفحص فقط.
+    // لا يغير DNS ولا يضيف الدومين.
+    // لا يطلب إصدار أو تجديد شهادة SSL.
+    // ========================================
+
+    async getDomainDiagnostics(siteId) {
+
+        if (!siteId) {
+            return createApiError(
+                'معرف المشروع غير موجود.'
+            );
+        }
+
+        return apiRequest(
+            `/api/sites/${encodeURIComponent(siteId)}/domain/diagnostics`,
+            {
+                method: 'GET',
+                cache: 'no-store'
+            }
+        );
+    },
+
+
+    // Alias for Check SSL button
+
+    async checkSSL(siteId) {
+        return this.getDomainDiagnostics(siteId);
+    },
+
+
+    // ========================================
     // PUBLISH PROJECT
-    // Confirmed backend route:
     // POST /api/sites/:siteId/publish
     // ========================================
 
