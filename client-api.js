@@ -1,3 +1,4 @@
+
 /*
 ============================================
  TEMPLATECRAFT PRO - CLIENT API
@@ -512,6 +513,7 @@ const TemplateCraftAPI = {
 
     // ========================================
     // CUSTOM DOMAIN STATUS
+    // FIXED: MATCHES BACKEND ROUTE
     // ========================================
 
     async getDomainStatus(siteId) {
@@ -523,7 +525,7 @@ const TemplateCraftAPI = {
         }
 
         return apiRequest(
-            `/api/sites/${encodeURIComponent(siteId)}/domain/status`,
+            `/api/site/${encodeURIComponent(siteId)}/domain-status`,
             { method: 'GET' }
         );
     },
