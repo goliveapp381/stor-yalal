@@ -1,4 +1,3 @@
-
 /*
 ============================================
  TEMPLATECRAFT PRO - CLIENT API
@@ -9,13 +8,16 @@
 ============================================
 */
 
+'use strict';
+
 // ============================================
 // 1. API CONFIGURATION
 // ============================================
 
-const TEMPLATECRAFT_API_BASE_URL =
+const TEMPLATECRAFT_API_BASE_URL = String(
     window.TEMPLATECRAFT_API_BASE_URL ||
-    'https://templatecraft-backend.onrender.com';
+    'https://templatecraft-backend.onrender.com'
+).replace(/\/+$/, '');
 
 
 // ============================================
@@ -23,23 +25,28 @@ const TEMPLATECRAFT_API_BASE_URL =
 // ============================================
 
 function getAuthToken() {
-    return (
-        localStorage.getItem('token') ||
-        localStorage.getItem('authToken') ||
-        ''
-    );
+    try {
+        return (
+            localStorage.getItem('token') ||
+            localStorage.getItem('authToken') ||
+            ''
+        );
+    } catch (_) {
+        return '';
+    }
 }
+
 
 function getStoredUser() {
     try {
         return JSON.parse(
             localStorage.getItem('user') || 'null'
         );
-    } catch (error) {
-        console.error('User data error:', error);
+    } catch (_) {
         return null;
     }
 }
+
 
 function getAuthHeaders() {
     const token = getAuthToken();
@@ -57,184 +64,403 @@ function getAuthHeaders() {
 
 
 // ============================================
-// 3. GENERAL API REQUEST
+// 3. REQUEST HELPERS
+// ============================================
+
+function isFormData(value) {
+    return (
+        typeof FormData !== 'undefined' &&
+        value instanceof FormData
+    );
+}
+
+
+function isPlainObject(value) {
+    if (!value || typeof value !== 'object') {
+        return false;
+    }
+
+    const prototype = Object.getPrototypeOf(value);
+
+    return (
+        prototype === Object.prototype ||
+        prototype === null
+    );
+}
+
+
+function normalizeEndpoint(endpoint) {
+    const value = String(endpoint || '').trim();
+
+    if (!value) {
+        throw new Error('API endpoint غير صالح');
+    }
+
+    return value.startsWith('/')
+        ? value
+        : `/${value}`;
+}
+
+
+function createApiError(message, status = 0, data = {}) {
+    return {
+        success: false,
+        error: message,
+        message,
+        status,
+        code: data?.code || null,
+        data
+    };
+}
+
+
+// ============================================
+// 4. GENERAL API REQUEST
 // ============================================
 
 async function apiRequest(endpoint, options = {}) {
-    const url = `${TEMPLATECRAFT_API_BASE_URL}${endpoint}`;
+
+    let url;
+
+    try {
+        const cleanEndpoint = normalizeEndpoint(endpoint);
+
+        url = `${TEMPLATECRAFT_API_BASE_URL}${cleanEndpoint}`;
+
+    } catch (error) {
+        return createApiError(
+            error.message || 'API endpoint غير صالح'
+        );
+    }
+
+
+    if (
+        !options ||
+        typeof options !== 'object' ||
+        Array.isArray(options)
+    ) {
+        options = {};
+    }
+
 
     const headers = {
         ...getAuthHeaders(),
         ...(options.headers || {})
     };
 
+
     const requestOptions = {
         ...options,
         headers
     };
 
-    if (
-        requestOptions.body &&
-        typeof requestOptions.body === 'object' &&
-        !(requestOptions.body instanceof FormData)
-    ) {
-        headers['Content-Type'] = 'application/json';
 
-        requestOptions.body = JSON.stringify(
-            requestOptions.body
+    // ----------------------------------------
+    // JSON BODY HANDLING
+    // ----------------------------------------
+
+    const body = requestOptions.body;
+
+    if (
+        body !== undefined &&
+        body !== null &&
+        isPlainObject(body)
+    ) {
+
+        const hasContentType = Object.keys(headers).some(
+            key => key.toLowerCase() === 'content-type'
+        );
+
+        if (!hasContentType) {
+            headers['Content-Type'] = 'application/json';
+        }
+
+        requestOptions.body = JSON.stringify(body);
+    }
+
+
+    // ----------------------------------------
+    // FETCH
+    // ----------------------------------------
+
+    let response;
+
+    try {
+
+        response = await fetch(
+            url,
+            requestOptions
+        );
+
+    } catch (error) {
+
+        console.error(
+            `API connection failed [${endpoint}]`,
+            error?.message || error
+        );
+
+        return createApiError(
+            'تعذر الاتصال بالسيرفر. تحقق من الإنترنت وحاول مرة أخرى.',
+            0
         );
     }
 
+
+    // ----------------------------------------
+    // READ RESPONSE
+    // ----------------------------------------
+
+    let responseText = '';
+
     try {
-        const response = await fetch(url, requestOptions);
 
-        const contentType =
-            response.headers.get('content-type') || '';
+        responseText = await response.text();
 
-        let data;
+    } catch (error) {
 
-        if (contentType.includes('application/json')) {
-            data = await response.json();
-        } else {
-            const responseText = await response.text();
+        console.error(
+            `API response read failed [${endpoint}]`,
+            error?.message || error
+        );
+
+        return createApiError(
+            'تعذر قراءة استجابة السيرفر.',
+            response.status
+        );
+    }
+
+
+    let data = {};
+
+    if (responseText) {
+
+        try {
+
+            data = JSON.parse(responseText);
+
+        } catch (_) {
 
             data = {
-                success: response.ok,
                 message: responseText
             };
         }
+    }
 
-        if (!response.ok) {
-            const error = new Error(
-                data.message ||
-                data.error ||
-                `HTTP Error ${response.status}`
-            );
 
-            error.status = response.status;
-            error.data = data;
+    // ----------------------------------------
+    // HTTP ERROR
+    // ----------------------------------------
 
-            throw error;
-        }
+    if (!response.ok) {
 
-        return data;
+        const message =
+            data?.error ||
+            data?.message ||
+            data?.detail ||
+            `HTTP Error ${response.status}`;
 
-    } catch (error) {
         console.error(
-            `API Error [${endpoint}]:`,
-            error
+            `API request failed [${endpoint}]:`,
+            response.status,
+            data?.code || ''
         );
 
-        return {
-            success: false,
-            error: error.message ||
-                'وقع خطأ في الاتصال بالسيرفر.',
-            message: error.message ||
-                'وقع خطأ في الاتصال بالسيرفر.',
-            status: error.status || 0
-        };
+        return createApiError(
+            message,
+            response.status,
+            data
+        );
     }
-}
 
 
-// ============================================
-// 4. USER DATA HELPERS
-// ============================================
-
-function addUserId(data = {}) {
-    const user = getStoredUser();
+    // ----------------------------------------
+    // SUCCESS RESPONSE
+    // ----------------------------------------
 
     if (
         !data ||
         typeof data !== 'object' ||
         Array.isArray(data)
     ) {
-        data = {};
+        return {
+            success: true,
+            data
+        };
     }
 
     return {
         ...data,
-        ...(user && (user._id || user.id)
-            ? { userId: user._id || user.id }
-            : {})
+
+        success:
+            data.success === undefined
+                ? true
+                : data.success
     };
 }
 
 
 // ============================================
-// 5. SITE NORMALIZATION
+// 5. USER DATA HELPERS
+// ============================================
+
+// لا نعتمد على userId المرسل من المتصفح.
+// Backend يستخرج هوية المستخدم من JWT.
+
+function addUserId(data = {}) {
+
+    if (
+        !data ||
+        typeof data !== 'object' ||
+        Array.isArray(data)
+    ) {
+        return {};
+    }
+
+    const safeData = { ...data };
+
+    delete safeData.userId;
+
+    return safeData;
+}
+
+
+// ============================================
+// 6. SITE NORMALIZATION
 // ============================================
 
 function normalizeSite(site = {}) {
-    if (!site || typeof site !== 'object') {
+
+    if (
+        !site ||
+        typeof site !== 'object' ||
+        Array.isArray(site)
+    ) {
         return {};
     }
 
     return {
+
         ...site,
 
-        id: site._id || site.id || site.siteId || null,
+        id:
+            site._id ||
+            site.id ||
+            site.siteId ||
+            null,
 
         siteName:
             site.siteName ||
             site.name ||
             '',
 
-        templateId: site.templateId || '',
+        templateId:
+            site.templateId || '',
 
-        status: site.status || 'unknown',
+        status:
+            site.status || 'unknown',
+
+        publishStatus:
+            site.publishStatus || 'unknown',
 
         url:
             site.url ||
             site.siteUrl ||
             site.deployUrl ||
+            site.liveUrl ||
             '',
 
-        customDomain: site.customDomain || '',
+        liveUrl:
+            site.liveUrl ||
+            site.url ||
+            site.siteUrl ||
+            '',
 
-        createdAt: site.createdAt || null,
+        customDomain:
+            site.customDomain || '',
 
-        updatedAt: site.updatedAt || null
+        customUrl:
+            site.customUrl || '',
+
+        domainStatus:
+            site.domainStatus || 'not_configured',
+
+        createdAt:
+            site.createdAt || null,
+
+        updatedAt:
+            site.updatedAt || null
     };
 }
 
 
 function normalizeSiteResponse(response = {}) {
-    const sites =
-        response.sites ||
-        response.projects ||
-        response.data ||
-        [];
+
+    const payload =
+        response.data &&
+        typeof response.data === 'object'
+            ? response.data
+            : response;
+
+    let sites = [];
+
+    if (Array.isArray(payload)) {
+
+        sites = payload;
+
+    } else if (Array.isArray(payload.sites)) {
+
+        sites = payload.sites;
+
+    } else if (Array.isArray(payload.projects)) {
+
+        sites = payload.projects;
+
+    } else if (Array.isArray(payload.data)) {
+
+        sites = payload.data;
+    }
 
     return {
+
         ...response,
 
-        sites: Array.isArray(sites)
-            ? sites.map(normalizeSite)
-            : []
+        sites: sites.map(normalizeSite)
     };
 }
 
 
 function normalizeDeployResponse(response = {}) {
+
+    const payload =
+        response.data &&
+        typeof response.data === 'object'
+            ? response.data
+            : response;
+
     const site =
-        response.site ||
-        response.project ||
-        response.data ||
-        {};
+        payload.site ||
+        payload.project ||
+        (
+            payload._id || payload.id
+                ? payload
+                : {}
+        );
 
     return {
+
         ...response,
+
         site: normalizeSite(site)
     };
 }
 
 
 // ============================================
-// 6. QUERY STRING HELPER
+// 7. QUERY STRING HELPER
 // ============================================
 
 function buildQuery(params = {}) {
+
     if (
         !params ||
         typeof params !== 'object' ||
@@ -246,29 +472,41 @@ function buildQuery(params = {}) {
     const query = new URLSearchParams();
 
     Object.entries(params).forEach(([key, value]) => {
+
         if (
-            value !== undefined &&
-            value !== null &&
-            value !== ''
+            value === undefined ||
+            value === null ||
+            value === ''
         ) {
-            if (
-                typeof value === 'object'
-            ) {
-                query.append(key, JSON.stringify(value));
-            } else {
-                query.append(key, String(value));
-            }
+            return;
+        }
+
+        if (typeof value === 'object') {
+
+            query.append(
+                key,
+                JSON.stringify(value)
+            );
+
+        } else {
+
+            query.append(
+                key,
+                String(value)
+            );
         }
     });
 
     const result = query.toString();
 
-    return result ? `?${result}` : '';
+    return result
+        ? `?${result}`
+        : '';
 }
 
 
 // ============================================
-// 7. TEMPLATECRAFT API
+// 8. TEMPLATECRAFT API
 // ============================================
 
 const TemplateCraftAPI = {
@@ -278,9 +516,13 @@ const TemplateCraftAPI = {
     // ========================================
 
     async status() {
-        return apiRequest('/api/status', {
-            method: 'GET'
-        });
+
+        return apiRequest(
+            '/api/status',
+            {
+                method: 'GET'
+            }
+        );
     },
 
 
@@ -289,18 +531,26 @@ const TemplateCraftAPI = {
     // ========================================
 
     async signup(userData = {}) {
-        return apiRequest('/api/auth/signup', {
-            method: 'POST',
-            body: userData
-        });
+
+        return apiRequest(
+            '/api/auth/signup',
+            {
+                method: 'POST',
+                body: userData
+            }
+        );
     },
 
 
     async login(credentials = {}) {
-        return apiRequest('/api/auth/login', {
-            method: 'POST',
-            body: credentials
-        });
+
+        return apiRequest(
+            '/api/auth/login',
+            {
+                method: 'POST',
+                body: credentials
+            }
+        );
     },
 
 
@@ -309,10 +559,14 @@ const TemplateCraftAPI = {
     // ========================================
 
     async deploy(projectData = {}) {
-        const response = await apiRequest('/api/deploy', {
-            method: 'POST',
-            body: addUserId(projectData)
-        });
+
+        const response = await apiRequest(
+            '/api/deploy',
+            {
+                method: 'POST',
+                body: addUserId(projectData)
+            }
+        );
 
         if (response.success) {
             return normalizeDeployResponse(response);
@@ -327,7 +581,7 @@ const TemplateCraftAPI = {
     // ========================================
 
     async getSites(options = {}) {
-        // إصلاح مشكل تمرير token كنص
+
         if (
             !options ||
             typeof options !== 'object' ||
@@ -340,7 +594,9 @@ const TemplateCraftAPI = {
 
         const response = await apiRequest(
             `/api/sites${query}`,
-            { method: 'GET' }
+            {
+                method: 'GET'
+            }
         );
 
         if (!response.success) {
@@ -356,19 +612,24 @@ const TemplateCraftAPI = {
     // ========================================
 
     async getSite(siteId) {
+
         if (!siteId) {
-            return {
-                success: false,
-                error: 'معرف المشروع غير موجود.'
-            };
+            return createApiError(
+                'معرف المشروع غير موجود.'
+            );
         }
 
         const response = await apiRequest(
             `/api/sites/${encodeURIComponent(siteId)}`,
-            { method: 'GET' }
+            {
+                method: 'GET'
+            }
         );
 
-        if (response.success && response.site) {
+        if (
+            response.success &&
+            response.site
+        ) {
             response.site = normalizeSite(response.site);
         }
 
@@ -381,11 +642,11 @@ const TemplateCraftAPI = {
     // ========================================
 
     async updateSite(siteId, updates = {}) {
+
         if (!siteId) {
-            return {
-                success: false,
-                error: 'معرف المشروع غير موجود.'
-            };
+            return createApiError(
+                'معرف المشروع غير موجود.'
+            );
         }
 
         return apiRequest(
@@ -403,16 +664,18 @@ const TemplateCraftAPI = {
     // ========================================
 
     async getSiteFiles(siteId) {
+
         if (!siteId) {
-            return {
-                success: false,
-                error: 'معرف المشروع غير موجود.'
-            };
+            return createApiError(
+                'معرف المشروع غير موجود.'
+            );
         }
 
         return apiRequest(
             `/api/sites/${encodeURIComponent(siteId)}/files`,
-            { method: 'GET' }
+            {
+                method: 'GET'
+            }
         );
     },
 
@@ -427,11 +690,11 @@ const TemplateCraftAPI = {
     // ========================================
 
     async saveSiteFile(siteId, fileData = {}) {
+
         if (!siteId) {
-            return {
-                success: false,
-                error: 'معرف المشروع غير موجود.'
-            };
+            return createApiError(
+                'معرف المشروع غير موجود.'
+            );
         }
 
         return apiRequest(
@@ -451,19 +714,23 @@ const TemplateCraftAPI = {
 
     // ========================================
     // DELETE PROJECT
+    // Backend route:
+    // DELETE /api/sites/:siteId
     // ========================================
 
     async deleteSite(siteId) {
+
         if (!siteId) {
-            return {
-                success: false,
-                error: 'معرف المشروع غير موجود.'
-            };
+            return createApiError(
+                'معرف المشروع غير موجود.'
+            );
         }
 
         return apiRequest(
             `/api/sites/${encodeURIComponent(siteId)}`,
-            { method: 'DELETE' }
+            {
+                method: 'DELETE'
+            }
         );
     },
 
@@ -473,9 +740,13 @@ const TemplateCraftAPI = {
     // ========================================
 
     async getTemplates() {
-        return apiRequest('/api/templates', {
-            method: 'GET'
-        });
+
+        return apiRequest(
+            '/api/templates',
+            {
+                method: 'GET'
+            }
+        );
     },
 
 
@@ -484,6 +755,7 @@ const TemplateCraftAPI = {
     // ========================================
 
     getTemplatePreviewUrl(templateId) {
+
         if (!templateId) {
             return '';
         }
@@ -500,6 +772,7 @@ const TemplateCraftAPI = {
     // ========================================
 
     getProjectPreviewUrl(siteId) {
+
         if (!siteId) {
             return '';
         }
@@ -513,34 +786,39 @@ const TemplateCraftAPI = {
 
     // ========================================
     // CUSTOM DOMAIN STATUS
-    // FIXED: MATCHES BACKEND ROUTE
+    // Confirmed backend route:
+    // GET /api/site/:siteId/domain-status
     // ========================================
 
     async getDomainStatus(siteId) {
+
         if (!siteId) {
-            return {
-                success: false,
-                error: 'معرف المشروع غير موجود.'
-            };
+            return createApiError(
+                'معرف المشروع غير موجود.'
+            );
         }
 
         return apiRequest(
             `/api/site/${encodeURIComponent(siteId)}/domain-status`,
-            { method: 'GET' }
+            {
+                method: 'GET'
+            }
         );
     },
 
 
     // ========================================
     // PUBLISH PROJECT
+    // Confirmed backend route:
+    // POST /api/sites/:siteId/publish
     // ========================================
 
     async publish(siteId, publishData = {}) {
+
         if (!siteId) {
-            return {
-                success: false,
-                error: 'معرف المشروع غير موجود.'
-            };
+            return createApiError(
+                'معرف المشروع غير موجود.'
+            );
         }
 
         return apiRequest(
@@ -558,9 +836,13 @@ const TemplateCraftAPI = {
     // ========================================
 
     async connectNetlify() {
-        return apiRequest('/api/netlify/connect', {
-            method: 'POST'
-        });
+
+        return apiRequest(
+            '/api/netlify/connect',
+            {
+                method: 'POST'
+            }
+        );
     },
 
 
@@ -569,9 +851,13 @@ const TemplateCraftAPI = {
     // ========================================
 
     async getNetlifyStatus() {
-        return apiRequest('/api/netlify/status', {
-            method: 'GET'
-        });
+
+        return apiRequest(
+            '/api/netlify/status',
+            {
+                method: 'GET'
+            }
+        );
     },
 
 
@@ -580,9 +866,13 @@ const TemplateCraftAPI = {
     // ========================================
 
     async getNetlifyTeams() {
-        return apiRequest('/api/netlify/teams', {
-            method: 'GET'
-        });
+
+        return apiRequest(
+            '/api/netlify/teams',
+            {
+                method: 'GET'
+            }
+        );
     },
 
 
@@ -592,23 +882,26 @@ const TemplateCraftAPI = {
     // ========================================
 
     async selectNetlifyTeam(accountSlug) {
+
         if (
             !accountSlug ||
             typeof accountSlug !== 'string' ||
             !accountSlug.trim()
         ) {
-            return {
-                success: false,
-                error: 'خاصك تختار Team صالح.'
-            };
+            return createApiError(
+                'خاصك تختار Team صالح.'
+            );
         }
 
-        return apiRequest('/api/netlify/team', {
-            method: 'POST',
-            body: {
-                accountSlug: accountSlug.trim()
+        return apiRequest(
+            '/api/netlify/team',
+            {
+                method: 'POST',
+                body: {
+                    accountSlug: accountSlug.trim()
+                }
             }
-        });
+        );
     },
 
 
@@ -618,16 +911,20 @@ const TemplateCraftAPI = {
     // ========================================
 
     async disconnectNetlify() {
-        return apiRequest('/api/netlify/disconnect', {
-            method: 'POST'
-        });
+
+        return apiRequest(
+            '/api/netlify/disconnect',
+            {
+                method: 'POST'
+            }
+        );
     }
 
 };
 
 
 // ============================================
-// 8. GLOBAL EXPORTS
+// 9. GLOBAL EXPORTS
 // ============================================
 
 window.TemplateCraftAPI = TemplateCraftAPI;
@@ -637,8 +934,14 @@ window.TEMPLATECRAFT_API_BASE_URL =
 
 
 // ============================================
-// 9. OPTIONAL DEBUG INFORMATION
+// 10. OPTIONAL DEBUG INFORMATION
 // ============================================
 
-console.log('TemplateCraft API initialized');
-console.log('Backend:', TEMPLATECRAFT_API_BASE_URL);
+console.log(
+    'TemplateCraft API initialized'
+);
+
+console.log(
+    'Backend:',
+    TEMPLATECRAFT_API_BASE_URL
+);
