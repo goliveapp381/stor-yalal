@@ -429,11 +429,17 @@
         id="createModal"
         class="modal fixed inset-0 z-[60] bg-slate-950/75 create-modal-backdrop items-center justify-center p-3 md:p-6">
 
-        <div class="create-modal-card bg-white w-full max-w-3xl rounded-3xl shadow-2xl overflow-hidden">
+        <!--
+            IMPORTANT:
+            max-h-[90vh] = أقصى ارتفاع للنافذة
+            flex flex-col = تقسيم النافذة إلى Header + Body
+            overflow-hidden = منع خروج المحتوى خارج النافذة
+        -->
+        <div class="create-modal-card bg-white w-full max-w-3xl max-h-[90vh] rounded-3xl shadow-2xl overflow-hidden flex flex-col">
 
             <!-- HEADER -->
             <div
-                class="relative overflow-hidden p-6 md:p-8 text-white bg-gradient-to-br from-slate-900 via-purple-950 to-blue-950">
+                class="relative overflow-hidden p-6 md:p-8 text-white bg-gradient-to-br from-slate-900 via-purple-950 to-blue-950 flex-shrink-0">
 
                 <div class="absolute -top-20 -right-20 w-52 h-52 rounded-full bg-blue-500/20 blur-3xl"></div>
                 <div class="absolute -bottom-20 -left-20 w-52 h-52 rounded-full bg-purple-500/20 blur-3xl"></div>
@@ -468,8 +474,8 @@
             </div>
 
 
-            <!-- BODY -->
-            <div class="p-5 md:p-7">
+            <!-- BODY WITH SCROLL -->
+            <div class="p-5 md:p-7 overflow-y-auto flex-1 min-h-0">
 
                 <!-- SITE NAME -->
                 <div class="mb-6 rounded-2xl border border-purple-100 bg-purple-50 p-4">
@@ -548,7 +554,10 @@
                         <div class="flex items-start gap-3">
                             <span class="text-2xl">🌐</span>
                             <div>
-                                <h3 class="font-extrabold text-gray-900">دومين مجاني</h3>
+                                <h3 class="font-extrabold text-gray-900">
+                                    دومين مجاني
+                                </h3>
+
                                 <p class="text-xs text-gray-500 mt-1 leading-5">
                                     احصل على نطاق فرعي مجاني باسم موقعك ضمن
                                     <span dir="ltr">gollivetv.com</span>.
@@ -562,7 +571,10 @@
                         <div class="flex items-start gap-3">
                             <span class="text-2xl">🔒</span>
                             <div>
-                                <h3 class="font-extrabold text-gray-900">حماية SSL مجانية</h3>
+                                <h3 class="font-extrabold text-gray-900">
+                                    حماية SSL مجانية
+                                </h3>
+
                                 <p class="text-xs text-gray-500 mt-1 leading-5">
                                     اتصال آمن ومحمي لموقعك مع دعم HTTPS.
                                 </p>
@@ -575,7 +587,10 @@
                         <div class="flex items-start gap-3">
                             <span class="text-2xl">🎨</span>
                             <div>
-                                <h3 class="font-extrabold text-gray-900">قالب احترافي متوازن</h3>
+                                <h3 class="font-extrabold text-gray-900">
+                                    قالب احترافي متوازن
+                                </h3>
+
                                 <p class="text-xs text-gray-500 mt-1 leading-5">
                                     تصميم متناسق ومهيأ لمختلف أحجام الشاشات.
                                 </p>
@@ -588,7 +603,10 @@
                         <div class="flex items-start gap-3">
                             <span class="text-2xl">✏️</span>
                             <div>
-                                <h3 class="font-extrabold text-gray-900">تخصيص الواجهة</h3>
+                                <h3 class="font-extrabold text-gray-900">
+                                    تخصيص الواجهة
+                                </h3>
+
                                 <p class="text-xs text-gray-500 mt-1 leading-5">
                                     عدّل محتوى وتصميم موقعك بما يناسب مشروعك.
                                 </p>
@@ -601,7 +619,10 @@
                         <div class="flex items-start gap-3">
                             <span class="text-2xl">📱</span>
                             <div>
-                                <h3 class="font-extrabold text-gray-900">تصميم متجاوب</h3>
+                                <h3 class="font-extrabold text-gray-900">
+                                    تصميم متجاوب
+                                </h3>
+
                                 <p class="text-xs text-gray-500 mt-1 leading-5">
                                     تجربة استخدام محسّنة للهاتف واللوحي والكمبيوتر.
                                 </p>
@@ -614,7 +635,10 @@
                         <div class="flex items-start gap-3">
                             <span class="text-2xl">⚡</span>
                             <div>
-                                <h3 class="font-extrabold text-gray-900">نشر سريع</h3>
+                                <h3 class="font-extrabold text-gray-900">
+                                    نشر سريع
+                                </h3>
+
                                 <p class="text-xs text-gray-500 mt-1 leading-5">
                                     إنشاء وتجهيز ونشر موقعك عبر منصة واحدة.
                                 </p>
@@ -627,7 +651,10 @@
                         <div class="flex items-start gap-3">
                             <span class="text-2xl">🌍</span>
                             <div>
-                                <h3 class="font-extrabold text-gray-900">ربط أي دومين خارجي</h3>
+                                <h3 class="font-extrabold text-gray-900">
+                                    ربط أي دومين خارجي
+                                </h3>
+
                                 <p class="text-xs text-gray-500 mt-1 leading-5">
                                     يمكنك لاحقاً ربط موقعك بدومين خاص تملكه.
                                 </p>
@@ -640,7 +667,10 @@
                         <div class="flex items-start gap-3">
                             <span class="text-2xl">☁️</span>
                             <div>
-                                <h3 class="font-extrabold text-gray-900">بنية نشر موثوقة</h3>
+                                <h3 class="font-extrabold text-gray-900">
+                                    بنية نشر موثوقة
+                                </h3>
+
                                 <p class="text-xs text-gray-500 mt-1 leading-5">
                                     إدارة ونشر مشروعك بسهولة من لوحة واحدة.
                                 </p>
@@ -653,15 +683,17 @@
 
                 <!-- NOTE -->
                 <div class="mt-5 rounded-xl bg-gray-50 border border-gray-200 p-4">
+
                     <p class="text-xs text-gray-500 leading-6">
                         بالمتابعة، سيتم إنشاء المشروع باستخدام القالب الذي اخترته،
                         ثم يبدأ نظام TemplateCraft Pro في تجهيز الموقع ونشره.
                     </p>
+
                 </div>
 
 
                 <!-- BUTTONS -->
-                <div class="flex flex-col-reverse sm:flex-row gap-3 mt-6">
+                <div class="flex flex-col-reverse sm:flex-row gap-3 mt-6 pb-2">
 
                     <button
                         id="cancelCreateBtn"
@@ -740,32 +772,44 @@
 
                 <div id="stage1" class="deploy-stage active flex items-center gap-3">
                     <span class="stage-icon">⚙️</span>
-                    <span class="text-sm font-bold">تجهيز المشروع</span>
+                    <span class="text-sm font-bold">
+                        تجهيز المشروع
+                    </span>
                 </div>
 
                 <div id="stage2" class="deploy-stage pending flex items-center gap-3">
                     <span class="stage-icon">🎨</span>
-                    <span class="text-sm font-bold">تطبيق القالب والملفات</span>
+                    <span class="text-sm font-bold">
+                        تطبيق القالب والملفات
+                    </span>
                 </div>
 
                 <div id="stage3" class="deploy-stage pending flex items-center gap-3">
                     <span class="stage-icon">☁️</span>
-                    <span class="text-sm font-bold">نشر الموقع</span>
+                    <span class="text-sm font-bold">
+                        نشر الموقع
+                    </span>
                 </div>
 
                 <div id="stage4" class="deploy-stage pending flex items-center gap-3">
                     <span class="stage-icon">🌐</span>
-                    <span class="text-sm font-bold">إعداد النطاق</span>
+                    <span class="text-sm font-bold">
+                        إعداد النطاق
+                    </span>
                 </div>
 
                 <div id="stage5" class="deploy-stage pending flex items-center gap-3">
                     <span class="stage-icon">🔒</span>
-                    <span class="text-sm font-bold">التحقق من الحماية SSL</span>
+                    <span class="text-sm font-bold">
+                        التحقق من الحماية SSL
+                    </span>
                 </div>
 
                 <div id="stage6" class="deploy-stage pending flex items-center gap-3">
                     <span class="stage-icon">🚀</span>
-                    <span class="text-sm font-bold">إنهاء النشر</span>
+                    <span class="text-sm font-bold">
+                        إنهاء النشر
+                    </span>
                 </div>
 
             </div>
