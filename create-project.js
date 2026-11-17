@@ -839,9 +839,26 @@ async function openCreateModal() {
         siteName || '—';
 
 
+    /*
+    ==================================================
+    IMPORTANT:
+
+    هذا التغيير خاص فقط بالدومين الذي يظهر
+    داخل نافذة تأكيد إنشاء المشروع.
+
+    لا يغير:
+    - Backend
+    - Netlify
+    - Cloudflare
+    - getSafeCustomUrl()
+    - domain validation
+    - أي استعمال آخر لـ gollivetv.com
+    ==================================================
+    */
+
     confirmDomain.textContent =
         siteName
-            ? `${siteName}.gollivetv.com`
+            ? `${siteName}.templatecraftpro.com`
             : '—';
 
 
