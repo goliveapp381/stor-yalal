@@ -103,7 +103,7 @@ function openSslInfoModal() {
     if (!modal) {
 
         console.warn(
-            'sslInfoModal not found.'
+            '⚠️ sslInfoModal not found.'
         );
 
         return;
@@ -111,8 +111,26 @@ function openSslInfoModal() {
     }
 
 
+    /*
+     * دعم Tailwind hidden/flex
+     */
+
+    modal.classList.remove(
+        'hidden'
+    );
+
+    modal.classList.add(
+        'flex'
+    );
+
+
+    /*
+     * دعم display المباشر
+     */
+
     modal.style.display =
         'flex';
+
 
     modal.setAttribute(
         'aria-hidden',
@@ -120,26 +138,51 @@ function openSslInfoModal() {
     );
 
 
+    /*
+     * زر موافق
+     */
+
     if (okButton) {
 
+        /*
+         * إزالة event سابق
+         * لتجنب تكرار الأحداث
+         */
+
         okButton.onclick =
-            function() {
+            function(event) {
 
-                modal.style.display =
-                    'none';
+                if (event) {
 
-                modal.setAttribute(
-                    'aria-hidden',
-                    'true'
-                );
+                    event.preventDefault();
+
+                }
+
+
+                closeSslInfoModal();
 
             };
 
 
+        /*
+         * التركيز على الزر
+         */
+
         setTimeout(
             function() {
 
-                okButton.focus();
+                try {
+
+                    okButton.focus();
+
+                } catch (error) {
+
+                    console.warn(
+                        'SSL OK button focus failed:',
+                        error
+                    );
+
+                }
 
             },
             50
@@ -167,6 +210,19 @@ function closeSslInfoModal() {
         return;
 
     }
+
+
+    /*
+     * إخفاء النافذة
+     */
+
+    modal.classList.add(
+        'hidden'
+    );
+
+    modal.classList.remove(
+        'flex'
+    );
 
 
     modal.style.display =
@@ -371,8 +427,13 @@ function startDeployAnimation(
         deploymentOverlaySiteName
     ) {
 
+        /*
+         * العرض البصري فقط.
+         * لا يغير الدومين الحقيقي في Backend.
+         */
+
         deploymentOverlaySiteName.textContent =
-            `${siteName}.gollivetv.com`;
+            `${siteName}.templatecraftpro.com`;
 
     }
 
@@ -396,7 +457,6 @@ function startDeployAnimation(
      * لا تعني أن كل مرحلة انتهت فعلياً.
      * انتهاء العملية الحقيقية يحدده Backend.
      */
-
 
     deployStageTimer =
         setInterval(
@@ -754,7 +814,6 @@ async function handleConfirmCreate() {
      * إعادة التأكد من Netlify مباشرة قبل الإرسال.
      */
 
-
     deploymentConfirmButton.disabled =
         true;
 
@@ -979,10 +1038,8 @@ async function handleConfirmCreate() {
          * ========================================
          *
          * النشر نجح.
-         * نعرض نافذة SSL الثالثة تلقائياً.
-         *
-         * النافذة فيها زر واحد فقط:
-         * "موافق"
+         * ننتظر قليلاً حتى تختفي نافذة النشر،
+         * ثم نعرض نافذة SSL الثالثة.
          */
 
         setTimeout(
@@ -991,7 +1048,7 @@ async function handleConfirmCreate() {
                 openSslInfoModal();
 
             },
-            800
+            900
         );
 
 
@@ -1165,13 +1222,26 @@ function initializeSslModal() {
             'sslInfoModal'
         );
 
+    const okButton =
+        document.getElementById(
+            'sslInfoOkBtn'
+        );
+
 
     if (!modal) {
+
+        console.warn(
+            '⚠️ sslInfoModal غير موجود في HTML.'
+        );
 
         return;
 
     }
 
+
+    /*
+     * إغلاق عند الضغط خارج محتوى النافذة
+     */
 
     modal.addEventListener(
         'click',
@@ -1188,6 +1258,26 @@ function initializeSslModal() {
 
         }
     );
+
+
+    /*
+     * زر موافق
+     */
+
+    if (okButton) {
+
+        okButton.addEventListener(
+            'click',
+            function(event) {
+
+                event.preventDefault();
+
+                closeSslInfoModal();
+
+            }
+        );
+
+    }
 
 }
 
