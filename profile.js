@@ -1,3 +1,4 @@
+
 (() => {
     'use strict';
 
@@ -30,11 +31,7 @@
 
         user = JSON.parse(storedUser);
 
-        if (
-            !user ||
-            typeof user !== 'object' ||
-            Array.isArray(user)
-        ) {
+        if (!user || typeof user !== 'object' || Array.isArray(user)) {
             throw new Error('بيانات المستخدم غير صالحة');
         }
 
@@ -44,11 +41,8 @@
 
     } catch (error) {
         console.error('Authentication error:', error);
-
         clearAuthentication();
-
         window.location.replace('login.html');
-
         return;
     }
 
@@ -73,31 +67,14 @@
     // 3. CONFIGURATION
     // ==========================================
 
-    /*
-     * مهم:
-     * لا يوجد Auto Refresh.
-     *
-     * تحديث المشاريع يتم فقط عندما يضغط المستخدم
-     * على زر "تحديث المشاريع".
-     */
-
-    const DOMAIN_ROOT =
-        'templatecraftpro.com';
-
+    const DOMAIN_ROOT = 'templatecraftpro.com';
 
     let isLoading = false;
-
     let lastSites = [];
 
-
-    const diagnosticsCache =
-        new Map();
-
-    const diagnosticsInProgress =
-        new Set();
-
-    const domainStatusInProgress =
-        new Set();
+    const diagnosticsCache = new Map();
+    const diagnosticsInProgress = new Set();
+    const domainStatusInProgress = new Set();
 
 
     // ==========================================
@@ -114,27 +91,40 @@
     }
 
 
-    function normalizeHostname(hostname) {
-        return String(hostname || '')
-            .trim()
-            .toLowerCase()
-            .replace(/^https?:\/\//i, '')
-            .split('/')[0]
-            .split('?')[0]
-            .split('#')[0]
-            .replace(/:\d+$/, '')
-            .replace(/\.+$/, '');
+    function normalizeHostname(value) {
+        let hostname = String(value || '').trim().toLowerCase();
+
+        if (!hostname) return '';
+
+        try {
+            const parsed = new URL(
+                hostname.includes('://')
+                    ? hostname
+                    : `https://${hostname}`
+            );
+
+            hostname = parsed.hostname;
+
+        } catch (_) {
+            hostname = hostname
+                .replace(/^https?:\/\//i, '')
+                .split('/')[0]
+                .split('?')[0]
+                .split('#')[0]
+                .replace(/:\d+$/, '');
+        }
+
+        return hostname.replace(/\.+$/, '');
     }
 
 
-    function isAllowedCustomDomain(hostname) {
-        const normalized =
-            normalizeHostname(hostname);
+    function isAllowedCustomDomain(value) {
+        const hostname = normalizeHostname(value);
 
         return Boolean(
-            normalized &&
-            normalized !== DOMAIN_ROOT &&
-            normalized.endsWith('.' + DOMAIN_ROOT)
+            hostname &&
+            hostname !== DOMAIN_ROOT &&
+            hostname.endsWith('.' + DOMAIN_ROOT)
         );
     }
 
@@ -179,18 +169,42 @@
 
 
     function getProjectDate(site) {
-        if (!site?.createdAt) {
-            return '-';
-        }
+        if (!site?.createdAt) return '-';
 
-        const date =
-            new Date(site.createdAt);
+        const date = new Date(site.createdAt);
 
-        if (Number.isNaN(date.getTime())) {
-            return '-';
-        }
+        if (Number.isNaN(date.getTime())) return '-';
 
         return date.toLocaleDateString('ar-MA');
+    }
+
+
+    function firstNonEmpty(...values) {
+        for (const value of values) {
+            if (
+                value !== undefined &&
+                value !== null &&
+                String(value).trim() !== ''
+            ) {
+                return value;
+            }
+        }
+
+        return '';
+    }
+
+
+    function isReadyState(value) {
+        return [
+            'active',
+            'ready',
+            'live',
+            'verified',
+            'connected',
+            'success'
+        ].includes(
+            String(value || '').trim().toLowerCase()
+        );
     }
 
 
@@ -199,72 +213,27 @@
     // ==========================================
 
     function getSafeProjectUrl(site) {
-
         if (!site || typeof site !== 'object') {
             return null;
         }
 
-        const domainStatus =
-            String(
-                site.domainStatus || ''
-            ).toLowerCase();
+        const rawUrl = firstNonEmpty(
+            site.customUrl,
+            site.customDomain,
+            site.hostname,
+            site.liveUrl
+        );
 
-        const sslState =
-            String(
-                site.sslState || ''
-            ).toLowerCase();
-
-
-        /*
-         * READY من diagnostics يعتبر Active.
-         *
-         * لأن backend عندك رجع:
-         *
-         * RESULT: READY
-         * sslState: ready
-         * certificateExists: true
-         * domainMatches: true
-         */
-
-        const diagnosticsReady =
-            site.__diagnosticsReady === true;
-
-
-        const isReady =
-            domainStatus === 'active' ||
-            domainStatus === 'ready' ||
-            sslState === 'ready' ||
-            diagnosticsReady;
-
-
-        if (!isReady) {
+        if (typeof rawUrl !== 'string' || !rawUrl.trim()) {
             return null;
         }
-
-
-        const rawUrl =
-            site.customUrl ||
-            site.customDomain ||
-            '';
-
-
-        if (
-            !rawUrl ||
-            typeof rawUrl !== 'string'
-        ) {
-            return null;
-        }
-
 
         try {
-
-            const parsed =
-                new URL(
-                    rawUrl.includes('://')
-                        ? rawUrl
-                        : `https://${rawUrl}`
-                );
-
+            const parsed = new URL(
+                rawUrl.includes('://')
+                    ? rawUrl
+                    : `https://${rawUrl}`
+            );
 
             if (
                 parsed.protocol !== 'https:' ||
@@ -275,31 +244,31 @@
                 return null;
             }
 
-
-            const hostname =
-                normalizeHostname(
-                    parsed.hostname
-                );
-
+            const hostname = normalizeHostname(parsed.hostname);
 
             if (!isAllowedCustomDomain(hostname)) {
                 return null;
             }
 
+            const ready =
+                isReadyState(site.domainStatus) ||
+                isReadyState(site.status) ||
+                isReadyState(site.overall) ||
+                site.sslReady === true ||
+                String(site.sslState || '').toLowerCase() === 'ready' ||
+                site.__diagnosticsReady === true;
+
+            if (!ready) {
+                return null;
+            }
 
             parsed.hash = '';
             parsed.search = '';
 
-
             return parsed.href;
 
         } catch (error) {
-
-            console.warn(
-                'Invalid custom domain:',
-                error
-            );
-
+            console.warn('Invalid custom domain:', error);
             return null;
         }
     }
@@ -310,7 +279,6 @@
     // ==========================================
 
     function getResponseStatus(result) {
-
         return Number(
             result?.status ||
             result?.statusCode ||
@@ -321,31 +289,21 @@
 
 
     function handleAuthenticationError(result) {
-
-        if (
-            getResponseStatus(result) !== 401
-        ) {
+        if (getResponseStatus(result) !== 401) {
             return false;
         }
 
-
         clearAuthentication();
-
-        window.location.replace(
-            'login.html'
-        );
+        window.location.replace('login.html');
 
         return true;
     }
 
 
     function unwrapResponse(result) {
-
         let payload = result;
 
-
-        for (let i = 0; i < 5; i++) {
-
+        for (let i = 0; i < 6; i++) {
             if (
                 payload &&
                 typeof payload === 'object' &&
@@ -353,18 +311,28 @@
                 payload.data &&
                 typeof payload.data === 'object'
             ) {
+                const outer = payload;
+                const inner = payload.data;
 
                 payload = {
-                    ...payload.data,
+                    ...inner,
 
                     requestId:
-                        payload.requestId ||
-                        payload.data.requestId,
+                        inner.requestId ||
+                        outer.requestId,
 
                     success:
-                        payload.success === false
+                        outer.success === false ||
+                        inner.success === false
                             ? false
-                            : payload.data.success
+                            : (
+                                inner.success ??
+                                outer.success
+                            ),
+
+                    status:
+                        inner.status ??
+                        outer.status
                 };
 
             } else {
@@ -372,66 +340,148 @@
             }
         }
 
-
         return payload || {};
     }
 
 
     function normalizeSitesResponse(result) {
+        const payload = unwrapResponse(result);
 
-        const payload =
-            unwrapResponse(result);
-
-
-        if (Array.isArray(payload)) {
-            return payload;
-        }
-
-
-        if (Array.isArray(payload.sites)) {
-            return payload.sites;
-        }
-
-
-        if (Array.isArray(payload.projects)) {
-            return payload.projects;
-        }
-
-
-        if (Array.isArray(payload.data)) {
-            return payload.data;
-        }
-
+        if (Array.isArray(payload)) return payload;
+        if (Array.isArray(payload.sites)) return payload.sites;
+        if (Array.isArray(payload.projects)) return payload.projects;
+        if (Array.isArray(payload.data)) return payload.data;
 
         return null;
     }
 
 
     function normalizeDomainStatus(result) {
-
-        const payload =
-            unwrapResponse(result);
-
-
-        return payload &&
-            typeof payload === 'object'
-            ? payload
-            : {};
+        return unwrapResponse(result);
     }
 
 
     // ==========================================
-    // 7. DOMAIN STATUS
+    // 7. DOMAIN STATUS NORMALIZATION
+    // ==========================================
+
+    function normalizeDomainData(site, status = {}) {
+        const nestedProject =
+            status.project ||
+            status.site ||
+            {};
+
+        const nestedDomain =
+            status.domain ||
+            status.customDomainInfo ||
+            {};
+
+        const rawState = firstNonEmpty(
+            status.domainStatus,
+            status.overall,
+            status.status,
+            nestedDomain.status,
+            site.domainStatus,
+            site.status,
+            'unknown'
+        );
+
+        const sslState = String(
+            firstNonEmpty(
+                status.sslState,
+                status.ssl?.state,
+                status.ssl?.status,
+                site.sslState,
+                'unknown'
+            )
+        ).toLowerCase();
+
+        const sslReady =
+            status.sslReady === true ||
+            status.ssl?.sslReady === true ||
+            status.ssl?.ready === true ||
+            sslState === 'ready' ||
+            site.sslReady === true ||
+            String(site.sslState || '').toLowerCase() === 'ready';
+
+        const customDomain = firstNonEmpty(
+            status.customDomain,
+            status.hostname,
+            status.domainName,
+            nestedDomain.hostname,
+            nestedDomain.domain,
+            nestedProject.customDomain,
+            site.customDomain
+        );
+
+        const customUrl = firstNonEmpty(
+            status.customUrl,
+            status.liveUrl,
+            status.url,
+            nestedDomain.customUrl,
+            nestedProject.customUrl,
+            site.customUrl,
+            site.liveUrl
+        );
+
+        const overallReady =
+            isReadyState(rawState) ||
+            isReadyState(status.overall) ||
+            isReadyState(status.result) ||
+            sslReady;
+
+        const domainStatus = overallReady
+            ? 'active'
+            : String(rawState).toLowerCase();
+
+        return {
+            customDomain,
+            customUrl,
+
+            domainStatus,
+
+            sslReady,
+
+            sslState: sslReady
+                ? 'ready'
+                : sslState,
+
+            cnameVisible:
+                status.cnameVisible ??
+                status.cname?.visible ??
+                site.cnameVisible,
+
+            liveUrl: firstNonEmpty(
+                status.liveUrl,
+                status.url,
+                site.liveUrl
+            ),
+
+            domainError: firstNonEmpty(
+                status.error,
+                status.reason,
+                status.message && !overallReady
+                    ? status.message
+                    : '',
+                site.domainError
+            ),
+
+            __diagnosticsReady:
+                site.__diagnosticsReady === true ||
+                isReadyState(status.overall) ||
+                isReadyState(status.result)
+        };
+    }
+
+
+    // ==========================================
+    // 8. DOMAIN STATUS API
     // ==========================================
 
     async function requestDomainStatus(siteId) {
-
         if (!siteId) {
-            throw new Error(
-                'معرف المشروع غير موجود.'
-            );
+            throw new Error('معرف المشروع غير موجود.');
         }
-
 
         if (
             typeof TemplateCraftAPI === 'undefined' ||
@@ -442,188 +492,85 @@
             );
         }
 
-
-        return TemplateCraftAPI
-            .getDomainStatus(siteId);
+        return TemplateCraftAPI.getDomainStatus(siteId);
     }
 
 
     async function refreshProjectDomainStatus(site) {
+        const siteId = getProjectId(site);
 
-        const siteId =
-            getProjectId(site);
+        if (!siteId) return site;
 
+        const key = String(siteId);
 
-        if (!siteId) {
+        if (domainStatusInProgress.has(key)) {
             return site;
         }
-
-
-        const key =
-            String(siteId);
-
-
-        if (
-            domainStatusInProgress.has(key)
-        ) {
-            return site;
-        }
-
 
         domainStatusInProgress.add(key);
 
-
         try {
+            const result = await requestDomainStatus(siteId);
 
-            const result =
-                await requestDomainStatus(
-                    siteId
-                );
-
-
-            if (
-                handleAuthenticationError(result)
-            ) {
+            if (handleAuthenticationError(result)) {
                 return site;
             }
 
+            const status = normalizeDomainStatus(result);
 
             if (
                 !result ||
-                result.success === false
+                result.success === false ||
+                status.success === false ||
+                result.ok === false
             ) {
-
                 console.warn(
                     'Domain status unavailable:',
-                    result?.error ||
-                    result?.message
+                    result?.error || result?.message
                 );
 
                 return site;
             }
 
-
-            const status =
-                normalizeDomainStatus(
-                    result
-                );
-
+            const normalized = normalizeDomainData(
+                site,
+                status
+            );
 
             return {
                 ...site,
-
-
-                customDomain:
-                    status.customDomain ||
-                    site.customDomain ||
-                    '',
-
-
-                customUrl:
-                    status.customUrl ||
-                    site.customUrl ||
-                    '',
-
-
-                domainStatus:
-                    status.domainStatus ||
-                    site.domainStatus ||
-                    'unknown',
-
-
-                sslReady:
-                    status.sslReady ??
-                    site.sslReady ??
-                    false,
-
-
-                sslState:
-                    status.sslState ||
-                    site.sslState ||
-                    'unknown',
-
-
-                cnameVisible:
-                    status.cnameVisible ??
-                    site.cnameVisible,
-
-
-                liveUrl:
-                    status.liveUrl ||
-                    site.liveUrl ||
-                    '',
-
-
-                domainError:
-                    status.error ||
-                    status.reason ||
-                    site.domainError ||
-                    ''
+                ...normalized
             };
 
-
         } catch (error) {
-
-            console.error(
-                'Domain status refresh error:',
-                error
-            );
-
+            console.error('Domain status refresh error:', error);
             return site;
 
         } finally {
-
-            domainStatusInProgress.delete(
-                key
-            );
+            domainStatusInProgress.delete(key);
         }
-    }
-
-
-    async function refreshAllDomainStatuses(sites) {
-
-        if (!Array.isArray(sites)) {
-            return [];
-        }
-
-
-        return Promise.all(
-            sites.map(
-                site =>
-                    refreshProjectDomainStatus(
-                        site
-                    )
-            )
-        );
     }
 
 
     // ==========================================
-    // 8. DIAGNOSTICS API
+    // 9. DIAGNOSTICS API
     // ==========================================
 
     async function requestDomainDiagnostics(siteId) {
-
         if (!siteId) {
-            throw new Error(
-                'معرف المشروع غير موجود.'
-            );
+            throw new Error('معرف المشروع غير موجود.');
         }
-
 
         if (
             typeof TemplateCraftAPI === 'undefined' ||
             typeof TemplateCraftAPI.getDomainDiagnostics !== 'function'
         ) {
-
             throw new Error(
                 'getDomainDiagnostics غير موجودة في client-api.js'
             );
         }
 
-
-        return TemplateCraftAPI
-            .getDomainDiagnostics(siteId);
+        return TemplateCraftAPI.getDomainDiagnostics(siteId);
     }
 
 
@@ -633,7 +580,6 @@
 
 
     function getDiagnosticChecks(payload) {
-
         return (
             payload?.checks ||
             payload?.diagnostics ||
@@ -644,100 +590,114 @@
 
 
     // ==========================================
-    // 9. DETECT READY DIAGNOSTICS
+    // 10. EXTRACT DOMAIN FROM DIAGNOSTICS
+    // ==========================================
+
+    function extractDiagnosticDomain(payload) {
+        if (!payload || typeof payload !== 'object') {
+            return '';
+        }
+
+        const checks = getDiagnosticChecks(payload);
+
+        const candidates = [
+            payload.customDomain,
+            payload.customUrl,
+            payload.domain,
+            payload.hostname,
+            payload.liveUrl,
+
+            payload.project?.customDomain,
+            payload.project?.customUrl,
+            payload.project?.hostname,
+
+            payload.site?.customDomain,
+            payload.site?.customUrl,
+
+            checks.customDomain?.hostname,
+            checks.customDomain?.domain,
+            checks.customDomain?.customDomain,
+            checks.customDomain?.customUrl,
+
+            checks.domain?.hostname,
+            checks.domain?.domain,
+            checks.domain?.customDomain,
+
+            checks.netlifySite?.customDomain,
+            checks.netlifySite?.url,
+
+            checks.site?.customDomain,
+            checks.site?.url
+        ];
+
+        for (const candidate of candidates) {
+            if (
+                typeof candidate === 'string' &&
+                isAllowedCustomDomain(candidate)
+            ) {
+                return candidate;
+            }
+        }
+
+        return '';
+    }
+
+
+    // ==========================================
+    // 11. DETECT READY DIAGNOSTICS
     // ==========================================
 
     function isDiagnosticsReady(payload) {
-
         if (!payload || typeof payload !== 'object') {
             return false;
         }
 
+        const overall = String(
+            firstNonEmpty(
+                payload.overall,
+                payload.result,
+                payload.status,
+                payload.domainStatus
+            )
+        ).toLowerCase();
 
-        const overall =
-            String(
-                payload.overall ||
-                payload.status ||
-                ''
-            ).toLowerCase();
-
-
-        if (
-            overall === 'ready' ||
-            overall === 'active' ||
-            overall === 'success'
-        ) {
+        if (isReadyState(overall)) {
             return true;
         }
 
-
-        const checks =
-            getDiagnosticChecks(payload);
-
+        const checks = getDiagnosticChecks(payload);
 
         const ssl =
             checks.ssl ||
             checks.certificate ||
+            payload.ssl ||
             {};
 
-
-        if (
+        const certificateReady =
             ssl.sslReady === true ||
+            ssl.ready === true ||
             ssl.state === 'ready' ||
-            ssl.sslState === 'ready'
-        ) {
+            ssl.sslState === 'ready' ||
+            ssl.certificateExists === true ||
+            ssl.anyCertificateExists === true;
 
-            const certificateReady =
-                ssl.certificateExists === true ||
-                ssl.anyCertificateExists === true;
+        const domainReady =
+            ssl.domainMatches === true ||
+            ssl.domainMatches === undefined;
 
-
-            const domainReady =
-                ssl.domainMatches === true ||
-                ssl.domainMatches === undefined;
-
-
-            if (
-                certificateReady &&
-                domainReady
-            ) {
-                return true;
-            }
+        if (certificateReady && domainReady) {
+            return true;
         }
-
 
         return false;
     }
 
 
-    function extractDiagnosticDomain(payload) {
-
-        if (!payload || typeof payload !== 'object') {
-            return '';
-        }
-
-
-        return (
-            payload.customDomain ||
-            payload.customUrl ||
-            payload.domain ||
-            payload.hostname ||
-            payload?.project?.customDomain ||
-            payload?.project?.customUrl ||
-            ''
-        );
-    }
-
-
     // ==========================================
-    // 10. UPDATE SITE FROM DIAGNOSTICS
+    // 12. APPLY DIAGNOSTICS TO PROJECT
     // ==========================================
 
-    function applyDiagnosticsToSite(
-        site,
-        payload
-    ) {
-
+    function applyDiagnosticsToSite(site, payload) {
         if (
             !site ||
             !payload ||
@@ -746,240 +706,116 @@
             return site;
         }
 
-
-        const ready =
-            isDiagnosticsReady(payload);
-
-
-        if (!ready) {
+        if (!isDiagnosticsReady(payload)) {
             return site;
         }
 
-
-        const checks =
-            getDiagnosticChecks(payload);
-
-
-        const ssl =
-            checks.ssl ||
-            checks.certificate ||
-            {};
-
-
-        const domain =
-            checks.customDomain ||
-            checks.domain ||
-            {};
-
+        const checks = getDiagnosticChecks(payload);
 
         const netlifySite =
             checks.netlifySite ||
             checks.site ||
             {};
 
-
         const discoveredDomain =
-            extractDiagnosticDomain(
-                payload
-            ) ||
-            domain.hostname ||
-            domain.domain ||
+            extractDiagnosticDomain(payload) ||
             site.customDomain ||
             site.customUrl ||
             '';
 
+        const hostname = normalizeHostname(
+            discoveredDomain
+        );
 
-        const safeDomain =
-            typeof discoveredDomain === 'string'
-                ? discoveredDomain
-                : '';
+        const validDomain =
+            isAllowedCustomDomain(hostname);
 
+        const customDomain = validDomain
+            ? hostname
+            : firstNonEmpty(site.customDomain, '');
 
-        const customUrl =
-            site.customUrl ||
-            (
-                safeDomain
-                    ? (
-                        safeDomain.startsWith('http')
-                            ? safeDomain
-                            : `https://${safeDomain}`
-                    )
-                    : ''
-            );
-
+        const customUrl = validDomain
+            ? `https://${hostname}`
+            : firstNonEmpty(site.customUrl, '');
 
         return {
-
             ...site,
 
+            domainStatus: 'active',
 
-            /*
-             * هذا هو الإصلاح الأساسي:
-             *
-             * diagnostics = READY
-             * =>
-             * domainStatus = active
-             */
+            sslReady: true,
 
-            domainStatus:
-                'active',
+            sslState: 'ready',
 
+            __diagnosticsReady: true,
 
-            sslReady:
-                true,
+            customDomain,
 
+            customUrl,
 
-            sslState:
-                'ready',
-
-
-            __diagnosticsReady:
-                true,
-
-
-            customDomain:
-                site.customDomain ||
-                (
-                    safeDomain
-                        ? normalizeHostname(
-                            safeDomain
-                        )
-                        : ''
-                ),
-
-
-            customUrl:
+            liveUrl: firstNonEmpty(
                 customUrl,
+                site.liveUrl,
+                netlifySite.url
+            ),
 
+            domainError: '',
 
-            liveUrl:
-                site.liveUrl ||
-                netlifySite.url ||
-                customUrl ||
-
-
-                site.liveUrl ||
-                '',
-
-
-            domainError:
-                '',
-
-
-            /*
-             * نخلي warning ديال TXT ما يمنعش
-             * ظهور الدومين مادام diagnostics = READY.
-             */
-
-            __txtWarning:
-                Boolean(
-                    checks?.txtChallenge?.warning ||
-                    checks?.txt?.warning
-                )
+            __txtWarning: Boolean(
+                checks?.txtChallenge?.warning ||
+                checks?.txt?.warning
+            )
         };
     }
 
 
     // ==========================================
-    // 11. REFRESH DOMAIN USING STATUS + DIAGNOSTICS
+    // 13. ENRICH PROJECT DOMAIN
     // ==========================================
 
     async function enrichProjectDomain(site) {
+        let current = await refreshProjectDomainStatus(site);
 
-        let current =
-            await refreshProjectDomainStatus(
-                site
-            );
+        const siteId = getProjectId(current);
 
-
-        const siteId =
-            getProjectId(current);
-
-
-        if (!siteId) {
-            return current;
-        }
-
+        if (!siteId) return current;
 
         /*
-         * إذا كان domain-status قال active
-         * ما نحتاجوش diagnostics هنا.
-         *
-         * إذا مازال pending/unknown:
-         * ندير diagnostics باش نعرف واش
-         * فعلاً READY.
+         * إذا كان الرابط جاهزاً فعلاً،
+         * لا نحتاج إلى فحص إضافي أثناء التحميل.
          */
 
-        const domainStatus =
-            String(
-                current.domainStatus || ''
-            ).toLowerCase();
-
-
-        const sslState =
-            String(
-                current.sslState || ''
-            ).toLowerCase();
-
-
-        const alreadyReady =
-            domainStatus === 'active' ||
-            domainStatus === 'ready' ||
-            (
-                current.sslReady === true &&
-                sslState === 'ready'
-            );
-
-
-        if (alreadyReady) {
+        if (getSafeProjectUrl(current)) {
             return current;
         }
 
+        /*
+         * إذا لم تكن الحالة واضحة، نطلب Diagnostics.
+         */
 
         try {
+            const result = await requestDomainDiagnostics(siteId);
 
-            const result =
-                await requestDomainDiagnostics(
-                    siteId
-                );
-
-
-            if (
-                handleAuthenticationError(result)
-            ) {
+            if (handleAuthenticationError(result)) {
                 return current;
             }
 
+            const payload = getDiagnosticPayload(result);
 
             if (
                 !result ||
-                result.success === false
+                result.success === false ||
+                payload.success === false ||
+                result.ok === false
             ) {
                 return current;
             }
 
-
-            const payload =
-                getDiagnosticPayload(
-                    result
+            if (isDiagnosticsReady(payload)) {
+                current = applyDiagnosticsToSite(
+                    current,
+                    payload
                 );
-
-
-            if (
-                isDiagnosticsReady(payload)
-            ) {
-
-                current =
-                    applyDiagnosticsToSite(
-                        current,
-                        payload
-                    );
-
-
-                /*
-                 * نخزن diagnostics حتى Check SSL
-                 * يقدر يعرض نفس النتيجة.
-                 */
 
                 diagnosticsCache.set(
                     String(siteId),
@@ -993,183 +829,110 @@
             }
 
         } catch (error) {
-
             console.warn(
                 'Domain diagnostics during project load:',
                 error
             );
         }
 
-
         return current;
     }
 
 
     async function refreshAllProjectDomains(sites) {
-
-        if (!Array.isArray(sites)) {
-            return [];
-        }
-
-
-        /*
-         * كل مشروع كيتفحص مرة واحدة.
-         *
-         * ما كاين حتى timer.
-         */
+        if (!Array.isArray(sites)) return [];
 
         return Promise.all(
-            sites.map(
-                site =>
-                    enrichProjectDomain(site)
-            )
+            sites.map(site => enrichProjectDomain(site))
         );
     }
 
 
     // ==========================================
-    // 12. STATISTICS
+    // 14. STATISTICS
     // ==========================================
 
     function updateStatistics(sites) {
+        const safeSites = Array.isArray(sites) ? sites : [];
 
-        const safeSites =
-            Array.isArray(sites)
-                ? sites
-                : [];
+        const total = safeSites.length;
 
+        const published = safeSites.filter(
+            site => Boolean(getSafeProjectUrl(site))
+        ).length;
 
-        const total =
-            safeSites.length;
+        const unpublished = safeSites.filter(
+            site =>
+                !getSafeProjectUrl(site) &&
+                !isProjectDeleting(site)
+        ).length;
 
+        const customDomains = safeSites.filter(
+            site => {
+                const domain = firstNonEmpty(
+                    site.customDomain,
+                    site.customUrl
+                );
 
-        const published =
-            safeSites.filter(
-                site =>
-                    Boolean(
-                        getSafeProjectUrl(
-                            site
-                        )
-                    )
-            ).length;
-
-
-        const unpublished =
-            safeSites.filter(
-                site =>
-                    !getSafeProjectUrl(site) &&
-                    !isProjectDeleting(site)
-            ).length;
-
-
-        const customDomains =
-            safeSites.filter(
-                site =>
-                    Boolean(
-                        site.customDomain ||
-                        site.customUrl
-                    )
-            ).length;
-
+                return isAllowedCustomDomain(domain);
+            }
+        ).length;
 
         const elements = {
-
-            total:
-                document.getElementById(
-                    'total-sites'
-                ),
-
-            published:
-                document.getElementById(
-                    'published-sites'
-                ),
-
-            unpublished:
-                document.getElementById(
-                    'unpublished-sites'
-                ),
-
-            customDomains:
-                document.getElementById(
-                    'custom-domains'
-                )
+            total: document.getElementById('total-sites'),
+            published: document.getElementById('published-sites'),
+            unpublished: document.getElementById('unpublished-sites'),
+            customDomains: document.getElementById('custom-domains')
         };
 
-
         if (elements.total) {
-            elements.total.textContent =
-                total;
+            elements.total.textContent = total;
         }
-
 
         if (elements.published) {
-            elements.published.textContent =
-                published;
+            elements.published.textContent = published;
         }
-
 
         if (elements.unpublished) {
-            elements.unpublished.textContent =
-                unpublished;
+            elements.unpublished.textContent = unpublished;
         }
 
-
         if (elements.customDomains) {
-            elements.customDomains.textContent =
-                customDomains;
+            elements.customDomains.textContent = customDomains;
         }
     }
 
 
     // ==========================================
-    // 13. DOMAIN STATUS DISPLAY
+    // 15. DOMAIN STATUS DISPLAY
     // ==========================================
 
-    function getDomainStatus(
-        site,
-        projectUrl
-    ) {
-
-        if (projectUrl) {
-            return null;
-        }
-
+    function getDomainStatus(site, projectUrl) {
+        if (projectUrl) return null;
 
         if (isProjectDeleting(site)) {
-
             return {
                 type: 'deleting',
                 label: 'جاري حذف المشروع',
-                description:
-                    'يتم الآن حذف المشروع.',
+                description: 'يتم الآن حذف المشروع.',
                 icon: '🗑️'
             };
         }
 
-
         if (isProjectPublishing(site)) {
-
             return {
                 type: 'publishing',
                 label: 'جاري نشر المشروع',
-                description:
-                    'يتم الآن نشر المشروع.',
+                description: 'يتم الآن نشر المشروع.',
                 icon: '🚀'
             };
         }
 
+        const status = String(
+            site?.domainStatus || ''
+        ).toLowerCase();
 
-        const status =
-            String(
-                site?.domainStatus || ''
-            ).toLowerCase();
-
-
-        if (
-            status === 'failed' ||
-            status === 'error'
-        ) {
-
+        if (status === 'failed' || status === 'error') {
             return {
                 type: 'error',
                 label: 'تعذر تجهيز الدومين',
@@ -1181,26 +944,22 @@
             };
         }
 
+        /*
+         * الحالات الجاهزة لا تعرض رسالة الانتظار.
+         */
 
         if (
-            status === 'active' ||
-            status === 'ready'
+            isReadyState(status) ||
+            site.sslReady === true ||
+            String(site.sslState || '').toLowerCase() === 'ready'
         ) {
-
-            /*
-             * هنا ما خاصش يظهر waiting.
-             * getSafeProjectUrl كان غادي يرجع الرابط.
-             */
-
             return null;
         }
-
 
         if (
             status === 'pending' ||
             status === 'provisioning'
         ) {
-
             return {
                 type: 'waiting',
                 label: 'جاري تجهيز الدومين',
@@ -1210,12 +969,10 @@
             };
         }
 
-
         if (
             !site.customDomain &&
             !site.customUrl
         ) {
-
             return {
                 type: 'waiting',
                 label: 'الدومين غير مجهز بعد',
@@ -1224,7 +981,6 @@
                 icon: '🌐'
             };
         }
-
 
         return {
             type: 'waiting',
@@ -1237,22 +993,15 @@
 
 
     // ==========================================
-    // 14. EMPTY STATE
+    // 16. EMPTY STATE
     // ==========================================
 
     function renderEmptyState() {
-
-        const grid =
-            document.getElementById(
-                'sites-grid'
-            );
-
+        const grid = document.getElementById('sites-grid');
 
         if (!grid) return;
 
-
         grid.innerHTML = `
-
             <div class="col-span-full text-center py-16">
 
                 <div class="empty-icon">
@@ -1276,24 +1025,18 @@
                 </a>
 
             </div>
-
         `;
     }
 
 
     // ==========================================
-    // 15. DIAGNOSTICS STATES
+    // 17. DIAGNOSTIC STATES
     // ==========================================
 
     function getCheckState(check) {
-
-        if (
-            !check ||
-            typeof check !== 'object'
-        ) {
+        if (!check || typeof check !== 'object') {
             return 'unknown';
         }
-
 
         if (
             check.state === 'unknown' ||
@@ -1301,7 +1044,6 @@
         ) {
             return 'unknown';
         }
-
 
         if (
             check.sslReady === true ||
@@ -1314,27 +1056,12 @@
             return 'success';
         }
 
-
-        /*
-         * مهم:
-         *
-         * TXT عندك:
-         *
-         * present = true
-         * matches = -
-         * verified = false
-         * status = warning
-         *
-         * هذا Warning وليس Error.
-         */
-
         if (
             check.status === 'warning' ||
             check.warning
         ) {
             return 'unknown';
         }
-
 
         if (
             check.ok === false ||
@@ -1349,7 +1076,6 @@
             return 'error';
         }
 
-
         if (
             check.state === 'failed' ||
             check.state === 'error'
@@ -1357,120 +1083,59 @@
             return 'error';
         }
 
-
         return 'pending';
     }
 
 
     function getCheckIcon(state) {
-
-        if (state === 'success') {
-            return '✅';
-        }
-
-        if (state === 'error') {
-            return '❌';
-        }
-
-        if (state === 'unknown') {
-            return '❔';
-        }
+        if (state === 'success') return '✅';
+        if (state === 'error') return '❌';
+        if (state === 'unknown') return '❔';
 
         return '⏳';
     }
 
 
     function getCheckLabel(key) {
-
         const labels = {
-
-            database:
-                'اتصال قاعدة البيانات',
-
-            netlifyCredentials:
-                'حساب Netlify OAuth',
-
-            credentials:
-                'بيانات Netlify',
-
-            netlifySite:
-                'موقع Netlify',
-
-            site:
-                'موقع Netlify',
-
-            customDomain:
-                'ربط الدومين',
-
-            domain:
-                'الدومين الخاص',
-
-            dns:
-                'إعدادات DNS',
-
-            cname:
-                'سجل CNAME',
-
-            a:
-                'سجل A',
-
-            aaaa:
-                'سجل AAAA',
-
-            txt:
-                'سجل TXT',
-
-            txtChallenge:
-                'التحقق من TXT',
-
-            challenge:
-                'التحقق من TXT',
-
-            ssl:
-                'حالة SSL',
-
-            certificate:
-                'شهادة SSL',
-
-            cloudflare:
-                'Cloudflare',
-
-            ownership:
-                'ملكية الموقع',
-
-            verification:
-                'التحقق من الدومين'
+            database: 'اتصال قاعدة البيانات',
+            netlifyCredentials: 'حساب Netlify OAuth',
+            credentials: 'بيانات Netlify',
+            netlifySite: 'موقع Netlify',
+            site: 'موقع Netlify',
+            customDomain: 'ربط الدومين',
+            domain: 'الدومين الخاص',
+            dns: 'إعدادات DNS',
+            cname: 'سجل CNAME',
+            a: 'سجل A',
+            aaaa: 'سجل AAAA',
+            txt: 'سجل TXT',
+            txtChallenge: 'التحقق من TXT',
+            challenge: 'التحقق من TXT',
+            ssl: 'حالة SSL',
+            certificate: 'شهادة SSL',
+            cloudflare: 'Cloudflare',
+            ownership: 'ملكية الموقع',
+            verification: 'التحقق من الدومين'
         };
-
 
         return labels[key] || key;
     }
 
 
     // ==========================================
-    // 16. SENSITIVE DATA FILTER
+    // 18. SENSITIVE DATA FILTER
     // ==========================================
 
     function isSensitiveDiagnosticKey(key) {
-
         return /access[_-]?token|refresh[_-]?token|client[_-]?secret|password|authorization|rawstatus|rawresponse|verification(?:value|token)|txt(?:content|value)|accesskey|privatekey|cookie|certificatepem|credential(?:value|secret)/i
-            .test(
-                String(key)
-            );
+            .test(String(key));
     }
 
 
     function formatDiagnosticValue(value) {
-
-        if (value === true) {
-            return 'نعم';
-        }
-
-
-        if (value === false) {
-            return 'لا';
-        }
-
+        if (value === true) return 'نعم';
+        if (value === false) return 'لا';
 
         if (
             value === null ||
@@ -1480,16 +1145,11 @@
             return '';
         }
 
-
         return String(value);
     }
 
 
-    function renderDiagnosticDetails(
-        object,
-        depth = 0
-    ) {
-
+    function renderDiagnosticDetails(object, depth = 0) {
         if (
             !object ||
             typeof object !== 'object' ||
@@ -1498,305 +1158,161 @@
             return '';
         }
 
-
         let html = '';
 
+        Object.entries(object).forEach(([key, value]) => {
+            if (isSensitiveDiagnosticKey(key)) return;
 
-        Object.entries(object)
-            .forEach(
-                ([key, value]) => {
+            if (
+                key === 'ok' ||
+                key === 'success' ||
+                key === 'statusCheckSucceeded'
+            ) {
+                return;
+            }
 
-                    if (
-                        isSensitiveDiagnosticKey(
-                            key
-                        )
-                    ) {
-                        return;
-                    }
+            if (
+                value &&
+                typeof value === 'object' &&
+                !Array.isArray(value)
+            ) {
+                html += `
+                    <div class="mt-2">
 
-
-                    if (
-                        key === 'ok' ||
-                        key === 'success' ||
-                        key === 'statusCheckSucceeded'
-                    ) {
-                        return;
-                    }
-
-
-                    if (
-                        value &&
-                        typeof value === 'object' &&
-                        !Array.isArray(value)
-                    ) {
-
-                        html += `
-
-                            <div class="mt-2">
-
-                                <div class="text-xs font-bold text-slate-300 mb-1">
-                                    ${escapeHtml(
-                                        getCheckLabel(
-                                            key
-                                        )
-                                    )}
-                                </div>
-
-                                ${renderDiagnosticDetails(
-                                    value,
-                                    depth + 1
-                                )}
-
-                            </div>
-
-                        `;
-
-                        return;
-                    }
-
-
-                    if (Array.isArray(value)) {
-
-                        const safeValues =
-                            value.filter(
-                                item =>
-                                    item === null ||
-                                    [
-                                        'string',
-                                        'number',
-                                        'boolean'
-                                    ].includes(
-                                        typeof item
-                                    )
-                            );
-
-
-                        if (safeValues.length) {
-
-                            html += `
-
-                                <div class="text-xs text-slate-400 mt-1 break-words">
-
-                                    ${escapeHtml(
-                                        getCheckLabel(
-                                            key
-                                        )
-                                    )}:
-
-                                    ${escapeHtml(
-                                        safeValues.join(
-                                            ', '
-                                        )
-                                    )}
-
-                                </div>
-
-                            `;
-                        }
-
-
-                        return;
-                    }
-
-
-                    const formatted =
-                        formatDiagnosticValue(
-                            value
-                        );
-
-
-                    if (!formatted) {
-                        return;
-                    }
-
-
-                    html += `
-
-                        <div class="text-xs text-slate-400 mt-1 break-words">
-
-                            ${escapeHtml(
-                                getCheckLabel(
-                                    key
-                                )
-                            )}:
-
-                            ${escapeHtml(
-                                formatted
-                            )}
-
+                        <div class="text-xs font-bold text-slate-300 mb-1">
+                            ${escapeHtml(getCheckLabel(key))}
                         </div>
 
+                        ${renderDiagnosticDetails(value, depth + 1)}
+
+                    </div>
+                `;
+
+                return;
+            }
+
+            if (Array.isArray(value)) {
+                const safeValues = value.filter(
+                    item =>
+                        item === null ||
+                        ['string', 'number', 'boolean'].includes(typeof item)
+                );
+
+                if (safeValues.length) {
+                    html += `
+                        <div class="text-xs text-slate-400 mt-1 break-words">
+                            ${escapeHtml(getCheckLabel(key))}:
+                            ${escapeHtml(safeValues.join(', '))}
+                        </div>
                     `;
                 }
-            );
 
+                return;
+            }
+
+            const formatted = formatDiagnosticValue(value);
+
+            if (!formatted) return;
+
+            html += `
+                <div class="text-xs text-slate-400 mt-1 break-words">
+                    ${escapeHtml(getCheckLabel(key))}:
+                    ${escapeHtml(formatted)}
+                </div>
+            `;
+        });
 
         return html;
     }
 
 
     function renderDiagnosticChecks(checks) {
-
         if (
             !checks ||
             typeof checks !== 'object' ||
             Array.isArray(checks)
         ) {
-
             return `
-
                 <p class="text-xs text-slate-400">
                     لم يرجع السيرفر تفاصيل الفحوصات.
                 </p>
-
             `;
         }
 
-
         let html = '';
 
+        Object.entries(checks).forEach(([key, check]) => {
+            if (
+                isSensitiveDiagnosticKey(key) ||
+                !check ||
+                typeof check !== 'object' ||
+                Array.isArray(check)
+            ) {
+                return;
+            }
 
-        Object.entries(checks)
-            .forEach(
-                ([key, check]) => {
+            const state = getCheckState(check);
 
-                    if (
-                        isSensitiveDiagnosticKey(
-                            key
-                        ) ||
-                        !check ||
-                        typeof check !== 'object' ||
-                        Array.isArray(check)
-                    ) {
-                        return;
-                    }
+            html += `
+                <div class="rounded-lg border border-white/10 bg-black/10 p-3 mb-2">
 
+                    <div class="flex items-center gap-2">
 
-                    const state =
-                        getCheckState(
-                            check
-                        );
+                        <span>${getCheckIcon(state)}</span>
 
+                        <strong class="text-sm text-white">
+                            ${escapeHtml(getCheckLabel(key))}
+                        </strong>
 
-                    html += `
+                    </div>
 
-                        <div class="rounded-lg border border-white/10 bg-black/10 p-3 mb-2">
+                    ${renderDiagnosticDetails(check)}
 
-                            <div class="flex items-center gap-2">
-
-                                <span>
-                                    ${getCheckIcon(
-                                        state
-                                    )}
-                                </span>
-
-                                <strong class="text-sm text-white">
-                                    ${escapeHtml(
-                                        getCheckLabel(
-                                            key
-                                        )
-                                    )}
-                                </strong>
-
-                            </div>
-
-                            ${renderDiagnosticDetails(
-                                check
-                            )}
-
-                        </div>
-
-                    `;
-                }
-            );
-
+                </div>
+            `;
+        });
 
         return html || `
-
             <p class="text-xs text-slate-400">
                 لا توجد تفاصيل فحص متاحة.
             </p>
-
         `;
     }
 
 
     // ==========================================
-    // 17. OVERALL DIAGNOSTIC STATE
+    // 19. OVERALL DIAGNOSTIC STATE
     // ==========================================
 
     function getOverallDiagnosticState(payload) {
+        const overall = String(
+            payload?.overall ||
+            payload?.status ||
+            ''
+        ).toLowerCase();
 
-        const overall =
-            String(
-                payload?.overall ||
-                payload?.status ||
-                ''
-            ).toLowerCase();
-
-
-        if (
-            [
-                'ready',
-                'active',
-                'success'
-            ].includes(overall)
-        ) {
+        if (isReadyState(overall)) {
             return 'success';
         }
 
-
         if (
-            [
-                'unknown',
-                'unavailable'
-            ].includes(overall)
+            overall === 'unknown' ||
+            overall === 'unavailable'
         ) {
             return 'unknown';
         }
 
+        const checks = getDiagnosticChecks(payload);
 
-        const checks =
-            getDiagnosticChecks(
-                payload
-            );
-
-
-        const states =
-            Object.values(checks)
-                .filter(
-                    item =>
-                        item &&
-                        typeof item === 'object'
-                )
-                .map(
-                    getCheckState
-                );
-
-
-        /*
-         * إذا backend قال READY
-         * فهو جاهز مهما كان warning ديال TXT.
-         */
-
-        if (
-            overall === 'ready'
-        ) {
-            return 'success';
-        }
-
+        const states = Object.values(checks)
+            .filter(item => item && typeof item === 'object')
+            .map(getCheckState);
 
         if (
             overall === 'failed' ||
             overall === 'error'
         ) {
-
-            if (
-                states.includes('error')
-            ) {
-                return 'error';
-            }
-
+            if (states.includes('error')) return 'error';
 
             if (
                 states.includes('unknown') &&
@@ -1805,24 +1321,16 @@
                 return 'unknown';
             }
 
-
             return 'error';
         }
 
-
-        if (
-            overall === 'pending'
-        ) {
+        if (overall === 'pending') {
             return 'pending';
         }
 
-
-        if (
-            states.includes('error')
-        ) {
+        if (states.includes('error')) {
             return 'error';
         }
-
 
         if (
             states.length &&
@@ -1835,61 +1343,35 @@
             return 'success';
         }
 
-
         return 'pending';
     }
 
 
     function getOverallDiagnosticLabel(state) {
-
-        if (state === 'success') {
-            return 'الفحص مكتمل: SSL جاهز';
-        }
-
-
-        if (state === 'error') {
-            return 'تم العثور على مشكلة';
-        }
-
-
-        if (state === 'unknown') {
-            return 'تعذر التأكد من حالة SSL';
-        }
-
+        if (state === 'success') return 'الفحص مكتمل: SSL جاهز';
+        if (state === 'error') return 'تم العثور على مشكلة';
+        if (state === 'unknown') return 'تعذر التأكد من حالة SSL';
 
         return 'الفحص قيد الانتظار أو مكتمل جزئياً';
     }
 
 
     // ==========================================
-    // 18. DIAGNOSTICS PANEL
+    // 20. DIAGNOSTICS PANEL
     // ==========================================
 
     function renderDiagnosticsPanel(siteId) {
+        const state = diagnosticsCache.get(String(siteId));
 
-        const state =
-            diagnosticsCache.get(
-                String(siteId)
-            );
-
-
-        if (!state) {
-            return '';
-        }
-
+        if (!state) return '';
 
         if (state.loading) {
-
             return `
-
                 <div class="ssl-diagnostics-panel rounded-xl border border-blue-500/30 bg-slate-900 p-4 mt-4">
 
                     <div class="flex items-center gap-2 text-blue-300 font-bold text-sm">
-
                         <span class="loading-spinner"></span>
-
                         جاري فحص الدومين وSSL...
-
                     </div>
 
                     <p class="text-xs text-slate-400 mt-2">
@@ -1897,32 +1379,20 @@
                     </p>
 
                 </div>
-
             `;
         }
 
+        const payload = state.payload || {};
+        const result = state.result || {};
 
-        const payload =
-            state.payload || {};
-
-
-        const result =
-            state.result || {};
-
-
-        const overallState =
-            state.error
-                ? 'unknown'
-                : getOverallDiagnosticState(
-                    payload
-                );
-
+        const overallState = state.error
+            ? 'unknown'
+            : getOverallDiagnosticState(payload);
 
         const requestId =
             payload.requestId ||
             result.requestId ||
             '';
-
 
         const message =
             payload.reason ||
@@ -1931,12 +1401,7 @@
             result.message ||
             '';
 
-
-        const checks =
-            getDiagnosticChecks(
-                payload
-            );
-
+        const checks = getDiagnosticChecks(payload);
 
         const borderClass =
             overallState === 'success'
@@ -1945,568 +1410,323 @@
                     ? 'border-red-500/30'
                     : 'border-yellow-500/30';
 
-
         return `
-
             <div class="ssl-diagnostics-panel rounded-xl border ${borderClass} bg-slate-900 p-4 mt-4">
 
                 <div class="flex items-center justify-between gap-2 mb-3">
 
                     <strong class="text-sm text-white">
-                        ${escapeHtml(
-                            getOverallDiagnosticLabel(
-                                overallState
-                            )
-                        )}
+                        ${escapeHtml(getOverallDiagnosticLabel(overallState))}
                     </strong>
 
                     <span class="text-lg">
-                        ${getCheckIcon(
-                            overallState
-                        )}
+                        ${getCheckIcon(overallState)}
                     </span>
 
                 </div>
 
-
                 ${
                     message
                         ? `
-
                             <div class="text-xs text-slate-300 leading-6 mb-3 break-words">
-
-                                ${escapeHtml(
-                                    message
-                                )}
-
+                                ${escapeHtml(message)}
                             </div>
-
                         `
                         : ''
                 }
 
-
                 <div class="space-y-2">
-
-                    ${renderDiagnosticChecks(
-                        checks
-                    )}
-
+                    ${renderDiagnosticChecks(checks)}
                 </div>
-
 
                 ${
                     requestId
                         ? `
-
                             <div class="mt-3 pt-3 border-t border-white/10 text-xs text-slate-500 break-all">
-
                                 Request ID:
-
-                                <span dir="ltr">
-                                    ${escapeHtml(
-                                        requestId
-                                    )}
-                                </span>
-
+                                <span dir="ltr">${escapeHtml(requestId)}</span>
                             </div>
-
                         `
                         : ''
                 }
-
 
                 ${
                     state.error
                         ? `
-
                             <div class="mt-3 text-xs text-red-300 break-words">
-
-                                ${escapeHtml(
-                                    state.error
-                                )}
-
+                                ${escapeHtml(state.error)}
                             </div>
-
                         `
                         : ''
                 }
 
-
                 <div class="text-xs text-slate-500 mt-3">
-
                     هذا الفحص للقراءة فقط ولا يغير DNS ولا يطلب إصدار شهادة SSL.
-
                 </div>
 
             </div>
-
         `;
     }
 
 
     // ==========================================
-    // 19. FIND PROJECT CARD
+    // 21. FIND PROJECT CARD
     // ==========================================
 
     function findProjectCard(siteId) {
+        const grid = document.getElementById('sites-grid');
 
-        const grid =
-            document.getElementById(
-                'sites-grid'
-            );
-
-
-        if (!grid) {
-            return null;
-        }
-
+        if (!grid) return null;
 
         return Array.from(
-            grid.querySelectorAll(
-                '.project-card'
-            )
+            grid.querySelectorAll('.project-card')
         ).find(
-            card =>
-                card.dataset.projectId ===
-                String(siteId)
+            card => card.dataset.projectId === String(siteId)
         ) || null;
     }
 
 
     // ==========================================
-    // 20. CHECK SSL MANUALLY
+    // 22. CHECK SSL MANUALLY
     // ==========================================
 
-    async function checkProjectSSL(
-        site,
-        button
-    ) {
-
-        const siteId =
-            getProjectId(site);
-
+    async function checkProjectSSL(site, button) {
+        const siteId = getProjectId(site);
 
         if (!siteId) {
-            alert(
-                'معرف المشروع غير موجود.'
-            );
-
+            alert('معرف المشروع غير موجود.');
             return;
         }
-
 
         if (
             isProjectDeleting(site) ||
             isProjectPublishing(site)
         ) {
-
-            alert(
-                'لا يمكن فحص SSL أثناء حذف المشروع أو نشره.'
-            );
-
+            alert('لا يمكن فحص SSL أثناء حذف المشروع أو نشره.');
             return;
         }
 
+        const key = String(siteId);
 
-        const key =
-            String(siteId);
-
-
-        if (
-            diagnosticsInProgress.has(key)
-        ) {
-            return;
-        }
-
+        if (diagnosticsInProgress.has(key)) return;
 
         diagnosticsInProgress.add(key);
 
+        diagnosticsCache.set(key, {
+            loading: true
+        });
 
-        diagnosticsCache.set(
-            key,
-            {
-                loading: true
-            }
-        );
-
-
-        const oldText =
-            button.innerHTML;
-
+        const oldText = button.innerHTML;
 
         button.disabled = true;
-
-        button.classList.add(
-            'is-loading'
-        );
-
+        button.classList.add('is-loading');
 
         button.innerHTML =
             '<span class="loading-spinner ml-1"></span> جاري الفحص';
 
-
-        const originalPanel =
-            button
-                .closest('.project-card')
-                ?.querySelector(
-                    '.ssl-diagnostics-container'
-                );
-
+        const originalPanel = button
+            .closest('.project-card')
+            ?.querySelector('.ssl-diagnostics-container');
 
         if (originalPanel) {
-
             originalPanel.innerHTML =
-                renderDiagnosticsPanel(
-                    siteId
-                );
+                renderDiagnosticsPanel(siteId);
         }
 
-
         try {
+            const result = await requestDomainDiagnostics(siteId);
 
-            const result =
-                await requestDomainDiagnostics(
-                    siteId
-                );
-
-
-            if (
-                handleAuthenticationError(
-                    result
-                )
-            ) {
+            if (handleAuthenticationError(result)) {
                 return;
             }
 
-
-            const payload =
-                getDiagnosticPayload(
-                    result
-                );
-
+            const payload = getDiagnosticPayload(result);
 
             if (
                 !result ||
                 result.success === false ||
+                payload.success === false ||
                 result.ok === false
             ) {
-
-                diagnosticsCache.set(
-                    key,
-                    {
-                        loading: false,
-                        result:
-                            result || {},
-                        payload,
-                        error:
-                            result?.reason ||
-                            result?.error ||
-                            result?.message ||
-                            'فشل طلب تشخيص SSL.'
-                    }
-                );
+                diagnosticsCache.set(key, {
+                    loading: false,
+                    result: result || {},
+                    payload,
+                    error:
+                        result?.reason ||
+                        result?.error ||
+                        result?.message ||
+                        'فشل طلب تشخيص SSL.'
+                });
 
             } else {
+                diagnosticsCache.set(key, {
+                    loading: false,
+                    result,
+                    payload,
+                    error: ''
+                });
 
-                diagnosticsCache.set(
-                    key,
-                    {
-                        loading: false,
-                        result,
-                        payload,
-                        error: ''
-                    }
+                const currentIndex = lastSites.findIndex(
+                    item => String(getProjectId(item)) === key
                 );
-
-
-                /*
-                 * إذا diagnostics READY،
-                 * نحدث نسخة المشروع الموجودة في الذاكرة.
-                 */
-
-                const currentIndex =
-                    lastSites.findIndex(
-                        item =>
-                            String(
-                                getProjectId(
-                                    item
-                                )
-                            ) === key
-                    );
-
 
                 if (
                     currentIndex !== -1 &&
-                    isDiagnosticsReady(
-                        payload
-                    )
+                    isDiagnosticsReady(payload)
                 ) {
-
-                    lastSites[
-                        currentIndex
-                    ] =
+                    lastSites[currentIndex] =
                         applyDiagnosticsToSite(
-                            lastSites[
-                                currentIndex
-                            ],
+                            lastSites[currentIndex],
                             payload
                         );
+
+                    updateStatistics(lastSites);
                 }
             }
 
-
         } catch (error) {
+            console.error('SSL diagnostics error:', error);
 
-            console.error(
-                'SSL diagnostics error:',
-                error
-            );
-
-
-            if (
-                handleAuthenticationError(
-                    error
-                )
-            ) {
+            if (handleAuthenticationError(error)) {
                 return;
             }
 
-
-            diagnosticsCache.set(
-                key,
-                {
-                    loading: false,
-                    payload: {},
-                    result: {},
-                    error:
-                        error?.message ||
-                        'حدث خطأ أثناء فحص SSL.'
-                }
-            );
-
+            diagnosticsCache.set(key, {
+                loading: false,
+                payload: {},
+                result: {},
+                error:
+                    error?.message ||
+                    'حدث خطأ أثناء فحص SSL.'
+            });
 
         } finally {
-
-            diagnosticsInProgress.delete(
-                key
-            );
-
+            diagnosticsInProgress.delete(key);
 
             if (button.isConnected) {
-
                 button.disabled = false;
-
-                button.classList.remove(
-                    'is-loading'
-                );
-
-                button.innerHTML =
-                    oldText;
+                button.classList.remove('is-loading');
+                button.innerHTML = oldText;
             }
 
-
-            const currentCard =
-                findProjectCard(
-                    siteId
-                );
-
+            const currentCard = findProjectCard(siteId);
 
             const currentButton =
-                currentCard?.querySelector(
-                    '.check-project-ssl'
-                );
-
+                currentCard?.querySelector('.check-project-ssl');
 
             const currentPanel =
-                currentCard?.querySelector(
-                    '.ssl-diagnostics-container'
-                );
-
+                currentCard?.querySelector('.ssl-diagnostics-container');
 
             if (currentButton) {
-
-                currentButton.disabled =
-                    false;
-
-                currentButton.classList.remove(
-                    'is-loading'
-                );
+                currentButton.disabled = false;
+                currentButton.classList.remove('is-loading');
 
                 currentButton.innerHTML = `
-
                     <i class="fa-solid fa-shield-halved"></i>
-
                     Check SSL
-
                 `;
             }
 
-
             if (currentPanel) {
-
                 currentPanel.innerHTML =
-                    renderDiagnosticsPanel(
-                        siteId
-                    );
+                    renderDiagnosticsPanel(siteId);
             }
         }
     }
 
 
     // ==========================================
-    // 21. PROJECT CARD
+    // 23. PROJECT CARD
     // ==========================================
 
-    function createProjectCard(
-        site,
-        index
-    ) {
+    function createProjectCard(site, index) {
+        const siteId = getProjectId(site);
 
-        const siteId =
-            getProjectId(site);
-
-
-        const projectName =
-            getProjectName(site);
-
+        const projectName = getProjectName(site);
 
         const projectType =
             site?.variables?.projectType ||
             'غير محدد';
 
-
         const templateId =
             site?.templateId ||
             'غير محدد';
 
+        const date = getProjectDate(site);
 
-        const date =
-            getProjectDate(site);
+        const projectUrl = getSafeProjectUrl(site);
 
+        const domainStatus = getDomainStatus(
+            site,
+            projectUrl
+        );
 
-        const projectUrl =
-            getSafeProjectUrl(site);
+        const editorUrl = siteId
+            ? `editor.html?siteId=${encodeURIComponent(siteId)}`
+            : null;
 
+        const deleting = isProjectDeleting(site);
+        const publishing = isProjectPublishing(site);
 
-        const domainStatus =
-            getDomainStatus(
-                site,
-                projectUrl
-            );
-
-
-        const editorUrl =
-            siteId
-                ? `editor.html?siteId=${encodeURIComponent(siteId)}`
-                : null;
-
-
-        const deleting =
-            isProjectDeleting(site);
-
-
-        const publishing =
-            isProjectPublishing(site);
-
-
-        const card =
-            document.createElement(
-                'div'
-            );
-
+        const card = document.createElement('div');
 
         card.className =
             'project-card p-6 flex flex-col justify-between';
 
-
         if (siteId) {
-
-            card.dataset.projectId =
-                String(siteId);
+            card.dataset.projectId = String(siteId);
         }
 
-
         card.style.animationDelay =
-            `${Math.min(
-                index * 0.07,
-                0.5
-            )}s`;
+            `${Math.min(index * 0.07, 0.5)}s`;
 
+        const statusHtml = domainStatus
+            ? `
+                <div class="${
+                    domainStatus.type === 'waiting'
+                        ? 'domain-waiting-card'
+                        : domainStatus.type === 'error' ||
+                          domainStatus.type === 'deleting'
+                            ? 'border border-red-500/30 bg-red-500/10'
+                            : 'border border-blue-500/30 bg-blue-500/10'
+                } rounded-xl p-3 mb-4">
 
-        const statusHtml =
-            domainStatus
-                ? `
+                    <div class="flex items-center gap-2 mb-1">
+                        <span class="text-lg">
+                            ${escapeHtml(domainStatus.icon)}
+                        </span>
 
-                    <div class="${
-                        domainStatus.type === 'waiting'
-                            ? 'domain-waiting-card'
-                            : domainStatus.type === 'error' ||
-                              domainStatus.type === 'deleting'
-                                ? 'border border-red-500/30 bg-red-500/10'
-                                : 'border border-blue-500/30 bg-blue-500/10'
-                    } rounded-xl p-3 mb-4">
-
-                        <div class="flex items-center gap-2 mb-1">
-
-                            <span class="text-lg">
-                                ${escapeHtml(
-                                    domainStatus.icon
-                                )}
-                            </span>
-
-                            <strong class="text-sm">
-                                ${escapeHtml(
-                                    domainStatus.label
-                                )}
-                            </strong>
-
-                        </div>
-
-                        <p class="text-xs leading-6 text-slate-400">
-
-                            ${escapeHtml(
-                                domainStatus.description
-                            )}
-
-                        </p>
-
+                        <strong class="text-sm">
+                            ${escapeHtml(domainStatus.label)}
+                        </strong>
                     </div>
 
-                `
-                : '';
+                    <p class="text-xs leading-6 text-slate-400">
+                        ${escapeHtml(domainStatus.description)}
+                    </p>
 
+                </div>
+            `
+            : '';
 
         const editorButton =
-            editorUrl &&
-            !deleting &&
-            !publishing
-
+            editorUrl && !deleting && !publishing
                 ? `
-
                     <a
-                        href="${escapeHtml(
-                            editorUrl
-                        )}"
+                        href="${escapeHtml(editorUrl)}"
                         class="col-span-2 block text-center bg-purple-600 hover:bg-purple-700 text-white py-2.5 rounded-xl text-sm font-bold transition"
                     >
-
                         <i class="fa-solid fa-pen-to-square ml-1"></i>
-
                         تعديل المشروع
-
                     </a>
-
                 `
-
                 : `
-
                     <button
                         type="button"
                         disabled
                         class="col-span-2 bg-gray-200 text-gray-400 py-2.5 rounded-xl text-sm font-bold"
                     >
-
                         ${
                             deleting
                                 ? 'المشروع قيد الحذف'
@@ -2514,37 +1734,23 @@
                                     ? 'المشروع قيد النشر'
                                     : 'التعديل غير متاح'
                         }
-
                     </button>
-
                 `;
 
-
         const previewButton =
-            projectUrl &&
-            !deleting
-
+            projectUrl && !deleting
                 ? `
-
                     <a
-                        href="${escapeHtml(
-                            projectUrl
-                        )}"
+                        href="${escapeHtml(projectUrl)}"
                         target="_blank"
                         rel="noopener noreferrer"
                         class="block text-center bg-gray-100 hover:bg-gray-200 text-gray-700 py-2.5 rounded-xl text-sm font-bold transition"
                     >
-
                         <i class="fa-regular fa-eye ml-1"></i>
-
                         معاينة
-
                     </a>
-
                 `
-
                 : `
-
                     <button
                         type="button"
                         disabled
@@ -2552,148 +1758,91 @@
                     >
                         المعاينة غير متاحة
                     </button>
-
                 `;
 
-
         const sslButton =
-            siteId &&
-            !deleting &&
-            !publishing
-
+            siteId && !deleting && !publishing
                 ? `
-
                     <button
                         type="button"
                         class="check-project-ssl btn-check-ssl w-full py-3 px-4 rounded-xl text-sm font-bold transition"
-                        data-check-ssl="${escapeHtml(
-                            siteId
-                        )}"
+                        data-check-ssl="${escapeHtml(siteId)}"
                     >
-
                         <i class="fa-solid fa-shield-halved"></i>
-
                         Check SSL
-
                     </button>
-
                 `
-
                 : '';
 
-
-        const domainName =
-            projectUrl ||
-            site.customDomain ||
-            site.customUrl ||
-            'الدومين قيد التجهيز';
-
+        const domainName = projectUrl ||
+            firstNonEmpty(
+                site.customDomain,
+                site.customUrl,
+                'الدومين قيد التجهيز'
+            );
 
         card.innerHTML = `
-
             <div>
 
                 <div class="flex justify-between items-start gap-3 mb-4">
 
                     <h3 class="font-bold text-lg break-words">
-                        ${escapeHtml(
-                            projectName
-                        )}
+                        ${escapeHtml(projectName)}
                     </h3>
 
                     <span class="text-xs bg-purple-50 text-purple-700 px-2.5 py-1 rounded-md font-bold whitespace-nowrap">
-
-                        ${escapeHtml(
-                            templateId
-                        )}
-
+                        ${escapeHtml(templateId)}
                     </span>
 
                 </div>
 
-
                 <div class="text-sm text-gray-500 mb-2">
-
                     الصنف:
-
                     <strong class="text-gray-700">
-
-                        ${escapeHtml(
-                            projectType
-                        )}
-
+                        ${escapeHtml(projectType)}
                     </strong>
-
                 </div>
-
 
                 <div class="text-xs text-gray-400 mb-4">
-
                     تاريخ الإنشاء:
-
-                    ${escapeHtml(
-                        date
-                    )}
-
+                    ${escapeHtml(date)}
                 </div>
-
 
                 ${statusHtml}
 
-
                 <div
                     class="${
-                        projectUrl
-                            ? 'domain-active-card'
-                            : ''
+                        projectUrl ? 'domain-active-card' : ''
                     } bg-gray-50 p-3 rounded-xl border text-xs font-mono truncate mb-5"
                     dir="ltr"
-                    title="${escapeHtml(
-                        domainName
-                    )}"
+                    title="${escapeHtml(domainName)}"
                 >
-
-                    ${escapeHtml(
-                        domainName
-                    )}
-
+                    ${escapeHtml(domainName)}
                 </div>
 
-
                 ${
-                    site.sslReady === true
+                    site.sslReady === true ||
+                    String(site.sslState || '').toLowerCase() === 'ready'
                         ? `
-
                             <div class="text-xs text-green-400 mb-3">
-
                                 <i class="fa-solid fa-lock"></i>
-
                                 SSL جاهز
-
                             </div>
-
                         `
                         : ''
                 }
 
-
                 ${sslButton}
 
-
                 <div class="ssl-diagnostics-container">
-
                     ${
                         siteId
-                            ? renderDiagnosticsPanel(
-                                siteId
-                            )
+                            ? renderDiagnosticsPanel(siteId)
                             : ''
                     }
-
                 </div>
 
             </div>
-
 
             <div class="grid grid-cols-2 gap-2 mt-4">
 
@@ -2701,45 +1850,33 @@
 
                 ${previewButton}
 
-
                 <button
                     type="button"
                     class="copy-project-link bg-gray-100 hover:bg-gray-200 text-gray-700 py-2.5 rounded-xl text-sm font-bold transition ${
-                        !projectUrl ||
-                        deleting
+                        !projectUrl || deleting
                             ? 'opacity-50 cursor-not-allowed'
                             : ''
                     }"
-                    data-url="${escapeHtml(
-                        projectUrl || ''
-                    )}"
+                    data-url="${escapeHtml(projectUrl || '')}"
                     ${
-                        !projectUrl ||
-                        deleting
+                        !projectUrl || deleting
                             ? 'disabled'
                             : ''
                     }
                 >
-
                     <i class="fa-regular fa-copy ml-1"></i>
-
                     نسخ الرابط
-
                 </button>
-
 
                 <button
                     type="button"
                     class="delete-project-button col-span-2 bg-red-50 hover:bg-red-100 text-red-500 border border-red-500/20 py-2.5 rounded-xl text-sm font-bold transition"
                     ${
-                        deleting ||
-                        publishing ||
-                        !siteId
+                        deleting || publishing || !siteId
                             ? 'disabled'
                             : ''
                     }
                 >
-
                     ${
                         deleting
                             ? 'جاري الحذف...'
@@ -2747,21 +1884,16 @@
                                 ? 'النشر جارٍ...'
                                 : '<i class="fa-regular fa-trash-can ml-1"></i> حذف المشروع'
                     }
-
                 </button>
 
             </div>
-
         `;
 
 
         // DELETE
 
         const deleteButton =
-            card.querySelector(
-                '.delete-project-button'
-            );
-
+            card.querySelector('.delete-project-button');
 
         if (
             deleteButton &&
@@ -2769,14 +1901,9 @@
             !publishing &&
             siteId
         ) {
-
             deleteButton.addEventListener(
                 'click',
-                () =>
-                    deleteProject(
-                        site,
-                        deleteButton
-                    )
+                () => deleteProject(site, deleteButton)
             );
         }
 
@@ -2784,203 +1911,102 @@
         // COPY URL
 
         const copyButton =
-            card.querySelector(
-                '.copy-project-link'
-            );
+            card.querySelector('.copy-project-link');
 
-
-        if (
-            copyButton &&
-            projectUrl
-        ) {
-
-            copyButton.addEventListener(
-                'click',
-                async () => {
-
-                    try {
-
-                        if (
-                            !navigator.clipboard?.writeText
-                        ) {
-                            throw new Error(
-                                'Clipboard API غير متوفر'
-                            );
-                        }
-
-
-                        await navigator.clipboard.writeText(
-                            projectUrl
-                        );
-
-
-                        const oldText =
-                            copyButton.innerHTML;
-
-
-                        copyButton.innerHTML =
-                            '<i class="fa-solid fa-check ml-1"></i> تم النسخ';
-
-
-                        setTimeout(
-                            () => {
-
-                                if (
-                                    copyButton.isConnected
-                                ) {
-
-                                    copyButton.innerHTML =
-                                        oldText;
-                                }
-
-                            },
-                            2000
-                        );
-
-
-                    } catch (error) {
-
-                        console.error(
-                            'Copy URL error:',
-                            error
-                        );
-
-
-                        window.prompt(
-                            'انسخ الرابط:',
-                            projectUrl
-                        );
+        if (copyButton && projectUrl) {
+            copyButton.addEventListener('click', async () => {
+                try {
+                    if (!navigator.clipboard?.writeText) {
+                        throw new Error('Clipboard API غير متوفر');
                     }
+
+                    await navigator.clipboard.writeText(projectUrl);
+
+                    const oldText = copyButton.innerHTML;
+
+                    copyButton.innerHTML =
+                        '<i class="fa-solid fa-check ml-1"></i> تم النسخ';
+
+                    setTimeout(() => {
+                        if (copyButton.isConnected) {
+                            copyButton.innerHTML = oldText;
+                        }
+                    }, 2000);
+
+                } catch (error) {
+                    console.error('Copy URL error:', error);
+
+                    window.prompt('انسخ الرابط:', projectUrl);
                 }
-            );
+            });
         }
 
 
         // CHECK SSL
 
         const sslCheckButton =
-            card.querySelector(
-                '.check-project-ssl'
-            );
+            card.querySelector('.check-project-ssl');
 
-
-        if (
-            sslCheckButton &&
-            siteId
-        ) {
-
+        if (sslCheckButton && siteId) {
             sslCheckButton.addEventListener(
                 'click',
-                () =>
-                    checkProjectSSL(
-                        site,
-                        sslCheckButton
-                    )
+                () => checkProjectSSL(site, sslCheckButton)
             );
         }
-
 
         return card;
     }
 
 
     // ==========================================
-    // 22. DELETE PROJECT
+    // 24. DELETE PROJECT
     // ==========================================
 
-    async function deleteProject(
-        site,
-        button
-    ) {
-
-        const siteId =
-            getProjectId(site);
-
+    async function deleteProject(site, button) {
+        const siteId = getProjectId(site);
 
         if (!siteId) {
-
-            alert(
-                'معرف المشروع غير موجود.'
-            );
-
+            alert('معرف المشروع غير موجود.');
             return;
         }
-
 
         if (
             isProjectDeleting(site) ||
             isProjectPublishing(site)
         ) {
-
-            alert(
-                'المشروع قيد عملية أخرى حالياً.'
-            );
-
+            alert('المشروع قيد عملية أخرى حالياً.');
             return;
         }
 
+        const projectName = getProjectName(site);
 
-        const projectName =
-            getProjectName(site);
+        const confirmed = window.confirm(
+            `هل أنت متأكد من حذف المشروع "${projectName}"؟\n\n` +
+            'سيتم حذف المشروع والموارد المرتبطة به حسب إعدادات السيرفر.\n\n' +
+            'هذا الإجراء لا يمكن التراجع عنه.'
+        );
 
+        if (!confirmed) return;
 
-        const confirmed =
-            window.confirm(
-                `هل أنت متأكد من حذف المشروع "${projectName}"؟\n\n` +
-                'سيتم حذف المشروع والموارد المرتبطة به حسب إعدادات السيرفر.\n\n' +
-                'هذا الإجراء لا يمكن التراجع عنه.'
-            );
-
-
-        if (!confirmed) {
-            return;
-        }
-
-
-        const oldText =
-            button.innerHTML;
-
+        const oldText = button.innerHTML;
 
         button.disabled = true;
-
-
         button.innerHTML =
             '<span class="delete-spinner ml-1"></span> جاري الحذف';
 
-
         try {
-
             if (
                 typeof TemplateCraftAPI === 'undefined' ||
                 typeof TemplateCraftAPI.deleteSite !== 'function'
             ) {
-
-                throw new Error(
-                    'Delete API غير متوفر'
-                );
+                throw new Error('Delete API غير متوفر');
             }
 
+            const result = await TemplateCraftAPI.deleteSite(siteId);
 
-            const result =
-                await TemplateCraftAPI.deleteSite(
-                    siteId
-                );
+            if (handleAuthenticationError(result)) return;
 
-
-            if (
-                handleAuthenticationError(
-                    result
-                )
-            ) {
-                return;
-            }
-
-
-            if (
-                !result ||
-                result.success === false
-            ) {
-
+            if (!result || result.success === false) {
                 throw new Error(
                     result?.error ||
                     result?.message ||
@@ -2988,162 +2014,84 @@
                 );
             }
 
+            diagnosticsCache.delete(String(siteId));
 
-            diagnosticsCache.delete(
-                String(siteId)
-            );
-
-
-            alert(
-                'تم حذف المشروع بنجاح.'
-            );
-
+            alert('تم حذف المشروع بنجاح.');
 
             await loadUserSites({
                 force: true
             });
 
-
         } catch (error) {
+            console.error('Delete project error:', error);
 
-            console.error(
-                'Delete project error:',
-                error
-            );
-
-
-            if (
-                handleAuthenticationError(
-                    error
-                )
-            ) {
-                return;
-            }
-
+            if (handleAuthenticationError(error)) return;
 
             alert(
                 error.message ||
                 'حدث خطأ أثناء حذف المشروع.'
             );
 
-
         } finally {
-
             if (button.isConnected) {
-
-                button.disabled =
-                    false;
-
-                button.innerHTML =
-                    oldText;
+                button.disabled = false;
+                button.innerHTML = oldText;
             }
         }
     }
 
 
     // ==========================================
-    // 23. LOAD USER PROJECTS
+    // 25. LOAD USER PROJECTS
     // ==========================================
 
-    async function loadUserSites(
-        options = {}
-    ) {
-
-        if (isLoading) {
-            return;
-        }
-
+    async function loadUserSites(options = {}) {
+        if (isLoading) return;
 
         isLoading = true;
 
-
-        const grid =
-            document.getElementById(
-                'sites-grid'
-            );
-
+        const grid = document.getElementById('sites-grid');
 
         const refreshButton =
-            document.getElementById(
-                'refresh-projects'
-            );
-
+            document.getElementById('refresh-projects');
 
         const lastUpdated =
-            document.getElementById(
-                'last-updated'
-            );
-
+            document.getElementById('last-updated');
 
         if (!grid) {
-
             isLoading = false;
-
             return;
         }
 
-
         if (refreshButton) {
-
-            refreshButton.disabled =
-                true;
-
+            refreshButton.disabled = true;
 
             refreshButton.innerHTML =
                 '<span class="loading-spinner ml-1"></span> جاري التحديث';
         }
 
-
-        if (
-            !lastSites.length ||
-            options.showLoading
-        ) {
-
+        if (!lastSites.length || options.showLoading) {
             grid.innerHTML = `
-
                 <div class="col-span-full text-center py-16 text-slate-400">
-
                     <span class="loading-spinner ml-2"></span>
-
                     جاري تحميل مشاريعك...
-
                 </div>
-
             `;
         }
 
-
         try {
-
             if (
                 typeof TemplateCraftAPI === 'undefined' ||
                 typeof TemplateCraftAPI.getSites !== 'function'
             ) {
-
-                throw new Error(
-                    'نظام الاتصال بالخادم غير متوفر.'
-                );
+                throw new Error('نظام الاتصال بالخادم غير متوفر.');
             }
 
+            const result = await TemplateCraftAPI.getSites();
 
-            const result =
-                await TemplateCraftAPI.getSites();
+            if (handleAuthenticationError(result)) return;
 
-
-            if (
-                handleAuthenticationError(
-                    result
-                )
-            ) {
-                return;
-            }
-
-
-            if (
-                !result ||
-                result.success === false
-            ) {
-
+            if (!result || result.success === false) {
                 throw new Error(
                     result?.error ||
                     result?.message ||
@@ -3151,165 +2099,88 @@
                 );
             }
 
-
-            let sites =
-                normalizeSitesResponse(
-                    result
-                );
-
+            let sites = normalizeSitesResponse(result);
 
             if (!Array.isArray(sites)) {
-
-                throw new Error(
-                    'صيغة بيانات المشاريع غير صحيحة.'
-                );
+                throw new Error('صيغة بيانات المشاريع غير صحيحة.');
             }
 
-
             /*
-             * هنا كنجيبو domain-status.
-             *
-             * وإذا مازال pending:
-             * كنستعمل diagnostics باش نعرف واش
-             * READY فعلاً.
+             * تحديث حالة الدومين ثم Diagnostics عند الحاجة.
+             * هذا يحدث عند التحميل الأول أو عند الضغط اليدوي فقط.
              */
 
-            sites =
-                await refreshAllProjectDomains(
-                    sites
-                );
+            sites = await refreshAllProjectDomains(sites);
 
+            lastSites = sites;
 
-            lastSites =
-                sites;
+            updateStatistics(lastSites);
 
-
-            updateStatistics(
-                lastSites
-            );
-
-
-            if (
-                lastSites.length === 0
-            ) {
-
+            if (lastSites.length === 0) {
                 renderEmptyState();
 
             } else {
-
                 grid.innerHTML = '';
 
-
-                lastSites.forEach(
-                    (
-                        site,
-                        index
-                    ) => {
-
-                        grid.appendChild(
-                            createProjectCard(
-                                site,
-                                index
-                            )
-                        );
-                    }
-                );
+                lastSites.forEach((site, index) => {
+                    grid.appendChild(
+                        createProjectCard(site, index)
+                    );
+                });
             }
-
 
             if (lastUpdated) {
-
                 lastUpdated.textContent =
                     'آخر تحديث: ' +
-                    new Date()
-                        .toLocaleTimeString(
-                            'ar-MA'
-                        );
+                    new Date().toLocaleTimeString('ar-MA');
             }
-
 
         } catch (error) {
+            console.error('Load projects error:', error);
 
-            console.error(
-                'Load projects error:',
-                error
-            );
-
-
-            if (
-                handleAuthenticationError(
-                    error
-                )
-            ) {
-                return;
-            }
-
+            if (handleAuthenticationError(error)) return;
 
             if (!lastSites.length) {
-
                 grid.innerHTML = `
-
                     <div class="col-span-full text-center py-12">
 
                         <p class="text-red-400 font-bold mb-4">
-
                             ${escapeHtml(
                                 error.message ||
                                 'حدث خطأ أثناء تحميل المشاريع.'
                             )}
-
                         </p>
-
 
                         <button
                             type="button"
                             id="retry-projects"
                             class="btn-primary px-5 py-2 rounded-xl"
                         >
-
                             إعادة المحاولة
-
                         </button>
 
                     </div>
-
                 `;
 
-
                 document
-                    .getElementById(
-                        'retry-projects'
-                    )
-                    ?.addEventListener(
-                        'click',
-                        () => {
-
-                            loadUserSites({
-                                force: true,
-                                showLoading: true
-                            });
-
-                        }
-                    );
+                    .getElementById('retry-projects')
+                    ?.addEventListener('click', () => {
+                        loadUserSites({
+                            force: true,
+                            showLoading: true
+                        });
+                    });
 
             } else if (lastUpdated) {
-
                 lastUpdated.textContent =
                     'تعذر التحديث. يتم عرض آخر بيانات محملة.';
             }
 
-
         } finally {
-
-            isLoading =
-                false;
-
+            isLoading = false;
 
             if (refreshButton) {
-
-                refreshButton.disabled =
-                    false;
-
+                refreshButton.disabled = false;
 
                 refreshButton.innerHTML =
                     '<i class="fa-solid fa-rotate ml-1"></i> تحديث المشاريع';
@@ -3319,86 +2190,56 @@
 
 
     // ==========================================
-    // 24. LOGOUT
+    // 26. LOGOUT
     // ==========================================
 
     const logoutButton =
-        document.getElementById(
-            'logout-button'
-        );
-
+        document.getElementById('logout-button');
 
     if (logoutButton) {
-
-        logoutButton.addEventListener(
-            'click',
-            () => {
-
-                clearAuthentication();
-
-                window.location.replace(
-                    'login.html'
-                );
-            }
-        );
+        logoutButton.addEventListener('click', () => {
+            clearAuthentication();
+            window.location.replace('login.html');
+        });
     }
 
 
     // ==========================================
-    // 25. MANUAL REFRESH ONLY
+    // 27. MANUAL REFRESH ONLY
     // ==========================================
 
     const refreshButton =
-        document.getElementById(
-            'refresh-projects'
-        );
-
+        document.getElementById('refresh-projects');
 
     if (refreshButton) {
-
-        refreshButton.addEventListener(
-            'click',
-            () => {
-
-                /*
-                 * التحديث يحصل فقط هنا.
-                 *
-                 * لا يوجد setInterval.
-                 */
-
-                loadUserSites({
-                    force: true,
-                    showLoading: false
-                });
-
-            }
-        );
+        refreshButton.addEventListener('click', () => {
+            loadUserSites({
+                force: true,
+                showLoading: false
+            });
+        });
     }
 
 
     // ==========================================
-    // 26. NO AUTO REFRESH
+    // 28. NO AUTOMATIC REFRESH
     // ==========================================
 
     /*
-     * تم حذف:
+     * لا يوجد:
      *
-     * setInterval(...)
+     * setInterval
+     * setTimeout لإعادة تحميل المشاريع
+     * visibilitychange
      *
-     * visibilitychange -> loadUserSites()
-     *
-     * الآن الصفحة لا تتصل بالسيرفر تلقائياً.
-     *
-     * المستخدم هو الذي يضغط:
-     *
-     * "تحديث المشاريع"
-     *
-     * باش يدير refresh.
+     * التحديث يتم فقط:
+     * 1. عند فتح الصفحة أول مرة.
+     * 2. عندما يضغط المستخدم على زر تحديث المشاريع.
      */
 
 
     // ==========================================
-    // 27. START DASHBOARD
+    // 29. START DASHBOARD
     // ==========================================
 
     loadUserSites({
