@@ -238,11 +238,127 @@ function getNetlifyState() {
         return {
             connected: false,
             teamSelected: false,
-            teamName: null
+            teamDeleted: false,
+            teamName: null,
+            teamSlug: null,
+            teamId: null,
+            availableTeams: []
         };
     }
 
-    return window.TemplateCraftNetlify.getState();
+    const state =
+        window.TemplateCraftNetlify.getState();
+
+    return {
+
+        connected:
+            state?.connected === true,
+
+        teamSelected:
+            state?.teamSelected === true,
+
+        teamDeleted:
+            state?.teamDeleted === true,
+
+        teamName:
+            state?.teamName || null,
+
+        teamSlug:
+            state?.teamSlug || null,
+
+        teamId:
+            state?.teamId || null,
+
+        availableTeams:
+            Array.isArray(state?.availableTeams)
+                ? state.availableTeams
+                : []
+
+    };
+
+}
+
+
+function netlifyReady(state) {
+
+    return (
+        state &&
+        state.connected === true &&
+        state.teamSelected === true &&
+        Boolean(state.teamSlug)
+    );
+
+}
+
+
+function getNetlifyReadinessMessage(state) {
+
+    if (!state || !state.connected) {
+
+        return (
+            'خاصك تربط حساب Netlify أولاً قبل إنشاء الموقع.'
+        );
+
+    }
+
+
+    if (state.teamDeleted) {
+
+        if (
+            Array.isArray(state.availableTeams) &&
+            state.availableTeams.length > 0
+        ) {
+
+            return (
+                'الـ Team السابق لم يعد موجوداً. اختر Team جديد من القائمة ثم حاول إنشاء الموقع.'
+            );
+
+        }
+
+        return (
+            'الـ Team السابق لم يعد موجوداً ولا يوجد حالياً أي Team متاح. أنشئ Team جديد في Netlify ثم حدّث الصفحة.'
+        );
+
+    }
+
+
+    if (
+        Array.isArray(state.availableTeams) &&
+        state.availableTeams.length > 1 &&
+        !state.teamSelected
+    ) {
+
+        return (
+            'عندك أكثر من Team في Netlify. اختار Team الذي تريد استعماله قبل إنشاء الموقع.'
+        );
+
+    }
+
+
+    if (
+        Array.isArray(state.availableTeams) &&
+        state.availableTeams.length === 0
+    ) {
+
+        return (
+            'ما كاين حتى Team في حساب Netlify. أنشئ Team في Netlify ثم حدّث الصفحة.'
+        );
+
+    }
+
+
+    if (!state.teamSelected || !state.teamSlug) {
+
+        return (
+            'خاصك تختار Netlify Team قبل إنشاء الموقع.'
+        );
+
+    }
+
+
+    return (
+        'تعذر تأكيد Netlify Team. حاول تحديث الحالة ثم أعد المحاولة.'
+    );
 
 }
 
@@ -254,12 +370,16 @@ async function refreshNetlifyState() {
         typeof window.TemplateCraftNetlify.refreshStatus === 'function'
     ) {
         try {
+
             await window.TemplateCraftNetlify.refreshStatus();
+
         } catch (error) {
+
             console.error(
                 'Netlify status refresh error:',
                 error
             );
+
         }
     }
 
@@ -300,7 +420,8 @@ function renderTemplates() {
 
     templateList.forEach((template, index) => {
 
-        const card = document.createElement('div');
+        const card =
+            document.createElement('div');
 
         card.className =
             'template-card border-2 border-gray-200 rounded-2xl bg-white' +
@@ -310,7 +431,8 @@ function renderTemplates() {
                     : ''
             );
 
-        card.dataset.template = template.id;
+        card.dataset.template =
+            template.id;
 
         const previewUrl =
             getPreviewUrl(template.id);
@@ -445,12 +567,15 @@ function renderTemplates() {
 function selectTemplate(templateId) {
 
     if (
-        !templateList.some(item => item.id === templateId)
+        !templateList.some(
+            item => item.id === templateId
+        )
     ) {
         return;
     }
 
-    selectedTemplateId = templateId;
+    selectedTemplateId =
+        templateId;
 
     document
         .querySelectorAll('.template-card')
@@ -468,16 +593,24 @@ function selectTemplate(templateId) {
                 card.querySelector('.selectedMark');
 
             if (mark) {
+
                 mark.textContent =
-                    selected ? '✓ محدد' : '';
+                    selected
+                        ? '✓ محدد'
+                        : '';
+
             }
 
             const glowLine =
                 card.querySelector('.selectedGlowLine');
 
             if (glowLine) {
+
                 glowLine.style.display =
-                    selected ? 'block' : 'none';
+                    selected
+                        ? 'block'
+                        : 'none';
+
             }
 
         });
@@ -490,7 +623,10 @@ function selectTemplate(templateId) {
 function updateSelectedLabel() {
 
     const number =
-        selectedTemplateId.replace('template-', '');
+        selectedTemplateId.replace(
+            'template-',
+            ''
+        );
 
     selectedLabel.textContent =
         `القالب ${number} محدد`;
@@ -504,15 +640,20 @@ function updateSelectedLabel() {
 
 function openPreview(templateId) {
 
-    previewTemplateId = templateId;
+    previewTemplateId =
+        templateId;
 
     const template =
         templateList.find(
             item => item.id === templateId
         );
 
-    document.getElementById('previewTitle').textContent =
-        template ? template.name : 'معاينة القالب';
+    document.getElementById(
+        'previewTitle'
+    ).textContent =
+        template
+            ? template.name
+            : 'معاينة القالب';
 
     previewModal.classList.add('active');
 
@@ -522,7 +663,9 @@ function openPreview(templateId) {
 
     previewLoading.classList.remove('hidden');
 
-    const url = getPreviewUrl(templateId);
+    const url =
+        getPreviewUrl(templateId);
+
 
     if (!url) {
 
@@ -534,25 +677,31 @@ function openPreview(templateId) {
 
     }
 
-    previewFrame.onload = function() {
 
-        previewLoading.classList.add('hidden');
+    previewFrame.onload =
+        function() {
 
-        previewError.classList.add('hidden');
+            previewLoading.classList.add('hidden');
 
-        previewFrame.classList.remove('hidden');
+            previewError.classList.add('hidden');
 
-    };
+            previewFrame.classList.remove('hidden');
 
-    previewFrame.onerror = function() {
+        };
 
-        previewLoading.classList.add('hidden');
 
-        previewError.classList.remove('hidden');
+    previewFrame.onerror =
+        function() {
 
-    };
+            previewLoading.classList.add('hidden');
 
-    previewFrame.src = url;
+            previewError.classList.remove('hidden');
+
+        };
+
+
+    previewFrame.src =
+        url;
 
 }
 
@@ -565,53 +714,78 @@ function closePreview() {
 
     previewModal.classList.remove('active');
 
-    previewFrame.src = 'about:blank';
+    previewFrame.src =
+        'about:blank';
 
-    previewTemplateId = null;
+    previewTemplateId =
+        null;
 
 }
 
 
-document.getElementById('closePreviewBtn')
-    .addEventListener('click', closePreview);
+document.getElementById(
+    'closePreviewBtn'
+).addEventListener(
+    'click',
+    closePreview
+);
 
 
-previewModal.addEventListener('click', function(event) {
+previewModal.addEventListener(
+    'click',
+    function(event) {
 
-    if (event.target === previewModal) {
-        closePreview();
-    }
+        if (event.target === previewModal) {
 
-});
+            closePreview();
 
-
-document.addEventListener('keydown', function(event) {
-
-    if (event.key === 'Escape') {
-
-        closePreview();
-
-        if (createModal.classList.contains('active')) {
-            closeCreateModal();
         }
 
     }
+);
 
-});
+
+document.addEventListener(
+    'keydown',
+    function(event) {
+
+        if (event.key === 'Escape') {
+
+            closePreview();
+
+            if (
+                createModal.classList.contains(
+                    'active'
+                )
+            ) {
+
+                closeCreateModal();
+
+            }
+
+        }
+
+    }
+);
 
 
 // ================================================
 // 11. CHOOSE FROM PREVIEW
 // ================================================
 
-document.getElementById('choosePreviewBtn')
-    .addEventListener('click', function() {
+document.getElementById(
+    'choosePreviewBtn'
+).addEventListener(
+    'click',
+    function() {
 
         if (!previewTemplateId) {
             return;
         }
 
-        selectTemplate(previewTemplateId);
+        selectTemplate(
+            previewTemplateId
+        );
 
         closePreview();
 
@@ -620,27 +794,35 @@ document.getElementById('choosePreviewBtn')
             'success'
         );
 
-    });
+    }
+);
 
 
 // ================================================
 // 12. CATEGORY CHANGE
 // ================================================
 
-projectTypeSelect.addEventListener('change', function() {
+projectTypeSelect.addEventListener(
+    'change',
+    function() {
 
-    resultContainer.classList.add('hidden');
+        resultContainer.classList.add(
+            'hidden'
+        );
 
-    renderTemplates();
+        renderTemplates();
 
-});
+    }
+);
 
 
 // ================================================
 // 13. USER INFORMATION
 // ================================================
 
-userInfo.classList.remove('hidden');
+userInfo.classList.remove(
+    'hidden'
+);
 
 userEmail.textContent =
     user.email ||
@@ -700,7 +882,10 @@ function getSiteData(result) {
 // 15. VALIDATE CUSTOM DOMAIN
 // ================================================
 
-function getSafeCustomUrl(url, domainStatus) {
+function getSafeCustomUrl(
+    url,
+    domainStatus
+) {
 
     if (
         domainStatus !== 'active' ||
@@ -712,9 +897,12 @@ function getSafeCustomUrl(url, domainStatus) {
 
     try {
 
-        const parsed = new URL(url);
+        const parsed =
+            new URL(url);
 
-        if (parsed.protocol !== 'https:') {
+        if (
+            parsed.protocol !== 'https:'
+        ) {
             return null;
         }
 
@@ -722,8 +910,11 @@ function getSafeCustomUrl(url, domainStatus) {
             parsed.hostname.toLowerCase();
 
         if (
-            !hostname.endsWith('.gollivetv.com') ||
-            hostname === 'gollivetv.com'
+            !hostname.endsWith(
+                '.gollivetv.com'
+            ) ||
+            hostname ===
+                'gollivetv.com'
         ) {
             return null;
         }
@@ -743,7 +934,9 @@ function getSafeCustomUrl(url, domainStatus) {
 // 16. SHOW DEPLOY RESULT
 // ================================================
 
-function showDeployResult(siteData) {
+function showDeployResult(
+    siteData
+) {
 
     const verifiedUrl =
         getSafeCustomUrl(
@@ -751,19 +944,30 @@ function showDeployResult(siteData) {
             siteData.domainStatus
         );
 
-    publishedSiteUrl = verifiedUrl;
+    publishedSiteUrl =
+        verifiedUrl;
 
-    resultContainer.classList.remove('hidden');
+    resultContainer.classList.remove(
+        'hidden'
+    );
 
-    resultUrl.textContent = '';
+    resultUrl.textContent =
+        '';
 
-    resultUrl.removeAttribute('href');
+    resultUrl.removeAttribute(
+        'href'
+    );
 
-    resultLink.classList.add('hidden');
+    resultLink.classList.add(
+        'hidden'
+    );
 
-    resultPending.classList.add('hidden');
+    resultPending.classList.add(
+        'hidden'
+    );
 
-    copyLinkBtn.disabled = true;
+    copyLinkBtn.disabled =
+        true;
 
 
     if (verifiedUrl) {
@@ -774,15 +978,21 @@ function showDeployResult(siteData) {
         resultDescription.textContent =
             'موقعك متاح الآن عبر الدومين الخاص بك.';
 
-        resultUrl.textContent = verifiedUrl;
+        resultUrl.textContent =
+            verifiedUrl;
 
-        resultUrl.href = verifiedUrl;
+        resultUrl.href =
+            verifiedUrl;
 
-        resultLink.href = verifiedUrl;
+        resultLink.href =
+            verifiedUrl;
 
-        resultLink.classList.remove('hidden');
+        resultLink.classList.remove(
+            'hidden'
+        );
 
-        copyLinkBtn.disabled = false;
+        copyLinkBtn.disabled =
+            false;
 
         showStatus(
             'تم نشر الموقع وتأكيد الدومين وشهادة SSL بنجاح! 🎉',
@@ -797,7 +1007,9 @@ function showDeployResult(siteData) {
         resultDescription.textContent =
             'تم إنشاء المشروع. الدومين الخاص مازال قيد التجهيز.';
 
-        resultPending.classList.remove('hidden');
+        resultPending.classList.remove(
+            'hidden'
+        );
 
         showStatus(
             'تم إنشاء المشروع. الدومين الخاص وSSL مازال قيد التجهيز. يمكنك متابعة الحالة من صفحة مشاريعي.',
@@ -831,16 +1043,23 @@ async function openCreateModal() {
             ? `${siteName}.gollivetv.com`
             : '—';
 
-    confirmNetlifyTeamBox.classList.add('hidden');
+    confirmNetlifyTeamBox.classList.add(
+        'hidden'
+    );
 
-    confirmNetlifyWarning.classList.add('hidden');
+    confirmNetlifyWarning.classList.add(
+        'hidden'
+    );
 
-    confirmCreateBtn.disabled = true;
+    confirmCreateBtn.disabled =
+        true;
 
     confirmCreateBtn.textContent =
         '⏳ جاري التحقق من Netlify...';
 
-    createModal.classList.add('active');
+    createModal.classList.add(
+        'active'
+    );
 
 
     const netlifyState =
@@ -848,33 +1067,48 @@ async function openCreateModal() {
 
 
     if (
-        netlifyState.connected &&
-        netlifyState.teamSelected &&
-        netlifyState.teamName
+        netlifyReady(netlifyState)
     ) {
 
         confirmNetlifyTeamName.textContent =
-            netlifyState.teamName;
+            netlifyState.teamName ||
+            netlifyState.teamSlug ||
+            'Netlify Team';
 
-        confirmNetlifyTeamBox.classList.remove('hidden');
+        confirmNetlifyTeamBox.classList.remove(
+            'hidden'
+        );
 
-        confirmNetlifyWarning.classList.add('hidden');
+        confirmNetlifyWarning.classList.add(
+            'hidden'
+        );
 
-        confirmCreateBtn.disabled = false;
+        confirmCreateBtn.disabled =
+            false;
 
         confirmCreateBtn.textContent =
             '🚀 متابعة وإنشاء الموقع';
 
     } else {
 
-        confirmNetlifyTeamBox.classList.add('hidden');
+        confirmNetlifyTeamBox.classList.add(
+            'hidden'
+        );
 
-        confirmNetlifyWarning.classList.remove('hidden');
+        confirmNetlifyWarning.classList.remove(
+            'hidden'
+        );
 
-        confirmCreateBtn.disabled = true;
+        confirmNetlifyWarning.textContent =
+            getNetlifyReadinessMessage(
+                netlifyState
+            );
+
+        confirmCreateBtn.disabled =
+            true;
 
         confirmCreateBtn.textContent =
-            'خاصك تربط Netlify أولاً';
+            'خاصك تختار Netlify Team أولاً';
 
     }
 
@@ -883,7 +1117,9 @@ async function openCreateModal() {
 
 function closeCreateModal() {
 
-    createModal.classList.remove('active');
+    createModal.classList.remove(
+        'active'
+    );
 
 }
 
@@ -894,13 +1130,18 @@ cancelCreateBtn.addEventListener(
 );
 
 
-createModal.addEventListener('click', function(event) {
+createModal.addEventListener(
+    'click',
+    function(event) {
 
-    if (event.target === createModal) {
-        closeCreateModal();
+        if (event.target === createModal) {
+
+            closeCreateModal();
+
+        }
+
     }
-
-});
+);
 
 
 // ================================================
@@ -909,60 +1150,102 @@ createModal.addEventListener('click', function(event) {
 
 function resetDeployStages() {
 
-    for (let i = 1; i <= 6; i++) {
+    for (
+        let i = 1;
+        i <= 6;
+        i++
+    ) {
 
         const stage =
-            document.getElementById(`stage${i}`);
+            document.getElementById(
+                `stage${i}`
+            );
 
         if (!stage) continue;
 
-        stage.classList.remove('active', 'done');
+        stage.classList.remove(
+            'active',
+            'done'
+        );
 
-        stage.classList.add('pending');
+        stage.classList.add(
+            'pending'
+        );
 
     }
 
+
     const first =
-        document.getElementById('stage1');
+        document.getElementById(
+            'stage1'
+        );
 
-    first.classList.remove('pending');
+    first.classList.remove(
+        'pending'
+    );
 
-    first.classList.add('active');
+    first.classList.add(
+        'active'
+    );
 
     deployStageText.textContent =
         'تجهيز المشروع...';
 
-    deployStageIndex = 1;
+    deployStageIndex =
+        1;
 
 }
 
 
-function activateDeployStage(index) {
+function activateDeployStage(
+    index
+) {
 
-    for (let i = 1; i <= 6; i++) {
+    for (
+        let i = 1;
+        i <= 6;
+        i++
+    ) {
 
         const stage =
-            document.getElementById(`stage${i}`);
+            document.getElementById(
+                `stage${i}`
+            );
 
         if (!stage) continue;
 
         if (i < index) {
 
-            stage.classList.remove('active', 'pending');
+            stage.classList.remove(
+                'active',
+                'pending'
+            );
 
-            stage.classList.add('done');
+            stage.classList.add(
+                'done'
+            );
 
         } else if (i === index) {
 
-            stage.classList.remove('pending', 'done');
+            stage.classList.remove(
+                'pending',
+                'done'
+            );
 
-            stage.classList.add('active');
+            stage.classList.add(
+                'active'
+            );
 
         } else {
 
-            stage.classList.remove('active', 'done');
+            stage.classList.remove(
+                'active',
+                'done'
+            );
 
-            stage.classList.add('pending');
+            stage.classList.add(
+                'pending'
+            );
 
         }
 
@@ -986,19 +1269,24 @@ function activateDeployStage(index) {
     };
 
     deployStageText.textContent =
-        messages[index] || 'جاري معالجة الموقع...';
+        messages[index] ||
+        'جاري معالجة الموقع...';
 
 }
 
 
-function startDeployAnimation(siteName) {
+function startDeployAnimation(
+    siteName
+) {
 
     deployOverlaySiteName.textContent =
         `${siteName}.gollivetv.com`;
 
     resetDeployStages();
 
-    deployOverlay.classList.add('active');
+    deployOverlay.classList.add(
+        'active'
+    );
 
     /*
      * المراحل هنا بصرية فقط.
@@ -1006,40 +1294,59 @@ function startDeployAnimation(siteName) {
      * انتهاء العملية الحقيقية يحدده رد Backend.
      */
 
-    deployStageTimer = setInterval(function() {
+    deployStageTimer =
+        setInterval(
+            function() {
 
-        if (deployStageIndex >= 5) {
+                if (
+                    deployStageIndex >= 5
+                ) {
 
-            clearInterval(deployStageTimer);
+                    clearInterval(
+                        deployStageTimer
+                    );
 
-            deployStageTimer = null;
+                    deployStageTimer =
+                        null;
 
-            return;
+                    return;
 
-        }
+                }
 
-        deployStageIndex++;
+                deployStageIndex++;
 
-        activateDeployStage(deployStageIndex);
+                activateDeployStage(
+                    deployStageIndex
+                );
 
-    }, 3000);
+            },
+            3000
+        );
 
 }
 
 
-function stopDeployAnimation(success = true) {
+function stopDeployAnimation(
+    success = true
+) {
 
     if (deployStageTimer) {
 
-        clearInterval(deployStageTimer);
+        clearInterval(
+            deployStageTimer
+        );
 
-        deployStageTimer = null;
+        deployStageTimer =
+            null;
 
     }
 
+
     if (success) {
 
-        activateDeployStage(6);
+        activateDeployStage(
+            6
+        );
 
         deployStageText.textContent =
             'تم إنشاء موقعك بنجاح! 🎉';
@@ -1051,11 +1358,17 @@ function stopDeployAnimation(success = true) {
 
     }
 
-    setTimeout(function() {
 
-        deployOverlay.classList.remove('active');
+    setTimeout(
+        function() {
 
-    }, success ? 700 : 0);
+            deployOverlay.classList.remove(
+                'active'
+            );
+
+        },
+        success ? 700 : 0
+    );
 
 }
 
@@ -1064,452 +1377,570 @@ function stopDeployAnimation(success = true) {
 // 19. DEPLOY BUTTON
 // ================================================
 
-deployBtn.addEventListener('click', async function() {
+deployBtn.addEventListener(
+    'click',
+    async function() {
 
-    const siteName =
-        siteNameInput.value.trim();
+        const siteName =
+            siteNameInput.value.trim();
 
 
-    if (!siteName) {
+        if (!siteName) {
 
-        showStatus(
-            'يرجى إدخال اسم الموقع أولاً.',
-            'error'
-        );
+            showStatus(
+                'يرجى إدخال اسم الموقع أولاً.',
+                'error'
+            );
 
-        siteNameInput.focus();
+            siteNameInput.focus();
 
-        return;
+            return;
+
+        }
+
+
+        if (
+            !/^[a-zA-Z0-9_-]+$/.test(
+                siteName
+            )
+        ) {
+
+            showStatus(
+                'اسم الموقع يجب أن يحتوي على حروف إنجليزية أو أرقام أو شرطة أو شرطة سفلية فقط.',
+                'error'
+            );
+
+            siteNameInput.focus();
+
+            return;
+
+        }
+
+
+        const currentToken =
+            localStorage.getItem(
+                'token'
+            );
+
+
+        if (!currentToken) {
+
+            localStorage.removeItem(
+                'user'
+            );
+
+            localStorage.removeItem(
+                'token'
+            );
+
+            alert(
+                'جلسة الدخول غير موجودة. المرجو تسجيل الدخول مجدداً.'
+            );
+
+            window.location.replace(
+                'login.html'
+            );
+
+            return;
+
+        }
+
+
+        if (
+            typeof window.TemplateCraftAPI ===
+                'undefined' ||
+            typeof TemplateCraftAPI.deploy !==
+                'function'
+        ) {
+
+            showStatus(
+                'ملف client-api.js غير متصل أو لم يتم تحميله.',
+                'error'
+            );
+
+            return;
+
+        }
+
+
+        const netlifyState =
+            await refreshNetlifyState();
+
+
+        if (
+            !netlifyReady(
+                netlifyState
+            )
+        ) {
+
+            showStatus(
+                getNetlifyReadinessMessage(
+                    netlifyState
+                ),
+                'error'
+            );
+
+            return;
+
+        }
+
+
+        await openCreateModal();
 
     }
-
-
-    if (!/^[a-zA-Z0-9_-]+$/.test(siteName)) {
-
-        showStatus(
-            'اسم الموقع يجب أن يحتوي على حروف إنجليزية أو أرقام أو شرطة فقط.',
-            'error'
-        );
-
-        siteNameInput.focus();
-
-        return;
-
-    }
-
-
-    const currentToken =
-        localStorage.getItem('token');
-
-
-    if (!currentToken) {
-
-        localStorage.removeItem('user');
-
-        localStorage.removeItem('token');
-
-        alert(
-            'جلسة الدخول غير موجودة. المرجو تسجيل الدخول مجدداً.'
-        );
-
-        window.location.replace('login.html');
-
-        return;
-
-    }
-
-
-    if (
-        typeof window.TemplateCraftAPI === 'undefined' ||
-        typeof TemplateCraftAPI.deploy !== 'function'
-    ) {
-
-        showStatus(
-            'ملف client-api.js غير متصل أو لم يتم تحميله.',
-            'error'
-        );
-
-        return;
-
-    }
-
-
-    const netlifyState =
-        await refreshNetlifyState();
-
-
-    if (
-        !netlifyState.connected ||
-        !netlifyState.teamSelected ||
-        !netlifyState.teamName
-    ) {
-
-        showStatus(
-            'خاصك تربط حساب Netlify وتتأكد من إعداد Team قبل إنشاء الموقع.',
-            'error'
-        );
-
-        return;
-
-    }
-
-
-    await openCreateModal();
-
-});
+);
 
 
 // ================================================
 // 20. CONFIRM CREATE + REAL API DEPLOY
 // ================================================
 
-confirmCreateBtn.addEventListener('click', async function() {
+confirmCreateBtn.addEventListener(
+    'click',
+    async function() {
 
-    if (confirmCreateBtn.disabled) {
-        return;
-    }
+        if (
+            confirmCreateBtn.disabled
+        ) {
+            return;
+        }
 
-    const siteName =
-        siteNameInput.value.trim();
 
-    const projectType =
-        projectTypeSelect.value;
+        const siteName =
+            siteNameInput.value.trim();
 
+        const projectType =
+            projectTypeSelect.value;
 
-    if (!siteName) {
 
-        closeCreateModal();
+        if (!siteName) {
 
-        showStatus(
-            'يرجى إدخال اسم الموقع أولاً.',
-            'error'
-        );
+            closeCreateModal();
 
-        return;
+            showStatus(
+                'يرجى إدخال اسم الموقع أولاً.',
+                'error'
+            );
 
-    }
-
-
-    if (!/^[a-zA-Z0-9_-]+$/.test(siteName)) {
-
-        closeCreateModal();
-
-        showStatus(
-            'اسم الموقع يجب أن يحتوي على حروف إنجليزية أو أرقام أو شرطة فقط.',
-            'error'
-        );
-
-        return;
-
-    }
-
-
-    const currentToken =
-        localStorage.getItem('token');
-
-
-    if (!currentToken) {
-
-        closeCreateModal();
-
-        localStorage.removeItem('user');
-
-        localStorage.removeItem('token');
-
-        alert(
-            'انتهت جلسة الدخول. المرجو تسجيل الدخول مجدداً.'
-        );
-
-        window.location.replace('login.html');
-
-        return;
-
-    }
-
-
-    if (
-        typeof window.TemplateCraftAPI === 'undefined' ||
-        typeof TemplateCraftAPI.deploy !== 'function'
-    ) {
-
-        closeCreateModal();
-
-        showStatus(
-            'ملف client-api.js غير متصل أو لم يتم تحميله.',
-            'error'
-        );
-
-        return;
-
-    }
-
-
-    /*
-     * إعادة التأكد من Netlify مباشرة قبل الإرسال.
-     */
-
-    confirmCreateBtn.disabled = true;
-
-    confirmCreateBtn.textContent =
-        '⏳ التحقق من حساب Netlify...';
-
-    const netlifyState =
-        await refreshNetlifyState();
-
-
-    if (
-        !netlifyState.connected ||
-        !netlifyState.teamSelected ||
-        !netlifyState.teamName
-    ) {
-
-        confirmCreateBtn.disabled = true;
-
-        confirmCreateBtn.textContent =
-            'خاصك تربط Netlify أولاً';
-
-        confirmNetlifyTeamBox.classList.add('hidden');
-
-        confirmNetlifyWarning.classList.remove('hidden');
-
-        showStatus(
-            'تعذر تأكيد Team الخاص بحساب Netlify. تحقق من الاتصال وحاول مجدداً.',
-            'error'
-        );
-
-        return;
-
-    }
-
-
-    confirmNetlifyTeamName.textContent =
-        netlifyState.teamName;
-
-    confirmNetlifyTeamBox.classList.remove('hidden');
-
-    confirmNetlifyWarning.classList.add('hidden');
-
-
-    /*
-     * إغلاق نافذة التأكيد.
-     */
-
-    closeCreateModal();
-
-
-    resultContainer.classList.add('hidden');
-
-    publishedSiteUrl = null;
-
-    createdSiteId = null;
-
-
-    /*
-     * تعطيل زر البداية.
-     */
-
-    deployBtn.disabled = true;
-
-    deployBtn.textContent =
-        '⏳ جاري إنشاء الموقع...';
-
-    showStatus(
-        'جاري إنشاء الموقع وإرساله إلى Netlify، المرجو الانتظار...',
-        'loading'
-    );
-
-
-    startDeployAnimation(siteName);
-
-
-    try {
-
-        /*
-         * لا نرسل userId من المتصفح.
-         * Backend يستخرج هوية المستخدم من JWT.
-         */
-
-        const result =
-            await TemplateCraftAPI.deploy({
-
-                siteName: siteName,
-
-                templateId: selectedTemplateId,
-
-                variables: {
-
-                    projectType: projectType
-
-                }
-
-            });
-
-
-        if (!result || !result.success) {
-
-            const message =
-                result?.error ||
-                result?.message ||
-                'تعذر إنشاء أو نشر الموقع.';
-
-
-            if (
-                result?.status === 401 ||
-                result?.status === 403 ||
-                /token|unauthorized|غير مصرح|تسجيل الدخول|انتهت الجلسة/i.test(message)
-            ) {
-
-                stopDeployAnimation(false);
-
-                localStorage.removeItem('token');
-
-                localStorage.removeItem('user');
-
-                alert(
-                    'انتهت جلسة الدخول. المرجو تسجيل الدخول مجدداً.'
-                );
-
-                window.location.replace('login.html');
-
-                return;
-
-            }
-
-            throw new Error(message);
+            return;
 
         }
 
 
-        const siteData =
-            getSiteData(result);
+        if (
+            !/^[a-zA-Z0-9_-]+$/.test(
+                siteName
+            )
+        ) {
 
-        createdSiteId =
-            siteData.siteId;
+            closeCreateModal();
+
+            showStatus(
+                'اسم الموقع يجب أن يحتوي على حروف إنجليزية أو أرقام أو شرطة أو شرطة سفلية فقط.',
+                'error'
+            );
+
+            return;
+
+        }
 
 
-        stopDeployAnimation(true);
+        const currentToken =
+            localStorage.getItem(
+                'token'
+            );
 
-        showDeployResult(siteData);
+
+        if (!currentToken) {
+
+            closeCreateModal();
+
+            localStorage.removeItem(
+                'user'
+            );
+
+            localStorage.removeItem(
+                'token'
+            );
+
+            alert(
+                'انتهت جلسة الدخول. المرجو تسجيل الدخول مجدداً.'
+            );
+
+            window.location.replace(
+                'login.html'
+            );
+
+            return;
+
+        }
 
 
-    } catch (error) {
+        if (
+            typeof window.TemplateCraftAPI ===
+                'undefined' ||
+            typeof TemplateCraftAPI.deploy !==
+                'function'
+        ) {
 
-        console.error(
-            'Project publishing error:',
-            error
-        );
+            closeCreateModal();
 
-        stopDeployAnimation(false);
+            showStatus(
+                'ملف client-api.js غير متصل أو لم يتم تحميله.',
+                'error'
+            );
 
-        showStatus(
-            error.message ||
-            'حدث خطأ أثناء إنشاء الموقع. حاول مرة أخرى.',
-            'error'
-        );
+            return;
 
-    } finally {
+        }
 
-        deployBtn.disabled = false;
 
-        deployBtn.textContent =
-            '🚀 إنشاء ونشر الموقع';
+        /*
+         * إعادة التأكد من Netlify مباشرة قبل الإرسال.
+         */
 
-        confirmCreateBtn.disabled = false;
+        confirmCreateBtn.disabled =
+            true;
 
         confirmCreateBtn.textContent =
-            '🚀 متابعة وإنشاء الموقع';
+            '⏳ التحقق من حساب Netlify...';
+
+
+        const netlifyState =
+            await refreshNetlifyState();
+
+
+        if (
+            !netlifyReady(
+                netlifyState
+            )
+        ) {
+
+            confirmCreateBtn.disabled =
+                true;
+
+            confirmCreateBtn.textContent =
+                'خاصك تختار Netlify Team أولاً';
+
+            confirmNetlifyTeamBox.classList.add(
+                'hidden'
+            );
+
+            confirmNetlifyWarning.classList.remove(
+                'hidden'
+            );
+
+            confirmNetlifyWarning.textContent =
+                getNetlifyReadinessMessage(
+                    netlifyState
+                );
+
+            showStatus(
+                getNetlifyReadinessMessage(
+                    netlifyState
+                ),
+                'error'
+            );
+
+            return;
+
+        }
+
+
+        confirmNetlifyTeamName.textContent =
+            netlifyState.teamName ||
+            netlifyState.teamSlug ||
+            'Netlify Team';
+
+        confirmNetlifyTeamBox.classList.remove(
+            'hidden'
+        );
+
+        confirmNetlifyWarning.classList.add(
+            'hidden'
+        );
+
+
+        /*
+         * إغلاق نافذة التأكيد.
+         */
+
+        closeCreateModal();
+
+        resultContainer.classList.add(
+            'hidden'
+        );
+
+        publishedSiteUrl =
+            null;
+
+        createdSiteId =
+            null;
+
+
+        /*
+         * تعطيل زر البداية.
+         */
+
+        deployBtn.disabled =
+            true;
+
+        deployBtn.textContent =
+            '⏳ جاري إنشاء الموقع...';
+
+
+        showStatus(
+            'جاري إنشاء الموقع وإرساله إلى Netlify، المرجو الانتظار...',
+            'loading'
+        );
+
+
+        startDeployAnimation(
+            siteName
+        );
+
+
+        try {
+
+            /*
+             * لا نرسل userId من المتصفح.
+             * Backend يستخرج هوية المستخدم من JWT.
+             */
+
+            const result =
+                await TemplateCraftAPI.deploy({
+
+                    siteName:
+                        siteName,
+
+                    templateId:
+                        selectedTemplateId,
+
+                    variables: {
+
+                        projectType:
+                            projectType
+
+                    }
+
+                });
+
+
+            if (
+                !result ||
+                !result.success
+            ) {
+
+                const message =
+                    result?.error ||
+                    result?.message ||
+                    'تعذر إنشاء أو نشر الموقع.';
+
+
+                if (
+                    result?.status === 401 ||
+                    result?.status === 403 ||
+                    /token|unauthorized|غير مصرح|تسجيل الدخول|انتهت الجلسة/i.test(
+                        message
+                    )
+                ) {
+
+                    stopDeployAnimation(
+                        false
+                    );
+
+                    localStorage.removeItem(
+                        'token'
+                    );
+
+                    localStorage.removeItem(
+                        'user'
+                    );
+
+                    alert(
+                        'انتهت جلسة الدخول. المرجو تسجيل الدخول مجدداً.'
+                    );
+
+                    window.location.replace(
+                        'login.html'
+                    );
+
+                    return;
+
+                }
+
+                throw new Error(
+                    message
+                );
+
+            }
+
+
+            const siteData =
+                getSiteData(
+                    result
+                );
+
+            createdSiteId =
+                siteData.siteId;
+
+
+            stopDeployAnimation(
+                true
+            );
+
+            showDeployResult(
+                siteData
+            );
+
+
+        } catch (error) {
+
+            console.error(
+                'Project publishing error:',
+                error
+            );
+
+            stopDeployAnimation(
+                false
+            );
+
+            showStatus(
+                error.message ||
+                'حدث خطأ أثناء إنشاء الموقع. حاول مرة أخرى.',
+                'error'
+            );
+
+        } finally {
+
+            deployBtn.disabled =
+                false;
+
+            deployBtn.textContent =
+                '🚀 إنشاء ونشر الموقع';
+
+            confirmCreateBtn.disabled =
+                false;
+
+            confirmCreateBtn.textContent =
+                '🚀 متابعة وإنشاء الموقع';
+
+        }
 
     }
-
-});
+);
 
 
 // ================================================
 // 21. COPY CUSTOM DOMAIN URL
 // ================================================
 
-copyLinkBtn.addEventListener('click', async function() {
+copyLinkBtn.addEventListener(
+    'click',
+    async function() {
 
-    if (!publishedSiteUrl) {
+        if (!publishedSiteUrl) {
 
-        showStatus(
-            'الدومين الخاص لم يصبح جاهزاً للنسخ بعد.',
-            'error'
-        );
-
-        return;
-
-    }
-
-
-    try {
-
-        if (
-            navigator.clipboard &&
-            window.isSecureContext
-        ) {
-
-            await navigator.clipboard.writeText(
-                publishedSiteUrl
+            showStatus(
+                'الدومين الخاص لم يصبح جاهزاً للنسخ بعد.',
+                'error'
             );
 
-        } else {
-
-            const textArea =
-                document.createElement('textarea');
-
-            textArea.value = publishedSiteUrl;
-
-            textArea.style.position = 'fixed';
-
-            textArea.style.opacity = '0';
-
-            document.body.appendChild(textArea);
-
-            textArea.select();
-
-            const copied =
-                document.execCommand('copy');
-
-            textArea.remove();
-
-            if (!copied) {
-                throw new Error('Copy failed');
-            }
+            return;
 
         }
 
 
-        copyLinkBtn.textContent =
-            '✅ تم نسخ الرابط';
+        try {
 
-        setTimeout(function() {
+            if (
+                navigator.clipboard &&
+                window.isSecureContext
+            ) {
+
+                await navigator.clipboard.writeText(
+                    publishedSiteUrl
+                );
+
+            } else {
+
+                const textArea =
+                    document.createElement(
+                        'textarea'
+                    );
+
+                textArea.value =
+                    publishedSiteUrl;
+
+                textArea.style.position =
+                    'fixed';
+
+                textArea.style.opacity =
+                    '0';
+
+                document.body.appendChild(
+                    textArea
+                );
+
+                textArea.select();
+
+                const copied =
+                    document.execCommand(
+                        'copy'
+                    );
+
+                textArea.remove();
+
+                if (!copied) {
+
+                    throw new Error(
+                        'Copy failed'
+                    );
+
+                }
+
+            }
+
 
             copyLinkBtn.textContent =
-                '📋 نسخ الرابط';
-
-        }, 2000);
+                '✅ تم نسخ الرابط';
 
 
-    } catch (error) {
+            setTimeout(
+                function() {
 
-        showStatus(
-            'تعذر نسخ الرابط تلقائياً. يمكنك تحديده ونسخه يدوياً.',
-            'error'
-        );
+                    copyLinkBtn.textContent =
+                        '📋 نسخ الرابط';
+
+                },
+                2000
+            );
+
+
+        } catch (error) {
+
+            showStatus(
+                'تعذر نسخ الرابط تلقائياً. يمكنك تحديده ونسخه يدوياً.',
+                'error'
+            );
+
+        }
 
     }
-
-});
+);
 
 
 // ================================================
 // 22. STATUS MESSAGE
 // ================================================
 
-function showStatus(message, type) {
+function showStatus(
+    message,
+    type
+) {
 
-    statusMessage.textContent = message;
+    statusMessage.textContent =
+        message;
 
     statusMessage.className =
         'mt-5 text-center text-sm font-bold';
@@ -1517,15 +1948,21 @@ function showStatus(message, type) {
 
     if (type === 'success') {
 
-        statusMessage.classList.add('text-green-600');
+        statusMessage.classList.add(
+            'text-green-600'
+        );
 
     } else if (type === 'error') {
 
-        statusMessage.classList.add('text-red-600');
+        statusMessage.classList.add(
+            'text-red-600'
+        );
 
     } else {
 
-        statusMessage.classList.add('text-blue-600');
+        statusMessage.classList.add(
+            'text-blue-600'
+        );
 
     }
 
