@@ -1,8 +1,13 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
+
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
 
     <title>إنشاء مشروع جديد | TemplateCraft Pro</title>
 
@@ -12,53 +17,345 @@
         href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap"
         rel="stylesheet">
 
-    <link rel="stylesheet" href="./create-project.css">
+    <link
+        rel="stylesheet"
+        href="./create-project.css">
+
+    <style>
+
+        /* =====================================================
+           TEMPLATE CARDS
+        ===================================================== */
+
+        .template-card {
+            position: relative;
+            overflow: hidden;
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 1.25rem;
+            transition:
+                transform .25s ease,
+                box-shadow .25s ease,
+                border-color .25s ease;
+        }
+
+        .template-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(124, 58, 237, .35);
+            box-shadow:
+                0 20px 45px rgba(15, 23, 42, .12);
+        }
+
+        .template-card.selected {
+            border-color: #7c3aed;
+            box-shadow:
+                0 0 0 3px rgba(124, 58, 237, .12),
+                0 20px 45px rgba(124, 58, 237, .15);
+        }
+
+        .template-image-wrapper {
+            position: relative;
+            width: 100%;
+            height: 220px;
+            overflow: hidden;
+            background:
+                linear-gradient(
+                    135deg,
+                    #f8fafc,
+                    #eef2ff
+                );
+        }
+
+        .template-image {
+            width: 100%;
+            height: 100%;
+            display: block;
+            object-fit: cover;
+            object-position: center top;
+            transition:
+                transform .45s ease,
+                filter .45s ease;
+        }
+
+        .template-card:hover .template-image {
+            transform: scale(1.04);
+        }
+
+        .template-image-overlay {
+            position: absolute;
+            inset: 0;
+            background:
+                linear-gradient(
+                    to bottom,
+                    rgba(15, 23, 42, .02),
+                    rgba(15, 23, 42, .28)
+                );
+            pointer-events: none;
+        }
+
+        .template-badge {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            z-index: 3;
+            background: rgba(255,255,255,.92);
+            backdrop-filter: blur(10px);
+            color: #6d28d9;
+            border: 1px solid rgba(124,58,237,.15);
+            border-radius: 999px;
+            padding: 6px 10px;
+            font-size: 11px;
+            font-weight: 800;
+        }
+
+        .template-selected-badge {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            z-index: 4;
+            display: none;
+            background: #7c3aed;
+            color: white;
+            border-radius: 999px;
+            padding: 6px 11px;
+            font-size: 11px;
+            font-weight: 900;
+        }
+
+        .template-card.selected .template-selected-badge {
+            display: block;
+        }
+
+        .template-card-body {
+            padding: 18px;
+        }
+
+        .template-title {
+            font-size: 17px;
+            font-weight: 900;
+            color: #111827;
+            line-height: 1.5;
+        }
+
+        .template-description {
+            margin-top: 7px;
+            color: #6b7280;
+            font-size: 12px;
+            line-height: 1.8;
+            min-height: 44px;
+        }
+
+        .template-features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 12px;
+        }
+
+        .template-feature {
+            background: #f5f3ff;
+            color: #6d28d9;
+            border-radius: 8px;
+            padding: 5px 8px;
+            font-size: 10px;
+            font-weight: 800;
+        }
+
+        .template-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 17px;
+        }
+
+        .template-preview-btn,
+        .template-select-btn {
+            flex: 1;
+            border-radius: 11px;
+            padding: 10px 12px;
+            font-size: 12px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: .2s ease;
+        }
+
+        .template-preview-btn {
+            background: #f3f4f6;
+            color: #374151;
+        }
+
+        .template-preview-btn:hover {
+            background: #e5e7eb;
+        }
+
+        .template-select-btn {
+            background: #7c3aed;
+            color: white;
+        }
+
+        .template-select-btn:hover {
+            background: #6d28d9;
+        }
+
+        .template-card.selected .template-select-btn {
+            background: #059669;
+        }
+
+        .template-loading {
+            min-height: 250px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 12px;
+            color: #6b7280;
+        }
+
+        .template-spinner {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            border: 4px solid #ede9fe;
+            border-top-color: #7c3aed;
+            animation: templateSpin .8s linear infinite;
+        }
+
+        @keyframes templateSpin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .template-empty {
+            grid-column: 1 / -1;
+            padding: 50px 20px;
+            text-align: center;
+            border: 1px dashed #d1d5db;
+            border-radius: 18px;
+            background: #fafafa;
+        }
+
+        .template-error {
+            grid-column: 1 / -1;
+            padding: 35px 20px;
+            text-align: center;
+            border: 1px solid #fecaca;
+            border-radius: 18px;
+            background: #fef2f2;
+        }
+
+        /* =====================================================
+           CATEGORY SELECT
+        ===================================================== */
+
+        #projectTypeSelect {
+            cursor: pointer;
+        }
+
+        #projectTypeSelect:disabled {
+            cursor: wait;
+        }
+
+        /* =====================================================
+           MODAL
+        ===================================================== */
+
+        .modal {
+            display: none;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-frame {
+            width: 100%;
+            height: min(72vh, 760px);
+            border: 0;
+            background: #f8fafc;
+        }
+
+        /* =====================================================
+           SELECTED TEMPLATE INFO
+        ===================================================== */
+
+        #selectedLabel {
+            transition: .2s ease;
+        }
+
+    </style>
+
 </head>
 
-<body class="min-h-screen">
+
+<body class="min-h-screen bg-slate-50">
+
 
     <!-- =========================================================
          HEADER
     ========================================================== -->
+
     <header class="bg-white border-b shadow-sm">
-        <div class="max-w-6xl mx-auto px-5 py-4 flex justify-between items-center">
+
+        <div
+            class="max-w-6xl mx-auto px-5 py-4 flex justify-between items-center">
 
             <a
                 href="index.html"
                 class="text-xl font-extrabold text-purple-700">
+
                 TemplateCraft Pro
+
             </a>
 
             <a
                 href="profile.html"
                 class="text-sm font-bold text-gray-600 hover:text-purple-700">
+
                 مشاريعي
+
             </a>
 
         </div>
+
     </header>
 
 
     <!-- =========================================================
          MAIN
     ========================================================== -->
+
     <main class="max-w-6xl mx-auto px-4 py-10">
 
-        <div class="bg-white rounded-2xl shadow-sm border p-6 md:p-8">
+        <div
+            class="bg-white rounded-2xl shadow-sm border p-6 md:p-8">
 
-            <!-- PAGE INTRO -->
+
+            <!-- =====================================================
+                 PAGE INTRO
+            ====================================================== -->
+
             <div class="mb-8">
 
-                <span class="text-purple-700 text-sm font-bold">
+                <span
+                    class="text-purple-700 text-sm font-bold">
+
                     TEMPLATECRAFT BUILDER
+
                 </span>
 
-                <h1 class="text-2xl md:text-3xl font-extrabold text-gray-900 mt-2">
+                <h1
+                    class="text-2xl md:text-3xl font-extrabold text-gray-900 mt-2">
+
                     🚀 إنشاء ونشر موقع جديد
+
                 </h1>
 
-                <p class="text-gray-500 mt-2">
-                    اختر تصنيف موقعك، شاهد القوالب الحقيقية قبل الاختيار، ثم أنشئ موقعك وانشره بسهولة.
+                <p
+                    class="text-gray-500 mt-2">
+
+                    اختر تصنيف موقعك، شاهد القوالب الحقيقية قبل الاختيار،
+                    ثم أنشئ موقعك وانشره بسهولة.
+
                 </p>
 
             </div>
@@ -67,12 +364,15 @@
             <!-- =====================================================
                  SITE NAME
             ====================================================== -->
+
             <div class="mb-7">
 
                 <label
                     for="siteNameInput"
                     class="block font-bold text-gray-800 mb-2">
+
                     اسم الموقع
+
                 </label>
 
                 <input
@@ -83,8 +383,11 @@
                     autocomplete="off"
                     class="w-full p-3 border border-gray-300 rounded-xl outline-none focus:ring-2 focus:ring-purple-500">
 
-                <p class="text-xs text-gray-400 mt-2">
+                <p
+                    class="text-xs text-gray-400 mt-2">
+
                     استعمل الحروف الإنجليزية والأرقام والشرطة فقط.
+
                 </p>
 
             </div>
@@ -92,17 +395,16 @@
 
             <!-- =====================================================
                  CATEGORY
-                 
-                 التصنيفات الآن يتم تحميلها من Backend
-                 عبر:
-                 GET /api/templates/categories
             ====================================================== -->
+
             <div class="mb-8">
 
                 <label
                     for="projectTypeSelect"
                     class="block font-bold text-gray-800 mb-2">
+
                     نوع الموقع
+
                 </label>
 
                 <select
@@ -111,7 +413,9 @@
                     class="w-full p-3 border border-gray-300 rounded-xl bg-white outline-none focus:ring-2 focus:ring-purple-500 disabled:bg-gray-100 disabled:text-gray-500">
 
                     <option value="">
+
                         جاري تحميل أنواع المواقع...
+
                     </option>
 
                 </select>
@@ -119,13 +423,17 @@
                 <p
                     id="categoryLoadingMessage"
                     class="text-xs text-gray-400 mt-2">
+
                     جاري تحميل التصنيفات المتوفرة من TemplateCraft Pro...
+
                 </p>
 
                 <p
                     id="categoryErrorMessage"
                     class="hidden text-xs text-red-600 mt-2 font-bold">
+
                     تعذر تحميل أنواع المواقع. حاول إعادة تحميل الصفحة.
+
                 </p>
 
             </div>
@@ -134,18 +442,26 @@
             <!-- =====================================================
                  TEMPLATE SELECTION
             ====================================================== -->
+
             <div class="mb-8">
 
-                <div class="flex flex-wrap justify-between items-center gap-3 mb-5">
+                <div
+                    class="flex flex-wrap justify-between items-center gap-3 mb-5">
 
                     <div>
 
                         <h2 class="font-extrabold text-lg">
+
                             اختر القالب المناسب
+
                         </h2>
 
-                        <p class="text-sm text-gray-500 mt-1">
-                            اضغط على القالب لاختياره أو افتح المعاينة لمشاهدة الموقع.
+                        <p
+                            class="text-sm text-gray-500 mt-1">
+
+                            القوالب الموجودة في التصنيف المختار ستظهر هنا
+                            مع الصورة والمعاينة.
+
                         </p>
 
                     </div>
@@ -153,15 +469,34 @@
                     <span
                         id="selectedLabel"
                         class="text-xs text-purple-700 bg-purple-50 px-3 py-2 rounded-lg font-bold">
+
                         جاري تحميل القوالب...
+
                     </span>
 
                 </div>
 
 
+                <!-- =================================================
+                     TEMPLATE GRID
+                ================================================== -->
+
                 <div
                     id="templatesGrid"
                     class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+
+                    <div class="template-loading">
+
+                        <div class="template-spinner"></div>
+
+                        <p class="text-sm">
+
+                            جاري تحميل القوالب...
+
+                        </p>
+
+                    </div>
+
                 </div>
 
             </div>
@@ -170,12 +505,16 @@
             <!-- =====================================================
                  USER INFORMATION
             ====================================================== -->
+
             <div
                 id="userInfo"
                 class="hidden bg-purple-50 border border-purple-100 rounded-xl p-4 mb-6">
 
-                <p class="text-sm text-purple-800 font-bold">
+                <p
+                    class="text-sm text-purple-800 font-bold">
+
                     سيتم تسجيل المشروع في حسابك.
+
                 </p>
 
                 <p
@@ -188,34 +527,45 @@
 
 
             <!-- =====================================================
-                 NETLIFY CONNECTION
+                 NETLIFY
             ====================================================== -->
-            <section class="netlify-card rounded-2xl p-5 mb-6">
 
-                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <section
+                class="netlify-card rounded-2xl p-5 mb-6">
+
+                <div
+                    class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
 
                     <div class="flex items-center gap-3">
 
                         <div class="netlify-icon">
+
                             N
+
                         </div>
 
                         <div>
 
-                            <h3 class="font-extrabold text-gray-900">
+                            <h3
+                                class="font-extrabold text-gray-900">
+
                                 ربط حساب Netlify
+
                             </h3>
 
-                            <p class="text-xs text-gray-500 mt-1">
+                            <p
+                                class="text-xs text-gray-500 mt-1">
+
                                 اربط حسابك باش يتم نشر مشاريعك عليه.
+
                             </p>
 
                         </div>
 
                     </div>
 
-
-                    <div class="flex items-center gap-2">
+                    <div
+                        class="flex items-center gap-2">
 
                         <span
                             id="netlifyStatusDot"
@@ -225,7 +575,9 @@
                         <span
                             id="netlifyStatusText"
                             class="text-xs font-bold text-gray-500">
+
                             جاري التحقق...
+
                         </span>
 
                     </div>
@@ -233,61 +585,79 @@
                 </div>
 
 
-                <!-- =================================================
-                     CONNECTED
-                ================================================== -->
+                <!-- CONNECTED -->
+
                 <div
                     id="netlifyConnectedInfo"
                     class="hidden netlify-team-box mt-4 rounded-xl border border-green-200 bg-green-50 p-4">
 
-                    <div class="flex items-center gap-2 text-green-700">
+                    <div
+                        class="flex items-center gap-2 text-green-700">
 
                         <span class="text-lg">
+
                             ✓
+
                         </span>
 
-                        <span class="text-sm font-extrabold">
+                        <span
+                            class="text-sm font-extrabold">
+
                             حساب Netlify متصل
+
                         </span>
 
                     </div>
 
-                    <p class="text-xs text-green-700 mt-2">
+                    <p
+                        class="text-xs text-green-700 mt-2">
+
                         Team المرتبط بحسابك:
+
                     </p>
 
                     <p
                         id="netlifyMainTeamName"
                         dir="auto"
                         class="font-extrabold text-gray-900 mt-1">
+
                         —
+
                     </p>
 
 
-                    <!-- =================================================
-                         TEAM SELECTION
-                    ================================================== -->
+                    <!-- TEAM PICKER -->
+
                     <div
                         id="netlifyTeamPicker"
                         class="hidden mt-4 rounded-xl border border-blue-200 bg-white p-4">
 
-                        <div class="flex items-start gap-3">
+                        <div
+                            class="flex items-start gap-3">
 
                             <div
                                 class="w-9 h-9 rounded-lg bg-blue-50 text-blue-700 flex items-center justify-center font-black flex-shrink-0">
+
                                 N
+
                             </div>
 
-                            <div class="flex-1 min-w-0">
+                            <div
+                                class="flex-1 min-w-0">
 
-                                <p class="text-sm font-extrabold text-gray-900">
+                                <p
+                                    class="text-sm font-extrabold text-gray-900">
+
                                     اختيار Netlify Team
+
                                 </p>
 
                                 <p
                                     id="netlifyTeamPickerMessage"
                                     class="text-xs text-gray-500 mt-1 leading-5">
+
                                     اختر الـ Team الذي تريد استعماله لإنشاء المشاريع.
+
                                 </p>
 
                             </div>
@@ -300,7 +670,9 @@
                             <label
                                 for="netlifyTeamSelect"
                                 class="block text-xs font-bold text-gray-700 mb-2">
+
                                 Teams المتاحة
+
                             </label>
 
                             <select
@@ -308,7 +680,9 @@
                                 class="w-full p-3 border border-gray-300 rounded-xl bg-white outline-none focus:ring-2 focus:ring-blue-500">
 
                                 <option value="">
+
                                     اختر Team...
+
                                 </option>
 
                             </select>
@@ -320,15 +694,16 @@
                             id="selectNetlifyTeamBtn"
                             type="button"
                             class="w-full mt-3 bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-xl font-bold text-sm transition">
+
                             اختيار Team
+
                         </button>
 
                     </div>
 
 
-                    <!-- =================================================
-                         TEAM STATUS
-                    ================================================== -->
+                    <!-- TEAM STATUS -->
+
                     <div
                         id="netlifyTeamStatusBox"
                         class="hidden mt-4 rounded-xl border border-amber-200 bg-amber-50 p-4">
@@ -343,15 +718,18 @@
                 </div>
 
 
-                <!-- =================================================
-                     NOT CONNECTED
-                ================================================== -->
+                <!-- NOT CONNECTED -->
+
                 <div
                     id="netlifyNotConnectedInfo"
                     class="mt-4">
 
-                    <p class="text-xs text-gray-500 leading-6 mb-3">
-                        سيتم فتح نافذة آمنة من Netlify لتأكيد الربط، وستبقى صفحة إنشاء المشروع مفتوحة.
+                    <p
+                        class="text-xs text-gray-500 leading-6 mb-3">
+
+                        سيتم فتح نافذة آمنة من Netlify لتأكيد الربط،
+                        وستبقى صفحة إنشاء المشروع مفتوحة.
+
                     </p>
 
                     <button
@@ -359,8 +737,11 @@
                         type="button"
                         class="netlify-connect-btn w-full sm:w-auto bg-slate-900 hover:bg-slate-800 text-white px-5 py-3 rounded-xl font-bold text-sm">
 
-                        <span id="connectNetlifyBtnText">
+                        <span
+                            id="connectNetlifyBtnText">
+
                             ربط حساب Netlify
+
                         </span>
 
                     </button>
@@ -381,6 +762,7 @@
             <!-- =====================================================
                  DEPLOY BUTTON
             ====================================================== -->
+
             <button
                 id="deployBtn"
                 type="button"
@@ -391,9 +773,8 @@
             </button>
 
 
-            <!-- =====================================================
-                 STATUS
-            ====================================================== -->
+            <!-- STATUS -->
+
             <div
                 id="statusMessage"
                 class="mt-5 text-center text-sm font-bold"
@@ -405,6 +786,7 @@
             <!-- =====================================================
                  RESULT
             ====================================================== -->
+
             <div
                 id="resultContainer"
                 class="hidden mt-5 bg-green-50 border border-green-200 rounded-xl p-5 text-center">
@@ -412,13 +794,17 @@
                 <h3
                     id="resultTitle"
                     class="text-green-700 font-extrabold text-lg mb-2">
+
                     ✅ تم إنشاء مشروعك بنجاح!
+
                 </h3>
 
                 <p
                     id="resultDescription"
                     class="text-gray-600 text-sm mb-4">
+
                     جاري تجهيز الدومين الخاص بموقعك.
+
                 </p>
 
 
@@ -426,8 +812,11 @@
                     id="resultDomainBox"
                     class="bg-white border border-green-200 rounded-xl p-3 mb-4">
 
-                    <p class="text-xs text-gray-500 mb-2">
+                    <p
+                        class="text-xs text-gray-500 mb-2">
+
                         رابط موقعك:
+
                     </p>
 
                     <a
@@ -442,13 +831,17 @@
                     <p
                         id="resultPending"
                         class="hidden text-yellow-700 font-bold text-sm mt-2">
-                        ⏳ الدومين الخاص قيد التجهيز. سيظهر الرابط هنا بعد تأكيد DNS وSSL.
+
+                        ⏳ الدومين الخاص قيد التجهيز.
+                        سيظهر الرابط هنا بعد تأكيد DNS وSSL.
+
                     </p>
 
                 </div>
 
 
-                <div class="flex flex-col sm:flex-row justify-center gap-3">
+                <div
+                    class="flex flex-col sm:flex-row justify-center gap-3">
 
                     <a
                         id="resultLink"
@@ -456,7 +849,9 @@
                         target="_blank"
                         rel="noopener noreferrer"
                         class="hidden bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-xl font-bold">
+
                         🌐 زيارة الموقع
+
                     </a>
 
                     <button
@@ -464,7 +859,9 @@
                         type="button"
                         disabled
                         class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-xl font-bold">
+
                         📋 نسخ الرابط
+
                     </button>
 
                 </div>
@@ -475,7 +872,9 @@
                     <a
                         href="profile.html"
                         class="text-purple-700 font-bold text-sm hover:underline">
+
                         الذهاب إلى مشاريعي وتعديل الموقع
+
                     </a>
 
                 </div>
@@ -490,24 +889,32 @@
     <!-- =========================================================
          PREVIEW MODAL
     ========================================================== -->
+
     <div
         id="previewModal"
         class="modal fixed inset-0 z-50 bg-black/70 items-center justify-center p-3 md:p-6">
 
-        <div class="bg-white w-full max-w-6xl rounded-2xl overflow-hidden shadow-2xl">
+        <div
+            class="bg-white w-full max-w-6xl rounded-2xl overflow-hidden shadow-2xl">
 
-            <div class="flex justify-between items-center p-4 border-b">
+            <div
+                class="flex justify-between items-center p-4 border-b">
 
                 <div>
 
                     <h3
                         id="previewTitle"
                         class="font-extrabold text-gray-900">
+
                         معاينة القالب
+
                     </h3>
 
-                    <p class="text-xs text-gray-500 mt-1">
+                    <p
+                        class="text-xs text-gray-500 mt-1">
+
                         معاينة الموقع قبل إنشائه
+
                     </p>
 
                 </div>
@@ -516,7 +923,9 @@
                     id="closePreviewBtn"
                     type="button"
                     class="bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg px-4 py-2 font-bold">
+
                     ✕ إغلاق
+
                 </button>
 
             </div>
@@ -529,7 +938,9 @@
                 <div class="loader"></div>
 
                 <p class="text-sm text-gray-500">
+
                     جاري تحميل معاينة القالب...
+
                 </p>
 
             </div>
@@ -540,11 +951,16 @@
                 class="hidden text-center p-10">
 
                 <p class="text-red-600 font-bold">
+
                     تعذر تحميل المعاينة.
+
                 </p>
 
-                <p class="text-sm text-gray-500 mt-2">
+                <p
+                    class="text-sm text-gray-500 mt-2">
+
                     تأكد من تشغيل السيرفر وتوفر ملفات القالب.
+
                 </p>
 
             </div>
@@ -558,17 +974,23 @@
             </iframe>
 
 
-            <div class="p-4 border-t flex flex-wrap justify-between items-center gap-3">
+            <div
+                class="p-4 border-t flex flex-wrap justify-between items-center gap-3">
 
-                <p class="text-xs text-gray-500">
+                <p
+                    class="text-xs text-gray-500">
+
                     اختر هذا القالب لإنشاء مشروعك.
+
                 </p>
 
                 <button
                     id="choosePreviewBtn"
                     type="button"
                     class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-xl font-bold">
+
                     اختيار هذا القالب
+
                 </button>
 
             </div>
@@ -581,6 +1003,7 @@
     <!-- =========================================================
          CREATE CONFIRMATION MODAL
     ========================================================== -->
+
     <div
         id="createModal"
         class="modal fixed inset-0 z-[60] bg-slate-950/75 create-modal-backdrop items-center justify-center p-3 md:p-6">
@@ -588,43 +1011,58 @@
         <div
             class="create-modal-card bg-white w-full max-w-3xl max-h-[90vh] rounded-3xl shadow-2xl overflow-hidden flex flex-col">
 
-            <!-- HEADER -->
             <div
                 class="relative overflow-hidden p-6 md:p-8 text-white bg-gradient-to-br from-slate-900 via-purple-950 to-blue-950 flex-shrink-0">
 
-                <div class="absolute -top-20 -right-20 w-52 h-52 rounded-full bg-blue-500/20 blur-3xl"></div>
+                <div
+                    class="absolute -top-20 -right-20 w-52 h-52 rounded-full bg-blue-500/20 blur-3xl">
+                </div>
 
-                <div class="absolute -bottom-20 -left-20 w-52 h-52 rounded-full bg-purple-500/20 blur-3xl"></div>
+                <div
+                    class="absolute -bottom-20 -left-20 w-52 h-52 rounded-full bg-purple-500/20 blur-3xl">
+                </div>
 
                 <div class="relative">
 
                     <div class="flex items-center gap-4">
 
-                        <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-green-400 via-blue-500 to-purple-600 flex items-center justify-center shadow-lg">
+                        <div
+                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-green-400 via-blue-500 to-purple-600 flex items-center justify-center shadow-lg">
 
                             <span class="text-2xl">
+
                                 ✦
+
                             </span>
 
                         </div>
 
                         <div>
 
-                            <p class="text-blue-300 text-xs font-bold tracking-wider">
+                            <p
+                                class="text-blue-300 text-xs font-bold tracking-wider">
+
                                 TEMPLATECRAFT PRO
+
                             </p>
 
-                            <h2 class="text-2xl md:text-3xl font-black mt-1">
+                            <h2
+                                class="text-2xl md:text-3xl font-black mt-1">
+
                                 جاهز لإنشاء موقعك؟
+
                             </h2>
 
                         </div>
 
                     </div>
 
-                    <p class="text-slate-300 text-sm md:text-base leading-7 mt-5 max-w-2xl">
+                    <p
+                        class="text-slate-300 text-sm md:text-base leading-7 mt-5 max-w-2xl">
+
                         حوّل فكرتك إلى موقع احترافي جاهز للنشر،
                         مع أدوات متكاملة وخدمات أساسية تساعدك على إطلاق مشروعك بسهولة وسرعة.
+
                     </p>
 
                 </div>
@@ -632,30 +1070,41 @@
             </div>
 
 
-            <!-- BODY -->
-            <div class="p-5 md:p-7 overflow-y-auto flex-1 min-h-0">
+            <div
+                class="p-5 md:p-7 overflow-y-auto flex-1 min-h-0">
+
 
                 <!-- SITE NAME -->
-                <div class="mb-6 rounded-2xl border border-purple-100 bg-purple-50 p-4">
 
-                    <p class="text-xs text-purple-600 font-bold mb-1">
+                <div
+                    class="mb-6 rounded-2xl border border-purple-100 bg-purple-50 p-4">
+
+                    <p
+                        class="text-xs text-purple-600 font-bold mb-1">
+
                         اسم موقعك
+
                     </p>
 
-                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                    <div
+                        class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
 
                         <strong
                             id="confirmSiteName"
                             dir="ltr"
                             class="text-lg text-gray-900 break-all">
+
                             —
+
                         </strong>
 
                         <span
                             id="confirmDomain"
                             dir="ltr"
                             class="text-sm text-purple-700 font-bold break-all">
+
                             —
+
                         </span>
 
                     </div>
@@ -664,58 +1113,80 @@
 
 
                 <!-- NETLIFY TEAM -->
+
                 <div
                     id="confirmNetlifyTeamBox"
                     class="hidden mb-6 rounded-2xl border border-green-200 bg-green-50 p-4">
 
-                    <div class="flex items-center justify-between gap-3">
+                    <div
+                        class="flex items-center justify-between gap-3">
 
-                        <div class="flex items-center gap-3">
+                        <div
+                            class="flex items-center gap-3">
 
-                            <div class="w-10 h-10 rounded-xl bg-slate-900 text-white flex items-center justify-center font-black">
+                            <div
+                                class="w-10 h-10 rounded-xl bg-slate-900 text-white flex items-center justify-center font-black">
+
                                 N
+
                             </div>
 
                             <div>
 
-                                <p class="text-xs text-gray-500 font-bold">
+                                <p
+                                    class="text-xs text-gray-500 font-bold">
+
                                     NETLIFY TEAM
+
                                 </p>
 
                                 <p
                                     id="confirmNetlifyTeamName"
                                     class="font-extrabold text-gray-900 mt-1"
                                     dir="auto">
+
                                     —
+
                                 </p>
 
                             </div>
 
                         </div>
 
-                        <span class="text-green-700 text-xs font-extrabold">
+                        <span
+                            class="text-green-700 text-xs font-extrabold">
+
                             ✓ متصل
+
                         </span>
 
                     </div>
 
-                    <p class="text-xs text-gray-500 mt-3">
+                    <p
+                        class="text-xs text-gray-500 mt-3">
+
                         سيتم إنشاء الموقع داخل هذا Team.
+
                     </p>
 
                 </div>
 
 
-                <!-- NETLIFY WARNING -->
+                <!-- WARNING -->
+
                 <div
                     id="confirmNetlifyWarning"
                     class="hidden mb-6 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800">
+
                     خاصك تربط Netlify وتتأكد من إعداد Team قبل إنشاء الموقع.
+
                 </div>
 
 
                 <!-- FEATURES -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+
+                <div
+                    class="grid grid-cols-1 sm:grid-cols-2 gap-3">
 
                     <div class="feature-card border border-gray-200 rounded-2xl p-4">
                         <div class="flex items-start gap-3">
@@ -734,7 +1205,6 @@
                         </div>
                     </div>
 
-
                     <div class="feature-card border border-gray-200 rounded-2xl p-4">
                         <div class="flex items-start gap-3">
                             <span class="text-2xl">🔒</span>
@@ -748,7 +1218,6 @@
                             </div>
                         </div>
                     </div>
-
 
                     <div class="feature-card border border-gray-200 rounded-2xl p-4">
                         <div class="flex items-start gap-3">
@@ -764,7 +1233,6 @@
                         </div>
                     </div>
 
-
                     <div class="feature-card border border-gray-200 rounded-2xl p-4">
                         <div class="flex items-start gap-3">
                             <span class="text-2xl">✏️</span>
@@ -778,7 +1246,6 @@
                             </div>
                         </div>
                     </div>
-
 
                     <div class="feature-card border border-gray-200 rounded-2xl p-4">
                         <div class="flex items-start gap-3">
@@ -794,7 +1261,6 @@
                         </div>
                     </div>
 
-
                     <div class="feature-card border border-gray-200 rounded-2xl p-4">
                         <div class="flex items-start gap-3">
                             <span class="text-2xl">⚡</span>
@@ -809,7 +1275,6 @@
                         </div>
                     </div>
 
-
                     <div class="feature-card border border-gray-200 rounded-2xl p-4">
                         <div class="flex items-start gap-3">
                             <span class="text-2xl">🌍</span>
@@ -823,7 +1288,6 @@
                             </div>
                         </div>
                     </div>
-
 
                     <div class="feature-card border border-gray-200 rounded-2xl p-4">
                         <div class="flex items-start gap-3">
@@ -842,32 +1306,39 @@
                 </div>
 
 
-                <!-- NOTE -->
-                <div class="mt-5 rounded-xl bg-gray-50 border border-gray-200 p-4">
+                <div
+                    class="mt-5 rounded-xl bg-gray-50 border border-gray-200 p-4">
 
-                    <p class="text-xs text-gray-500 leading-6">
+                    <p
+                        class="text-xs text-gray-500 leading-6">
+
                         بالمتابعة، سيتم إنشاء المشروع باستخدام القالب الذي اخترته،
                         ثم يبدأ نظام TemplateCraft Pro في تجهيز الموقع ونشره.
+
                     </p>
 
                 </div>
 
 
-                <!-- BUTTONS -->
-                <div class="flex flex-col-reverse sm:flex-row gap-3 mt-6 pb-2">
+                <div
+                    class="flex flex-col-reverse sm:flex-row gap-3 mt-6 pb-2">
 
                     <button
                         id="cancelCreateBtn"
                         type="button"
                         class="w-full sm:w-auto px-6 py-3 rounded-xl border border-gray-300 bg-white hover:bg-gray-50 text-gray-700 font-bold transition">
+
                         إلغاء
+
                     </button>
 
                     <button
                         id="confirmCreateBtn"
                         type="button"
                         class="flex-1 px-6 py-3 rounded-xl text-white font-extrabold transition shadow-lg bg-gradient-to-r from-purple-600 via-blue-600 to-indigo-600 hover:from-purple-700 hover:via-blue-700 hover:to-indigo-700">
+
                         🚀 متابعة وإنشاء الموقع
+
                     </button>
 
                 </div>
@@ -882,6 +1353,7 @@
     <!-- =========================================================
          DEPLOYMENT OVERLAY
     ========================================================== -->
+
     <div
         id="deployOverlay"
         class="deploy-overlay fixed inset-0 z-[100] items-center justify-center overflow-hidden">
@@ -893,42 +1365,61 @@
             <div class="flex flex-col items-center text-center">
 
                 <div class="deploy-logo">
-                    <span class="text-white text-3xl font-black">
+
+                    <span
+                        class="text-white text-3xl font-black">
+
                         ✦
+
                     </span>
+
                 </div>
 
-                <p class="text-blue-300 text-xs font-bold tracking-[.18em] mt-5">
+                <p
+                    class="text-blue-300 text-xs font-bold tracking-[.18em] mt-5">
+
                     TEMPLATECRAFT PRO
+
                 </p>
 
-                <h2 class="text-white text-2xl md:text-3xl font-black mt-2">
+                <h2
+                    class="text-white text-2xl md:text-3xl font-black mt-2">
+
                     جاري إنشاء موقعك
+
                 </h2>
 
                 <p
                     id="deployOverlaySiteName"
                     dir="ltr"
                     class="text-slate-300 text-sm mt-2 break-all">
+
                     —
+
                 </p>
 
-                <div class="deploy-spinner mt-7"></div>
+                <div
+                    class="deploy-spinner mt-7">
+                </div>
 
                 <p
                     id="deployStageText"
                     class="text-white font-bold mt-6">
+
                     تجهيز المشروع...
+
                 </p>
 
-                <p class="text-slate-400 text-xs mt-2">
+                <p
+                    class="text-slate-400 text-xs mt-2">
+
                     قد تستغرق العملية بعض الوقت، لا تغلق الصفحة.
+
                 </p>
 
             </div>
 
 
-            <!-- PROGRESS -->
             <div class="deploy-progress mt-7">
 
                 <div
@@ -939,7 +1430,6 @@
             </div>
 
 
-            <!-- STAGES -->
             <div class="mt-7 space-y-3">
 
                 <div
@@ -956,7 +1446,6 @@
 
                 </div>
 
-
                 <div
                     id="stage2"
                     class="deploy-stage pending flex items-center gap-3">
@@ -970,7 +1459,6 @@
                     </span>
 
                 </div>
-
 
                 <div
                     id="stage3"
@@ -986,7 +1474,6 @@
 
                 </div>
 
-
                 <div
                     id="stage4"
                     class="deploy-stage pending flex items-center gap-3">
@@ -1001,7 +1488,6 @@
 
                 </div>
 
-
                 <div
                     id="stage5"
                     class="deploy-stage pending flex items-center gap-3">
@@ -1015,7 +1501,6 @@
                     </span>
 
                 </div>
-
 
                 <div
                     id="stage6"
@@ -1039,8 +1524,9 @@
 
 
     <!-- =========================================================
-         SSL PREPARATION INFORMATION MODAL
+         SSL PREPARATION
     ========================================================== -->
+
     <div
         id="sslPreparationModal"
         class="fixed inset-0 z-[9999] hidden items-center justify-center bg-black/60 backdrop-blur-sm p-4"
@@ -1056,27 +1542,30 @@
                 🔐
             </div>
 
-
             <h2
                 id="sslPreparationTitle"
                 class="text-xl font-extrabold text-gray-900">
-                تجهيز شهادة SSL
-            </h2>
 
+                تجهيز شهادة SSL
+
+            </h2>
 
             <p
                 id="sslPreparationMessage"
                 class="mt-4 text-sm leading-7 text-gray-600">
+
                 تم نشر موقعك بنجاح، ولكن شهادة الأمان SSL قد تحتاج من 3 إلى 10 دقائق حتى تصبح جاهزة.
                 يمكنك الذهاب إلى صفحة المشاريع للاطلاع على حالة شهادة SSL.
-            </p>
 
+            </p>
 
             <button
                 id="sslPreparationOkBtn"
                 type="button"
                 class="mt-6 w-full rounded-xl bg-purple-600 hover:bg-purple-700 text-white py-3 font-extrabold transition">
+
                 موافق
+
             </button>
 
         </div>
@@ -1087,90 +1576,418 @@
     <!-- =========================================================
          API CLIENT
     ========================================================== -->
+
     <script src="./client-api.js"></script>
 
 
     <!-- =========================================================
-         EXISTING NETLIFY SCRIPT
+         NETLIFY
     ========================================================== -->
+
     <script src="./create-project-netlify.js"></script>
 
 
     <!-- =========================================================
-         MAIN / CORE
+         MAIN CORE
     ========================================================== -->
+
     <script src="./create-project.js"></script>
 
 
     <!-- =========================================================
-         TEMPLATES
+         TEMPLATE SYSTEM
     ========================================================== -->
+
     <script src="./create-project-templates.js"></script>
 
 
     <!-- =========================================================
-         NETLIFY CREATE-PAGE UI
+         NETLIFY UI
     ========================================================== -->
+
     <script src="./create-project-netlify-ui.js"></script>
 
 
     <!-- =========================================================
          DEPLOYMENT
     ========================================================== -->
+
     <script src="./create-project-deployment.js"></script>
 
 
     <!-- =========================================================
-         DYNAMIC TEMPLATE CATEGORIES
-         
-         هذا الجزء يجعل أنواع المواقع تأتي من Backend
-         بدل ما نبقاو نكتبو blogs / ecommerce / ...
-         يدوياً داخل HTML.
+         CATEGORY + TEMPLATE UI CONTROLLER
     ========================================================== -->
+
     <script>
+
         (function () {
+
             'use strict';
 
-            const select = document.getElementById('projectTypeSelect');
-            const loadingMessage = document.getElementById('categoryLoadingMessage');
-            const errorMessage = document.getElementById('categoryErrorMessage');
 
-            if (!select) {
+            /* =====================================================
+               CONFIG
+            ===================================================== */
+
+            const API_BASE =
+                String(
+                    window.TEMPLATECRAFT_API_BASE_URL ||
+                    'https://templatecraft-backend.onrender.com'
+                ).replace(/\/+$/, '');
+
+
+            const select =
+                document.getElementById(
+                    'projectTypeSelect'
+                );
+
+
+            const grid =
+                document.getElementById(
+                    'templatesGrid'
+                );
+
+
+            const selectedLabel =
+                document.getElementById(
+                    'selectedLabel'
+                );
+
+
+            const loadingMessage =
+                document.getElementById(
+                    'categoryLoadingMessage'
+                );
+
+
+            const errorMessage =
+                document.getElementById(
+                    'categoryErrorMessage'
+                );
+
+
+            const previewModal =
+                document.getElementById(
+                    'previewModal'
+                );
+
+
+            const previewFrame =
+                document.getElementById(
+                    'previewFrame'
+                );
+
+
+            const previewLoading =
+                document.getElementById(
+                    'previewLoading'
+                );
+
+
+            const previewError =
+                document.getElementById(
+                    'previewError'
+                );
+
+
+            const previewTitle =
+                document.getElementById(
+                    'previewTitle'
+                );
+
+
+            const choosePreviewBtn =
+                document.getElementById(
+                    'choosePreviewBtn'
+                );
+
+
+            const closePreviewBtn =
+                document.getElementById(
+                    'closePreviewBtn'
+                );
+
+
+            if (!select || !grid) {
                 return;
             }
 
-            function getApiBaseUrl() {
-                const apiBase =
-                    window.TEMPLATECRAFT_API_BASE_URL ||
-                    'https://templatecraft-backend.onrender.com';
 
-                return String(apiBase).replace(/\/+$/, '');
+            /* =====================================================
+               STATE
+            ===================================================== */
+
+            let allTemplates = [];
+
+            let selectedTemplate = null;
+
+            let previewTemplate = null;
+
+
+            /* =====================================================
+               URL HELPERS
+            ===================================================== */
+
+            function cleanUrl(value) {
+
+                return String(
+                    value || ''
+                ).trim();
+
             }
 
-            function normalizeCategories(data) {
+
+            function isAbsoluteUrl(value) {
+
+                return (
+                    /^https?:\/\//i.test(value) ||
+                    /^\/\//.test(value)
+                );
+
+            }
+
+
+            function encodePath(value) {
+
+                return String(value || '')
+                    .split('/')
+                    .filter(Boolean)
+                    .map(
+                        part =>
+                            encodeURIComponent(part)
+                    )
+                    .join('/');
+
+            }
+
+
+            /* =====================================================
+               TEMPLATE ASSET URL
+            ===================================================== */
+
+            function getTemplateAssetUrl(
+                template,
+                assetPath
+            ) {
+
+                if (!template || !assetPath) {
+                    return '';
+                }
+
+
+                const value =
+                    cleanUrl(assetPath);
+
+
+                if (!value) {
+                    return '';
+                }
+
+
+                if (isAbsoluteUrl(value)) {
+                    return value;
+                }
+
+
+                if (
+                    value.startsWith(
+                        'data:'
+                    )
+                ) {
+                    return value;
+                }
+
+
+                if (
+                    value.startsWith(
+                        '/api/templates/'
+                    )
+                ) {
+
+                    return (
+                        API_BASE +
+                        value
+                    );
+
+                }
+
+
+                const projectType =
+                    cleanUrl(
+                        template.projectType ||
+                        template.category
+                    );
+
+
+                const templateId =
+                    cleanUrl(
+                        template.id ||
+                        template.templateId
+                    );
+
+
+                if (
+                    !projectType ||
+                    !templateId
+                ) {
+                    return '';
+                }
+
+
+                const normalized =
+                    value
+                        .replace(/^\.?\//, '')
+                        .replace(/^\/+/, '');
+
+
+                return (
+                    API_BASE +
+                    '/api/templates/' +
+                    encodeURIComponent(
+                        projectType
+                    ) +
+                    '/' +
+                    encodeURIComponent(
+                        templateId
+                    ) +
+                    '/' +
+                    encodePath(
+                        normalized
+                    )
+                );
+
+            }
+
+
+            /* =====================================================
+               PREVIEW URL
+            ===================================================== */
+
+            function getPreviewUrl(
+                template
+            ) {
+
+                if (!template) {
+                    return '';
+                }
+
+
+                if (
+                    template.previewUrl &&
+                    isAbsoluteUrl(
+                        template.previewUrl
+                    )
+                ) {
+                    return template.previewUrl;
+                }
+
+
+                const projectType =
+                    cleanUrl(
+                        template.projectType ||
+                        template.category
+                    );
+
+
+                const templateId =
+                    cleanUrl(
+                        template.id ||
+                        template.templateId
+                    );
+
+
+                if (
+                    !projectType ||
+                    !templateId
+                ) {
+                    return '';
+                }
+
+
+                return (
+                    API_BASE +
+                    '/api/templates/' +
+                    encodeURIComponent(
+                        projectType
+                    ) +
+                    '/' +
+                    encodeURIComponent(
+                        templateId
+                    ) +
+                    '/preview'
+                );
+
+            }
+
+
+            /* =====================================================
+               CATEGORY NORMALIZATION
+            ===================================================== */
+
+            function normalizeCategories(
+                data
+            ) {
 
                 if (Array.isArray(data)) {
                     return data;
                 }
 
-                if (data && Array.isArray(data.categories)) {
+
+                if (
+                    data &&
+                    Array.isArray(
+                        data.categories
+                    )
+                ) {
                     return data.categories;
                 }
 
-                if (data && Array.isArray(data.data)) {
+
+                if (
+                    data &&
+                    Array.isArray(
+                        data.projectTypes
+                    )
+                ) {
+                    return data.projectTypes;
+                }
+
+
+                if (
+                    data &&
+                    Array.isArray(
+                        data.data
+                    )
+                ) {
                     return data.data;
                 }
 
-                if (data && data.data && Array.isArray(data.data.categories)) {
+
+                if (
+                    data &&
+                    data.data &&
+                    Array.isArray(
+                        data.data.categories
+                    )
+                ) {
                     return data.data.categories;
                 }
 
+
                 return [];
+
             }
 
-            function normalizeCategory(item) {
 
-                if (typeof item === 'string') {
+            function normalizeCategory(
+                item
+            ) {
+
+                if (
+                    typeof item ===
+                    'string'
+                ) {
 
                     return {
                         id: item,
@@ -1179,9 +1996,15 @@
 
                 }
 
-                if (!item || typeof item !== 'object') {
+
+                if (
+                    !item ||
+                    typeof item !==
+                    'object'
+                ) {
                     return null;
                 }
+
 
                 const id =
                     item.id ||
@@ -1190,6 +2013,7 @@
                     item.category ||
                     item.slug;
 
+
                 const name =
                     item.name ||
                     item.label ||
@@ -1197,35 +2021,356 @@
                     item.displayName ||
                     id;
 
+
                 if (!id) {
                     return null;
                 }
+
 
                 return {
                     id: String(id),
                     name: String(name)
                 };
+
             }
 
-            function makeCategoryLabel(category) {
 
-                const knownLabels = {
-                    blogs: '📝 المدونات والمقالات',
-                    corporate: '🏢 مواقع الشركات',
-                    ecommerce: '🛒 المتاجر الإلكترونية',
-                    'real-estate': '🏠 العقارات',
-                    'restaurant-demo': '🍽️ المطاعم والمقاهي',
-                    restaurants: '🍽️ المطاعم والمقاهي',
-                    education: '🎓 التعليم',
-                    portfolio: '💼 معرض الأعمال',
-                    news: '📰 الأخبار',
-                    landing: '🚀 صفحات الهبوط',
-                    services: '🛠️ الخدمات',
-                    travel: '✈️ السفر والسياحة'
+            function getCategoryLabel(
+                category
+            ) {
+
+                const labels = {
+
+                    blogs:
+                        '📝 المدونات والمقالات',
+
+                    corporate:
+                        '🏢 مواقع الشركات',
+
+                    ecommerce:
+                        '🛒 المتاجر الإلكترونية',
+
+                    'real-estate':
+                        '🏠 العقارات',
+
+                    'restaurant-demo':
+                        '🍽️ المطاعم والمقاهي',
+
+                    restaurants:
+                        '🍽️ المطاعم والمقاهي',
+
+                    education:
+                        '🎓 التعليم',
+
+                    portfolio:
+                        '💼 معرض الأعمال',
+
+                    news:
+                        '📰 الأخبار',
+
+                    landing:
+                        '🚀 صفحات الهبوط',
+
+                    services:
+                        '🛠️ الخدمات',
+
+                    travel:
+                        '✈️ السفر والسياحة'
+
                 };
 
-                return knownLabels[category.id] || category.name;
+
+                return (
+                    labels[
+                        category.id
+                    ] ||
+                    category.name
+                );
+
             }
+
+
+            /* =====================================================
+               TEMPLATE NORMALIZATION
+            ===================================================== */
+
+            function normalizeTemplate(
+                template
+            ) {
+
+                if (
+                    !template ||
+                    typeof template !==
+                    'object'
+                ) {
+                    return null;
+                }
+
+
+                const id =
+                    template.id ||
+                    template.templateId ||
+                    template.slug;
+
+
+                const projectType =
+                    template.projectType ||
+                    template.category ||
+                    template.type;
+
+
+                if (!id) {
+                    return null;
+                }
+
+
+                const normalized = {
+
+                    ...template,
+
+                    id: String(id),
+
+                    projectType:
+                        projectType
+                            ? String(
+                                projectType
+                            )
+                            : '',
+
+                    name:
+                        String(
+                            template.name ||
+                            template.title ||
+                            id
+                        ),
+
+                    description:
+                        String(
+                            template.description ||
+                            'قالب احترافي جاهز للتخصيص.'
+                        )
+
+                };
+
+
+                if (
+                    Array.isArray(
+                        normalized.features
+                    )
+                ) {
+
+                    normalized.features =
+                        normalized.features
+                            .slice(0, 5)
+                            .map(
+                                feature =>
+                                    String(
+                                        feature
+                                    )
+                            );
+
+                } else {
+
+                    normalized.features = [];
+
+                }
+
+
+                return normalized;
+
+            }
+
+
+            function extractTemplates(
+                data
+            ) {
+
+                if (
+                    Array.isArray(data)
+                ) {
+                    return data;
+                }
+
+
+                if (
+                    data &&
+                    Array.isArray(
+                        data.templates
+                    )
+                ) {
+                    return data.templates;
+                }
+
+
+                if (
+                    data &&
+                    data.data &&
+                    Array.isArray(
+                        data.data.templates
+                    )
+                ) {
+                    return data.data.templates;
+                }
+
+
+                if (
+                    data &&
+                    data.data &&
+                    Array.isArray(
+                        data.data
+                    )
+                ) {
+                    return data.data;
+                }
+
+
+                return [];
+
+            }
+
+
+            /* =====================================================
+               ESCAPE HTML
+            ===================================================== */
+
+            function escapeHtml(
+                value
+            ) {
+
+                return String(
+                    value ?? ''
+                )
+                    .replace(
+                        /&/g,
+                        '&amp;'
+                    )
+                    .replace(
+                        /</g,
+                        '&lt;'
+                    )
+                    .replace(
+                        />/g,
+                        '&gt;'
+                    )
+                    .replace(
+                        /"/g,
+                        '&quot;'
+                    )
+                    .replace(
+                        /'/g,
+                        '&#039;'
+                    );
+
+            }
+
+
+            /* =====================================================
+               FALLBACK IMAGE
+            ===================================================== */
+
+            function getFallbackImage(
+                template
+            ) {
+
+                const category =
+                    String(
+                        template?.projectType ||
+                        ''
+                    ).toLowerCase();
+
+
+                const fallbackMap = {
+
+                    ecommerce:
+                        'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&fit=crop&w=1200&q=85',
+
+                    corporate:
+                        'https://images.unsplash.com/photo-1497366811353-6870744d04b2?auto=format&fit=crop&w=1200&q=85',
+
+                    portfolio:
+                        'https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1200&q=85',
+
+                    restaurant:
+                        'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1200&q=85',
+
+                    restaurants:
+                        'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1200&q=85',
+
+                    travel:
+                        'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=85'
+
+                };
+
+
+                return (
+                    fallbackMap[category] ||
+                    'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=1200&q=85'
+                );
+
+            }
+
+
+            /* =====================================================
+               GET TEMPLATE IMAGE
+            ===================================================== */
+
+            function getTemplateImage(
+                template
+            ) {
+
+                const thumbnail =
+                    template.thumbnail ||
+                    template.image ||
+                    template.cover ||
+                    template.previewImage ||
+                    '';
+
+
+                if (
+                    thumbnail &&
+                    isAbsoluteUrl(
+                        thumbnail
+                    )
+                ) {
+                    return thumbnail;
+                }
+
+
+                if (
+                    thumbnail &&
+                    thumbnail.startsWith(
+                        'data:'
+                    )
+                ) {
+                    return thumbnail;
+                }
+
+
+                if (thumbnail) {
+
+                    const assetUrl =
+                        getTemplateAssetUrl(
+                            template,
+                            thumbnail
+                        );
+
+                    if (assetUrl) {
+                        return assetUrl;
+                    }
+
+                }
+
+
+                return getFallbackImage(
+                    template
+                );
+
+            }
+
+
+            /* =====================================================
+               LOAD CATEGORIES
+            ===================================================== */
 
             async function loadCategories() {
 
@@ -1233,125 +2378,1276 @@
 
                     select.disabled = true;
 
-                    loadingMessage.classList.remove('hidden');
-                    errorMessage.classList.add('hidden');
-
-                    select.innerHTML = '';
-
-                    const response = await fetch(
-                        getApiBaseUrl() + '/api/templates/categories',
-                        {
-                            method: 'GET',
-                            headers: {
-                                'Accept': 'application/json'
-                            },
-                            cache: 'no-store'
-                        }
+                    loadingMessage.classList.remove(
+                        'hidden'
                     );
 
-                    if (!response.ok) {
-                        throw new Error(
-                            'Categories request failed: HTTP ' + response.status
+                    errorMessage.classList.add(
+                        'hidden'
+                    );
+
+
+                    select.innerHTML =
+                        '<option value="">جاري تحميل التصنيفات...</option>';
+
+
+                    const response =
+                        await fetch(
+                            API_BASE +
+                            '/api/templates/categories',
+                            {
+                                method: 'GET',
+
+                                headers: {
+                                    'Accept':
+                                        'application/json'
+                                },
+
+                                cache:
+                                    'no-store'
+                            }
                         );
+
+
+                    if (!response.ok) {
+
+                        throw new Error(
+                            'Categories HTTP ' +
+                            response.status
+                        );
+
                     }
 
-                    const data = await response.json();
 
-                    const rawCategories = normalizeCategories(data);
+                    const data =
+                        await response.json();
 
-                    const categories = rawCategories
-                        .map(normalizeCategory)
-                        .filter(Boolean);
 
-                    const uniqueCategories = [];
-                    const seen = new Set();
+                    const categories =
+                        normalizeCategories(
+                            data
+                        )
+                            .map(
+                                normalizeCategory
+                            )
+                            .filter(Boolean);
 
-                    for (const category of categories) {
 
-                        const key = category.id.toLowerCase();
+                    const unique =
+                        [];
 
-                        if (seen.has(key)) {
+                    const seen =
+                        new Set();
+
+
+                    for (
+                        const category
+                        of categories
+                    ) {
+
+                        const key =
+                            category.id
+                                .toLowerCase();
+
+
+                        if (
+                            seen.has(key)
+                        ) {
                             continue;
                         }
 
+
                         seen.add(key);
-                        uniqueCategories.push(category);
-                    }
 
-                    if (uniqueCategories.length === 0) {
-                        throw new Error(
-                            'لم يتم العثور على أي category في Backend.'
+                        unique.push(
+                            category
                         );
+
                     }
 
-                    for (const category of uniqueCategories) {
 
-                        const option = document.createElement('option');
+                    if (
+                        unique.length === 0
+                    ) {
 
-                        option.value = category.id;
-                        option.textContent = makeCategoryLabel(category);
+                        throw new Error(
+                            'No categories'
+                        );
 
-                        select.appendChild(option);
                     }
 
-                    /*
-                     * نختار ecommerce إذا كانت موجودة،
-                     * وإلا نختار أول category موجودة.
-                     */
-                    const ecommerceOption = uniqueCategories.find(
-                        category => category.id === 'ecommerce'
-                    );
+
+                    select.innerHTML =
+                        '';
+
+
+                    for (
+                        const category
+                        of unique
+                    ) {
+
+                        const option =
+                            document.createElement(
+                                'option'
+                            );
+
+
+                        option.value =
+                            category.id;
+
+
+                        option.textContent =
+                            getCategoryLabel(
+                                category
+                            );
+
+
+                        select.appendChild(
+                            option
+                        );
+
+                    }
+
+
+                    const ecommerce =
+                        unique.find(
+                            category =>
+                                category.id
+                                    .toLowerCase() ===
+                                'ecommerce'
+                        );
+
 
                     select.value =
-                        ecommerceOption
-                            ? ecommerceOption.id
-                            : uniqueCategories[0].id;
+                        ecommerce
+                            ? ecommerce.id
+                            : unique[0].id;
 
-                    select.disabled = false;
+
+                    select.disabled =
+                        false;
+
 
                     loadingMessage.textContent =
-                        uniqueCategories.length +
+                        unique.length +
                         ' تصنيف متوفر حالياً من TemplateCraft Pro.';
 
+
                     /*
-                     * نطلق change حتى create-project-templates.js
-                     * يعاود تحميل القوالب حسب category.
+                     * مهم:
+                     * نطلق change باش يتم تحميل
+                     * القوالب الخاصة بالـ category.
                      */
+
                     select.dispatchEvent(
-                        new Event('change', { bubbles: true })
+                        new Event(
+                            'change',
+                            {
+                                bubbles: true
+                            }
+                        )
                     );
+
 
                 } catch (error) {
 
                     console.error(
-                        '[TemplateCraft] Failed to load categories:',
+                        '[TemplateCraft] Categories error:',
                         error
                     );
 
-                    select.disabled = true;
 
-                    select.innerHTML = '';
+                    select.disabled =
+                        true;
 
-                    const option = document.createElement('option');
 
-                    option.value = '';
+                    select.innerHTML =
+                        '<option value="">تعذر تحميل أنواع المواقع</option>';
 
-                    option.textContent =
-                        'تعذر تحميل أنواع المواقع';
 
-                    select.appendChild(option);
+                    loadingMessage.classList.add(
+                        'hidden'
+                    );
 
-                    loadingMessage.classList.add('hidden');
-                    errorMessage.classList.remove('hidden');
+
+                    errorMessage.classList.remove(
+                        'hidden'
+                    );
+
+
+                    renderTemplateError(
+                        'تعذر تحميل التصنيفات من السيرفر.'
+                    );
 
                 }
 
             }
 
+
+            /* =====================================================
+               LOAD TEMPLATES
+            ===================================================== */
+
+            async function loadTemplates(
+                projectType
+            ) {
+
+                if (!projectType) {
+
+                    renderTemplateEmpty(
+                        'اختار نوع الموقع أولاً.'
+                    );
+
+                    return;
+
+                }
+
+
+                renderTemplateLoading();
+
+
+                try {
+
+                    const response =
+                        await fetch(
+                            API_BASE +
+                            '/api/templates?projectType=' +
+                            encodeURIComponent(
+                                projectType
+                            ),
+                            {
+                                method: 'GET',
+
+                                headers: {
+                                    'Accept':
+                                        'application/json'
+                                },
+
+                                cache:
+                                    'no-store'
+                            }
+                        );
+
+
+                    if (!response.ok) {
+
+                        throw new Error(
+                            'Templates HTTP ' +
+                            response.status
+                        );
+
+                    }
+
+
+                    const data =
+                        await response.json();
+
+
+                    let templates =
+                        extractTemplates(
+                            data
+                        )
+                            .map(
+                                normalizeTemplate
+                            )
+                            .filter(Boolean);
+
+
+                    /*
+                     * حماية إضافية:
+                     * إذا Backend رجع كل القوالب،
+                     * نعرض فقط category الحالية.
+                     */
+
+                    templates =
+                        templates.filter(
+                            template => {
+
+                                const type =
+                                    String(
+                                        template.projectType ||
+                                        template.category ||
+                                        ''
+                                    ).toLowerCase();
+
+
+                                return (
+                                    !type ||
+                                    type ===
+                                        String(
+                                            projectType
+                                        ).toLowerCase()
+                                );
+
+                            }
+                        );
+
+
+                    allTemplates =
+                        templates;
+
+
+                    selectedTemplate =
+                        null;
+
+
+                    updateSelectedLabel();
+
+
+                    renderTemplates(
+                        templates
+                    );
+
+
+                } catch (error) {
+
+                    console.error(
+                        '[TemplateCraft] Templates error:',
+                        error
+                    );
+
+
+                    allTemplates =
+                        [];
+
+
+                    renderTemplateError(
+                        'تعذر تحميل قوالب هذا التصنيف.'
+                    );
+
+                }
+
+            }
+
+
+            /* =====================================================
+               RENDER LOADING
+            ===================================================== */
+
+            function renderTemplateLoading() {
+
+                grid.innerHTML = `
+
+                    <div class="template-loading">
+
+                        <div class="template-spinner"></div>
+
+                        <p class="text-sm text-gray-500 font-bold">
+
+                            جاري تحميل القوالب...
+
+                        </p>
+
+                        <p class="text-xs text-gray-400">
+
+                            يتم جلب القوالب والصور من TemplateCraft Pro
+
+                        </p>
+
+                    </div>
+
+                `;
+
+            }
+
+
+            /* =====================================================
+               RENDER EMPTY
+            ===================================================== */
+
+            function renderTemplateEmpty(
+                message
+            ) {
+
+                grid.innerHTML = `
+
+                    <div class="template-empty">
+
+                        <div class="text-5xl mb-4">
+
+                            🎨
+
+                        </div>
+
+                        <h3 class="font-extrabold text-gray-800">
+
+                            لا توجد قوالب حالياً
+
+                        </h3>
+
+                        <p class="text-sm text-gray-500 mt-2">
+
+                            ${escapeHtml(message)}
+
+                        </p>
+
+                    </div>
+
+                `;
+
+
+                selectedLabel.textContent =
+                    '0 قالب';
+
+            }
+
+
+            /* =====================================================
+               RENDER ERROR
+            ===================================================== */
+
+            function renderTemplateError(
+                message
+            ) {
+
+                grid.innerHTML = `
+
+                    <div class="template-error">
+
+                        <div class="text-4xl mb-3">
+
+                            ⚠️
+
+                        </div>
+
+                        <h3 class="font-extrabold text-red-700">
+
+                            تعذر تحميل القوالب
+
+                        </h3>
+
+                        <p class="text-sm text-red-600 mt-2">
+
+                            ${escapeHtml(message)}
+
+                        </p>
+
+                        <button
+                            type="button"
+                            id="retryTemplatesBtn"
+                            class="mt-5 bg-red-600 hover:bg-red-700 text-white px-5 py-2.5 rounded-xl font-bold text-sm">
+
+                            إعادة المحاولة
+
+                        </button>
+
+                    </div>
+
+                `;
+
+
+                const retryButton =
+                    document.getElementById(
+                        'retryTemplatesBtn'
+                    );
+
+
+                if (retryButton) {
+
+                    retryButton.addEventListener(
+                        'click',
+                        function () {
+
+                            loadTemplates(
+                                select.value
+                            );
+
+                        }
+                    );
+
+                }
+
+            }
+
+
+            /* =====================================================
+               RENDER TEMPLATES
+            ===================================================== */
+
+            function renderTemplates(
+                templates
+            ) {
+
+                if (
+                    !Array.isArray(
+                        templates
+                    ) ||
+                    templates.length === 0
+                ) {
+
+                    renderTemplateEmpty(
+                        'مازال ما كاين حتى قالب داخل هذا التصنيف.'
+                    );
+
+                    return;
+
+                }
+
+
+                selectedLabel.textContent =
+                    templates.length +
+                    (
+                        templates.length === 1
+                            ? ' قالب'
+                            : ' قوالب'
+                    );
+
+
+                grid.innerHTML =
+                    templates
+                        .map(
+                            createTemplateCard
+                        )
+                        .join('');
+
+
+                bindTemplateCards();
+
+            }
+
+
+            /* =====================================================
+               CREATE CARD
+            ===================================================== */
+
+            function createTemplateCard(
+                template
+            ) {
+
+                const image =
+                    getTemplateImage(
+                        template
+                    );
+
+
+                const preview =
+                    getPreviewUrl(
+                        template
+                    );
+
+
+                const features =
+                    Array.isArray(
+                        template.features
+                    )
+                        ? template.features
+                        : [];
+
+
+                const projectType =
+                    template.projectType ||
+                    template.category ||
+                    select.value;
+
+
+                const isSelected =
+                    selectedTemplate &&
+                    selectedTemplate.id ===
+                        template.id;
+
+
+                const featureHtml =
+                    features
+                        .slice(0, 5)
+                        .map(
+                            feature =>
+                                `
+                                <span class="template-feature">
+                                    ${escapeHtml(feature)}
+                                </span>
+                                `
+                        )
+                        .join('');
+
+
+                return `
+
+                    <article
+                        class="template-card ${
+                            isSelected
+                                ? 'selected'
+                                : ''
+                        }"
+                        data-template-id="${escapeHtml(template.id)}"
+                        data-project-type="${escapeHtml(projectType)}">
+
+                        <div class="template-image-wrapper">
+
+                            <img
+                                class="template-image"
+                                src="${escapeHtml(image)}"
+                                alt="${escapeHtml(template.name)}"
+                                loading="lazy"
+                                data-template-image="true">
+
+                            <div class="template-image-overlay"></div>
+
+                            <span class="template-badge">
+
+                                ${escapeHtml(
+                                    projectType
+                                )}
+
+                            </span>
+
+                            <span class="template-selected-badge">
+
+                                ✓ مختار
+
+                            </span>
+
+                        </div>
+
+
+                        <div class="template-card-body">
+
+                            <h3 class="template-title">
+
+                                ${escapeHtml(
+                                    template.name
+                                )}
+
+                            </h3>
+
+
+                            <p class="template-description">
+
+                                ${escapeHtml(
+                                    template.description
+                                )}
+
+                            </p>
+
+
+                            ${
+                                featureHtml
+                                    ? `
+                                        <div class="template-features">
+                                            ${featureHtml}
+                                        </div>
+                                      `
+                                    : ''
+                            }
+
+
+                            <div class="template-actions">
+
+                                <button
+                                    type="button"
+                                    class="template-preview-btn"
+                                    data-action="preview"
+                                    data-template-id="${escapeHtml(template.id)}">
+
+                                    👁️ معاينة
+
+                                </button>
+
+
+                                <button
+                                    type="button"
+                                    class="template-select-btn"
+                                    data-action="select"
+                                    data-template-id="${escapeHtml(template.id)}">
+
+                                    ${
+                                        isSelected
+                                            ? '✓ تم الاختيار'
+                                            : 'اختيار القالب'
+                                    }
+
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    </article>
+
+                `;
+
+            }
+
+
+            /* =====================================================
+               BIND CARD EVENTS
+            ===================================================== */
+
+            function bindTemplateCards() {
+
+                const cards =
+                    grid.querySelectorAll(
+                        '.template-card'
+                    );
+
+
+                cards.forEach(
+                    card => {
+
+                        const image =
+                            card.querySelector(
+                                '[data-template-image]'
+                            );
+
+
+                        if (image) {
+
+                            image.addEventListener(
+                                'error',
+                                function () {
+
+                                    const template =
+                                        allTemplates.find(
+                                            item =>
+                                                item.id ===
+                                                card.dataset.templateId
+                                        );
+
+
+                                    if (!template) {
+                                        return;
+                                    }
+
+
+                                    const fallback =
+                                        getFallbackImage(
+                                            template
+                                        );
+
+
+                                    if (
+                                        image.src !==
+                                        fallback
+                                    ) {
+
+                                        image.src =
+                                            fallback;
+
+                                    }
+
+                                },
+                                {
+                                    once: true
+                                }
+                            );
+
+                        }
+
+
+                        card.addEventListener(
+                            'click',
+                            function (event) {
+
+                                const actionButton =
+                                    event.target.closest(
+                                        '[data-action]'
+                                    );
+
+
+                                if (!actionButton) {
+
+                                    selectTemplateById(
+                                        card.dataset.templateId
+                                    );
+
+                                    return;
+
+                                }
+
+
+                                const action =
+                                    actionButton.dataset.action;
+
+
+                                const templateId =
+                                    actionButton.dataset.templateId;
+
+
+                                if (
+                                    action ===
+                                    'preview'
+                                ) {
+
+                                    event.preventDefault();
+
+                                    event.stopPropagation();
+
+                                    openPreviewById(
+                                        templateId
+                                    );
+
+                                    return;
+
+                                }
+
+
+                                if (
+                                    action ===
+                                    'select'
+                                ) {
+
+                                    event.preventDefault();
+
+                                    event.stopPropagation();
+
+                                    selectTemplateById(
+                                        templateId
+                                    );
+
+                                }
+
+                            }
+                        );
+
+                    }
+                );
+
+            }
+
+
+            /* =====================================================
+               SELECT TEMPLATE
+            ===================================================== */
+
+            function selectTemplateById(
+                templateId
+            ) {
+
+                const template =
+                    allTemplates.find(
+                        item =>
+                            item.id ===
+                            String(templateId)
+                    );
+
+
+                if (!template) {
+                    return;
+                }
+
+
+                selectedTemplate =
+                    template;
+
+
+                updateSelectedLabel();
+
+
+                renderTemplates(
+                    allTemplates
+                );
+
+
+                /*
+                 * نحافظ على النظام الخارجي
+                 * create-project-templates.js
+                 */
+
+                window.dispatchEvent(
+                    new CustomEvent(
+                        'template:selected',
+                        {
+                            detail: {
+                                templateId:
+                                    template.id,
+
+                                projectType:
+                                    template.projectType ||
+                                    select.value,
+
+                                template:
+                                    template
+                            }
+                        }
+                    )
+                );
+
+            }
+
+
+            /* =====================================================
+               SELECTED LABEL
+            ===================================================== */
+
+            function updateSelectedLabel() {
+
+                if (
+                    selectedTemplate
+                ) {
+
+                    selectedLabel.textContent =
+                        '✓ ' +
+                        selectedTemplate.name;
+
+                    selectedLabel.className =
+                        'text-xs text-green-700 bg-green-50 px-3 py-2 rounded-lg font-bold';
+
+                    return;
+
+                }
+
+
+                selectedLabel.textContent =
+                    allTemplates.length +
+                    ' قوالب متوفرة';
+
+                selectedLabel.className =
+                    'text-xs text-purple-700 bg-purple-50 px-3 py-2 rounded-lg font-bold';
+
+            }
+
+
+            /* =====================================================
+               OPEN PREVIEW
+            ===================================================== */
+
+            function openPreviewById(
+                templateId
+            ) {
+
+                const template =
+                    allTemplates.find(
+                        item =>
+                            item.id ===
+                            String(templateId)
+                    );
+
+
+                if (!template) {
+                    return;
+                }
+
+
+                previewTemplate =
+                    template;
+
+
+                const previewUrl =
+                    getPreviewUrl(
+                        template
+                    );
+
+
+                if (!previewUrl) {
+
+                    previewError.classList.remove(
+                        'hidden'
+                    );
+
+                    previewLoading.classList.add(
+                        'hidden'
+                    );
+
+                    previewFrame.classList.add(
+                        'hidden'
+                    );
+
+                    return;
+
+                }
+
+
+                previewTitle.textContent =
+                    'معاينة: ' +
+                    template.name;
+
+
+                previewLoading.classList.remove(
+                    'hidden'
+                );
+
+
+                previewError.classList.add(
+                    'hidden'
+                );
+
+
+                previewFrame.classList.add(
+                    'hidden'
+                );
+
+
+                previewFrame.src =
+                    previewUrl;
+
+
+                previewModal.classList.add(
+                    'show'
+                );
+
+
+                document.body.classList.add(
+                    'overflow-hidden'
+                );
+
+            }
+
+
+            /* =====================================================
+               CLOSE PREVIEW
+            ===================================================== */
+
+            function closePreview() {
+
+                previewModal.classList.remove(
+                    'show'
+                );
+
+
+                document.body.classList.remove(
+                    'overflow-hidden'
+                );
+
+
+                setTimeout(
+                    function () {
+
+                        previewFrame.src =
+                            'about:blank';
+
+                    },
+                    200
+                );
+
+            }
+
+
+            /* =====================================================
+               PREVIEW LOADED
+            ===================================================== */
+
+            previewFrame.addEventListener(
+                'load',
+                function () {
+
+                    previewLoading.classList.add(
+                        'hidden'
+                    );
+
+
+                    previewError.classList.add(
+                        'hidden'
+                    );
+
+
+                    previewFrame.classList.remove(
+                        'hidden'
+                    );
+
+                }
+            );
+
+
+            /* =====================================================
+               PREVIEW ERROR
+            ===================================================== */
+
+            previewFrame.addEventListener(
+                'error',
+                function () {
+
+                    previewLoading.classList.add(
+                        'hidden'
+                    );
+
+
+                    previewFrame.classList.add(
+                        'hidden'
+                    );
+
+
+                    previewError.classList.remove(
+                        'hidden'
+                    );
+
+                }
+            );
+
+
+            /* =====================================================
+               CHOOSE FROM PREVIEW
+            ===================================================== */
+
+            if (choosePreviewBtn) {
+
+                choosePreviewBtn.addEventListener(
+                    'click',
+                    function () {
+
+                        if (
+                            previewTemplate
+                        ) {
+
+                            selectTemplateById(
+                                previewTemplate.id
+                            );
+
+                        }
+
+
+                        closePreview();
+
+                    }
+                );
+
+            }
+
+
+            /* =====================================================
+               CLOSE BUTTON
+            ===================================================== */
+
+            if (closePreviewBtn) {
+
+                closePreviewBtn.addEventListener(
+                    'click',
+                    closePreview
+                );
+
+            }
+
+
+            /* =====================================================
+               CLICK OUTSIDE MODAL
+            ===================================================== */
+
+            if (previewModal) {
+
+                previewModal.addEventListener(
+                    'click',
+                    function (event) {
+
+                        if (
+                            event.target ===
+                            previewModal
+                        ) {
+
+                            closePreview();
+
+                        }
+
+                    }
+                );
+
+            }
+
+
+            /* =====================================================
+               ESCAPE
+            ===================================================== */
+
+            document.addEventListener(
+                'keydown',
+                function (event) {
+
+                    if (
+                        event.key ===
+                        'Escape'
+                    ) {
+
+                        if (
+                            previewModal &&
+                            previewModal.classList.contains(
+                                'show'
+                            )
+                        ) {
+
+                            closePreview();
+
+                        }
+
+                    }
+
+                }
+            );
+
+
+            /* =====================================================
+               CATEGORY CHANGE
+            ===================================================== */
+
+            select.addEventListener(
+                'change',
+                function () {
+
+                    const projectType =
+                        String(
+                            select.value ||
+                            ''
+                        ).trim();
+
+
+                    selectedTemplate =
+                        null;
+
+
+                    updateSelectedLabel();
+
+
+                    if (!projectType) {
+
+                        renderTemplateEmpty(
+                            'اختار نوع الموقع.'
+                        );
+
+                        return;
+
+                    }
+
+
+                    loadTemplates(
+                        projectType
+                    );
+
+                }
+            );
+
+
+            /* =====================================================
+               EXPOSE API FOR OTHER SCRIPTS
+            ===================================================== */
+
+            window.TemplateCraftCreatePage = {
+
+                getTemplates:
+                    function () {
+                        return [
+                            ...allTemplates
+                        ];
+                    },
+
+                getSelectedTemplate:
+                    function () {
+                        return selectedTemplate;
+                    },
+
+                selectTemplate:
+                    function (templateId) {
+                        selectTemplateById(
+                            templateId
+                        );
+                    },
+
+                getPreviewUrl:
+                    getPreviewUrl,
+
+                getTemplateAssetUrl:
+                    getTemplateAssetUrl
+
+            };
+
+
+            /* =====================================================
+               START
+            ===================================================== */
+
             loadCategories();
 
+
         })();
+
     </script>
 
+
 </body>
-</html>
+
+    </html>
