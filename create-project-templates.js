@@ -16,7 +16,6 @@
 ====================================================
 */
 
-
 'use strict';
 
 
@@ -24,7 +23,7 @@
 // 1. TEMPLATE CONFIGURATION
 // ================================================
 
-// Templates are now loaded from TemplateCraft Backend.
+// Templates are loaded dynamically from TemplateCraft Backend.
 // No hardcoded template list is used here.
 
 let templateList = [];
@@ -171,7 +170,7 @@ function normalizeTemplate(
             template.projectType ||
             template.category ||
             ''
-        );
+        ).trim();
 
 
     const preview =
@@ -179,14 +178,14 @@ function normalizeTemplate(
             template.previewUrl ||
             template.preview ||
             ''
-        );
+        ).trim();
 
 
     const thumbnail =
         String(
             template.thumbnail ||
             ''
-        );
+        ).trim();
 
 
     return {
@@ -244,6 +243,12 @@ function getFilteredTemplates() {
         getCurrentProjectType();
 
 
+    /*
+    ================================================
+    إذا ما تختاراتش category
+    ================================================
+    */
+
     if (!projectType) {
 
         return templateList;
@@ -251,50 +256,36 @@ function getFilteredTemplates() {
     }
 
 
-    const filtered =
-        templateList.filter(
-            function(template) {
-
-                if (
-                    !template.projectType
-                ) {
-
-                    return true;
-
-                }
-
-
-                return (
-                    template.projectType
-                        .toLowerCase() ===
-                    projectType.toLowerCase()
-                );
-
-            }
-        );
-
-
     /*
     ================================================
-    FALLBACK
+    FILTER STRICTLY BY PROJECT TYPE
     ================================================
 
-    إذا الـBackend رجع templates بدون
-    projectType واضح، ما نخليوش Grid فارغ.
+    مهم:
+    ما بقيناش نرجعو جميع القوالب إذا ما لقايناش
+    category match، لأن هذا يقدر يخلط ecommerce
+    مع blogs أو corporate.
 
     ================================================
     */
 
-    if (
-        filtered.length === 0
-    ) {
+    return templateList.filter(
+        function(template) {
 
-        return templateList;
+            if (!template.projectType) {
 
-    }
+                return false;
+
+            }
 
 
-    return filtered;
+            return (
+                template.projectType.toLowerCase() ===
+                projectType.toLowerCase()
+            );
+
+        }
+    );
 
 }
 
@@ -304,8 +295,64 @@ function getFilteredTemplates() {
 // ================================================
 
 function getTemplateById(
-    templateId
+    templateId,
+    projectType = ''
 ) {
+
+    if (!templateId) {
+
+        return null;
+
+    }
+
+
+    const normalizedProjectType =
+        String(
+            projectType ||
+            getCurrentProjectType() ||
+            ''
+        ).trim().toLowerCase();
+
+
+    /*
+    ================================================
+    PREFER MATCHING PROJECT TYPE
+    ================================================
+    */
+
+    if (normalizedProjectType) {
+
+        const exactMatch =
+            templateList.find(
+                function(template) {
+
+                    return (
+                        template.id === templateId &&
+                        String(
+                            template.projectType ||
+                            ''
+                        ).trim().toLowerCase() ===
+                        normalizedProjectType
+                    );
+
+                }
+            );
+
+
+        if (exactMatch) {
+
+            return exactMatch;
+
+        }
+
+    }
+
+
+    /*
+    ================================================
+    FALLBACK BY ID
+    ================================================
+    */
 
     return templateList.find(
         function(template) {
@@ -314,7 +361,7 @@ function getTemplateById(
                 templateId;
 
         }
-    );
+    ) || null;
 
 }
 
@@ -324,23 +371,63 @@ function getTemplateById(
 // ================================================
 
 function getPreviewUrl(
-    templateId
+    templateId,
+    projectType = ''
 ) {
+
+    if (!templateId) {
+
+        return '';
+
+    }
+
+
+    const normalizedProjectType =
+        String(
+            projectType ||
+            getCurrentProjectType() ||
+            ''
+        ).trim();
+
 
     const template =
         getTemplateById(
-            templateId
+            templateId,
+            normalizedProjectType
         );
 
+
+    /*
+    ================================================
+    IMPORTANT
+    ================================================
+
+    إذا template.json/backend رجع previewUrl
+    نستعمله فقط إذا كان URL حقيقي.
+
+    ================================================
+    */
 
     if (
         template &&
         template.previewUrl
     ) {
 
-        return String(
-            template.previewUrl
-        );
+        const preview =
+            String(
+                template.previewUrl
+            ).trim();
+
+
+        if (
+            preview &&
+            preview !== '#' &&
+            preview !== 'about:blank'
+        ) {
+
+            return preview;
+
+        }
 
     }
 
@@ -360,7 +447,8 @@ function getPreviewUrl(
 
         return window.TemplateCraftAPI
             .getTemplatePreviewUrl(
-                templateId
+                templateId,
+                normalizedProjectType
             );
 
     }
@@ -375,7 +463,8 @@ function getPreviewUrl(
 
         return window.templateCraftAPI
             .getTemplatePreviewUrl(
-                templateId
+                templateId,
+                normalizedProjectType
             );
 
     }
@@ -384,6 +473,14 @@ function getPreviewUrl(
     /*
     ================================================
     DIRECT BACKEND FALLBACK
+    ================================================
+
+    Preferred route:
+
+    /api/templates/:projectType/:templateId/preview
+
+    Legacy fallback only when projectType is missing.
+
     ================================================
     */
 
@@ -400,6 +497,24 @@ function getPreviewUrl(
     if (!templateId) {
 
         return '';
+
+    }
+
+
+    if (normalizedProjectType) {
+
+        return (
+            baseUrl +
+            '/api/templates/' +
+            encodeURIComponent(
+                normalizedProjectType
+            ) +
+            '/' +
+            encodeURIComponent(
+                templateId
+            ) +
+            '/preview'
+        );
 
     }
 
@@ -482,8 +597,10 @@ function showTemplateError(
 
             <p class="mt-2 text-sm text-gray-500 max-w-md">
                 ${
-                    message ||
-                    'حدث خطأ أثناء الاتصال بالخادم.'
+                    escapeHtml(
+                        message ||
+                        'حدث خطأ أثناء الاتصال بالخادم.'
+                    )
                 }
             </p>
 
@@ -636,12 +753,17 @@ async function loadTemplates() {
 
         /*
         ============================================
-        SELECT FIRST TEMPLATE
+        SELECT FIRST TEMPLATE OF CURRENT CATEGORY
         ============================================
         */
 
-        const firstFilteredTemplate =
-            getFilteredTemplates()[0];
+        const filteredTemplates =
+            getFilteredTemplates();
+
+
+        const firstTemplate =
+            filteredTemplates[0] ||
+            templateList[0];
 
 
         if (
@@ -652,9 +774,9 @@ async function loadTemplates() {
         ) {
 
             selectedTemplateId =
-                firstFilteredTemplate
-                    ? firstFilteredTemplate.id
-                    : templateList[0].id;
+                firstTemplate
+                    ? firstTemplate.id
+                    : null;
 
         }
 
@@ -671,21 +793,28 @@ async function loadTemplates() {
 
 
         if (
-            currentFilteredTemplates.length > 0 &&
-            !currentFilteredTemplates.some(
-                function(template) {
-
-                    return (
-                        template.id ===
-                        selectedTemplateId
-                    );
-
-                }
-            )
+            currentFilteredTemplates.length > 0
         ) {
 
-            selectedTemplateId =
-                currentFilteredTemplates[0].id;
+            const selectedExists =
+                currentFilteredTemplates.some(
+                    function(template) {
+
+                        return (
+                            template.id ===
+                            selectedTemplateId
+                        );
+
+                    }
+                );
+
+
+            if (!selectedExists) {
+
+                selectedTemplateId =
+                    currentFilteredTemplates[0].id;
+
+            }
 
         }
 
@@ -807,13 +936,15 @@ function renderTemplates() {
 
             const previewUrl =
                 getPreviewUrl(
-                    template.id
+                    template.id,
+                    template.projectType ||
+                    getCurrentProjectType()
                 );
 
 
             /*
             ========================================
-            THUMBNAIL / PREVIEW
+            THUMBNAIL / LIVE PREVIEW
             ========================================
             */
 
@@ -828,17 +959,18 @@ function renderTemplates() {
 
                     <img
                         class="preview-frame w-full h-full object-cover"
-                        src="${template.thumbnail}"
+                        src="${escapeHtml(template.thumbnail)}"
                         alt="${escapeHtml(template.name)}"
                         loading="lazy"
                         onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');">
 
                     <iframe
-                        class="preview-frame hidden w-full h-full"
-                        src="${previewUrl || 'about:blank'}"
+                        class="preview-frame hidden w-full h-full border-0"
+                        src="${escapeHtml(previewUrl || 'about:blank')}"
                         title="${escapeHtml(template.name)}"
                         loading="lazy"
-                        tabindex="-1">
+                        tabindex="-1"
+                        frameborder="0">
                     </iframe>
 
                 `;
@@ -848,11 +980,12 @@ function renderTemplates() {
                 previewContent = `
 
                     <iframe
-                        class="preview-frame w-full h-full"
-                        src="${previewUrl || 'about:blank'}"
+                        class="preview-frame w-full h-full border-0"
+                        src="${escapeHtml(previewUrl || 'about:blank')}"
                         title="${escapeHtml(template.name)}"
                         loading="lazy"
-                        tabindex="-1">
+                        tabindex="-1"
+                        frameborder="0">
                     </iframe>
 
                 `;
@@ -1078,16 +1211,18 @@ function selectTemplate(
     templateId
 ) {
 
-    if (
-        !templateList.some(
-            function(item) {
+    const currentProjectType =
+        getCurrentProjectType();
 
-                return item.id ===
-                    templateId;
 
-            }
-        )
-    ) {
+    const template =
+        getTemplateById(
+            templateId,
+            currentProjectType
+        );
+
+
+    if (!template) {
 
         return;
 
@@ -1220,9 +1355,14 @@ function openPreview(
         templateId;
 
 
+    const projectType =
+        getCurrentProjectType();
+
+
     const template =
         getTemplateById(
-            templateId
+            templateId,
+            projectType
         );
 
 
@@ -1281,10 +1421,30 @@ function openPreview(
     }
 
 
+    /*
+    ================================================
+    GET CATEGORY-AWARE PREVIEW URL
+    ================================================
+    */
+
     const url =
         getPreviewUrl(
-            templateId
+            templateId,
+            template?.projectType ||
+            projectType
         );
+
+
+    console.log(
+        '[TemplateCraft Preview]',
+        {
+            templateId,
+            projectType:
+                template?.projectType ||
+                projectType,
+            url
+        }
+    );
 
 
     if (!url) {
@@ -1311,63 +1471,82 @@ function openPreview(
     }
 
 
-    if (previewFrameElement) {
+    if (!previewFrameElement) {
 
-        previewFrameElement.onload =
-            function() {
+        return;
 
-                if (previewLoadingElement) {
-
-                    previewLoadingElement.classList.add(
-                        'hidden'
-                    );
-
-                }
+    }
 
 
-                if (previewErrorElement) {
+    /*
+    ================================================
+    RESET IFRAME
+    ================================================
+    */
 
-                    previewErrorElement.classList.add(
-                        'hidden'
-                    );
+    previewFrameElement.onload =
+        function() {
 
-                }
+            if (previewLoadingElement) {
 
-
-                previewFrameElement.classList.remove(
+                previewLoadingElement.classList.add(
                     'hidden'
                 );
 
-            };
+            }
 
 
-        previewFrameElement.onerror =
-            function() {
+            if (previewErrorElement) {
 
-                if (previewLoadingElement) {
+                previewErrorElement.classList.add(
+                    'hidden'
+                );
 
-                    previewLoadingElement.classList.add(
-                        'hidden'
-                    );
-
-                }
+            }
 
 
-                if (previewErrorElement) {
+            previewFrameElement.classList.remove(
+                'hidden'
+            );
 
-                    previewErrorElement.classList.remove(
-                        'hidden'
-                    );
-
-                }
-
-            };
+        };
 
 
-        previewFrameElement.src =
-            url;
+    previewFrameElement.onerror =
+        function() {
 
-    }
+            if (previewLoadingElement) {
+
+                previewLoadingElement.classList.add(
+                    'hidden'
+                );
+
+            }
+
+
+            if (previewErrorElement) {
+
+                previewErrorElement.classList.remove(
+                    'hidden'
+                );
+
+            }
+
+        };
+
+
+    previewFrameElement.src =
+        'about:blank';
+
+
+    requestAnimationFrame(
+        function() {
+
+            previewFrameElement.src =
+                url;
+
+        }
+    );
 
 }
 
@@ -1388,6 +1567,12 @@ function closePreview() {
 
 
     if (previewFrameElement) {
+
+        previewFrameElement.onload =
+            null;
+
+        previewFrameElement.onerror =
+            null;
 
         previewFrameElement.src =
             'about:blank';
@@ -1527,10 +1712,44 @@ function initializeCategoryEvents() {
             Templates are already loaded from backend.
             We only filter them here.
 
-            No local templates are used.
-
             ========================================
             */
+
+            const currentTemplates =
+                getFilteredTemplates();
+
+
+            if (
+                currentTemplates.length > 0
+            ) {
+
+                const selectedExists =
+                    currentTemplates.some(
+                        function(template) {
+
+                            return (
+                                template.id ===
+                                selectedTemplateId
+                            );
+
+                        }
+                    );
+
+
+                if (!selectedExists) {
+
+                    selectedTemplateId =
+                        currentTemplates[0].id;
+
+                }
+
+            } else {
+
+                selectedTemplateId =
+                    null;
+
+            }
+
 
             renderTemplates();
 
@@ -1627,7 +1846,8 @@ window.getSelectedTemplate =
     function() {
 
         return getTemplateById(
-            selectedTemplateId
+            selectedTemplateId,
+            getCurrentProjectType()
         );
 
     };
