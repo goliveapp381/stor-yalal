@@ -6,66 +6,38 @@
 
  مسؤول عن:
  - Templates
+ - Dynamic Templates From Backend
  - Select Template
  - Preview
  - Close Preview
  - Choose From Preview
  - Category Change
 
+ المصدر الرئيسي للقوالب:
+ TemplateCraft Backend API
+
+ لا يعتمد على:
+ ./templates/...
 ====================================================
 */
 
 
+'use strict';
+
+
 // ================================================
-// 1. TEMPLATE CONFIGURATION
+// 1. TEMPLATE STATE
 // ================================================
 
-const templateList = [
+let templateList = [];
 
-    {
-        id: 'template-1',
-        name: 'القالب الأول',
-        description: 'تصميم احترافي'
-    },
+let selectedTemplateId = null;
 
-    {
-        id: 'template-2',
-        name: 'القالب الثاني',
-        description: 'تصميم عصري'
-    },
+let previewTemplateId = null;
 
-    {
-        id: 'template-3',
-        name: 'القالب الثالث',
-        description: 'تصميم أنيق'
-    },
+let templatesLoaded = false;
 
-    {
-        id: 'template-4',
-        name: 'القالب الرابع',
-        description: 'تصميم متطور'
-    },
-
-    {
-        id: 'template-5',
-        name: 'القالب الخامس',
-        description: 'تصميم مميز'
-    },
-
-    {
-        id: 'template-6',
-        name: 'القالب السادس',
-        description: 'تصميم إبداعي'
-    }
-
-];
-
-
-let selectedTemplateId =
-    'template-1';
-
-let previewTemplateId =
-    null;
+let templatesLoading = false;
 
 
 // ================================================
@@ -114,12 +86,918 @@ const resultContainerElement =
 
 
 // ================================================
-// 3. RENDER TEMPLATES
+// 3. API HELPER
+// ================================================
+
+function getTemplateApi() {
+
+    if (
+        typeof window.TemplateCraftAPI ===
+        'undefined'
+    ) {
+
+        return null;
+
+    }
+
+
+    return window.TemplateCraftAPI;
+
+}
+
+
+// ================================================
+// 4. GET CURRENT PROJECT TYPE
+// ================================================
+
+function getCurrentProjectType() {
+
+    if (
+        !projectTypeElement
+    ) {
+
+        return '';
+
+    }
+
+
+    return String(
+        projectTypeElement.value || ''
+    ).trim();
+
+}
+
+
+// ================================================
+// 5. GET TEMPLATE PREVIEW URL
+// ================================================
+
+function getBackendTemplatePreviewUrl(
+    template
+) {
+
+    if (!template) {
+
+        return null;
+
+    }
+
+
+    /*
+    ------------------------------------------------
+    1. إذا Backend رجع previewUrl
+    نستعمله مباشرة.
+    ------------------------------------------------
+    */
+
+    if (
+        typeof template.previewUrl ===
+        'string' &&
+
+        template.previewUrl.trim()
+    ) {
+
+        return template.previewUrl.trim();
+
+    }
+
+
+    /*
+    ------------------------------------------------
+    2. نستعمل client-api.js إذا كان عنده
+    getTemplatePreviewUrl().
+    ------------------------------------------------
+    */
+
+    const api =
+        getTemplateApi();
+
+
+    if (
+        api &&
+
+        typeof api.getTemplatePreviewUrl ===
+        'function'
+    ) {
+
+        /*
+        getTemplatePreviewUrl القديم
+        كيقبل templateId فقط.
+
+        Backend عنده كذلك route جديد
+        projectType/templateId.
+
+        نحاول أولاً استعمال signature
+        الموجودة في client-api.js.
+        */
+
+        try {
+
+            const url =
+                api.getTemplatePreviewUrl(
+                    template.id
+                );
+
+
+            if (
+                typeof url === 'string' &&
+                url.trim()
+            ) {
+
+                return url;
+
+            }
+
+        } catch (error) {
+
+            console.warn(
+                'Template preview URL helper failed:',
+                error
+            );
+
+        }
+
+    }
+
+
+    /*
+    ------------------------------------------------
+    3. Fallback مباشر للـBackend
+    ------------------------------------------------
+    */
+
+    const projectType =
+        template.projectType ||
+        getCurrentProjectType();
+
+    const templateId =
+        template.id;
+
+
+    if (
+        !projectType ||
+        !templateId
+    ) {
+
+        return null;
+
+    }
+
+
+    /*
+    نحاول استعمال Base URL الموجود
+    في client-api.js.
+    */
+
+    const baseUrl =
+        window.TEMPLATECRAFT_API_BASE_URL ||
+        'https://templatecraft-backend.onrender.com';
+
+
+    return (
+        String(baseUrl).replace(/\/+$/, '') +
+
+        '/api/templates/' +
+
+        encodeURIComponent(
+            projectType
+        ) +
+
+        '/' +
+
+        encodeURIComponent(
+            templateId
+        ) +
+
+        '/preview'
+    );
+
+}
+
+
+// ================================================
+// 6. NORMALIZE TEMPLATE
+// ================================================
+
+function normalizeTemplate(
+    template,
+    index
+) {
+
+    if (
+        !template ||
+        typeof template !== 'object'
+    ) {
+
+        return null;
+
+    }
+
+
+    const id =
+        String(
+            template.id ||
+            template.templateId ||
+            ''
+        ).trim();
+
+
+    if (!id) {
+
+        return null;
+
+    }
+
+
+    const projectType =
+        String(
+            template.projectType ||
+            template.category ||
+            getCurrentProjectType() ||
+            ''
+        ).trim();
+
+
+    const name =
+        String(
+            template.name ||
+            template.title ||
+            id
+        ).trim();
+
+
+    const description =
+        String(
+            template.description ||
+            'قالب احترافي جاهز'
+        ).trim();
+
+
+    const normalized = {
+
+        id,
+
+        projectType,
+
+        category:
+            template.category ||
+            projectType,
+
+        name,
+
+        description,
+
+        version:
+            template.version ||
+            null,
+
+        engine:
+            template.engine ||
+            null,
+
+        thumbnail:
+            template.thumbnail ||
+            null,
+
+        preview:
+            template.preview ||
+            null,
+
+        previewUrl:
+            template.previewUrl ||
+            null,
+
+        features:
+            template.features || {},
+
+        index
+
+    };
+
+
+    /*
+    ------------------------------------------------
+    previewUrl النهائي
+    ------------------------------------------------
+    */
+
+    normalized.previewUrl =
+        getBackendTemplatePreviewUrl(
+            normalized
+        );
+
+
+    return normalized;
+
+}
+
+
+// ================================================
+// 7. EXTRACT TEMPLATE ARRAY FROM API RESPONSE
+// ================================================
+
+function extractTemplatesFromResponse(
+    response
+) {
+
+    /*
+    Backend الحالي غالباً يرجع:
+
+    {
+        success: true,
+        templates: [...]
+    }
+
+    ولكن نخلي النظام متوافق كذلك
+    مع responses مختلفة.
+    */
+
+
+    if (
+        Array.isArray(response)
+    ) {
+
+        return response;
+
+    }
+
+
+    if (
+        response &&
+        Array.isArray(
+            response.templates
+        )
+    ) {
+
+        return response.templates;
+
+    }
+
+
+    if (
+        response &&
+        Array.isArray(
+            response.data
+        )
+    ) {
+
+        return response.data;
+
+    }
+
+
+    if (
+        response &&
+        response.data &&
+        Array.isArray(
+            response.data.templates
+        )
+    ) {
+
+        return response.data.templates;
+
+    }
+
+
+    return [];
+
+}
+
+
+// ================================================
+// 8. FETCH TEMPLATES FROM BACKEND
+// ================================================
+
+async function loadTemplatesFromBackend() {
+
+    if (
+        templatesLoading
+    ) {
+
+        return templateList;
+
+    }
+
+
+    templatesLoading =
+        true;
+
+
+    try {
+
+        const api =
+            getTemplateApi();
+
+
+        if (
+            !api
+        ) {
+
+            throw new Error(
+                'TemplateCraftAPI غير متوفر.'
+            );
+
+        }
+
+
+        if (
+            typeof api.getTemplates !==
+            'function'
+        ) {
+
+            throw new Error(
+                'getTemplates() غير موجود في client-api.js.'
+            );
+
+        }
+
+
+        const response =
+            await api.getTemplates();
+
+
+        const rawTemplates =
+            extractTemplatesFromResponse(
+                response
+            );
+
+
+        const normalizedTemplates =
+            rawTemplates
+                .map(
+                    function(template, index) {
+
+                        return normalizeTemplate(
+                            template,
+                            index
+                        );
+
+                    }
+                )
+                .filter(
+                    function(template) {
+
+                        return Boolean(
+                            template
+                        );
+
+                    }
+                );
+
+
+        /*
+        ------------------------------------------------
+        منع duplicate IDs
+        ------------------------------------------------
+        */
+
+        const uniqueTemplates = [];
+
+        const seenIds =
+            new Set();
+
+
+        normalizedTemplates.forEach(
+            function(template) {
+
+                if (
+                    seenIds.has(
+                        template.id
+                    )
+                ) {
+
+                    return;
+
+                }
+
+
+                seenIds.add(
+                    template.id
+                );
+
+
+                uniqueTemplates.push(
+                    template
+                );
+
+            }
+        );
+
+
+        templateList =
+            uniqueTemplates;
+
+
+        templatesLoaded =
+            true;
+
+
+        /*
+        ------------------------------------------------
+        إذا ما كانش selectedTemplateId
+        نختارو أول قالب في category الحالية.
+        ------------------------------------------------
+        */
+
+        ensureSelectedTemplate();
+
+
+        /*
+        ------------------------------------------------
+        تحديث categories في select
+        ------------------------------------------------
+        */
+
+        populateProjectTypes();
+
+
+        return templateList;
+
+    } catch (error) {
+
+        console.error(
+            'Failed to load templates from backend:',
+            error
+        );
+
+
+        templateList =
+            [];
+
+
+        templatesLoaded =
+            false;
+
+
+        if (
+            templateGridElement
+        ) {
+
+            templateGridElement.innerHTML = `
+
+                <div class="col-span-full">
+
+                    <div class="rounded-2xl border border-red-200 bg-red-50 p-6 text-center">
+
+                        <div class="text-red-600 font-extrabold text-lg">
+                            تعذر تحميل القوالب
+                        </div>
+
+                        <p class="text-sm text-red-500 mt-2">
+                            تأكد من اتصالك بالإنترنت ومن أن TemplateCraft Backend يعمل بشكل صحيح.
+                        </p>
+
+                        <button
+                            type="button"
+                            id="retryTemplatesBtn"
+                            class="mt-4 bg-red-600 hover:bg-red-700 text-white rounded-xl px-5 py-2 font-bold">
+                            🔄 إعادة المحاولة
+                        </button>
+
+                    </div>
+
+                </div>
+
+            `;
+
+
+            const retryButton =
+                document.getElementById(
+                    'retryTemplatesBtn'
+                );
+
+
+            if (
+                retryButton
+            ) {
+
+                retryButton.addEventListener(
+                    'click',
+                    async function() {
+
+                        await initializeTemplateSystem(
+                            true
+                        );
+
+                    }
+                );
+
+            }
+
+        }
+
+
+        return [];
+
+    } finally {
+
+        templatesLoading =
+            false;
+
+    }
+
+}
+
+
+// ================================================
+// 9. GET PROJECT TYPES FROM TEMPLATES
+// ================================================
+
+function getProjectTypesFromTemplates() {
+
+    const types =
+        new Set();
+
+
+    templateList.forEach(
+        function(template) {
+
+            const type =
+                String(
+                    template.projectType ||
+                    template.category ||
+                    ''
+                ).trim();
+
+
+            if (
+                type
+            ) {
+
+                types.add(
+                    type
+                );
+
+            }
+
+        }
+    );
+
+
+    return Array.from(
+        types
+    ).sort(
+        function(a, b) {
+
+            return a.localeCompare(
+                b
+            );
+
+        }
+    );
+
+}
+
+
+// ================================================
+// 10. CATEGORY LABEL
+// ================================================
+
+function getCategoryLabel(
+    projectType
+) {
+
+    const labels = {
+
+        blogs:
+            'مدونات',
+
+        corporate:
+            'شركات',
+
+        ecommerce:
+            'متاجر إلكترونية',
+
+        'real-estate':
+            'عقارات',
+
+        'restaurant-demo':
+            'مطاعم',
+
+        'company-demo':
+            'شركات',
+
+        'store-demo':
+            'متاجر'
+
+    };
+
+
+    return (
+        labels[
+            projectType
+        ] ||
+        projectType
+    );
+
+}
+
+
+// ================================================
+// 11. POPULATE PROJECT TYPE SELECT
+// ================================================
+
+function populateProjectTypes() {
+
+    if (
+        !projectTypeElement
+    ) {
+
+        return;
+
+    }
+
+
+    const currentValue =
+        String(
+            projectTypeElement.value ||
+            ''
+        ).trim();
+
+
+    const projectTypes =
+        getProjectTypesFromTemplates();
+
+
+    if (
+        projectTypes.length === 0
+    ) {
+
+        return;
+
+    }
+
+
+    projectTypeElement.innerHTML =
+        '';
+
+
+    projectTypes.forEach(
+        function(projectType) {
+
+            const option =
+                document.createElement(
+                    'option'
+                );
+
+
+            option.value =
+                projectType;
+
+
+            option.textContent =
+                getCategoryLabel(
+                    projectType
+                );
+
+
+            projectTypeElement.appendChild(
+                option
+            );
+
+        }
+    );
+
+
+    /*
+    ------------------------------------------------
+    نحافظ على category الحالية إذا كانت
+    مازالت موجودة.
+    ------------------------------------------------
+    */
+
+    if (
+        currentValue &&
+        projectTypes.includes(
+            currentValue
+        )
+    ) {
+
+        projectTypeElement.value =
+            currentValue;
+
+    } else {
+
+        projectTypeElement.value =
+            projectTypes[0];
+
+    }
+
+
+    ensureSelectedTemplate();
+
+
+    renderTemplates();
+
+}
+
+
+// ================================================
+// 12. GET TEMPLATES FOR CURRENT CATEGORY
+// ================================================
+
+function getCurrentCategoryTemplates() {
+
+    const projectType =
+        getCurrentProjectType();
+
+
+    if (
+        !projectType
+    ) {
+
+        return templateList;
+
+    }
+
+
+    return templateList.filter(
+        function(template) {
+
+            return (
+                template.projectType ===
+                    projectType ||
+
+                template.category ===
+                    projectType
+            );
+
+        }
+    );
+
+}
+
+
+// ================================================
+// 13. ENSURE SELECTED TEMPLATE
+// ================================================
+
+function ensureSelectedTemplate() {
+
+    const categoryTemplates =
+        getCurrentCategoryTemplates();
+
+
+    if (
+        categoryTemplates.length === 0
+    ) {
+
+        selectedTemplateId =
+            null;
+
+        updateSelectedLabel();
+
+        return;
+
+    }
+
+
+    /*
+    إذا selected موجود داخل category
+    الحالية، نخليه.
+    */
+
+    const currentSelected =
+        categoryTemplates.find(
+            function(template) {
+
+                return (
+                    template.id ===
+                    selectedTemplateId
+                );
+
+            }
+        );
+
+
+    if (
+        currentSelected
+    ) {
+
+        return;
+
+    }
+
+
+    /*
+    إذا لا، نختارو أول قالب.
+    */
+
+    selectedTemplateId =
+        categoryTemplates[0].id;
+
+}
+
+
+// ================================================
+// 14. RENDER TEMPLATES
 // ================================================
 
 function renderTemplates() {
 
-    if (!templateGridElement) {
+    if (
+        !templateGridElement
+    ) {
 
         return;
 
@@ -130,7 +1008,43 @@ function renderTemplates() {
         '';
 
 
-    templateList.forEach(
+    const categoryTemplates =
+        getCurrentCategoryTemplates();
+
+
+    if (
+        categoryTemplates.length === 0
+    ) {
+
+        templateGridElement.innerHTML = `
+
+            <div class="col-span-full">
+
+                <div class="rounded-2xl border border-gray-200 bg-gray-50 p-8 text-center">
+
+                    <div class="text-gray-700 font-extrabold text-lg">
+                        لا توجد قوالب
+                    </div>
+
+                    <p class="text-sm text-gray-500 mt-2">
+                        لا توجد قوالب متاحة حالياً في هذه الفئة.
+                    </p>
+
+                </div>
+
+            </div>
+
+        `;
+
+
+        updateSelectedLabel();
+
+        return;
+
+    }
+
+
+    categoryTemplates.forEach(
         function(template, index) {
 
             const card =
@@ -155,8 +1069,25 @@ function renderTemplates() {
 
 
             const previewUrl =
-                getPreviewUrl(
-                    template.id
+                getBackendTemplatePreviewUrl(
+                    template
+                );
+
+
+            const safePreviewUrl =
+                previewUrl ||
+                'about:blank';
+
+
+            const escapedName =
+                escapeHtml(
+                    template.name
+                );
+
+
+            const escapedDescription =
+                escapeHtml(
+                    template.description
                 );
 
 
@@ -168,8 +1099,8 @@ function renderTemplates() {
 
                     <iframe
                         class="preview-frame"
-                        src="${previewUrl || 'about:blank'}"
-                        title="${template.name}"
+                        src="${safePreviewUrl}"
+                        title="${escapedName}"
                         loading="lazy"
                         tabindex="-1">
                     </iframe>
@@ -202,7 +1133,7 @@ function renderTemplates() {
                     <div class="flex justify-between items-center gap-2">
 
                         <h3 class="font-extrabold text-gray-900">
-                            ${template.name}
+                            ${escapedName}
                         </h3>
 
                         <span class="selectedMark text-xs font-bold text-purple-700">
@@ -217,7 +1148,7 @@ function renderTemplates() {
                     </div>
 
                     <p class="text-xs text-gray-500 mt-1">
-                        ${template.description}
+                        ${escapedDescription}
                     </p>
 
                     <div class="grid grid-cols-2 gap-2 mt-4">
@@ -274,7 +1205,9 @@ function renderTemplates() {
                 );
 
 
-            if (previewButton) {
+            if (
+                previewButton
+            ) {
 
                 previewButton.addEventListener(
                     'click',
@@ -298,7 +1231,9 @@ function renderTemplates() {
                 );
 
 
-            if (selectButton) {
+            if (
+                selectButton
+            ) {
 
                 selectButton.addEventListener(
                     'click',
@@ -330,22 +1265,57 @@ function renderTemplates() {
 
 
 // ================================================
-// 4. SELECT TEMPLATE
+// 15. ESCAPE HTML
+// ================================================
+
+function escapeHtml(
+    value
+) {
+
+    const div =
+        document.createElement(
+            'div'
+        );
+
+
+    div.textContent =
+        value == null
+            ? ''
+            : String(value);
+
+
+    return div.innerHTML;
+
+}
+
+
+// ================================================
+// 16. SELECT TEMPLATE
 // ================================================
 
 function selectTemplate(
     templateId
 ) {
 
-    if (
-        !templateList.some(
+    const categoryTemplates =
+        getCurrentCategoryTemplates();
+
+
+    const template =
+        categoryTemplates.find(
             function(item) {
 
-                return item.id ===
-                    templateId;
+                return (
+                    item.id ===
+                    templateId
+                );
 
             }
-        )
+        );
+
+
+    if (
+        !template
     ) {
 
         return;
@@ -381,7 +1351,9 @@ function selectTemplate(
                     );
 
 
-                if (mark) {
+                if (
+                    mark
+                ) {
 
                     mark.textContent =
                         selected
@@ -397,7 +1369,9 @@ function selectTemplate(
                     );
 
 
-                if (glowLine) {
+                if (
+                    glowLine
+                ) {
 
                     glowLine.style.display =
                         selected
@@ -416,33 +1390,65 @@ function selectTemplate(
 
 
 // ================================================
-// 5. UPDATE SELECTED LABEL
+// 17. UPDATE SELECTED LABEL
 // ================================================
 
 function updateSelectedLabel() {
 
-    if (!selectedLabelElement) {
+    if (
+        !selectedLabelElement
+    ) {
 
         return;
 
     }
 
 
-    const number =
-        selectedTemplateId.replace(
-            'template-',
-            ''
+    if (
+        !selectedTemplateId
+    ) {
+
+        selectedLabelElement.textContent =
+            'لم يتم اختيار قالب';
+
+        return;
+
+    }
+
+
+    const selectedTemplate =
+        templateList.find(
+            function(template) {
+
+                return (
+                    template.id ===
+                    selectedTemplateId
+                );
+
+            }
         );
 
 
+    if (
+        selectedTemplate
+    ) {
+
+        selectedLabelElement.textContent =
+            `${selectedTemplate.name} محدد`;
+
+        return;
+
+    }
+
+
     selectedLabelElement.textContent =
-        `القالب ${number} محدد`;
+        'لم يتم اختيار قالب';
 
 }
 
 
 // ================================================
-// 6. OPEN PREVIEW
+// 18. OPEN PREVIEW
 // ================================================
 
 function openPreview(
@@ -457,8 +1463,10 @@ function openPreview(
         templateList.find(
             function(item) {
 
-                return item.id ===
-                    templateId;
+                return (
+                    item.id ===
+                    templateId
+                );
 
             }
         );
@@ -470,7 +1478,9 @@ function openPreview(
         );
 
 
-    if (previewTitle) {
+    if (
+        previewTitle
+    ) {
 
         previewTitle.textContent =
             template
@@ -480,7 +1490,9 @@ function openPreview(
     }
 
 
-    if (!previewModalElement) {
+    if (
+        !previewModalElement
+    ) {
 
         return;
 
@@ -492,7 +1504,9 @@ function openPreview(
     );
 
 
-    if (previewFrameElement) {
+    if (
+        previewFrameElement
+    ) {
 
         previewFrameElement.classList.add(
             'hidden'
@@ -501,7 +1515,9 @@ function openPreview(
     }
 
 
-    if (previewErrorElement) {
+    if (
+        previewErrorElement
+    ) {
 
         previewErrorElement.classList.add(
             'hidden'
@@ -510,7 +1526,9 @@ function openPreview(
     }
 
 
-    if (previewLoadingElement) {
+    if (
+        previewLoadingElement
+    ) {
 
         previewLoadingElement.classList.remove(
             'hidden'
@@ -520,14 +1538,18 @@ function openPreview(
 
 
     const url =
-        getPreviewUrl(
-            templateId
+        getBackendTemplatePreviewUrl(
+            template
         );
 
 
-    if (!url) {
+    if (
+        !url
+    ) {
 
-        if (previewLoadingElement) {
+        if (
+            previewLoadingElement
+        ) {
 
             previewLoadingElement.classList.add(
                 'hidden'
@@ -536,7 +1558,9 @@ function openPreview(
         }
 
 
-        if (previewErrorElement) {
+        if (
+            previewErrorElement
+        ) {
 
             previewErrorElement.classList.remove(
                 'hidden'
@@ -549,12 +1573,16 @@ function openPreview(
     }
 
 
-    if (previewFrameElement) {
+    if (
+        previewFrameElement
+    ) {
 
         previewFrameElement.onload =
             function() {
 
-                if (previewLoadingElement) {
+                if (
+                    previewLoadingElement
+                ) {
 
                     previewLoadingElement.classList.add(
                         'hidden'
@@ -563,7 +1591,9 @@ function openPreview(
                 }
 
 
-                if (previewErrorElement) {
+                if (
+                    previewErrorElement
+                ) {
 
                     previewErrorElement.classList.add(
                         'hidden'
@@ -582,7 +1612,9 @@ function openPreview(
         previewFrameElement.onerror =
             function() {
 
-                if (previewLoadingElement) {
+                if (
+                    previewLoadingElement
+                ) {
 
                     previewLoadingElement.classList.add(
                         'hidden'
@@ -591,7 +1623,9 @@ function openPreview(
                 }
 
 
-                if (previewErrorElement) {
+                if (
+                    previewErrorElement
+                ) {
 
                     previewErrorElement.classList.remove(
                         'hidden'
@@ -611,12 +1645,14 @@ function openPreview(
 
 
 // ================================================
-// 7. CLOSE PREVIEW
+// 19. CLOSE PREVIEW
 // ================================================
 
 function closePreview() {
 
-    if (previewModalElement) {
+    if (
+        previewModalElement
+    ) {
 
         previewModalElement.classList.remove(
             'active'
@@ -625,7 +1661,9 @@ function closePreview() {
     }
 
 
-    if (previewFrameElement) {
+    if (
+        previewFrameElement
+    ) {
 
         previewFrameElement.src =
             'about:blank';
@@ -640,7 +1678,7 @@ function closePreview() {
 
 
 // ================================================
-// 8. PREVIEW EVENTS
+// 20. PREVIEW EVENTS
 // ================================================
 
 function initializePreviewEvents() {
@@ -651,7 +1689,9 @@ function initializePreviewEvents() {
         );
 
 
-    if (closePreviewBtn) {
+    if (
+        closePreviewBtn
+    ) {
 
         closePreviewBtn.addEventListener(
             'click',
@@ -661,7 +1701,9 @@ function initializePreviewEvents() {
     }
 
 
-    if (previewModalElement) {
+    if (
+        previewModalElement
+    ) {
 
         previewModalElement.addEventListener(
             'click',
@@ -688,13 +1730,17 @@ function initializePreviewEvents() {
         );
 
 
-    if (choosePreviewBtn) {
+    if (
+        choosePreviewBtn
+    ) {
 
         choosePreviewBtn.addEventListener(
             'click',
             function() {
 
-                if (!previewTemplateId) {
+                if (
+                    !previewTemplateId
+                ) {
 
                     return;
 
@@ -709,10 +1755,17 @@ function initializePreviewEvents() {
                 closePreview();
 
 
-                showStatus(
-                    'تم اختيار القالب بنجاح.',
-                    'success'
-                );
+                if (
+                    typeof showStatus ===
+                    'function'
+                ) {
+
+                    showStatus(
+                        'تم اختيار القالب بنجاح.',
+                        'success'
+                    );
+
+                }
 
             }
         );
@@ -723,12 +1776,14 @@ function initializePreviewEvents() {
 
 
 // ================================================
-// 9. CATEGORY CHANGE
+// 21. CATEGORY CHANGE
 // ================================================
 
 function initializeCategoryEvents() {
 
-    if (!projectTypeElement) {
+    if (
+        !projectTypeElement
+    ) {
 
         return;
 
@@ -750,6 +1805,8 @@ function initializeCategoryEvents() {
             }
 
 
+            ensureSelectedTemplate();
+
             renderTemplates();
 
         }
@@ -759,7 +1816,7 @@ function initializeCategoryEvents() {
 
 
 // ================================================
-// 10. ESCAPE KEY
+// 22. ESCAPE KEY
 // ================================================
 
 function initializeTemplateKeyboardEvents() {
@@ -783,9 +1840,13 @@ function initializeTemplateKeyboardEvents() {
 
             if (
                 typeof closeCreateModal ===
-                    'function' &&
+                'function' &&
+
+                typeof createModal !==
+                'undefined' &&
 
                 createModal &&
+
                 createModal.classList.contains(
                     'active'
                 )
@@ -802,25 +1863,170 @@ function initializeTemplateKeyboardEvents() {
 
 
 // ================================================
-// 11. INITIALIZE TEMPLATE SYSTEM
+// 23. INITIALIZE TEMPLATE SYSTEM
 // ================================================
 
-function initializeTemplateSystem() {
+async function initializeTemplateSystem(
+    forceReload = false
+) {
+
+    /*
+    ------------------------------------------------
+    منع إعادة تحميل القوالب بلا سبب.
+    ------------------------------------------------
+    */
+
+    if (
+        templatesLoaded &&
+        !forceReload
+    ) {
+
+        ensureSelectedTemplate();
+
+        renderTemplates();
+
+        return;
+
+    }
+
+
+    /*
+    ------------------------------------------------
+    أولاً نحاول تحميل القوالب من Backend.
+    ------------------------------------------------
+    */
+
+    await loadTemplatesFromBackend();
+
+
+    /*
+    ------------------------------------------------
+    بعد التحميل:
+    - نضمن category
+    - نضمن selected template
+    - نرندر
+    ------------------------------------------------
+    */
+
+    ensureSelectedTemplate();
+
+    populateProjectTypes();
 
     renderTemplates();
 
-    initializePreviewEvents();
 
-    initializeCategoryEvents();
+    /*
+    ------------------------------------------------
+    Events خاصين مرة واحدة.
+    ------------------------------------------------
+    */
 
-    initializeTemplateKeyboardEvents();
+    if (
+        !initializeTemplateSystem.eventsInitialized
+    ) {
+
+        initializePreviewEvents();
+
+        initializeCategoryEvents();
+
+        initializeTemplateKeyboardEvents();
+
+
+        initializeTemplateSystem.eventsInitialized =
+            true;
+
+    }
 
 }
 
 
 // ================================================
-// 12. PUBLIC
+// 24. PUBLIC
 // ================================================
 
 window.initializeTemplateSystem =
     initializeTemplateSystem;
+
+
+// ================================================
+// 25. PUBLIC TEMPLATE HELPERS
+// ================================================
+
+window.getSelectedTemplateId =
+    function() {
+
+        return selectedTemplateId;
+
+    };
+
+
+window.getSelectedTemplate =
+    function() {
+
+        return templateList.find(
+            function(template) {
+
+                return (
+                    template.id ===
+                    selectedTemplateId
+                );
+
+            }
+        ) || null;
+
+    };
+
+
+window.getLoadedTemplates =
+    function() {
+
+        return [
+            ...templateList
+        ];
+
+    };
+
+
+// ================================================
+// 26. DEBUG HELPERS
+// ================================================
+
+window.TemplateCraftTemplates = {
+
+    getAll:
+        function() {
+
+            return [
+                ...templateList
+            ];
+
+        },
+
+    getSelected:
+        function() {
+
+            return (
+                templateList.find(
+                    function(template) {
+
+                        return (
+                            template.id ===
+                            selectedTemplateId
+                        );
+
+                    }
+                ) || null
+            );
+
+        },
+
+    reload:
+        function() {
+
+            return initializeTemplateSystem(
+                true
+            );
+
+        }
+
+};
