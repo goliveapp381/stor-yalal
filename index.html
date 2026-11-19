@@ -1,31 +1,47 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>TemplateCraft Pro | منصة القوالب التجارية</title>
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>
+    TemplateCraft Pro | منصة القوالب التجارية
+  </title>
 
   <script src="https://cdn.tailwindcss.com"></script>
 
   <link
-    href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap"
     rel="stylesheet"
   >
 
   <style>
+
     body {
       font-family: 'Cairo', sans-serif;
     }
 
+
+    /* =========================================
+       ANIMATED HERO
+    ========================================= */
+
     .animated-mesh-bg {
-      background: linear-gradient(
-        -45deg,
-        #0f172a,
-        #2e1065,
-        #4c1d95,
-        #3b0764
-      );
+
+      background:
+        linear-gradient(
+          -45deg,
+          #0f172a,
+          #2e1065,
+          #4c1d95,
+          #3b0764
+        );
 
       background-size: 400% 400%;
 
@@ -33,9 +49,14 @@
         waveGradient 12s ease infinite;
 
       position: relative;
+
+      isolation: isolate;
+
     }
 
+
     .animated-mesh-bg::before {
+
       content: "";
 
       position: absolute;
@@ -43,21 +64,25 @@
       inset: 0;
 
       background-image:
+
         radial-gradient(
           at 15% 20%,
           rgba(168, 85, 247, 0.45) 0px,
           transparent 50%
         ),
+
         radial-gradient(
           at 85% 80%,
           rgba(192, 132, 252, 0.35) 0px,
           transparent 50%
         ),
+
         linear-gradient(
           to right,
           rgba(255, 255, 255, 0.06) 1px,
           transparent 1px
         ),
+
         linear-gradient(
           to bottom,
           rgba(255, 255, 255, 0.06) 1px,
@@ -65,13 +90,18 @@
         );
 
       background-size:
+
         100% 100%,
         100% 100%,
         40px 40px,
         40px 40px;
 
       pointer-events: none;
+
+      z-index: -1;
+
     }
+
 
     @keyframes waveGradient {
 
@@ -86,47 +116,169 @@
       100% {
         background-position: 0% 50%;
       }
+
     }
 
+
+    /* =========================================
+       TEMPLATE CARD
+    ========================================= */
+
     .template-card {
+
       transition:
         transform 0.25s ease,
         box-shadow 0.25s ease;
+
     }
+
 
     .template-card:hover {
-      transform: translateY(-5px);
+
+      transform:
+        translateY(-6px);
+
+      box-shadow:
+        0 20px 45px
+        rgba(15, 23, 42, 0.12);
+
     }
+
 
     .template-image {
-      transition: transform 0.4s ease;
+
+      transition:
+        transform 0.45s ease;
+
     }
 
-    .template-card:hover .template-image {
-      transform: scale(1.04);
+
+    .template-card:hover
+    .template-image {
+
+      transform:
+        scale(1.05);
+
     }
+
+
+    /* =========================================
+       CATEGORY BUTTON
+    ========================================= */
+
+    .category-button {
+
+      white-space: nowrap;
+
+      transition:
+        all 0.2s ease;
+
+    }
+
+
+    /* =========================================
+       PREVIEW BUTTON
+    ========================================= */
+
+    .preview-button {
+
+      transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+
+    }
+
+
+    .preview-button:hover {
+
+      transform:
+        translateY(-1px);
+
+      box-shadow:
+        0 8px 18px
+        rgba(124, 58, 237, 0.25);
+
+    }
+
+
+    /* =========================================
+       SKELETON
+    ========================================= */
+
+    .skeleton {
+
+      background:
+        linear-gradient(
+          90deg,
+          #f1f5f9 25%,
+          #e2e8f0 50%,
+          #f1f5f9 75%
+        );
+
+      background-size:
+        200% 100%;
+
+      animation:
+        skeletonLoading 1.5s infinite;
+
+    }
+
+
+    @keyframes skeletonLoading {
+
+      0% {
+        background-position: 200% 0;
+      }
+
+      100% {
+        background-position: -200% 0;
+      }
+
+    }
+
+
+    /* =========================================
+       MOBILE
+    ========================================= */
+
+    @media (max-width: 640px) {
+
+      .hero-title {
+
+        font-size:
+          2rem;
+
+      }
+
+    }
+
   </style>
+
 </head>
+
 
 <body class="bg-gray-50 text-gray-800">
 
-  <!-- ========================================= -->
-  <!-- HEADER -->
-  <!-- ========================================= -->
+
+  <!-- =========================================
+       HEADER
+  ========================================= -->
 
   <header
     class="bg-white/90 backdrop-blur-md shadow-sm border-b sticky top-0 z-50"
   >
 
     <div
-      class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center"
+      class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center gap-4"
     >
 
       <div
         class="flex items-center space-x-4 space-x-reverse"
       >
 
-        <h1 class="text-2xl font-bold text-purple-600">
+        <h1
+          class="text-2xl font-extrabold text-purple-600"
+        >
           TemplateCraft Pro
         </h1>
 
@@ -138,7 +290,8 @@
 
       </div>
 
-      <!-- منطقة الحساب -->
+
+      <!-- AUTH -->
 
       <div
         id="auth-section"
@@ -149,7 +302,15 @@
           href="login.html"
           class="bg-purple-600 hover:bg-purple-700 text-white px-5 py-2 rounded-xl text-sm font-bold shadow transition flex items-center gap-2"
         >
-          تسجيل الدخول / حساب جديد
+
+          <span>
+            🔐
+          </span>
+
+          <span>
+            تسجيل الدخول / حساب جديد
+          </span>
+
         </a>
 
       </div>
@@ -159,9 +320,10 @@
   </header>
 
 
-  <!-- ========================================= -->
-  <!-- HERO -->
-  <!-- ========================================= -->
+
+  <!-- =========================================
+       HERO
+  ========================================= -->
 
   <section
     class="animated-mesh-bg text-white py-24 text-center relative overflow-hidden"
@@ -177,14 +339,16 @@
         مُصممة للمحترفين
       </span>
 
+
       <h2
-        class="text-4xl md:text-5xl font-bold mb-4 leading-tight"
+        class="hero-title text-4xl md:text-5xl font-extrabold mb-4 leading-tight"
       >
         اكتشف أفضل القوالب التجارية الجاهزة
       </h2>
 
+
       <p
-        class="text-purple-100 text-lg mb-8 max-w-2xl mx-auto"
+        class="text-purple-100 text-lg mb-8 max-w-2xl mx-auto leading-8"
       >
         قوالب احترافية متجاوبة، مستقلة، ومصممة خصيصاً لتطوير مشاريعك الرقمية بكفاءة عالية.
       </p>
@@ -194,9 +358,10 @@
   </section>
 
 
-  <!-- ========================================= -->
-  <!-- CATEGORIES -->
-  <!-- ========================================= -->
+
+  <!-- =========================================
+       CATEGORIES
+  ========================================= -->
 
   <nav
     class="bg-white border-b shadow-sm py-4 overflow-x-auto"
@@ -205,8 +370,6 @@
     <div
       class="max-w-7xl mx-auto px-4 flex justify-between items-center min-w-max"
     >
-
-      <!-- التصنيفات القادمة من Backend -->
 
       <div
         id="categories-container"
@@ -224,7 +387,7 @@
       </div>
 
 
-      <!-- إنشاء مشروع -->
+      <!-- CREATE PROJECT -->
 
       <div
         id="create-project-btn-container"
@@ -233,10 +396,12 @@
 
         <a
           href="create-project.html"
-          class="bg-gradient-to-r from-purple-700 via-indigo-600 to-blue-600 hover:from-purple-800 hover:to-blue-700 text-emerald-400 px-6 py-3 rounded-2xl text-base font-bold shadow-xl shadow-purple-900/30 transition flex items-center gap-2 border border-purple-400/20"
+          class="bg-gradient-to-r from-purple-700 via-indigo-600 to-blue-600 hover:from-purple-800 hover:to-blue-700 text-white px-6 py-3 rounded-2xl text-base font-bold shadow-xl shadow-purple-900/30 transition flex items-center gap-2 border border-purple-400/20"
         >
 
-          <span>⚡</span>
+          <span>
+            ⚡
+          </span>
 
           <span>
             إنشاء مشروع جديد
@@ -251,16 +416,18 @@
   </nav>
 
 
-  <!-- ========================================= -->
-  <!-- TEMPLATES -->
-  <!-- ========================================= -->
+
+  <!-- =========================================
+       MAIN
+  ========================================= -->
 
   <main
     class="max-w-7xl mx-auto px-4 py-12"
   >
 
+
     <div
-      class="flex justify-between items-center mb-8"
+      class="flex justify-between items-center mb-8 gap-4"
     >
 
       <h3
@@ -269,9 +436,10 @@
         أحدث الإصدارات والقوالب
       </h3>
 
+
       <span
         id="templates-count"
-        class="text-sm text-gray-500"
+        class="text-sm text-gray-500 whitespace-nowrap"
       >
         جاري تحميل القوالب...
       </span>
@@ -279,7 +447,10 @@
     </div>
 
 
-    <!-- Loading -->
+
+    <!-- =========================================
+         LOADING
+    ========================================= -->
 
     <div
       id="templates-loading"
@@ -290,14 +461,19 @@
         class="inline-block w-10 h-10 border-4 border-purple-200 border-t-purple-600 rounded-full animate-spin"
       ></div>
 
-      <p class="mt-4 text-gray-500">
+      <p
+        class="mt-4 text-gray-500"
+      >
         جاري تحميل القوالب من المنصة...
       </p>
 
     </div>
 
 
-    <!-- Error -->
+
+    <!-- =========================================
+         ERROR
+    ========================================= -->
 
     <div
       id="templates-error"
@@ -308,9 +484,12 @@
         class="bg-red-50 border border-red-100 rounded-2xl p-8 max-w-xl mx-auto"
       >
 
-        <div class="text-4xl mb-4">
+        <div
+          class="text-4xl mb-4"
+        >
           ⚠️
         </div>
+
 
         <h4
           class="text-xl font-bold text-red-700 mb-2"
@@ -318,12 +497,14 @@
           تعذر تحميل القوالب
         </h4>
 
+
         <p
           id="templates-error-message"
           class="text-red-600 text-sm mb-5"
         >
           حدث خطأ أثناء الاتصال بالخادم.
         </p>
+
 
         <button
           id="retry-templates"
@@ -338,16 +519,22 @@
     </div>
 
 
-    <!-- Empty -->
+
+    <!-- =========================================
+         EMPTY
+    ========================================= -->
 
     <div
       id="templates-empty"
       class="hidden text-center py-16"
     >
 
-      <div class="text-5xl mb-4">
+      <div
+        class="text-5xl mb-4"
+      >
         📦
       </div>
+
 
       <h4
         class="text-xl font-bold text-gray-700"
@@ -355,26 +542,33 @@
         لا توجد قوالب حالياً
       </h4>
 
-      <p class="text-gray-500 mt-2">
+
+      <p
+        class="text-gray-500 mt-2"
+      >
         سيتم إضافة قوالب جديدة قريباً.
       </p>
 
     </div>
 
 
-    <!-- Dynamic templates -->
+
+    <!-- =========================================
+         TEMPLATES GRID
+    ========================================= -->
 
     <div
       id="templates-grid"
-      class="hidden grid grid-cols-1 md:grid-cols-3 gap-8"
+      class="hidden grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"
     ></div>
 
   </main>
 
 
-  <!-- ========================================= -->
-  <!-- FOOTER -->
-  <!-- ========================================= -->
+
+  <!-- =========================================
+       FOOTER
+  ========================================= -->
 
   <footer
     class="bg-white border-t py-6 text-center text-gray-500 text-sm mt-12"
@@ -385,33 +579,50 @@
   </footer>
 
 
-  <!-- ========================================= -->
-  <!-- CLIENT API -->
-  <!-- ========================================= -->
+
+  <!-- =========================================
+       CLIENT API
+  ========================================= -->
 
   <script src="./client-api.js"></script>
 
 
-  <!-- ========================================= -->
-  <!-- BACKEND TEMPLATE SYSTEM -->
-  <!-- ========================================= -->
+
+  <!-- =========================================
+       TEMPLATE SYSTEM
+  ========================================= -->
 
   <script>
+
+    'use strict';
+
 
     /*
     =================================================
     TEMPLATECRAFT PRO
-    FRONTEND TEMPLATE LOADER
+    TEMPLATE CATALOG
+    =================================================
 
-    القوالب لا تأتي من:
+    مصدر القوالب:
 
-        ./templates/
-
-    وإنما من:
-
-        Backend API
+        Backend
 
         /api/templates
+
+    بنية القالب:
+
+        templates/
+          ecommerce/
+            velocity-store/
+              template.json
+              index.html
+              css/
+              js/
+              assets/
+
+    Preview:
+
+        /api/templates/:projectType/:templateId/preview
 
     =================================================
     */
@@ -420,6 +631,7 @@
     let allTemplates = [];
 
     let activeCategory = 'all';
+
 
 
     // =============================================
@@ -431,35 +643,42 @@
         'templates-grid'
       );
 
+
     const templatesLoading =
       document.getElementById(
         'templates-loading'
       );
+
 
     const templatesError =
       document.getElementById(
         'templates-error'
       );
 
+
     const templatesErrorMessage =
       document.getElementById(
         'templates-error-message'
       );
+
 
     const templatesEmpty =
       document.getElementById(
         'templates-empty'
       );
 
+
     const templatesCount =
       document.getElementById(
         'templates-count'
       );
 
+
     const categoriesContainer =
       document.getElementById(
         'categories-container'
       );
+
 
     const retryButton =
       document.getElementById(
@@ -467,8 +686,26 @@
       );
 
 
+
     // =============================================
-    // IMAGE FALLBACK
+    // API BASE
+    // =============================================
+
+    function getApiBaseUrl() {
+
+      const base =
+        window.TEMPLATECRAFT_API_BASE_URL ||
+        'https://templatecraft-backend.onrender.com';
+
+      return String(base)
+        .replace(/\/+$/, '');
+
+    }
+
+
+
+    // =============================================
+    // FALLBACK IMAGES
     // =============================================
 
     const fallbackImages = {
@@ -493,20 +730,253 @@
 
       default:
         'https://images.unsplash.com/photo-1497366754035-f200968a6e72?w=800'
+
     };
 
+
+
+    // =============================================
+    // NORMALIZE TEMPLATE
+    // =============================================
+
+    function normalizeTemplate(
+      template,
+      index = 0
+    ) {
+
+      if (
+        !template ||
+        typeof template !== 'object'
+      ) {
+
+        return null;
+
+      }
+
+
+      const id =
+        template.id ||
+        template.templateId ||
+        template.slug ||
+        `template-${index}`;
+
+
+      const projectType =
+        template.projectType ||
+        template.category ||
+        template.type ||
+        '';
+
+
+      return {
+
+        ...template,
+
+        id:
+          String(id).trim(),
+
+        templateId:
+          String(
+            template.templateId ||
+            id
+          ).trim(),
+
+        projectType:
+          String(
+            projectType
+          ).trim(),
+
+        name:
+          template.name ||
+          template.title ||
+          String(id),
+
+        title:
+          template.title ||
+          template.name ||
+          String(id),
+
+        description:
+          template.description ||
+          'قالب احترافي جاهز ومتجاوب لمشروعك الرقمي.',
+
+        previewUrl:
+          template.previewUrl ||
+          '',
+
+        thumbnail:
+          template.thumbnail ||
+          template.image ||
+          template.previewImage ||
+          ''
+
+      };
+
+    }
+
+
+
+    // =============================================
+    // NORMALIZE RESPONSE
+    // =============================================
+
+    function normalizeTemplateResponse(
+      response
+    ) {
+
+      if (
+        Array.isArray(response)
+      ) {
+
+        return {
+
+          success: true,
+
+          templates:
+            response,
+
+          categories: []
+
+        };
+
+      }
+
+
+      if (
+        !response ||
+        typeof response !== 'object'
+      ) {
+
+        return {
+
+          success: false,
+
+          templates: [],
+
+          categories: []
+
+        };
+
+      }
+
+
+      let templates = [];
+
+
+      if (
+        Array.isArray(
+          response.templates
+        )
+      ) {
+
+        templates =
+          response.templates;
+
+      }
+
+      else if (
+        Array.isArray(
+          response.data
+        )
+      ) {
+
+        templates =
+          response.data;
+
+      }
+
+      else if (
+        Array.isArray(
+          response.data?.templates
+        )
+      ) {
+
+        templates =
+          response.data.templates;
+
+      }
+
+
+      const normalizedTemplates =
+        templates
+          .map(
+            (template, index) =>
+              normalizeTemplate(
+                template,
+                index
+              )
+          )
+          .filter(Boolean);
+
+
+      let categories =
+        Array.isArray(
+          response.categories
+        )
+          ? response.categories
+          : [];
+
+
+      /*
+      =============================================
+      إذا Backend لم يرجع categories
+      نبنيها من templates
+      =============================================
+      */
+
+      if (
+        categories.length === 0
+      ) {
+
+        categories =
+          [
+            ...new Set(
+              normalizedTemplates
+                .map(
+                  template =>
+                    template.projectType
+                )
+                .filter(Boolean)
+            )
+          ];
+
+      }
+
+
+      return {
+
+        success:
+          response.success !== false,
+
+        templates:
+          normalizedTemplates,
+
+        categories
+
+      };
+
+    }
+
+
+
+    // =============================================
+    // IMAGE
+    // =============================================
 
     function getTemplateImage(
       template
     ) {
 
       if (
-        template &&
-        template.thumbnail
+        template?.thumbnail
       ) {
 
-        return template.thumbnail;
+        return String(
+          template.thumbnail
+        );
+
       }
+
 
       const type =
         String(
@@ -516,11 +986,14 @@
           .trim()
           .toLowerCase();
 
+
       return (
         fallbackImages[type] ||
         fallbackImages.default
       );
+
     }
+
 
 
     // =============================================
@@ -539,10 +1012,10 @@
         corporate:
           'شركات وخدمات',
 
-        'restaurant-demo':
+        restaurant:
           'مطاعم وضيافة',
 
-        restaurant:
+        'restaurant-demo':
           'مطاعم وضيافة',
 
         'real-estate':
@@ -556,14 +1029,24 @@
 
         'store-demo':
           'متاجر إلكترونية'
+
       };
 
+
+      const value =
+        String(
+          category || ''
+        ).trim();
+
+
       return (
-        labels[category] ||
-        category ||
+        labels[value] ||
+        value ||
         'قالب'
       );
+
     }
+
 
 
     // =============================================
@@ -597,11 +1080,13 @@
           /'/g,
           '&#039;'
         );
+
     }
 
 
+
     // =============================================
-    // TEMPLATE PREVIEW URL
+    // PREVIEW URL
     // =============================================
 
     function getPreviewUrl(
@@ -609,38 +1094,138 @@
     ) {
 
       if (
-        template?.previewUrl
+        !template
       ) {
 
-        const base =
-          window.TEMPLATECRAFT_API_BASE_URL ||
-          'https://templatecraft-backend.onrender.com';
+        return '';
 
-        return (
-          base.replace(/\/+$/, '') +
-          template.previewUrl
-        );
       }
 
 
-      const base =
-        window.TEMPLATECRAFT_API_BASE_URL ||
-        'https://templatecraft-backend.onrender.com';
+      const templateId =
+        template.id ||
+        template.templateId ||
+        template.slug;
 
 
-      return (
-        base.replace(/\/+$/, '') +
-        '/api/templates/' +
-        encodeURIComponent(
-          template.projectType
-        ) +
-        '/' +
-        encodeURIComponent(
-          template.id
-        ) +
-        '/preview'
-      );
+      const projectType =
+        template.projectType ||
+        template.category ||
+        template.type;
+
+
+      if (
+        !templateId
+      ) {
+
+        return '';
+
+      }
+
+
+      /*
+      =============================================
+      الأفضل:
+      استعمال client-api.js
+      =============================================
+      */
+
+      if (
+        window.templateCraftAPI &&
+        typeof
+          window.templateCraftAPI
+            .getTemplatePreviewUrl ===
+          'function'
+      ) {
+
+        const url =
+          window.templateCraftAPI
+            .getTemplatePreviewUrl(
+              templateId,
+              projectType
+            );
+
+
+        if (
+          url
+        ) {
+
+          return url;
+
+        }
+
+      }
+
+
+      /*
+      =============================================
+      Backend previewUrl
+      =============================================
+      */
+
+      if (
+        template.previewUrl
+      ) {
+
+        const preview =
+          String(
+            template.previewUrl
+          );
+
+
+        if (
+          /^https?:\/\//i.test(
+            preview
+          )
+        ) {
+
+          return preview;
+
+        }
+
+
+        return (
+          getApiBaseUrl() +
+          '/' +
+          preview.replace(
+            /^\/+/,
+            ''
+          )
+        );
+
+      }
+
+
+      /*
+      =============================================
+      Direct fallback
+      =============================================
+      */
+
+      if (
+        projectType
+      ) {
+
+        return (
+          getApiBaseUrl() +
+          '/api/templates/' +
+          encodeURIComponent(
+            projectType
+          ) +
+          '/' +
+          encodeURIComponent(
+            templateId
+          ) +
+          '/preview'
+        );
+
+      }
+
+
+      return '';
+
     }
+
 
 
     // =============================================
@@ -659,113 +1244,109 @@
 
         /*
         =============================================
-        الأفضل: استعمال client-api.js
+        PRIMARY API
         =============================================
         */
 
         if (
           window.templateCraftAPI &&
-          typeof window.templateCraftAPI.getTemplates ===
+          typeof
+            window.templateCraftAPI
+              .getTemplates ===
             'function'
         ) {
 
           response =
-            await window.templateCraftAPI.getTemplates();
+            await
+              window.templateCraftAPI
+                .getTemplates();
 
         }
 
+
         /*
         =============================================
-        fallback مباشر للـBackend
+        FALLBACK API
         =============================================
         */
 
         else {
 
-          const base =
-            window.TEMPLATECRAFT_API_BASE_URL ||
-            'https://templatecraft-backend.onrender.com';
-
           const request =
             await fetch(
-              base.replace(/\/+$/, '') +
+              getApiBaseUrl() +
               '/api/templates',
               {
+
                 method: 'GET',
 
                 headers: {
-                  'Accept':
+
+                  Accept:
                     'application/json'
+
                 }
+
               }
             );
 
 
-          if (!request.ok) {
+          if (
+            !request.ok
+          ) {
 
             throw new Error(
               `HTTP ${request.status}`
             );
+
           }
 
 
           response =
             await request.json();
+
         }
 
 
+        const normalized =
+          normalizeTemplateResponse(
+            response
+          );
+
+
         if (
-          !response ||
-          response.success !== true
+          normalized.success === false
         ) {
 
           throw new Error(
             response?.error ||
+            response?.message ||
             'استجابة غير صالحة من Backend'
           );
+
         }
 
 
         allTemplates =
-          Array.isArray(
-            response.templates
-          )
-            ? response.templates
-            : [];
-
-
-        /*
-        =============================================
-        بناء التصنيفات من Backend
-        =============================================
-        */
-
-        const categories =
-          Array.isArray(
-            response.categories
-          )
-            ? response.categories
-            : [];
+          normalized.templates;
 
 
         renderCategories(
-          categories
+          normalized.categories
         );
 
-
-        /*
-        =============================================
-        عرض القوالب
-        =============================================
-        */
 
         renderTemplates();
 
 
-      } catch (error) {
+      }
+
+      catch (
+        error
+      ) {
 
         console.error(
-          'Template loading error:',
+          '[TemplateCraft] Template loading error:',
           error
         );
 
@@ -774,9 +1355,11 @@
           error?.message ||
           'تعذر الاتصال بالخادم'
         );
+
       }
 
     }
+
 
 
     // =============================================
@@ -787,23 +1370,36 @@
       categories
     ) {
 
-      categoriesContainer.innerHTML = '';
+      if (
+        !categoriesContainer
+      ) {
+
+        return;
+
+      }
 
 
-      // الكل
+      categoriesContainer.innerHTML =
+        '';
+
 
       const allButton =
         document.createElement(
           'button'
         );
 
-      allButton.type = 'button';
+
+      allButton.type =
+        'button';
+
 
       allButton.dataset.category =
         'all';
 
+
       allButton.className =
         'category-button bg-purple-600 text-white px-5 py-2 rounded-full text-sm font-bold shadow transition';
+
 
       allButton.textContent =
         'الكل';
@@ -831,24 +1427,37 @@
 
       /*
       =============================================
-      التصنيفات القادمة من Backend
+      إزالة التصنيفات المكررة
       =============================================
       */
 
-      categories.forEach(
+      const uniqueCategories =
+        [
+          ...new Set(
+            categories
+              .map(
+                category =>
+                  String(
+                    category || ''
+                  ).trim()
+              )
+              .filter(Boolean)
+          )
+        ];
+
+
+      uniqueCategories.forEach(
         category => {
-
-          if (!category) {
-            return;
-          }
-
 
           const button =
             document.createElement(
               'button'
             );
 
-          button.type = 'button';
+
+          button.type =
+            'button';
+
 
           button.dataset.category =
             category;
@@ -886,7 +1495,11 @@
         }
       );
 
+
+      updateCategoryButtons();
+
     }
+
 
 
     // =============================================
@@ -894,6 +1507,15 @@
     // =============================================
 
     function updateCategoryButtons() {
+
+      if (
+        !categoriesContainer
+      ) {
+
+        return;
+
+      }
+
 
       const buttons =
         categoriesContainer.querySelectorAll(
@@ -909,13 +1531,16 @@
             activeCategory;
 
 
-          if (isActive) {
+          if (
+            isActive
+          ) {
 
             button.classList.remove(
               'bg-gray-100',
               'text-gray-700',
               'font-semibold'
             );
+
 
             button.classList.add(
               'bg-purple-600',
@@ -924,7 +1549,9 @@
               'shadow'
             );
 
-          } else {
+          }
+
+          else {
 
             button.classList.remove(
               'bg-purple-600',
@@ -932,6 +1559,7 @@
               'font-bold',
               'shadow'
             );
+
 
             button.classList.add(
               'bg-gray-100',
@@ -947,6 +1575,48 @@
     }
 
 
+
+    // =============================================
+    // FILTER
+    // =============================================
+
+    function getFilteredTemplates() {
+
+      if (
+        activeCategory ===
+        'all'
+      ) {
+
+        return allTemplates;
+
+      }
+
+
+      return allTemplates.filter(
+        template => {
+
+          const type =
+            String(
+              template.projectType ||
+              template.category ||
+              ''
+            ).trim();
+
+
+          return (
+            type ===
+            String(
+              activeCategory
+            ).trim()
+          );
+
+        }
+      );
+
+    }
+
+
+
     // =============================================
     // RENDER TEMPLATES
     // =============================================
@@ -954,42 +1624,38 @@
     function renderTemplates() {
 
       const filtered =
-        activeCategory === 'all'
-          ? allTemplates
-          : allTemplates.filter(
-              template =>
-                String(
-                  template.projectType ||
-                  template.category ||
-                  ''
-                ) ===
-                String(
-                  activeCategory
-                )
-            );
+        getFilteredTemplates();
 
 
-      templatesGrid.innerHTML = '';
+      templatesGrid.innerHTML =
+        '';
 
 
       if (
-        filtered.length === 0
+        filtered.length ===
+        0
       ) {
 
         templatesGrid.classList.add(
           'hidden'
         );
 
+
         templatesEmpty.classList.remove(
           'hidden'
         );
 
+
         templatesCount.textContent =
-          '0 قالب';
+          activeCategory === 'all'
+            ? '0 قالب'
+            : '0 قالب في هذا التصنيف';
+
 
         hideLoading();
 
         return;
+
       }
 
 
@@ -1027,6 +1693,7 @@
     }
 
 
+
     // =============================================
     // TEMPLATE CARD
     // =============================================
@@ -1037,12 +1704,12 @@
 
       const card =
         document.createElement(
-          'div'
+          'article'
         );
 
 
       card.className =
-        'template-card bg-white rounded-xl shadow-md overflow-hidden border border-gray-100 flex flex-col justify-between';
+        'template-card bg-white rounded-2xl shadow-md overflow-hidden border border-gray-100 flex flex-col justify-between';
 
 
       const image =
@@ -1060,6 +1727,7 @@
 
       const name =
         template.name ||
+        template.title ||
         template.id ||
         'قالب بدون اسم';
 
@@ -1075,15 +1743,47 @@
         );
 
 
-      const templateId =
+      const safeImage =
         escapeHtml(
-          template.id
+          image
         );
 
 
-      const projectType =
+      const safeName =
         escapeHtml(
-          template.projectType
+          name
+        );
+
+
+      const safeCategory =
+        escapeHtml(
+          category
+        );
+
+
+      const safeDescription =
+        escapeHtml(
+          description
+        );
+
+
+      const safePreviewUrl =
+        escapeHtml(
+          previewUrl
+        );
+
+
+      card.dataset.templateId =
+        String(
+          template.id ||
+          ''
+        );
+
+
+      card.dataset.projectType =
+        String(
+          template.projectType ||
+          ''
         );
 
 
@@ -1092,40 +1792,47 @@
         <div>
 
           <div
-            class="w-full h-48 overflow-hidden bg-gray-100"
+            class="w-full h-52 overflow-hidden bg-gray-100 relative"
           >
 
             <img
-              src="${escapeHtml(image)}"
-              alt="${escapeHtml(name)}"
+              src="${safeImage}"
+              alt="${safeName}"
               class="template-image w-full h-full object-cover"
               loading="lazy"
-              onerror="this.src='${fallbackImages.default}'"
             >
+
+
+            <div
+              class="absolute top-3 right-3"
+            >
+
+              <span
+                class="bg-white/90 backdrop-blur-sm text-purple-700 text-xs font-bold px-3 py-1.5 rounded-full shadow-sm"
+              >
+                ${safeCategory}
+              </span>
+
+            </div>
 
           </div>
 
 
-          <div class="p-5">
-
-            <span
-              class="text-xs bg-purple-50 text-purple-600 font-bold px-2.5 py-1 rounded"
-            >
-              ${escapeHtml(category)}
-            </span>
-
+          <div
+            class="p-5"
+          >
 
             <h4
-              class="text-xl font-bold mt-3 text-gray-800"
+              class="text-xl font-extrabold text-gray-800"
             >
-              ${escapeHtml(name)}
+              ${safeName}
             </h4>
 
 
             <p
-              class="text-gray-500 text-sm mt-2 leading-6"
+              class="text-gray-500 text-sm mt-2 leading-7"
             >
-              ${escapeHtml(description)}
+              ${safeDescription}
             </p>
 
 
@@ -1137,7 +1844,7 @@
                 template.features?.responsive
                   ? `
                     <span
-                      class="text-xs bg-green-50 text-green-600 px-2 py-1 rounded"
+                      class="text-xs bg-green-50 text-green-600 px-2.5 py-1 rounded-lg font-semibold"
                     >
                       متجاوب
                     </span>
@@ -1150,7 +1857,7 @@
                 template.features?.animations
                   ? `
                     <span
-                      class="text-xs bg-blue-50 text-blue-600 px-2 py-1 rounded"
+                      class="text-xs bg-blue-50 text-blue-600 px-2.5 py-1 rounded-lg font-semibold"
                     >
                       Animations
                     </span>
@@ -1163,7 +1870,7 @@
                 template.features?.['3d']
                   ? `
                     <span
-                      class="text-xs bg-purple-50 text-purple-600 px-2 py-1 rounded"
+                      class="text-xs bg-purple-50 text-purple-600 px-2.5 py-1 rounded-lg font-semibold"
                     >
                       3D
                     </span>
@@ -1176,7 +1883,7 @@
                 template.features?.darkMode
                   ? `
                     <span
-                      class="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded"
+                      class="text-xs bg-gray-100 text-gray-700 px-2.5 py-1 rounded-lg font-semibold"
                     >
                       Dark Mode
                     </span>
@@ -1192,35 +1899,90 @@
 
 
         <div
-          class="p-5 pt-0 flex justify-between items-center border-t border-gray-50 mt-4"
+          class="p-5 pt-0 flex justify-between items-center border-t border-gray-50 mt-4 gap-4"
         >
 
           <span
-            class="font-bold text-purple-600 text-lg"
+            class="font-extrabold text-purple-600 text-lg"
           >
             مجاني
           </span>
 
 
-          <a
-            href="${escapeHtml(previewUrl)}"
-            target="_blank"
-            rel="noopener noreferrer"
-            data-template-id="${templateId}"
-            data-project-type="${projectType}"
-            class="bg-purple-600 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-purple-700 transition"
-          >
-            معاينة القالب
-          </a>
+          ${
+            previewUrl
+              ? `
+                <a
+                  href="${safePreviewUrl}"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  data-template-id="${escapeHtml(template.id)}"
+                  data-project-type="${escapeHtml(template.projectType)}"
+                  class="preview-button bg-purple-600 text-white px-4 py-2 rounded-xl text-sm font-bold hover:bg-purple-700 transition"
+                >
+                  👁 معاينة القالب
+                </a>
+              `
+              : `
+                <span
+                  class="bg-gray-200 text-gray-500 px-4 py-2 rounded-xl text-sm font-bold"
+                >
+                  المعاينة غير متاحة
+                </span>
+              `
+          }
 
         </div>
 
       `;
 
 
+      /*
+      =============================================
+      IMAGE ERROR
+      =============================================
+      */
+
+      const imageElement =
+        card.querySelector(
+          'img'
+        );
+
+
+      if (
+        imageElement
+      ) {
+
+        imageElement.addEventListener(
+          'error',
+          () => {
+
+            if (
+              imageElement.dataset.fallbackApplied
+            ) {
+
+              return;
+
+            }
+
+
+            imageElement.dataset.fallbackApplied =
+              '1';
+
+
+            imageElement.src =
+              fallbackImages.default;
+
+          }
+        );
+
+      }
+
+
       return card;
 
     }
+
 
 
     // =============================================
@@ -1233,22 +1995,27 @@
         'hidden'
       );
 
+
       templatesError.classList.add(
         'hidden'
       );
+
 
       templatesEmpty.classList.add(
         'hidden'
       );
 
+
       templatesGrid.classList.add(
         'hidden'
       );
+
 
       templatesCount.textContent =
         'جاري تحميل القوالب...';
 
     }
+
 
 
     function hideLoading() {
@@ -1258,6 +2025,7 @@
       );
 
     }
+
 
 
     // =============================================
@@ -1272,13 +2040,16 @@
         'hidden'
       );
 
+
       templatesGrid.classList.add(
         'hidden'
       );
 
+
       templatesEmpty.classList.add(
         'hidden'
       );
+
 
       templatesError.classList.remove(
         'hidden'
@@ -1296,132 +2067,172 @@
     }
 
 
+
     // =============================================
     // RETRY
     // =============================================
 
-    retryButton.addEventListener(
-      'click',
-      loadTemplates
-    );
+    if (
+      retryButton
+    ) {
+
+      retryButton.addEventListener(
+        'click',
+        loadTemplates
+      );
+
+    }
+
 
 
     // =============================================
     // AUTH
     // =============================================
 
-    window.addEventListener(
-      'DOMContentLoaded',
-      () => {
+    function initializeAuth() {
 
-        const storedUser =
-          localStorage.getItem(
-            'user'
-          );
+      const storedUser =
+        localStorage.getItem(
+          'user'
+        );
 
 
-        const authSection =
-          document.getElementById(
-            'auth-section'
-          );
+      const authSection =
+        document.getElementById(
+          'auth-section'
+        );
 
 
-        const createProjectBtnContainer =
-          document.getElementById(
-            'create-project-btn-container'
-          );
+      const createProjectBtnContainer =
+        document.getElementById(
+          'create-project-btn-container'
+        );
 
 
-        if (
-          !storedUser
-        ) {
+      if (
+        !storedUser
+      ) {
 
-          return;
-
-        }
-
-
-        let user;
-
-
-        try {
-
-          user =
-            JSON.parse(
-              storedUser
-            );
-
-        } catch {
-
-          localStorage.removeItem(
-            'user'
-          );
-
-          return;
-
-        }
-
-
-        if (
-          createProjectBtnContainer
-        ) {
-
-          createProjectBtnContainer.classList.remove(
-            'hidden'
-          );
-
-        }
-
-
-        if (
-          authSection
-        ) {
-
-          const username =
-            escapeHtml(
-              user?.username ||
-              'المستخدم'
-            );
-
-
-          authSection.innerHTML = `
-
-            <div
-              class="flex items-center gap-3"
-            >
-
-              <a
-                href="profile.html"
-                class="flex items-center gap-2 text-sm font-bold text-purple-700 bg-purple-50 hover:bg-purple-100 px-4 py-2 rounded-xl border border-purple-100 transition shadow-sm"
-              >
-
-                <span>
-                  👤
-                </span>
-
-                <span>
-                  ${username}
-                </span>
-
-              </a>
-
-
-              <button
-                type="button"
-                onclick="logout()"
-                class="bg-red-50 hover:bg-red-100 text-red-600 px-3 py-2 rounded-xl text-sm font-bold transition"
-              >
-                خروج
-              </button>
-
-            </div>
-
-          `;
-
-        }
+        return;
 
       }
-    );
+
+
+      let user;
+
+
+      try {
+
+        user =
+          JSON.parse(
+            storedUser
+          );
+
+      }
+
+      catch (
+        error
+      ) {
+
+        console.warn(
+          '[TemplateCraft] Invalid stored user:',
+          error
+        );
+
+
+        localStorage.removeItem(
+          'user'
+        );
+
+
+        return;
+
+      }
+
+
+      if (
+        createProjectBtnContainer
+      ) {
+
+        createProjectBtnContainer.classList.remove(
+          'hidden'
+        );
+
+      }
+
+
+      if (
+        !authSection
+      ) {
+
+        return;
+
+      }
+
+
+      const username =
+        escapeHtml(
+          user?.username ||
+          user?.name ||
+          user?.email ||
+          'المستخدم'
+        );
+
+
+      authSection.innerHTML = `
+
+        <div
+          class="flex items-center gap-3"
+        >
+
+          <a
+            href="profile.html"
+            class="flex items-center gap-2 text-sm font-bold text-purple-700 bg-purple-50 hover:bg-purple-100 px-4 py-2 rounded-xl border border-purple-100 transition shadow-sm"
+          >
+
+            <span>
+              👤
+            </span>
+
+            <span>
+              ${username}
+            </span>
+
+          </a>
+
+
+          <button
+            type="button"
+            id="logout-button"
+            class="bg-red-50 hover:bg-red-100 text-red-600 px-3 py-2 rounded-xl text-sm font-bold transition"
+          >
+            خروج
+          </button>
+
+        </div>
+
+      `;
+
+
+      const logoutButton =
+        document.getElementById(
+          'logout-button'
+        );
+
+
+      if (
+        logoutButton
+      ) {
+
+        logoutButton.addEventListener(
+          'click',
+          logout
+        );
+
+      }
+
+    }
+
 
 
     // =============================================
@@ -1434,22 +2245,57 @@
         'user'
       );
 
+
       localStorage.removeItem(
         'token'
       );
+
 
       window.location.reload();
 
     }
 
 
+
+    // =============================================
+    // PUBLIC API
+    // =============================================
+
+    window.loadTemplateCatalog =
+      loadTemplates;
+
+
+    window.getTemplateCatalog =
+      () => [
+        ...allTemplates
+      ];
+
+
+    window.getActiveTemplateCategory =
+      () =>
+        activeCategory;
+
+
+
     // =============================================
     // START
     // =============================================
 
+    document.addEventListener(
+      'DOMContentLoaded',
+      () => {
+
+        initializeAuth();
+
+      }
+    );
+
+
     loadTemplates();
+
 
   </script>
 
 </body>
-</html>
+
+  </html>
