@@ -2,12 +2,12 @@
 <html lang="ar" dir="rtl">
 
 <head>
-
     <meta charset="UTF-8">
 
     <meta
         name="viewport"
-        content="width=device-width, initial-scale=1.0">
+        content="width=device-width, initial-scale=1.0"
+    >
 
     <title>إنشاء مشروع جديد | TemplateCraft Pro</title>
 
@@ -15,248 +15,49 @@
 
     <link
         href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap"
-        rel="stylesheet">
-
-    <link
         rel="stylesheet"
-        href="./create-project.css">
+    >
 
     <style>
 
-        /* =====================================================
-           TEMPLATE CARDS
-        ===================================================== */
-
-        .template-card {
-            position: relative;
-            overflow: hidden;
-            background: #ffffff;
-            border: 1px solid #e5e7eb;
-            border-radius: 1.25rem;
-            transition:
-                transform .25s ease,
-                box-shadow .25s ease,
-                border-color .25s ease;
+        * {
+            box-sizing: border-box;
         }
 
-        .template-card:hover {
-            transform: translateY(-5px);
-            border-color: rgba(124, 58, 237, .35);
-            box-shadow:
-                0 20px 45px rgba(15, 23, 42, .12);
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100%;
         }
 
-        .template-card.selected {
-            border-color: #7c3aed;
-            box-shadow:
-                0 0 0 3px rgba(124, 58, 237, .12),
-                0 20px 45px rgba(124, 58, 237, .15);
-        }
-
-        .template-image-wrapper {
-            position: relative;
-            width: 100%;
-            height: 220px;
-            overflow: hidden;
+        body {
+            font-family: "Cairo", sans-serif;
             background:
-                linear-gradient(
-                    135deg,
-                    #f8fafc,
-                    #eef2ff
-                );
+                radial-gradient(
+                    circle at top right,
+                    rgba(99, 102, 241, 0.10),
+                    transparent 30%
+                ),
+                radial-gradient(
+                    circle at bottom left,
+                    rgba(16, 185, 129, 0.08),
+                    transparent 30%
+                ),
+                #f8fafc;
+            color: #0f172a;
         }
 
-        .template-image {
-            width: 100%;
-            height: 100%;
-            display: block;
-            object-fit: cover;
-            object-position: center top;
-            transition:
-                transform .45s ease,
-                filter .45s ease;
-        }
-
-        .template-card:hover .template-image {
-            transform: scale(1.04);
-        }
-
-        .template-image-overlay {
-            position: absolute;
-            inset: 0;
-            background:
-                linear-gradient(
-                    to bottom,
-                    rgba(15, 23, 42, .02),
-                    rgba(15, 23, 42, .28)
-                );
-            pointer-events: none;
-        }
-
-        .template-badge {
-            position: absolute;
-            top: 12px;
-            right: 12px;
-            z-index: 3;
-            background: rgba(255,255,255,.92);
-            backdrop-filter: blur(10px);
-            color: #6d28d9;
-            border: 1px solid rgba(124,58,237,.15);
-            border-radius: 999px;
-            padding: 6px 10px;
-            font-size: 11px;
-            font-weight: 800;
-        }
-
-        .template-selected-badge {
-            position: absolute;
-            top: 12px;
-            left: 12px;
-            z-index: 4;
-            display: none;
-            background: #7c3aed;
-            color: white;
-            border-radius: 999px;
-            padding: 6px 11px;
-            font-size: 11px;
-            font-weight: 900;
-        }
-
-        .template-card.selected .template-selected-badge {
-            display: block;
-        }
-
-        .template-card-body {
-            padding: 18px;
-        }
-
-        .template-title {
-            font-size: 17px;
-            font-weight: 900;
-            color: #111827;
-            line-height: 1.5;
-        }
-
-        .template-description {
-            margin-top: 7px;
-            color: #6b7280;
-            font-size: 12px;
-            line-height: 1.8;
-            min-height: 44px;
-        }
-
-        .template-features {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-            margin-top: 12px;
-        }
-
-        .template-feature {
-            background: #f5f3ff;
-            color: #6d28d9;
-            border-radius: 8px;
-            padding: 5px 8px;
-            font-size: 10px;
-            font-weight: 800;
-        }
-
-        .template-actions {
-            display: flex;
-            gap: 8px;
-            margin-top: 17px;
-        }
-
-        .template-preview-btn,
-        .template-select-btn {
-            flex: 1;
-            border-radius: 11px;
-            padding: 10px 12px;
-            font-size: 12px;
-            font-weight: 800;
-            cursor: pointer;
-            transition: .2s ease;
-        }
-
-        .template-preview-btn {
-            background: #f3f4f6;
-            color: #374151;
-        }
-
-        .template-preview-btn:hover {
-            background: #e5e7eb;
-        }
-
-        .template-select-btn {
-            background: #7c3aed;
-            color: white;
-        }
-
-        .template-select-btn:hover {
-            background: #6d28d9;
-        }
-
-        .template-card.selected .template-select-btn {
-            background: #059669;
-        }
-
-        .template-loading {
-            min-height: 250px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-            gap: 12px;
-            color: #6b7280;
-        }
-
-        .template-spinner {
-            width: 38px;
-            height: 38px;
-            border-radius: 50%;
-            border: 4px solid #ede9fe;
-            border-top-color: #7c3aed;
-            animation: templateSpin .8s linear infinite;
-        }
-
-        @keyframes templateSpin {
-            to {
-                transform: rotate(360deg);
-            }
-        }
-
-        .template-empty {
-            grid-column: 1 / -1;
-            padding: 50px 20px;
-            text-align: center;
-            border: 1px dashed #d1d5db;
-            border-radius: 18px;
-            background: #fafafa;
-        }
-
-        .template-error {
-            grid-column: 1 / -1;
-            padding: 35px 20px;
-            text-align: center;
-            border: 1px solid #fecaca;
-            border-radius: 18px;
-            background: #fef2f2;
+        button,
+        input,
+        select,
+        textarea {
+            font-family: inherit;
         }
 
         /* =====================================================
-           CATEGORY SELECT
-        ===================================================== */
-
-        #projectTypeSelect {
-            cursor: pointer;
-        }
-
-        #projectTypeSelect:disabled {
-            cursor: wait;
-        }
-
-        /* =====================================================
-           MODAL
+           MODAL SYSTEM
+           يستخدم فقط createModal
         ===================================================== */
 
         .modal {
@@ -267,51 +68,795 @@
             display: flex;
         }
 
-        .modal-frame {
-            width: 100%;
-            height: min(72vh, 760px);
-            border: 0;
-            background: #f8fafc;
+        /* =====================================================
+           PAGE
+        ===================================================== */
+
+        .page-shell {
+            min-height: 100vh;
+        }
+
+        .container-main {
+            width: min(1400px, calc(100% - 32px));
+            margin: 0 auto;
         }
 
         /* =====================================================
-           SELECTED TEMPLATE INFO
+           HEADER
         ===================================================== */
 
-        #selectedLabel {
-            transition: .2s ease;
+        .page-header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(18px);
+            background: rgba(255, 255, 255, 0.88);
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .page-header-inner {
+            min-height: 74px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: #0f172a;
+        }
+
+        .brand-logo {
+            width: 44px;
+            height: 44px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 21px;
+            font-weight: 900;
+            background:
+                linear-gradient(
+                    135deg,
+                    #4f46e5,
+                    #7c3aed,
+                    #2563eb
+                );
+            box-shadow:
+                0 10px 30px rgba(79, 70, 229, 0.25);
+        }
+
+        .brand-text strong {
+            display: block;
+            font-size: 18px;
+            font-weight: 900;
+        }
+
+        .brand-text span {
+            display: block;
+            font-size: 11px;
+            color: #64748b;
+            font-weight: 600;
+        }
+
+        /* =====================================================
+           HERO
+        ===================================================== */
+
+        .hero {
+            padding: 46px 0 28px;
+        }
+
+        .hero-content {
+            display: grid;
+            grid-template-columns: 1.4fr 0.6fr;
+            gap: 24px;
+            align-items: stretch;
+        }
+
+        .hero-card {
+            border-radius: 28px;
+            padding: 34px;
+            background:
+                linear-gradient(
+                    135deg,
+                    #111827,
+                    #1e1b4b,
+                    #312e81
+                );
+            color: white;
+            position: relative;
+            overflow: hidden;
+            box-shadow:
+                0 25px 70px rgba(15, 23, 42, 0.20);
+        }
+
+        .hero-card::before {
+            content: "";
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.07);
+            top: -120px;
+            right: -100px;
+        }
+
+        .hero-card::after {
+            content: "";
+            position: absolute;
+            width: 220px;
+            height: 220px;
+            border-radius: 50%;
+            background: rgba(99, 102, 241, 0.16);
+            bottom: -120px;
+            left: -70px;
+        }
+
+        .hero-card > * {
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 7px 12px;
+            border-radius: 999px;
+            background: rgba(255,255,255,0.10);
+            border: 1px solid rgba(255,255,255,0.12);
+            font-size: 12px;
+            font-weight: 800;
+            margin-bottom: 18px;
+        }
+
+        .hero-title {
+            font-size: clamp(28px, 4vw, 46px);
+            line-height: 1.15;
+            font-weight: 900;
+            margin: 0 0 14px;
+        }
+
+        .hero-description {
+            margin: 0;
+            color: rgba(255,255,255,0.75);
+            max-width: 760px;
+            line-height: 1.9;
+            font-size: 14px;
+        }
+
+        .hero-side {
+            border-radius: 28px;
+            background: white;
+            border: 1px solid #e2e8f0;
+            padding: 26px;
+            box-shadow:
+                0 15px 45px rgba(15, 23, 42, 0.07);
+        }
+
+        .hero-side-title {
+            font-size: 15px;
+            font-weight: 900;
+            margin-bottom: 18px;
+        }
+
+        .hero-step {
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .hero-step:last-child {
+            margin-bottom: 0;
+        }
+
+        .hero-step-number {
+            flex: 0 0 30px;
+            width: 30px;
+            height: 30px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #eef2ff;
+            color: #4f46e5;
+            font-size: 12px;
+            font-weight: 900;
+        }
+
+        .hero-step-text strong {
+            display: block;
+            font-size: 13px;
+            margin-bottom: 2px;
+        }
+
+        .hero-step-text span {
+            display: block;
+            font-size: 11px;
+            color: #64748b;
+            line-height: 1.6;
+        }
+
+        /* =====================================================
+           FORM CARD
+        ===================================================== */
+
+        .section-card {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 26px;
+            padding: 26px;
+            margin-bottom: 24px;
+            box-shadow:
+                0 15px 50px rgba(15, 23, 42, 0.05);
+        }
+
+        .section-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 20px;
+            margin-bottom: 22px;
+        }
+
+        .section-title {
+            margin: 0;
+            font-size: 19px;
+            font-weight: 900;
+        }
+
+        .section-description {
+            margin: 5px 0 0;
+            font-size: 12px;
+            color: #64748b;
+            line-height: 1.7;
+        }
+
+        .field {
+            margin-bottom: 20px;
+        }
+
+        .field:last-child {
+            margin-bottom: 0;
+        }
+
+        .field-label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 13px;
+            font-weight: 800;
+            color: #334155;
+        }
+
+        .field-input,
+        .field-select {
+            width: 100%;
+            min-height: 50px;
+            border: 1px solid #cbd5e1;
+            border-radius: 14px;
+            background: #fff;
+            padding: 0 15px;
+            outline: none;
+            transition:
+                border-color .2s ease,
+                box-shadow .2s ease;
+            font-size: 13px;
+        }
+
+        .field-input:focus,
+        .field-select:focus {
+            border-color: #6366f1;
+            box-shadow:
+                0 0 0 4px rgba(99, 102, 241, 0.10);
+        }
+
+        /* =====================================================
+           SELECTED TEMPLATE
+        ===================================================== */
+
+        .selected-template-bar {
+            margin-top: 16px;
+            padding: 13px 16px;
+            border-radius: 14px;
+            background: #f8fafc;
+            border: 1px dashed #cbd5e1;
+            color: #64748b;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .selected-template-bar strong {
+            color: #4f46e5;
+        }
+
+        /* =====================================================
+           TEMPLATE GRID
+        ===================================================== */
+
+        .templates-grid {
+            display: grid;
+            grid-template-columns:
+                repeat(3, minmax(0, 1fr));
+            gap: 22px;
+        }
+
+        .template-card {
+            position: relative;
+            overflow: hidden;
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 22px;
+            box-shadow:
+                0 12px 35px rgba(15, 23, 42, 0.06);
+            transition:
+                transform .25s ease,
+                box-shadow .25s ease,
+                border-color .25s ease;
+        }
+
+        .template-card:hover {
+            transform: translateY(-5px);
+            border-color: #a5b4fc;
+            box-shadow:
+                0 25px 55px rgba(79, 70, 229, 0.12);
+        }
+
+        .template-card.is-selected {
+            border-color: #6366f1;
+            box-shadow:
+                0 20px 55px rgba(79, 70, 229, 0.18);
+        }
+
+        .template-image-wrapper {
+            position: relative;
+            height: 225px;
+            overflow: hidden;
+            background: #f1f5f9;
+        }
+
+        .template-image {
+            width: 100%;
+            height: 100%;
+            display: block;
+            object-fit: cover;
+            transition: transform .45s ease;
+        }
+
+        .template-card:hover .template-image {
+            transform: scale(1.045);
+        }
+
+        .template-image-overlay {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            background:
+                linear-gradient(
+                    to top,
+                    rgba(15, 23, 42, 0.40),
+                    transparent 45%
+                );
+        }
+
+        .template-badge {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            z-index: 2;
+            padding: 6px 10px;
+            border-radius: 999px;
+            background: rgba(15, 23, 42, 0.82);
+            color: white;
+            font-size: 10px;
+            font-weight: 800;
+            backdrop-filter: blur(10px);
+        }
+
+        .template-selected-badge {
+            position: absolute;
+            left: 12px;
+            top: 12px;
+            z-index: 3;
+            padding: 7px 11px;
+            border-radius: 999px;
+            background: #10b981;
+            color: white;
+            font-size: 10px;
+            font-weight: 900;
+            box-shadow:
+                0 8px 20px rgba(16, 185, 129, 0.25);
+        }
+
+        .template-card-body {
+            padding: 18px;
+        }
+
+        .template-title {
+            margin: 0 0 6px;
+            font-size: 17px;
+            font-weight: 900;
+            color: #0f172a;
+        }
+
+        .template-description {
+            margin: 0 0 13px;
+            color: #64748b;
+            font-size: 11px;
+            line-height: 1.8;
+            min-height: 40px;
+        }
+
+        .template-features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 7px;
+            margin-bottom: 17px;
+        }
+
+        .template-feature {
+            padding: 5px 8px;
+            border-radius: 8px;
+            background: #f1f5f9;
+            color: #475569;
+            font-size: 9px;
+            font-weight: 800;
+        }
+
+        .template-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 9px;
+        }
+
+        .template-preview-btn,
+        .template-select-btn {
+            min-height: 43px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 900;
+            cursor: pointer;
+            transition:
+                transform .2s ease,
+                box-shadow .2s ease,
+                background .2s ease;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .template-preview-btn {
+            border: 1px solid #cbd5e1;
+            background: white;
+            color: #334155;
+        }
+
+        .template-preview-btn:hover {
+            transform: translateY(-1px);
+            background: #f8fafc;
+            box-shadow:
+                0 8px 20px rgba(15, 23, 42, 0.08);
+        }
+
+        .template-select-btn {
+            border: 0;
+            color: white;
+            background:
+                linear-gradient(
+                    135deg,
+                    #4f46e5,
+                    #7c3aed
+                );
+            box-shadow:
+                0 10px 25px rgba(79, 70, 229, 0.18);
+        }
+
+        .template-select-btn:hover {
+            transform: translateY(-1px);
+            box-shadow:
+                0 14px 30px rgba(79, 70, 229, 0.25);
+        }
+
+        /* =====================================================
+           LOADING / EMPTY / ERROR
+        ===================================================== */
+
+        .state-message {
+            padding: 40px 20px;
+            text-align: center;
+            border: 1px dashed #cbd5e1;
+            border-radius: 18px;
+            color: #64748b;
+            font-size: 13px;
+            background: #f8fafc;
+        }
+
+        .state-message.error {
+            color: #b91c1c;
+            border-color: #fecaca;
+            background: #fef2f2;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* =====================================================
+           NETLIFY / DEPLOYMENT
+        ===================================================== */
+
+        .netlify-box {
+            padding: 18px;
+            border-radius: 18px;
+            border: 1px solid #e2e8f0;
+            background: #f8fafc;
+        }
+
+        .netlify-status {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 7px 11px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 800;
+        }
+
+        .status-badge.success {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status-badge.warning {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-badge.info {
+            background: #dbeafe;
+            color: #1d4ed8;
+        }
+
+        /* =====================================================
+           BUTTONS
+        ===================================================== */
+
+        .primary-button {
+            width: 100%;
+            min-height: 54px;
+            border: 0;
+            border-radius: 15px;
+            background:
+                linear-gradient(
+                    135deg,
+                    #4f46e5,
+                    #7c3aed
+                );
+            color: white;
+            font-weight: 900;
+            font-size: 14px;
+            cursor: pointer;
+            box-shadow:
+                0 15px 35px rgba(79, 70, 229, 0.22);
+            transition:
+                transform .2s ease,
+                box-shadow .2s ease,
+                opacity .2s ease;
+        }
+
+        .primary-button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow:
+                0 20px 45px rgba(79, 70, 229, 0.28);
+        }
+
+        .primary-button:disabled {
+            opacity: .55;
+            cursor: not-allowed;
+        }
+
+        .secondary-button {
+            min-height: 44px;
+            padding: 0 16px;
+            border-radius: 12px;
+            border: 1px solid #cbd5e1;
+            background: white;
+            color: #334155;
+            font-weight: 800;
+            cursor: pointer;
+        }
+
+        /* =====================================================
+           CREATE MODAL
+           مهم: هذا باقي لأنه ديال تأكيد الإنشاء
+        ===================================================== */
+
+        .create-modal-backdrop {
+            position: fixed;
+            inset: 0;
+            z-index: 500;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: rgba(15, 23, 42, 0.62);
+            backdrop-filter: blur(8px);
+        }
+
+        .create-modal-card {
+            width: min(560px, 100%);
+            border-radius: 24px;
+            background: white;
+            padding: 25px;
+            box-shadow:
+                0 30px 90px rgba(15, 23, 42, 0.25);
+        }
+
+        /* =====================================================
+           DEPLOYMENT OVERLAY
+        ===================================================== */
+
+        .deployment-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 800;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: rgba(15, 23, 42, 0.72);
+            backdrop-filter: blur(10px);
+        }
+
+        .deployment-overlay.show {
+            display: flex;
+        }
+
+        .deployment-card {
+            width: min(560px, 100%);
+            border-radius: 26px;
+            background: white;
+            padding: 28px;
+            text-align: center;
+            box-shadow:
+                0 30px 100px rgba(15, 23, 42, 0.30);
+        }
+
+        /* =====================================================
+           SSL MODAL
+        ===================================================== */
+
+        .ssl-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 900;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: rgba(15, 23, 42, 0.70);
+            backdrop-filter: blur(10px);
+        }
+
+        .ssl-modal.show {
+            display: flex;
+        }
+
+        .ssl-card {
+            width: min(560px, 100%);
+            border-radius: 26px;
+            background: white;
+            padding: 28px;
+            box-shadow:
+                0 30px 100px rgba(15, 23, 42, 0.30);
+        }
+
+        /* =====================================================
+           RESPONSIVE
+        ===================================================== */
+
+        @media (max-width: 1100px) {
+
+            .templates-grid {
+                grid-template-columns:
+                    repeat(2, minmax(0, 1fr));
+            }
+
+            .hero-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 700px) {
+
+            .container-main {
+                width: min(100% - 20px, 1400px);
+            }
+
+            .hero {
+                padding-top: 25px;
+            }
+
+            .hero-card,
+            .hero-side,
+            .section-card {
+                border-radius: 20px;
+            }
+
+            .hero-card {
+                padding: 24px;
+            }
+
+            .section-card {
+                padding: 18px;
+            }
+
+            .templates-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .template-image-wrapper {
+                height: 210px;
+            }
+
+            .template-actions {
+                grid-template-columns: 1fr;
+            }
+
+            .page-header-inner {
+                min-height: 64px;
+            }
         }
 
     </style>
-
 </head>
 
+<body>
 
-<body class="min-h-screen bg-slate-50">
+<div class="page-shell">
 
-
-    <!-- =========================================================
+    <!-- =====================================================
          HEADER
-    ========================================================== -->
+    ====================================================== -->
 
-    <header class="bg-white border-b shadow-sm">
+    <header class="page-header">
 
-        <div
-            class="max-w-6xl mx-auto px-5 py-4 flex justify-between items-center">
-
-            <a
-                href="index.html"
-                class="text-xl font-extrabold text-purple-700">
-
-                TemplateCraft Pro
-
-            </a>
+        <div class="container-main page-header-inner">
 
             <a
-                href="profile.html"
-                class="text-sm font-bold text-gray-600 hover:text-purple-700">
+                href="/"
+                class="brand"
+            >
 
-                مشاريعي
+                <div class="brand-logo">
+                    TC
+                </div>
+
+                <div class="brand-text">
+
+                    <strong>
+                        TemplateCraft Pro
+                    </strong>
+
+                    <span>
+                        منصة إنشاء المواقع والقوالب
+                    </span>
+
+                </div>
 
             </a>
 
@@ -320,2563 +865,1904 @@
     </header>
 
 
-    <!-- =========================================================
+    <!-- =====================================================
          MAIN
-    ========================================================== -->
+    ====================================================== -->
 
-    <main class="max-w-6xl mx-auto px-4 py-10">
-
-        <div
-            class="bg-white rounded-2xl shadow-sm border p-6 md:p-8">
+    <main class="container-main">
 
 
-            <!-- =====================================================
-                 PAGE INTRO
-            ====================================================== -->
+        <!-- =================================================
+             HERO
+        ================================================== -->
 
-            <div class="mb-8">
+        <section class="hero">
 
-                <span
-                    class="text-purple-700 text-sm font-bold">
+            <div class="hero-content">
 
-                    TEMPLATECRAFT BUILDER
+                <div class="hero-card">
 
-                </span>
+                    <div class="hero-badge">
+                        🚀 إنشاء مشروع جديد
+                    </div>
 
-                <h1
-                    class="text-2xl md:text-3xl font-extrabold text-gray-900 mt-2">
+                    <h1 class="hero-title">
+                        اختار القالب ديالك
+                        وبدا موقعك
+                    </h1>
 
-                    🚀 إنشاء ونشر موقع جديد
+                    <p class="hero-description">
+                        اختار من القوالب الجاهزة، شوف المعاينة
+                        الحقيقية ديال الموقع فصفحة مستقلة،
+                        ومن بعد اختار القالب باش تبني المشروع ديالك.
+                    </p>
 
-                </h1>
+                </div>
 
-                <p
-                    class="text-gray-500 mt-2">
 
-                    اختر تصنيف موقعك، شاهد القوالب الحقيقية قبل الاختيار،
-                    ثم أنشئ موقعك وانشره بسهولة.
+                <div class="hero-side">
 
-                </p>
+                    <div class="hero-side-title">
+                        كيفاش تخدم؟
+                    </div>
+
+                    <div class="hero-step">
+
+                        <div class="hero-step-number">
+                            1
+                        </div>
+
+                        <div class="hero-step-text">
+
+                            <strong>
+                                سمي المشروع
+                            </strong>
+
+                            <span>
+                                دخل الاسم اللي بغيتي للمشروع.
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="hero-step">
+
+                        <div class="hero-step-number">
+                            2
+                        </div>
+
+                        <div class="hero-step-text">
+
+                            <strong>
+                                اختار الفئة والقالب
+                            </strong>
+
+                            <span>
+                                تقدر تشوف المعاينة الحقيقية فتبويب جديد.
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="hero-step">
+
+                        <div class="hero-step-number">
+                            3
+                        </div>
+
+                        <div class="hero-step-text">
+
+                            <strong>
+                                نشر المشروع
+                            </strong>
+
+                            <span>
+                                من بعد الاختيار كمل عملية الإنشاء والنشر.
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             PROJECT INFO
+        ================================================== -->
+
+        <section class="section-card">
+
+            <div class="section-header">
+
+                <div>
+
+                    <h2 class="section-title">
+                        معلومات المشروع
+                    </h2>
+
+                    <p class="section-description">
+                        دخل المعلومات الأساسية ديال المشروع.
+                    </p>
+
+                </div>
 
             </div>
 
 
-            <!-- =====================================================
-                 SITE NAME
-            ====================================================== -->
-
-            <div class="mb-7">
+            <div class="field">
 
                 <label
-                    for="siteNameInput"
-                    class="block font-bold text-gray-800 mb-2">
-
-                    اسم الموقع
-
+                    class="field-label"
+                    for="siteName"
+                >
+                    اسم المشروع
                 </label>
 
                 <input
+                    id="siteName"
+                    name="siteName"
                     type="text"
-                    id="siteNameInput"
-                    maxlength="50"
-                    placeholder="مثال: my-awesome-store"
+                    class="field-input"
+                    placeholder="مثال: My Online Store"
                     autocomplete="off"
-                    class="w-full p-3 border border-gray-300 rounded-xl outline-none focus:ring-2 focus:ring-purple-500">
-
-                <p
-                    class="text-xs text-gray-400 mt-2">
-
-                    استعمل الحروف الإنجليزية والأرقام والشرطة فقط.
-
-                </p>
+                >
 
             </div>
 
 
-            <!-- =====================================================
-                 CATEGORY
-            ====================================================== -->
-
-            <div class="mb-8">
+            <div class="field">
 
                 <label
+                    class="field-label"
                     for="projectTypeSelect"
-                    class="block font-bold text-gray-800 mb-2">
-
-                    نوع الموقع
-
+                >
+                    نوع المشروع
                 </label>
 
                 <select
                     id="projectTypeSelect"
-                    disabled
-                    class="w-full p-3 border border-gray-300 rounded-xl bg-white outline-none focus:ring-2 focus:ring-purple-500 disabled:bg-gray-100 disabled:text-gray-500">
+                    class="field-select"
+                >
 
                     <option value="">
-
-                        جاري تحميل أنواع المواقع...
-
+                        جاري تحميل الفئات...
                     </option>
 
                 </select>
 
-                <p
-                    id="categoryLoadingMessage"
-                    class="text-xs text-gray-400 mt-2">
+            </div>
 
-                    جاري تحميل التصنيفات المتوفرة من TemplateCraft Pro...
 
-                </p>
+            <div
+                id="selectedLabel"
+                class="selected-template-bar"
+            >
+                لم يتم اختيار أي قالب بعد.
+            </div>
 
-                <p
-                    id="categoryErrorMessage"
-                    class="hidden text-xs text-red-600 mt-2 font-bold">
+        </section>
 
-                    تعذر تحميل أنواع المواقع. حاول إعادة تحميل الصفحة.
 
-                </p>
+        <!-- =================================================
+             TEMPLATES
+        ================================================== -->
+
+        <section class="section-card">
+
+            <div class="section-header">
+
+                <div>
+
+                    <h2 class="section-title">
+                        القوالب المتاحة
+                    </h2>
+
+                    <p class="section-description">
+                        ضغط على "معاينة" باش يفتح الموقع الحقيقي
+                        ديال القالب فتبويب جديد، أو اختار القالب مباشرة.
+                    </p>
+
+                </div>
 
             </div>
 
 
-            <!-- =====================================================
-                 TEMPLATE SELECTION
-            ====================================================== -->
+            <div
+                id="categoryLoadingMessage"
+                class="state-message"
+            >
+                جاري تحميل القوالب...
+            </div>
 
-            <div class="mb-8">
+
+            <div
+                id="categoryErrorMessage"
+                class="state-message error hidden"
+            >
+                وقع خطأ أثناء تحميل القوالب.
+            </div>
+
+
+            <div
+                id="templatesGrid"
+                class="templates-grid"
+            ></div>
+
+        </section>
+
+
+        <!-- =================================================
+             USER / NETLIFY SECTION
+        ================================================== -->
+
+        <section class="section-card">
+
+            <div class="section-header">
+
+                <div>
+
+                    <h2 class="section-title">
+                        النشر والاستضافة
+                    </h2>
+
+                    <p class="section-description">
+                        ربط Netlify واختيار الفريق قبل إنشاء المشروع.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="netlify-box">
 
                 <div
-                    class="flex flex-wrap justify-between items-center gap-3 mb-5">
+                    id="netlifyStatusContainer"
+                    class="netlify-status"
+                >
 
                     <div>
 
-                        <h2 class="font-extrabold text-lg">
-
-                            اختر القالب المناسب
-
-                        </h2>
-
-                        <p
-                            class="text-sm text-gray-500 mt-1">
-
-                            القوالب الموجودة في التصنيف المختار ستظهر هنا
-                            مع الصورة والمعاينة.
-
-                        </p>
-
-                    </div>
-
-                    <span
-                        id="selectedLabel"
-                        class="text-xs text-purple-700 bg-purple-50 px-3 py-2 rounded-lg font-bold">
-
-                        جاري تحميل القوالب...
-
-                    </span>
-
-                </div>
-
-
-                <!-- =================================================
-                     TEMPLATE GRID
-                ================================================== -->
-
-                <div
-                    id="templatesGrid"
-                    class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-
-                    <div class="template-loading">
-
-                        <div class="template-spinner"></div>
-
-                        <p class="text-sm">
-
-                            جاري تحميل القوالب...
-
-                        </p>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-
-            <!-- =====================================================
-                 USER INFORMATION
-            ====================================================== -->
-
-            <div
-                id="userInfo"
-                class="hidden bg-purple-50 border border-purple-100 rounded-xl p-4 mb-6">
-
-                <p
-                    class="text-sm text-purple-800 font-bold">
-
-                    سيتم تسجيل المشروع في حسابك.
-
-                </p>
-
-                <p
-                    id="userEmail"
-                    class="text-xs text-purple-600 mt-1"
-                    dir="ltr">
-                </p>
-
-            </div>
-
-
-            <!-- =====================================================
-                 NETLIFY
-            ====================================================== -->
-
-            <section
-                class="netlify-card rounded-2xl p-5 mb-6">
-
-                <div
-                    class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-
-                    <div class="flex items-center gap-3">
-
-                        <div class="netlify-icon">
-
-                            N
-
-                        </div>
-
-                        <div>
-
-                            <h3
-                                class="font-extrabold text-gray-900">
-
-                                ربط حساب Netlify
-
-                            </h3>
-
-                            <p
-                                class="text-xs text-gray-500 mt-1">
-
-                                اربط حسابك باش يتم نشر مشاريعك عليه.
-
-                            </p>
-
-                        </div>
-
-                    </div>
-
-                    <div
-                        class="flex items-center gap-2">
+                        <strong
+                            id="netlifyStatusTitle"
+                            style="
+                                display:block;
+                                font-size:14px;
+                                margin-bottom:4px;
+                            "
+                        >
+                            Netlify
+                        </strong>
 
                         <span
-                            id="netlifyStatusDot"
-                            class="netlify-status-dot">
+                            id="netlifyStatusDescription"
+                            style="
+                                display:block;
+                                color:#64748b;
+                                font-size:11px;
+                            "
+                        >
+                            جاري التحقق من الاتصال...
                         </span>
 
-                        <span
-                            id="netlifyStatusText"
-                            class="text-xs font-bold text-gray-500">
+                    </div>
 
-                            جاري التحقق...
 
-                        </span>
-
+                    <div
+                        id="netlifyStatusBadge"
+                        class="status-badge info"
+                    >
+                        جاري التحقق...
                     </div>
 
                 </div>
 
 
-                <!-- CONNECTED -->
-
                 <div
-                    id="netlifyConnectedInfo"
-                    class="hidden netlify-team-box mt-4 rounded-xl border border-green-200 bg-green-50 p-4">
-
-                    <div
-                        class="flex items-center gap-2 text-green-700">
-
-                        <span class="text-lg">
-
-                            ✓
-
-                        </span>
-
-                        <span
-                            class="text-sm font-extrabold">
-
-                            حساب Netlify متصل
-
-                        </span>
-
-                    </div>
-
-                    <p
-                        class="text-xs text-green-700 mt-2">
-
-                        Team المرتبط بحسابك:
-
-                    </p>
-
-                    <p
-                        id="netlifyMainTeamName"
-                        dir="auto"
-                        class="font-extrabold text-gray-900 mt-1">
-
-                        —
-
-                    </p>
-
-
-                    <!-- TEAM PICKER -->
-
-                    <div
-                        id="netlifyTeamPicker"
-                        class="hidden mt-4 rounded-xl border border-blue-200 bg-white p-4">
-
-                        <div
-                            class="flex items-start gap-3">
-
-                            <div
-                                class="w-9 h-9 rounded-lg bg-blue-50 text-blue-700 flex items-center justify-center font-black flex-shrink-0">
-
-                                N
-
-                            </div>
-
-                            <div
-                                class="flex-1 min-w-0">
-
-                                <p
-                                    class="text-sm font-extrabold text-gray-900">
-
-                                    اختيار Netlify Team
-
-                                </p>
-
-                                <p
-                                    id="netlifyTeamPickerMessage"
-                                    class="text-xs text-gray-500 mt-1 leading-5">
-
-                                    اختر الـ Team الذي تريد استعماله لإنشاء المشاريع.
-
-                                </p>
-
-                            </div>
-
-                        </div>
-
-
-                        <div class="mt-4">
-
-                            <label
-                                for="netlifyTeamSelect"
-                                class="block text-xs font-bold text-gray-700 mb-2">
-
-                                Teams المتاحة
-
-                            </label>
-
-                            <select
-                                id="netlifyTeamSelect"
-                                class="w-full p-3 border border-gray-300 rounded-xl bg-white outline-none focus:ring-2 focus:ring-blue-500">
-
-                                <option value="">
-
-                                    اختر Team...
-
-                                </option>
-
-                            </select>
-
-                        </div>
-
-
-                        <button
-                            id="selectNetlifyTeamBtn"
-                            type="button"
-                            class="w-full mt-3 bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-xl font-bold text-sm transition">
-
-                            اختيار Team
-
-                        </button>
-
-                    </div>
-
-
-                    <!-- TEAM STATUS -->
-
-                    <div
-                        id="netlifyTeamStatusBox"
-                        class="hidden mt-4 rounded-xl border border-amber-200 bg-amber-50 p-4">
-
-                        <p
-                            id="netlifyTeamStatusText"
-                            class="text-xs text-amber-800 font-bold leading-6">
-                        </p>
-
-                    </div>
-
-                </div>
-
-
-                <!-- NOT CONNECTED -->
-
-                <div
-                    id="netlifyNotConnectedInfo"
-                    class="mt-4">
-
-                    <p
-                        class="text-xs text-gray-500 leading-6 mb-3">
-
-                        سيتم فتح نافذة آمنة من Netlify لتأكيد الربط،
-                        وستبقى صفحة إنشاء المشروع مفتوحة.
-
-                    </p>
+                    id="netlifyConnectContainer"
+                    class="hidden"
+                    style="margin-top:16px;"
+                >
 
                     <button
                         id="connectNetlifyBtn"
                         type="button"
-                        class="netlify-connect-btn w-full sm:w-auto bg-slate-900 hover:bg-slate-800 text-white px-5 py-3 rounded-xl font-bold text-sm">
-
-                        <span
-                            id="connectNetlifyBtnText">
-
-                            ربط حساب Netlify
-
-                        </span>
-
+                        class="secondary-button"
+                    >
+                        🔗 ربط Netlify
                     </button>
 
                 </div>
 
 
                 <div
-                    id="netlifyConnectionMessage"
-                    class="text-xs mt-3"
-                    role="status"
-                    aria-live="polite">
+                    id="netlifyTeamsContainer"
+                    class="hidden"
+                    style="margin-top:18px;"
+                >
+
+                    <label
+                        for="netlifyTeamSelect"
+                        class="field-label"
+                    >
+                        فريق Netlify
+                    </label>
+
+                    <select
+                        id="netlifyTeamSelect"
+                        class="field-select"
+                    >
+
+                        <option value="">
+                            جاري تحميل الفرق...
+                        </option>
+
+                    </select>
+
                 </div>
 
-            </section>
+            </div>
+
+        </section>
 
 
-            <!-- =====================================================
-                 DEPLOY BUTTON
-            ====================================================== -->
+        <!-- =================================================
+             CREATE PROJECT
+        ================================================== -->
+
+        <section class="section-card">
 
             <button
-                id="deployBtn"
+                id="createProjectBtn"
                 type="button"
-                class="w-full bg-purple-600 hover:bg-purple-700 text-white p-4 rounded-xl font-extrabold transition shadow-lg">
-
-                🚀 إنشاء ونشر الموقع
-
+                class="primary-button"
+            >
+                🚀 إنشاء المشروع ونشره
             </button>
 
 
-            <!-- STATUS -->
-
             <div
-                id="statusMessage"
-                class="mt-5 text-center text-sm font-bold"
-                role="status"
-                aria-live="polite">
-            </div>
+                id="createResult"
+                class="hidden"
+                style="margin-top:18px;"
+            ></div>
 
+        </section>
 
-            <!-- =====================================================
-                 RESULT
-            ====================================================== -->
-
-            <div
-                id="resultContainer"
-                class="hidden mt-5 bg-green-50 border border-green-200 rounded-xl p-5 text-center">
-
-                <h3
-                    id="resultTitle"
-                    class="text-green-700 font-extrabold text-lg mb-2">
-
-                    ✅ تم إنشاء مشروعك بنجاح!
-
-                </h3>
-
-                <p
-                    id="resultDescription"
-                    class="text-gray-600 text-sm mb-4">
-
-                    جاري تجهيز الدومين الخاص بموقعك.
-
-                </p>
-
-
-                <div
-                    id="resultDomainBox"
-                    class="bg-white border border-green-200 rounded-xl p-3 mb-4">
-
-                    <p
-                        class="text-xs text-gray-500 mb-2">
-
-                        رابط موقعك:
-
-                    </p>
-
-                    <a
-                        id="resultUrl"
-                        href="#"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        dir="ltr"
-                        class="text-purple-700 font-bold text-sm break-all">
-                    </a>
-
-                    <p
-                        id="resultPending"
-                        class="hidden text-yellow-700 font-bold text-sm mt-2">
-
-                        ⏳ الدومين الخاص قيد التجهيز.
-                        سيظهر الرابط هنا بعد تأكيد DNS وSSL.
-
-                    </p>
-
-                </div>
-
-
-                <div
-                    class="flex flex-col sm:flex-row justify-center gap-3">
-
-                    <a
-                        id="resultLink"
-                        href="#"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        class="hidden bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-xl font-bold">
-
-                        🌐 زيارة الموقع
-
-                    </a>
-
-                    <button
-                        id="copyLinkBtn"
-                        type="button"
-                        disabled
-                        class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-xl font-bold">
-
-                        📋 نسخ الرابط
-
-                    </button>
-
-                </div>
-
-
-                <div class="mt-5">
-
-                    <a
-                        href="profile.html"
-                        class="text-purple-700 font-bold text-sm hover:underline">
-
-                        الذهاب إلى مشاريعي وتعديل الموقع
-
-                    </a>
-
-                </div>
-
-            </div>
-
-        </div>
 
     </main>
 
-
-    <!-- =========================================================
-         PREVIEW MODAL
-    ========================================================== -->
-
-    <div
-        id="previewModal"
-        class="modal fixed inset-0 z-50 bg-black/70 items-center justify-center p-3 md:p-6">
-
-        <div
-            class="bg-white w-full max-w-6xl rounded-2xl overflow-hidden shadow-2xl">
-
-            <div
-                class="flex justify-between items-center p-4 border-b">
-
-                <div>
-
-                    <h3
-                        id="previewTitle"
-                        class="font-extrabold text-gray-900">
-
-                        معاينة القالب
-
-                    </h3>
-
-                    <p
-                        class="text-xs text-gray-500 mt-1">
-
-                        معاينة الموقع قبل إنشائه
-
-                    </p>
-
-                </div>
-
-                <button
-                    id="closePreviewBtn"
-                    type="button"
-                    class="bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg px-4 py-2 font-bold">
-
-                    ✕ إغلاق
-
-                </button>
-
-            </div>
+</div>
 
 
-            <div
-                id="previewLoading"
-                class="flex flex-col items-center justify-center p-10 gap-3">
+<!-- =========================================================
+     CREATE CONFIRMATION MODAL
+     هذا المودال باقي لأنه خاص بتأكيد إنشاء المشروع
+========================================================= -->
 
-                <div class="loader"></div>
+<div
+    id="createModal"
+    class="modal create-modal-backdrop"
+>
 
-                <p class="text-sm text-gray-500">
-
-                    جاري تحميل معاينة القالب...
-
-                </p>
-
-            </div>
-
-
-            <div
-                id="previewError"
-                class="hidden text-center p-10">
-
-                <p class="text-red-600 font-bold">
-
-                    تعذر تحميل المعاينة.
-
-                </p>
-
-                <p
-                    class="text-sm text-gray-500 mt-2">
-
-                    تأكد من تشغيل السيرفر وتوفر ملفات القالب.
-
-                </p>
-
-            </div>
-
-
-            <iframe
-                id="previewFrame"
-                class="modal-frame hidden"
-                title="معاينة القالب"
-                loading="lazy">
-            </iframe>
-
-
-            <div
-                class="p-4 border-t flex flex-wrap justify-between items-center gap-3">
-
-                <p
-                    class="text-xs text-gray-500">
-
-                    اختر هذا القالب لإنشاء مشروعك.
-
-                </p>
-
-                <button
-                    id="choosePreviewBtn"
-                    type="button"
-                    class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-xl font-bold">
-
-                    اختيار هذا القالب
-
-                </button>
-
-            </div>
-
-        </div>
-
-    </div>
-
-
-    <!-- =========================================================
-         CREATE CONFIRMATION MODAL
-    ========================================================== -->
-
-    <div
-        id="createModal"
-        class="modal fixed inset-0 z-[60] bg-slate-950/75 create-modal-backdrop items-center justify-center p-3 md:p-6">
+    <div class="create-modal-card">
 
         <div
-            class="create-modal-card bg-white w-full max-w-3xl max-h-[90vh] rounded-3xl shadow-2xl overflow-hidden flex flex-col">
-
-            <div
-                class="relative overflow-hidden p-6 md:p-8 text-white bg-gradient-to-br from-slate-900 via-purple-950 to-blue-950 flex-shrink-0">
-
-                <div
-                    class="absolute -top-20 -right-20 w-52 h-52 rounded-full bg-blue-500/20 blur-3xl">
-                </div>
-
-                <div
-                    class="absolute -bottom-20 -left-20 w-52 h-52 rounded-full bg-purple-500/20 blur-3xl">
-                </div>
-
-                <div class="relative">
-
-                    <div class="flex items-center gap-4">
-
-                        <div
-                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-green-400 via-blue-500 to-purple-600 flex items-center justify-center shadow-lg">
-
-                            <span class="text-2xl">
-
-                                ✦
-
-                            </span>
-
-                        </div>
-
-                        <div>
-
-                            <p
-                                class="text-blue-300 text-xs font-bold tracking-wider">
-
-                                TEMPLATECRAFT PRO
-
-                            </p>
-
-                            <h2
-                                class="text-2xl md:text-3xl font-black mt-1">
-
-                                جاهز لإنشاء موقعك؟
-
-                            </h2>
-
-                        </div>
-
-                    </div>
-
-                    <p
-                        class="text-slate-300 text-sm md:text-base leading-7 mt-5 max-w-2xl">
-
-                        حوّل فكرتك إلى موقع احترافي جاهز للنشر،
-                        مع أدوات متكاملة وخدمات أساسية تساعدك على إطلاق مشروعك بسهولة وسرعة.
-
-                    </p>
-
-                </div>
-
-            </div>
-
-
-            <div
-                class="p-5 md:p-7 overflow-y-auto flex-1 min-h-0">
-
-
-                <!-- SITE NAME -->
-
-                <div
-                    class="mb-6 rounded-2xl border border-purple-100 bg-purple-50 p-4">
-
-                    <p
-                        class="text-xs text-purple-600 font-bold mb-1">
-
-                        اسم موقعك
-
-                    </p>
-
-                    <div
-                        class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-
-                        <strong
-                            id="confirmSiteName"
-                            dir="ltr"
-                            class="text-lg text-gray-900 break-all">
-
-                            —
-
-                        </strong>
-
-                        <span
-                            id="confirmDomain"
-                            dir="ltr"
-                            class="text-sm text-purple-700 font-bold break-all">
-
-                            —
-
-                        </span>
-
-                    </div>
-
-                </div>
-
-
-                <!-- NETLIFY TEAM -->
-
-                <div
-                    id="confirmNetlifyTeamBox"
-                    class="hidden mb-6 rounded-2xl border border-green-200 bg-green-50 p-4">
-
-                    <div
-                        class="flex items-center justify-between gap-3">
-
-                        <div
-                            class="flex items-center gap-3">
-
-                            <div
-                                class="w-10 h-10 rounded-xl bg-slate-900 text-white flex items-center justify-center font-black">
-
-                                N
-
-                            </div>
-
-                            <div>
-
-                                <p
-                                    class="text-xs text-gray-500 font-bold">
-
-                                    NETLIFY TEAM
-
-                                </p>
-
-                                <p
-                                    id="confirmNetlifyTeamName"
-                                    class="font-extrabold text-gray-900 mt-1"
-                                    dir="auto">
-
-                                    —
-
-                                </p>
-
-                            </div>
-
-                        </div>
-
-                        <span
-                            class="text-green-700 text-xs font-extrabold">
-
-                            ✓ متصل
-
-                        </span>
-
-                    </div>
-
-                    <p
-                        class="text-xs text-gray-500 mt-3">
-
-                        سيتم إنشاء الموقع داخل هذا Team.
-
-                    </p>
-
-                </div>
-
-
-                <!-- WARNING -->
-
-                <div
-                    id="confirmNetlifyWarning"
-                    class="hidden mb-6 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800">
-
-                    خاصك تربط Netlify وتتأكد من إعداد Team قبل إنشاء الموقع.
-
-                </div>
-
-
-                <!-- FEATURES -->
-
-                <div
-                    class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-
-                    <div class="feature-card border border-gray-200 rounded-2xl p-4">
-                        <div class="flex items-start gap-3">
-                            <span class="text-2xl">🌐</span>
-                            <div>
-                                <h3 class="font-extrabold text-gray-900">
-                                    دومين مجاني
-                                </h3>
-                                <p class="text-xs text-gray-500 mt-1 leading-5">
-                                    احصل على نطاق فرعي مجاني باسم موقعك ضمن
-                                    <span dir="ltr">
-                                        templatecraftpro.com
-                                    </span>.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="feature-card border border-gray-200 rounded-2xl p-4">
-                        <div class="flex items-start gap-3">
-                            <span class="text-2xl">🔒</span>
-                            <div>
-                                <h3 class="font-extrabold text-gray-900">
-                                    حماية SSL مجانية
-                                </h3>
-                                <p class="text-xs text-gray-500 mt-1 leading-5">
-                                    اتصال آمن ومحمي لموقعك مع دعم HTTPS.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="feature-card border border-gray-200 rounded-2xl p-4">
-                        <div class="flex items-start gap-3">
-                            <span class="text-2xl">🎨</span>
-                            <div>
-                                <h3 class="font-extrabold text-gray-900">
-                                    قالب احترافي متوازن
-                                </h3>
-                                <p class="text-xs text-gray-500 mt-1 leading-5">
-                                    تصميم متناسق ومهيأ لمختلف أحجام الشاشات.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="feature-card border border-gray-200 rounded-2xl p-4">
-                        <div class="flex items-start gap-3">
-                            <span class="text-2xl">✏️</span>
-                            <div>
-                                <h3 class="font-extrabold text-gray-900">
-                                    تخصيص الواجهة
-                                </h3>
-                                <p class="text-xs text-gray-500 mt-1 leading-5">
-                                    عدّل محتوى وتصميم موقعك بما يناسب مشروعك.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="feature-card border border-gray-200 rounded-2xl p-4">
-                        <div class="flex items-start gap-3">
-                            <span class="text-2xl">📱</span>
-                            <div>
-                                <h3 class="font-extrabold text-gray-900">
-                                    تصميم متجاوب
-                                </h3>
-                                <p class="text-xs text-gray-500 mt-1 leading-5">
-                                    تجربة استخدام محسّنة للهاتف واللوحي والكمبيوتر.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="feature-card border border-gray-200 rounded-2xl p-4">
-                        <div class="flex items-start gap-3">
-                            <span class="text-2xl">⚡</span>
-                            <div>
-                                <h3 class="font-extrabold text-gray-900">
-                                    نشر سريع
-                                </h3>
-                                <p class="text-xs text-gray-500 mt-1 leading-5">
-                                    إنشاء وتجهيز ونشر موقعك عبر منصة واحدة.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="feature-card border border-gray-200 rounded-2xl p-4">
-                        <div class="flex items-start gap-3">
-                            <span class="text-2xl">🌍</span>
-                            <div>
-                                <h3 class="font-extrabold text-gray-900">
-                                    ربط أي دومين خارجي
-                                </h3>
-                                <p class="text-xs text-gray-500 mt-1 leading-5">
-                                    يمكنك لاحقاً ربط موقعك بدومين خاص تملكه.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="feature-card border border-gray-200 rounded-2xl p-4">
-                        <div class="flex items-start gap-3">
-                            <span class="text-2xl">☁️</span>
-                            <div>
-                                <h3 class="font-extrabold text-gray-900">
-                                    بنية نشر موثوقة
-                                </h3>
-                                <p class="text-xs text-gray-500 mt-1 leading-5">
-                                    إدارة ونشر مشروعك بسهولة من لوحة واحدة.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-
-
-                <div
-                    class="mt-5 rounded-xl bg-gray-50 border border-gray-200 p-4">
-
-                    <p
-                        class="text-xs text-gray-500 leading-6">
-
-                        بالمتابعة، سيتم إنشاء المشروع باستخدام القالب الذي اخترته،
-                        ثم يبدأ نظام TemplateCraft Pro في تجهيز الموقع ونشره.
-
-                    </p>
-
-                </div>
-
-
-                <div
-                    class="flex flex-col-reverse sm:flex-row gap-3 mt-6 pb-2">
-
-                    <button
-                        id="cancelCreateBtn"
-                        type="button"
-                        class="w-full sm:w-auto px-6 py-3 rounded-xl border border-gray-300 bg-white hover:bg-gray-50 text-gray-700 font-bold transition">
-
-                        إلغاء
-
-                    </button>
-
-                    <button
-                        id="confirmCreateBtn"
-                        type="button"
-                        class="flex-1 px-6 py-3 rounded-xl text-white font-extrabold transition shadow-lg bg-gradient-to-r from-purple-600 via-blue-600 to-indigo-600 hover:from-purple-700 hover:via-blue-700 hover:to-indigo-700">
-
-                        🚀 متابعة وإنشاء الموقع
-
-                    </button>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-
-    <!-- =========================================================
-         DEPLOYMENT OVERLAY
-    ========================================================== -->
-
-    <div
-        id="deployOverlay"
-        class="deploy-overlay fixed inset-0 z-[100] items-center justify-center overflow-hidden">
-
-        <div class="deploy-bg"></div>
-
-        <div class="deploy-panel">
-
-            <div class="flex flex-col items-center text-center">
-
-                <div class="deploy-logo">
-
-                    <span
-                        class="text-white text-3xl font-black">
-
-                        ✦
-
-                    </span>
-
-                </div>
+            style="
+                display:flex;
+                align-items:flex-start;
+                justify-content:space-between;
+                gap:15px;
+                margin-bottom:20px;
+            "
+        >
+
+            <div>
+
+                <h3
+                    style="
+                        margin:0;
+                        font-size:20px;
+                        font-weight:900;
+                    "
+                >
+                    تأكيد إنشاء المشروع
+                </h3>
 
                 <p
-                    class="text-blue-300 text-xs font-bold tracking-[.18em] mt-5">
-
-                    TEMPLATECRAFT PRO
-
-                </p>
-
-                <h2
-                    class="text-white text-2xl md:text-3xl font-black mt-2">
-
-                    جاري إنشاء موقعك
-
-                </h2>
-
-                <p
-                    id="deployOverlaySiteName"
-                    dir="ltr"
-                    class="text-slate-300 text-sm mt-2 break-all">
-
-                    —
-
-                </p>
-
-                <div
-                    class="deploy-spinner mt-7">
-                </div>
-
-                <p
-                    id="deployStageText"
-                    class="text-white font-bold mt-6">
-
-                    تجهيز المشروع...
-
-                </p>
-
-                <p
-                    class="text-slate-400 text-xs mt-2">
-
-                    قد تستغرق العملية بعض الوقت، لا تغلق الصفحة.
-
+                    style="
+                        margin:6px 0 0;
+                        color:#64748b;
+                        font-size:12px;
+                    "
+                >
+                    راجع المعلومات قبل البدء.
                 </p>
 
             </div>
 
-
-            <div class="deploy-progress mt-7">
-
-                <div
-                    id="deployProgressBar"
-                    class="deploy-progress-bar">
-                </div>
-
-            </div>
-
-
-            <div class="mt-7 space-y-3">
-
-                <div
-                    id="stage1"
-                    class="deploy-stage active flex items-center gap-3">
-
-                    <span class="stage-icon">
-                        ⚙️
-                    </span>
-
-                    <span class="text-sm font-bold">
-                        تجهيز المشروع
-                    </span>
-
-                </div>
-
-                <div
-                    id="stage2"
-                    class="deploy-stage pending flex items-center gap-3">
-
-                    <span class="stage-icon">
-                        🎨
-                    </span>
-
-                    <span class="text-sm font-bold">
-                        تطبيق القالب والملفات
-                    </span>
-
-                </div>
-
-                <div
-                    id="stage3"
-                    class="deploy-stage pending flex items-center gap-3">
-
-                    <span class="stage-icon">
-                        ☁️
-                    </span>
-
-                    <span class="text-sm font-bold">
-                        نشر الموقع
-                    </span>
-
-                </div>
-
-                <div
-                    id="stage4"
-                    class="deploy-stage pending flex items-center gap-3">
-
-                    <span class="stage-icon">
-                        🌐
-                    </span>
-
-                    <span class="text-sm font-bold">
-                        إعداد النطاق
-                    </span>
-
-                </div>
-
-                <div
-                    id="stage5"
-                    class="deploy-stage pending flex items-center gap-3">
-
-                    <span class="stage-icon">
-                        🔒
-                    </span>
-
-                    <span class="text-sm font-bold">
-                        التحقق من الحماية SSL
-                    </span>
-
-                </div>
-
-                <div
-                    id="stage6"
-                    class="deploy-stage pending flex items-center gap-3">
-
-                    <span class="stage-icon">
-                        🚀
-                    </span>
-
-                    <span class="text-sm font-bold">
-                        إنهاء النشر
-                    </span>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-
-    <!-- =========================================================
-         SSL PREPARATION
-    ========================================================== -->
-
-    <div
-        id="sslPreparationModal"
-        class="fixed inset-0 z-[9999] hidden items-center justify-center bg-black/60 backdrop-blur-sm p-4"
-        aria-hidden="true">
-
-        <div
-            class="w-full max-w-md rounded-3xl bg-white shadow-2xl p-6 text-center"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="sslPreparationTitle">
-
-            <div class="text-5xl mb-4">
-                🔐
-            </div>
-
-            <h2
-                id="sslPreparationTitle"
-                class="text-xl font-extrabold text-gray-900">
-
-                تجهيز شهادة SSL
-
-            </h2>
-
-            <p
-                id="sslPreparationMessage"
-                class="mt-4 text-sm leading-7 text-gray-600">
-
-                تم نشر موقعك بنجاح، ولكن شهادة الأمان SSL قد تحتاج من 3 إلى 10 دقائق حتى تصبح جاهزة.
-                يمكنك الذهاب إلى صفحة المشاريع للاطلاع على حالة شهادة SSL.
-
-            </p>
 
             <button
-                id="sslPreparationOkBtn"
+                id="closeCreateModalBtn"
                 type="button"
-                class="mt-6 w-full rounded-xl bg-purple-600 hover:bg-purple-700 text-white py-3 font-extrabold transition">
+                class="secondary-button"
+                style="
+                    min-width:42px;
+                    padding:0;
+                "
+            >
+                ✕
+            </button>
 
-                موافق
+        </div>
 
+
+        <div
+            id="createModalContent"
+            style="
+                border:1px solid #e2e8f0;
+                border-radius:16px;
+                padding:16px;
+                background:#f8fafc;
+            "
+        ></div>
+
+
+        <div
+            style="
+                display:grid;
+                grid-template-columns:1fr 1fr;
+                gap:10px;
+                margin-top:20px;
+            "
+        >
+
+            <button
+                id="cancelCreateBtn"
+                type="button"
+                class="secondary-button"
+            >
+                إلغاء
+            </button>
+
+
+            <button
+                id="confirmCreateBtn"
+                type="button"
+                class="primary-button"
+                style="width:auto;"
+            >
+                تأكيد الإنشاء
             </button>
 
         </div>
 
     </div>
 
-
-    <!-- =========================================================
-         API CLIENT
-    ========================================================== -->
-
-    <script src="./client-api.js"></script>
+</div>
 
 
-    <!-- =========================================================
-         NETLIFY
-    ========================================================== -->
+<!-- =========================================================
+     DEPLOYMENT OVERLAY
+========================================================= -->
 
-    <script src="./create-project-netlify.js"></script>
+<div
+    id="deploymentOverlay"
+    class="deployment-overlay"
+>
 
+    <div class="deployment-card">
 
-    <!-- =========================================================
-         MAIN CORE
-    ========================================================== -->
+        <div
+            style="
+                font-size:42px;
+                margin-bottom:12px;
+            "
+        >
+            🚀
+        </div>
 
-    <script src="./create-project.js"></script>
+        <h3
+            id="deploymentTitle"
+            style="
+                margin:0 0 8px;
+                font-size:20px;
+                font-weight:900;
+            "
+        >
+            جاري إنشاء المشروع...
+        </h3>
 
+        <p
+            id="deploymentMessage"
+            style="
+                margin:0;
+                color:#64748b;
+                font-size:12px;
+                line-height:1.8;
+            "
+        >
+            المرجو الانتظار، لا تغلق الصفحة.
+        </p>
 
-    <!-- =========================================================
-         TEMPLATE SYSTEM
-    ========================================================== -->
+        <div
+            style="
+                margin-top:20px;
+                height:7px;
+                border-radius:999px;
+                background:#e2e8f0;
+                overflow:hidden;
+            "
+        >
 
-    <script src="./create-project-templates.js"></script>
+            <div
+                id="deploymentProgress"
+                style="
+                    width:10%;
+                    height:100%;
+                    border-radius:999px;
+                    background:linear-gradient(
+                        90deg,
+                        #4f46e5,
+                        #7c3aed
+                    );
+                    transition:width .4s ease;
+                "
+            ></div>
 
+        </div>
 
-    <!-- =========================================================
-         NETLIFY UI
-    ========================================================== -->
+    </div>
 
-    <script src="./create-project-netlify-ui.js"></script>
-
-
-    <!-- =========================================================
-         DEPLOYMENT
-    ========================================================== -->
-
-    <script src="./create-project-deployment.js"></script>
-
-
-    <!-- =========================================================
-         CATEGORY + TEMPLATE UI CONTROLLER
-    ========================================================== -->
-
-    <script>
-
-        (function () {
-
-            'use strict';
-
-
-            /* =====================================================
-               CONFIG
-            ===================================================== */
-
-            const API_BASE =
-                String(
-                    window.TEMPLATECRAFT_API_BASE_URL ||
-                    'https://templatecraft-backend.onrender.com'
-                ).replace(/\/+$/, '');
-
-
-            const select =
-                document.getElementById(
-                    'projectTypeSelect'
-                );
-
-
-            const grid =
-                document.getElementById(
-                    'templatesGrid'
-                );
-
-
-            const selectedLabel =
-                document.getElementById(
-                    'selectedLabel'
-                );
-
-
-            const loadingMessage =
-                document.getElementById(
-                    'categoryLoadingMessage'
-                );
+</div>
 
 
-            const errorMessage =
-                document.getElementById(
-                    'categoryErrorMessage'
-                );
+<!-- =========================================================
+     SSL PREPARATION MODAL
+========================================================= -->
+
+<div
+    id="sslPreparationModal"
+    class="ssl-modal"
+>
+
+    <div class="ssl-card">
+
+        <div
+            style="
+                font-size:40px;
+                margin-bottom:12px;
+            "
+        >
+            🔐
+        </div>
+
+        <h3
+            id="sslPreparationTitle"
+            style="
+                margin:0 0 8px;
+                font-size:20px;
+                font-weight:900;
+            "
+        >
+            جاري تجهيز SSL
+        </h3>
+
+        <p
+            id="sslPreparationMessage"
+            style="
+                margin:0;
+                color:#64748b;
+                font-size:12px;
+                line-height:1.8;
+            "
+        >
+            جاري تجهيز الاتصال الآمن للموقع.
+        </p>
+
+    </div>
+
+</div>
 
 
-            const previewModal =
-                document.getElementById(
-                    'previewModal'
-                );
+<!-- =========================================================
+     REQUIRED SCRIPTS
+========================================================= -->
+
+<script src="./client-api.js"></script>
+
+<script src="./create-project-netlify.js"></script>
+
+<script src="./create-project.js"></script>
+
+<script src="./create-project-templates.js"></script>
+
+<script src="./create-project-netlify-ui.js"></script>
+
+<script src="./create-project-deployment.js"></script>
 
 
-            const previewFrame =
-                document.getElementById(
-                    'previewFrame'
-                );
+<!-- =========================================================
+     CATEGORY + TEMPLATE UI CONTROLLER
+========================================================= -->
+
+<script>
+
+(function () {
+
+    'use strict';
 
 
-            const previewLoading =
-                document.getElementById(
-                    'previewLoading'
-                );
+    /* =====================================================
+       API
+    ===================================================== */
+
+    const API_BASE =
+        String(
+            window.TEMPLATECRAFT_API_BASE_URL ||
+            'https://templatecraft-backend.onrender.com'
+        ).replace(/\/+$/, '');
 
 
-            const previewError =
-                document.getElementById(
-                    'previewError'
-                );
+    /* =====================================================
+       DOM
+    ===================================================== */
+
+    const select =
+        document.getElementById(
+            'projectTypeSelect'
+        );
+
+    const grid =
+        document.getElementById(
+            'templatesGrid'
+        );
+
+    const selectedLabel =
+        document.getElementById(
+            'selectedLabel'
+        );
+
+    const loadingMessage =
+        document.getElementById(
+            'categoryLoadingMessage'
+        );
+
+    const errorMessage =
+        document.getElementById(
+            'categoryErrorMessage'
+        );
 
 
-            const previewTitle =
-                document.getElementById(
-                    'previewTitle'
-                );
+    /* =====================================================
+       STATE
+    ===================================================== */
+
+    let allTemplates = [];
+
+    let selectedTemplate = null;
 
 
-            const choosePreviewBtn =
-                document.getElementById(
-                    'choosePreviewBtn'
-                );
+    /* =====================================================
+       HELPERS
+    ===================================================== */
+
+    function cleanUrl(value) {
+
+        return String(value || '')
+            .trim()
+            .replace(/^["']|["']$/g, '');
+
+    }
 
 
-            const closePreviewBtn =
-                document.getElementById(
-                    'closePreviewBtn'
-                );
+    function isAbsoluteUrl(value) {
+
+        return /^https?:\/\//i.test(
+            String(value || '')
+        );
+
+    }
 
 
-            if (!select || !grid) {
-                return;
+    function encodePath(pathValue) {
+
+        return String(pathValue || '')
+            .split('/')
+            .map(
+                part =>
+                    encodeURIComponent(part)
+            )
+            .join('/');
+
+    }
+
+
+    function escapeHtml(value) {
+
+        return String(value ?? '')
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
+
+    }
+
+
+    /* =====================================================
+       TEMPLATE ASSET URL
+    ===================================================== */
+
+    function getTemplateAssetUrl(
+        template,
+        assetPath
+    ) {
+
+        if (!template || !assetPath) {
+            return '';
+        }
+
+
+        const value =
+            cleanUrl(assetPath);
+
+
+        if (!value) {
+            return '';
+        }
+
+
+        if (isAbsoluteUrl(value)) {
+            return value;
+        }
+
+
+        if (
+            value.startsWith('data:')
+        ) {
+            return value;
+        }
+
+
+        if (
+            value.startsWith(
+                '/api/templates/'
+            )
+        ) {
+
+            return API_BASE + value;
+
+        }
+
+
+        const projectType =
+            cleanUrl(
+                template.projectType ||
+                template.category
+            );
+
+
+        const templateId =
+            cleanUrl(
+                template.id ||
+                template.templateId
+            );
+
+
+        if (
+            !projectType ||
+            !templateId
+        ) {
+
+            return '';
+
+        }
+
+
+        const normalized =
+            value
+                .replace(/^\.?\//, '')
+                .replace(/^\/+/, '');
+
+
+        return (
+            API_BASE +
+            '/api/templates/' +
+            encodeURIComponent(projectType) +
+            '/' +
+            encodeURIComponent(templateId) +
+            '/' +
+            encodePath(normalized)
+        );
+
+    }
+
+
+    /* =====================================================
+       PREVIEW URL
+    ===================================================== */
+
+    function getPreviewUrl(template) {
+
+        if (!template) {
+            return '';
+        }
+
+
+        if (
+            template.previewUrl &&
+            isAbsoluteUrl(
+                template.previewUrl
+            )
+        ) {
+
+            return template.previewUrl;
+
+        }
+
+
+        const projectType =
+            cleanUrl(
+                template.projectType ||
+                template.category
+            );
+
+
+        const templateId =
+            cleanUrl(
+                template.id ||
+                template.templateId
+            );
+
+
+        if (
+            !projectType ||
+            !templateId
+        ) {
+
+            return '';
+
+        }
+
+
+        return (
+            API_BASE +
+            '/api/templates/' +
+            encodeURIComponent(projectType) +
+            '/' +
+            encodeURIComponent(templateId) +
+            '/preview'
+        );
+
+    }
+
+
+    /* =====================================================
+       TEMPLATE IMAGE
+    ===================================================== */
+
+    function getTemplateImage(template) {
+
+        if (!template) {
+            return '';
+        }
+
+
+        const candidates = [
+
+            template.thumbnail,
+
+            template.image,
+
+            template.cover,
+
+            template.previewImage,
+
+            template.preview,
+
+            'assets/images/cover.jpg'
+
+        ];
+
+
+        for (
+            const candidate of candidates
+        ) {
+
+            const value =
+                cleanUrl(candidate);
+
+
+            if (!value) {
+                continue;
             }
 
 
-            /* =====================================================
-               STATE
-            ===================================================== */
+            if (
+                isAbsoluteUrl(value)
+            ) {
 
-            let allTemplates = [];
-
-            let selectedTemplate = null;
-
-            let previewTemplate = null;
-
-
-            /* =====================================================
-               URL HELPERS
-            ===================================================== */
-
-            function cleanUrl(value) {
-
-                return String(
-                    value || ''
-                ).trim();
+                return value;
 
             }
 
 
-            function isAbsoluteUrl(value) {
+            if (
+                value.startsWith('data:')
+            ) {
 
-                return (
-                    /^https?:\/\//i.test(value) ||
-                    /^\/\//.test(value)
-                );
-
-            }
-
-
-            function encodePath(value) {
-
-                return String(value || '')
-                    .split('/')
-                    .filter(Boolean)
-                    .map(
-                        part =>
-                            encodeURIComponent(part)
-                    )
-                    .join('/');
+                return value;
 
             }
 
 
-            /* =====================================================
-               TEMPLATE ASSET URL
-            ===================================================== */
-
-            function getTemplateAssetUrl(
+            return getTemplateAssetUrl(
                 template,
-                assetPath
-            ) {
+                value
+            );
 
-                if (!template || !assetPath) {
-                    return '';
-                }
+        }
 
 
-                const value =
-                    cleanUrl(assetPath);
+        return '';
+
+    }
 
 
-                if (!value) {
-                    return '';
-                }
+    /* =====================================================
+       NORMALIZE TEMPLATE
+    ===================================================== */
+
+    function normalizeTemplate(
+        template
+    ) {
+
+        if (!template) {
+            return null;
+        }
 
 
-                if (isAbsoluteUrl(value)) {
-                    return value;
-                }
+        const projectType =
+            cleanUrl(
+                template.projectType ||
+                template.category
+            );
 
 
-                if (
-                    value.startsWith(
-                        'data:'
-                    )
-                ) {
-                    return value;
-                }
+        const id =
+            cleanUrl(
+                template.id ||
+                template.templateId
+            );
 
 
-                if (
-                    value.startsWith(
-                        '/api/templates/'
-                    )
-                ) {
-
-                    return (
-                        API_BASE +
-                        value
-                    );
-
-                }
+        if (!id) {
+            return null;
+        }
 
 
-                const projectType =
-                    cleanUrl(
-                        template.projectType ||
-                        template.category
-                    );
+        return {
+
+            ...template,
+
+            id,
+
+            projectType,
+
+            category:
+                cleanUrl(
+                    template.category ||
+                    projectType
+                ),
+
+            name:
+                cleanUrl(
+                    template.name ||
+                    template.title ||
+                    id
+                ),
+
+            description:
+                cleanUrl(
+                    template.description ||
+                    'قالب جاهز للاستخدام والتخصيص.'
+                ),
+
+            thumbnail:
+                cleanUrl(
+                    template.thumbnail ||
+                    template.image ||
+                    ''
+                ),
+
+            features:
+                Array.isArray(
+                    template.features
+                )
+                    ? template.features
+                    : []
+
+        };
+
+    }
 
 
-                const templateId =
-                    cleanUrl(
-                        template.id ||
-                        template.templateId
-                    );
+    /* =====================================================
+       NORMALIZE CATEGORY
+    ===================================================== */
 
+    function normalizeCategory(
+        category
+    ) {
 
-                if (
-                    !projectType ||
-                    !templateId
-                ) {
-                    return '';
-                }
+        if (
+            typeof category ===
+            'string'
+        ) {
 
+            const value =
+                cleanUrl(category);
 
-                const normalized =
-                    value
-                        .replace(/^\.?\//, '')
-                        .replace(/^\/+/, '');
-
-
-                return (
-                    API_BASE +
-                    '/api/templates/' +
-                    encodeURIComponent(
-                        projectType
-                    ) +
-                    '/' +
-                    encodeURIComponent(
-                        templateId
-                    ) +
-                    '/' +
-                    encodePath(
-                        normalized
-                    )
-                );
-
+            if (!value) {
+                return null;
             }
 
+            return {
+                value,
+                label: value
+            };
 
-            /* =====================================================
-               PREVIEW URL
-            ===================================================== */
-
-            function getPreviewUrl(
-                template
-            ) {
-
-                if (!template) {
-                    return '';
-                }
+        }
 
 
-                if (
-                    template.previewUrl &&
-                    isAbsoluteUrl(
-                        template.previewUrl
-                    )
-                ) {
-                    return template.previewUrl;
-                }
+        if (
+            category &&
+            typeof category ===
+            'object'
+        ) {
 
-
-                const projectType =
-                    cleanUrl(
-                        template.projectType ||
-                        template.category
-                    );
-
-
-                const templateId =
-                    cleanUrl(
-                        template.id ||
-                        template.templateId
-                    );
-
-
-                if (
-                    !projectType ||
-                    !templateId
-                ) {
-                    return '';
-                }
-
-
-                return (
-                    API_BASE +
-                    '/api/templates/' +
-                    encodeURIComponent(
-                        projectType
-                    ) +
-                    '/' +
-                    encodeURIComponent(
-                        templateId
-                    ) +
-                    '/preview'
-                );
-
-            }
-
-
-            /* =====================================================
-               CATEGORY NORMALIZATION
-            ===================================================== */
-
-            function normalizeCategories(
-                data
-            ) {
-
-                if (Array.isArray(data)) {
-                    return data;
-                }
-
-
-                if (
-                    data &&
-                    Array.isArray(
-                        data.categories
-                    )
-                ) {
-                    return data.categories;
-                }
-
-
-                if (
-                    data &&
-                    Array.isArray(
-                        data.projectTypes
-                    )
-                ) {
-                    return data.projectTypes;
-                }
-
-
-                if (
-                    data &&
-                    Array.isArray(
-                        data.data
-                    )
-                ) {
-                    return data.data;
-                }
-
-
-                if (
-                    data &&
-                    data.data &&
-                    Array.isArray(
-                        data.data.categories
-                    )
-                ) {
-                    return data.data.categories;
-                }
-
-
-                return [];
-
-            }
-
-
-            function normalizeCategory(
-                item
-            ) {
-
-                if (
-                    typeof item ===
-                    'string'
-                ) {
-
-                    return {
-                        id: item,
-                        name: item
-                    };
-
-                }
-
-
-                if (
-                    !item ||
-                    typeof item !==
-                    'object'
-                ) {
-                    return null;
-                }
-
-
-                const id =
-                    item.id ||
-                    item.value ||
-                    item.projectType ||
-                    item.category ||
-                    item.slug;
-
-
-                const name =
-                    item.name ||
-                    item.label ||
-                    item.title ||
-                    item.displayName ||
-                    id;
-
-
-                if (!id) {
-                    return null;
-                }
-
-
-                return {
-                    id: String(id),
-                    name: String(name)
-                };
-
-            }
-
-
-            function getCategoryLabel(
-                category
-            ) {
-
-                const labels = {
-
-                    blogs:
-                        '📝 المدونات والمقالات',
-
-                    corporate:
-                        '🏢 مواقع الشركات',
-
-                    ecommerce:
-                        '🛒 المتاجر الإلكترونية',
-
-                    'real-estate':
-                        '🏠 العقارات',
-
-                    'restaurant-demo':
-                        '🍽️ المطاعم والمقاهي',
-
-                    restaurants:
-                        '🍽️ المطاعم والمقاهي',
-
-                    education:
-                        '🎓 التعليم',
-
-                    portfolio:
-                        '💼 معرض الأعمال',
-
-                    news:
-                        '📰 الأخبار',
-
-                    landing:
-                        '🚀 صفحات الهبوط',
-
-                    services:
-                        '🛠️ الخدمات',
-
-                    travel:
-                        '✈️ السفر والسياحة'
-
-                };
-
-
-                return (
-                    labels[
-                        category.id
-                    ] ||
+            const value =
+                cleanUrl(
+                    category.value ||
+                    category.id ||
+                    category.slug ||
                     category.name
                 );
 
+
+            const label =
+                cleanUrl(
+                    category.label ||
+                    category.name ||
+                    category.title ||
+                    value
+                );
+
+
+            if (!value) {
+                return null;
             }
 
 
-            /* =====================================================
-               TEMPLATE NORMALIZATION
-            ===================================================== */
+            return {
+                value,
+                label
+            };
 
-            function normalizeTemplate(
-                template
-            ) {
-
-                if (
-                    !template ||
-                    typeof template !==
-                    'object'
-                ) {
-                    return null;
-                }
+        }
 
 
-                const id =
-                    template.id ||
-                    template.templateId ||
-                    template.slug;
+        return null;
+
+    }
 
 
-                const projectType =
-                    template.projectType ||
-                    template.category ||
-                    template.type;
+    /* =====================================================
+       LOAD CATEGORIES
+    ===================================================== */
+
+    async function loadCategories() {
+
+        if (!select) {
+            return;
+        }
 
 
-                if (!id) {
-                    return null;
-                }
+        try {
+
+            select.innerHTML =
+                '<option value="">جاري تحميل الفئات...</option>';
+
+            select.disabled = true;
 
 
-                const normalized = {
-
-                    ...template,
-
-                    id: String(id),
-
-                    projectType:
-                        projectType
-                            ? String(
-                                projectType
-                            )
-                            : '',
-
-                    name:
-                        String(
-                            template.name ||
-                            template.title ||
-                            id
-                        ),
-
-                    description:
-                        String(
-                            template.description ||
-                            'قالب احترافي جاهز للتخصيص.'
-                        )
-
-                };
+            const response =
+                await fetch(
+                    API_BASE +
+                    '/api/templates/categories',
+                    {
+                        method: 'GET',
+                        headers: {
+                            Accept:
+                                'application/json'
+                        },
+                        credentials:
+                            'include'
+                    }
+                );
 
 
-                if (
-                    Array.isArray(
-                        normalized.features
-                    )
-                ) {
+            if (!response.ok) {
 
-                    normalized.features =
-                        normalized.features
-                            .slice(0, 5)
-                            .map(
-                                feature =>
-                                    String(
-                                        feature
-                                    )
-                            );
-
-                } else {
-
-                    normalized.features = [];
-
-                }
-
-
-                return normalized;
+                throw new Error(
+                    'HTTP ' +
+                    response.status
+                );
 
             }
 
 
-            function extractTemplates(
-                data
-            ) {
-
-                if (
-                    Array.isArray(data)
-                ) {
-                    return data;
-                }
+            const data =
+                await response.json();
 
 
-                if (
-                    data &&
-                    Array.isArray(
-                        data.templates
-                    )
-                ) {
-                    return data.templates;
-                }
+            let rawCategories = [];
 
 
-                if (
-                    data &&
-                    data.data &&
-                    Array.isArray(
-                        data.data.templates
-                    )
-                ) {
-                    return data.data.templates;
-                }
-
-
-                if (
-                    data &&
-                    data.data &&
-                    Array.isArray(
-                        data.data
-                    )
-                ) {
-                    return data.data;
-                }
-
-
-                return [];
-
-            }
-
-
-            /* =====================================================
-               ESCAPE HTML
-            ===================================================== */
-
-            function escapeHtml(
-                value
-            ) {
-
-                return String(
-                    value ?? ''
+            if (
+                Array.isArray(
+                    data.categories
                 )
-                    .replace(
-                        /&/g,
-                        '&amp;'
-                    )
-                    .replace(
-                        /</g,
-                        '&lt;'
-                    )
-                    .replace(
-                        />/g,
-                        '&gt;'
-                    )
-                    .replace(
-                        /"/g,
-                        '&quot;'
-                    )
-                    .replace(
-                        /'/g,
-                        '&#039;'
-                    );
+            ) {
+
+                rawCategories =
+                    data.categories;
+
+            } else if (
+                Array.isArray(data)
+            ) {
+
+                rawCategories = data;
 
             }
 
 
-            /* =====================================================
-               FALLBACK IMAGE
-            ===================================================== */
+            const categories =
+                rawCategories
+                    .map(
+                        normalizeCategory
+                    )
+                    .filter(Boolean);
 
-            function getFallbackImage(
-                template
+
+            select.innerHTML = '';
+
+
+            if (
+                categories.length === 0
             ) {
 
-                const category =
-                    String(
-                        template?.projectType ||
-                        ''
-                    ).toLowerCase();
+                select.innerHTML =
+                    '<option value="">لا توجد فئات متاحة</option>';
+
+                select.disabled = true;
+
+                return;
+
+            }
 
 
-                const fallbackMap = {
+            const defaultOption =
+                document.createElement(
+                    'option'
+                );
 
-                    ecommerce:
-                        'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&fit=crop&w=1200&q=85',
+            defaultOption.value = '';
 
-                    corporate:
-                        'https://images.unsplash.com/photo-1497366811353-6870744d04b2?auto=format&fit=crop&w=1200&q=85',
+            defaultOption.textContent =
+                'اختار نوع المشروع';
 
-                    portfolio:
-                        'https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1200&q=85',
-
-                    restaurant:
-                        'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1200&q=85',
-
-                    restaurants:
-                        'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1200&q=85',
-
-                    travel:
-                        'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=85'
-
-                };
+            select.appendChild(
+                defaultOption
+            );
 
 
-                return (
-                    fallbackMap[category] ||
-                    'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=1200&q=85'
+            categories.forEach(
+                category => {
+
+                    const option =
+                        document.createElement(
+                            'option'
+                        );
+
+                    option.value =
+                        category.value;
+
+                    option.textContent =
+                        category.label;
+
+                    select.appendChild(
+                        option
+                    );
+
+                }
+            );
+
+
+            select.disabled = false;
+
+
+            const ecommerce =
+                categories.find(
+                    item =>
+                        item.value
+                            .toLowerCase()
+                            === 'ecommerce'
+                );
+
+
+            if (ecommerce) {
+
+                select.value =
+                    ecommerce.value;
+
+            } else {
+
+                select.value =
+                    categories[0].value;
+
+            }
+
+
+            select.dispatchEvent(
+                new Event('change')
+            );
+
+        } catch (error) {
+
+            console.error(
+                '[TemplateCraft] Failed to load categories:',
+                error
+            );
+
+
+            select.innerHTML =
+                '<option value="">تعذر تحميل الفئات</option>';
+
+            select.disabled = true;
+
+
+            if (errorMessage) {
+
+                errorMessage.textContent =
+                    'تعذر تحميل فئات القوالب. المرجو التأكد من اتصال الـBackend.';
+
+                errorMessage.classList.remove(
+                    'hidden'
+                );
+
+            }
+
+        }
+
+    }
+
+
+    /* =====================================================
+       LOAD TEMPLATES
+    ===================================================== */
+
+    async function loadTemplates(
+        projectType
+    ) {
+
+        if (!grid) {
+            return;
+        }
+
+
+        const type =
+            cleanUrl(projectType);
+
+
+        if (!type) {
+
+            grid.innerHTML = '';
+
+            loadingMessage?.classList.add(
+                'hidden'
+            );
+
+            return;
+
+        }
+
+
+        try {
+
+            loadingMessage?.classList.remove(
+                'hidden'
+            );
+
+            errorMessage?.classList.add(
+                'hidden'
+            );
+
+
+            grid.innerHTML = '';
+
+
+            const url =
+                API_BASE +
+                '/api/templates?projectType=' +
+                encodeURIComponent(type);
+
+
+            const response =
+                await fetch(
+                    url,
+                    {
+                        method: 'GET',
+                        headers: {
+                            Accept:
+                                'application/json'
+                        },
+                        credentials:
+                            'include'
+                    }
+                );
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    'HTTP ' +
+                    response.status
                 );
 
             }
 
 
-            /* =====================================================
-               GET TEMPLATE IMAGE
-            ===================================================== */
+            const data =
+                await response.json();
 
-            function getTemplateImage(
-                template
+
+            let templates = [];
+
+
+            if (
+                Array.isArray(
+                    data.templates
+                )
             ) {
 
-                const thumbnail =
-                    template.thumbnail ||
-                    template.image ||
-                    template.cover ||
-                    template.previewImage ||
-                    '';
+                templates =
+                    data.templates;
 
+            } else if (
+                Array.isArray(data)
+            ) {
 
-                if (
-                    thumbnail &&
-                    isAbsoluteUrl(
-                        thumbnail
-                    )
-                ) {
-                    return thumbnail;
-                }
-
-
-                if (
-                    thumbnail &&
-                    thumbnail.startsWith(
-                        'data:'
-                    )
-                ) {
-                    return thumbnail;
-                }
-
-
-                if (thumbnail) {
-
-                    const assetUrl =
-                        getTemplateAssetUrl(
-                            template,
-                            thumbnail
-                        );
-
-                    if (assetUrl) {
-                        return assetUrl;
-                    }
-
-                }
-
-
-                return getFallbackImage(
-                    template
-                );
+                templates = data;
 
             }
 
 
-            /* =====================================================
-               LOAD CATEGORIES
-            ===================================================== */
-
-            async function loadCategories() {
-
-                try {
-
-                    select.disabled = true;
-
-                    loadingMessage.classList.remove(
-                        'hidden'
-                    );
-
-                    errorMessage.classList.add(
-                        'hidden'
+            allTemplates =
+                templates
+                    .map(
+                        normalizeTemplate
+                    )
+                    .filter(Boolean)
+                    .filter(
+                        template =>
+                            cleanUrl(
+                                template.projectType
+                            ).toLowerCase()
+                            ===
+                            type.toLowerCase()
                     );
 
 
-                    select.innerHTML =
-                        '<option value="">جاري تحميل التصنيفات...</option>';
-
-
-                    const response =
-                        await fetch(
-                            API_BASE +
-                            '/api/templates/categories',
-                            {
-                                method: 'GET',
-
-                                headers: {
-                                    'Accept':
-                                        'application/json'
-                                },
-
-                                cache:
-                                    'no-store'
-                            }
-                        );
-
-
-                    if (!response.ok) {
-
-                        throw new Error(
-                            'Categories HTTP ' +
-                            response.status
-                        );
-
-                    }
-
-
-                    const data =
-                        await response.json();
-
-
-                    const categories =
-                        normalizeCategories(
-                            data
-                        )
-                            .map(
-                                normalizeCategory
-                            )
-                            .filter(Boolean);
-
-
-                    const unique =
-                        [];
-
-                    const seen =
-                        new Set();
-
-
-                    for (
-                        const category
-                        of categories
-                    ) {
-
-                        const key =
-                            category.id
-                                .toLowerCase();
-
-
-                        if (
-                            seen.has(key)
-                        ) {
-                            continue;
-                        }
-
-
-                        seen.add(key);
-
-                        unique.push(
-                            category
-                        );
-
-                    }
-
-
-                    if (
-                        unique.length === 0
-                    ) {
-
-                        throw new Error(
-                            'No categories'
-                        );
-
-                    }
-
-
-                    select.innerHTML =
-                        '';
-
-
-                    for (
-                        const category
-                        of unique
-                    ) {
-
-                        const option =
-                            document.createElement(
-                                'option'
-                            );
-
-
-                        option.value =
-                            category.id;
-
-
-                        option.textContent =
-                            getCategoryLabel(
-                                category
-                            );
-
-
-                        select.appendChild(
-                            option
-                        );
-
-                    }
-
-
-                    const ecommerce =
-                        unique.find(
-                            category =>
-                                category.id
-                                    .toLowerCase() ===
-                                'ecommerce'
-                        );
-
-
-                    select.value =
-                        ecommerce
-                            ? ecommerce.id
-                            : unique[0].id;
-
-
-                    select.disabled =
-                        false;
-
-
-                    loadingMessage.textContent =
-                        unique.length +
-                        ' تصنيف متوفر حالياً من TemplateCraft Pro.';
-
-
-                    /*
-                     * مهم:
-                     * نطلق change باش يتم تحميل
-                     * القوالب الخاصة بالـ category.
-                     */
-
-                    select.dispatchEvent(
-                        new Event(
-                            'change',
-                            {
-                                bubbles: true
-                            }
-                        )
-                    );
-
-
-                } catch (error) {
-
-                    console.error(
-                        '[TemplateCraft] Categories error:',
-                        error
-                    );
-
-
-                    select.disabled =
-                        true;
-
-
-                    select.innerHTML =
-                        '<option value="">تعذر تحميل أنواع المواقع</option>';
-
-
-                    loadingMessage.classList.add(
-                        'hidden'
-                    );
-
-
-                    errorMessage.classList.remove(
-                        'hidden'
-                    );
-
-
-                    renderTemplateError(
-                        'تعذر تحميل التصنيفات من السيرفر.'
-                    );
-
-                }
+            loadingMessage?.classList.add(
+                'hidden'
+            );
+
+
+            if (
+                allTemplates.length === 0
+            ) {
+
+                grid.innerHTML = `
+                    <div
+                        class="state-message"
+                        style="grid-column:1/-1;"
+                    >
+                        لا توجد قوالب متاحة حالياً
+                        داخل هذه الفئة.
+                    </div>
+                `;
+
+                return;
 
             }
 
 
-            /* =====================================================
-               LOAD TEMPLATES
-            ===================================================== */
+            renderTemplates();
 
-            async function loadTemplates(
-                projectType
-            ) {
+        } catch (error) {
 
-                if (!projectType) {
-
-                    renderTemplateEmpty(
-                        'اختار نوع الموقع أولاً.'
-                    );
-
-                    return;
-
-                }
+            console.error(
+                '[TemplateCraft] Failed to load templates:',
+                error
+            );
 
 
-                renderTemplateLoading();
+            allTemplates = [];
 
 
-                try {
-
-                    const response =
-                        await fetch(
-                            API_BASE +
-                            '/api/templates?projectType=' +
-                            encodeURIComponent(
-                                projectType
-                            ),
-                            {
-                                method: 'GET',
-
-                                headers: {
-                                    'Accept':
-                                        'application/json'
-                                },
-
-                                cache:
-                                    'no-store'
-                            }
-                        );
+            loadingMessage?.classList.add(
+                'hidden'
+            );
 
 
-                    if (!response.ok) {
-
-                        throw new Error(
-                            'Templates HTTP ' +
-                            response.status
-                        );
-
-                    }
+            errorMessage?.classList.remove(
+                'hidden'
+            );
 
 
-                    const data =
-                        await response.json();
+            if (errorMessage) {
+
+                errorMessage.textContent =
+                    'تعذر تحميل القوالب. المرجو المحاولة مرة أخرى.';
+
+            }
+
+        }
+
+    }
 
 
-                    let templates =
-                        extractTemplates(
-                            data
-                        )
-                            .map(
-                                normalizeTemplate
-                            )
-                            .filter(Boolean);
+    /* =====================================================
+       CREATE TEMPLATE CARD
+    ===================================================== */
+
+    function createTemplateCard(
+        template
+    ) {
+
+        const image =
+            getTemplateImage(template);
 
 
-                    /*
-                     * حماية إضافية:
-                     * إذا Backend رجع كل القوالب،
-                     * نعرض فقط category الحالية.
-                     */
-
-                    templates =
-                        templates.filter(
-                            template => {
-
-                                const type =
-                                    String(
-                                        template.projectType ||
-                                        template.category ||
-                                        ''
-                                    ).toLowerCase();
+        const isSelected =
+            selectedTemplate &&
+            selectedTemplate.id ===
+            template.id;
 
 
-                                return (
-                                    !type ||
-                                    type ===
-                                        String(
-                                            projectType
-                                        ).toLowerCase()
+        const features =
+            Array.isArray(
+                template.features
+            )
+                ? template.features
+                : [];
+
+
+        const featureHtml =
+            features
+                .slice(0, 5)
+                .map(
+                    feature =>
+                        `
+                        <span
+                            class="template-feature"
+                        >
+                            ${escapeHtml(feature)}
+                        </span>
+                        `
+                )
+                .join('');
+
+
+        const imageHtml =
+            image
+                ? `
+                    <img
+                        class="template-image"
+                        src="${escapeHtml(image)}"
+                        alt="${escapeHtml(template.name)}"
+                        loading="lazy"
+                        onerror="
+                            this.style.display='none';
+                            this.nextElementSibling
+                                .classList.remove('hidden');
+                        "
+                    >
+
+                    <div
+                        class="template-image-fallback hidden"
+                        style="
+                            position:absolute;
+                            inset:0;
+                            display:flex;
+                            align-items:center;
+                            justify-content:center;
+                            background:
+                                linear-gradient(
+                                    135deg,
+                                    #e2e8f0,
+                                    #f8fafc
                                 );
-
-                            }
-                        );
-
-
-                    allTemplates =
-                        templates;
-
-
-                    selectedTemplate =
-                        null;
-
-
-                    updateSelectedLabel();
-
-
-                    renderTemplates(
-                        templates
-                    );
-
-
-                } catch (error) {
-
-                    console.error(
-                        '[TemplateCraft] Templates error:',
-                        error
-                    );
-
-
-                    allTemplates =
-                        [];
-
-
-                    renderTemplateError(
-                        'تعذر تحميل قوالب هذا التصنيف.'
-                    );
-
-                }
-
-            }
-
-
-            /* =====================================================
-               RENDER LOADING
-            ===================================================== */
-
-            function renderTemplateLoading() {
-
-                grid.innerHTML = `
-
-                    <div class="template-loading">
-
-                        <div class="template-spinner"></div>
-
-                        <p class="text-sm text-gray-500 font-bold">
-
-                            جاري تحميل القوالب...
-
-                        </p>
-
-                        <p class="text-xs text-gray-400">
-
-                            يتم جلب القوالب والصور من TemplateCraft Pro
-
-                        </p>
-
+                            color:#64748b;
+                            font-size:13px;
+                            font-weight:800;
+                        "
+                    >
+                        ${escapeHtml(template.name)}
                     </div>
-
-                `;
-
-            }
-
-
-            /* =====================================================
-               RENDER EMPTY
-            ===================================================== */
-
-            function renderTemplateEmpty(
-                message
-            ) {
-
-                grid.innerHTML = `
-
-                    <div class="template-empty">
-
-                        <div class="text-5xl mb-4">
-
-                            🎨
-
-                        </div>
-
-                        <h3 class="font-extrabold text-gray-800">
-
-                            لا توجد قوالب حالياً
-
-                        </h3>
-
-                        <p class="text-sm text-gray-500 mt-2">
-
-                            ${escapeHtml(message)}
-
-                        </p>
-
+                `
+                : `
+                    <div
+                        style="
+                            position:absolute;
+                            inset:0;
+                            display:flex;
+                            align-items:center;
+                            justify-content:center;
+                            background:
+                                linear-gradient(
+                                    135deg,
+                                    #e2e8f0,
+                                    #f8fafc
+                                );
+                            color:#64748b;
+                            font-size:13px;
+                            font-weight:800;
+                        "
+                    >
+                        ${escapeHtml(template.name)}
                     </div>
-
                 `;
 
 
-                selectedLabel.textContent =
-                    '0 قالب';
+        return `
 
-            }
+            <article
+                class="
+                    template-card
+                    ${isSelected ? 'is-selected' : ''}
+                "
+                data-template-id="${escapeHtml(template.id)}"
+            >
+
+                <div
+                    class="template-image-wrapper"
+                >
+
+                    ${imageHtml}
+
+                    <div
+                        class="template-image-overlay"
+                    ></div>
 
 
-            /* =====================================================
-               RENDER ERROR
-            ===================================================== */
+                    <div
+                        class="template-badge"
+                    >
+                        ${escapeHtml(
+                            template.category ||
+                            template.projectType ||
+                            'Template'
+                        )}
+                    </div>
 
-            function renderTemplateError(
-                message
-            ) {
 
-                grid.innerHTML = `
+                    ${
+                        isSelected
+                            ? `
+                                <div
+                                    class="template-selected-badge"
+                                >
+                                    ✓ مختار
+                                </div>
+                            `
+                            : ''
+                    }
 
-                    <div class="template-error">
+                </div>
 
-                        <div class="text-4xl mb-3">
 
-                            ⚠️
+                <div
+                    class="template-card-body"
+                >
 
-                        </div>
+                    <h3
+                        class="template-title"
+                    >
+                        ${escapeHtml(
+                            template.name
+                        )}
+                    </h3>
 
-                        <h3 class="font-extrabold text-red-700">
 
-                            تعذر تحميل القوالب
+                    <p
+                        class="template-description"
+                    >
+                        ${escapeHtml(
+                            template.description
+                        )}
+                    </p>
 
-                        </h3>
 
-                        <p class="text-sm text-red-600 mt-2">
+                    ${
+                        featureHtml
+                            ? `
+                                <div
+                                    class="template-features"
+                                >
+                                    ${featureHtml}
+                                </div>
+                            `
+                            : ''
+                    }
 
-                            ${escapeHtml(message)}
 
-                        </p>
+                    <div
+                        class="template-actions"
+                    >
+
+                        <!--
+                            مهم:
+                            Preview ما بقاش button ديال modal.
+                            دابا كيفتح الـtemplate الحقيقي
+                            فـtab جديد عادي.
+                        -->
 
                         <button
                             type="button"
-                            id="retryTemplatesBtn"
-                            class="mt-5 bg-red-600 hover:bg-red-700 text-white px-5 py-2.5 rounded-xl font-bold text-sm">
+                            class="template-preview-btn"
+                            data-action="preview"
+                            data-template-id="${escapeHtml(template.id)}"
+                        >
+                            👁️ معاينة
+                        </button>
 
-                            إعادة المحاولة
 
+                        <button
+                            type="button"
+                            class="template-select-btn"
+                            data-action="select"
+                            data-template-id="${escapeHtml(template.id)}"
+                        >
+                            ${
+                                isSelected
+                                    ? '✓ القالب مختار'
+                                    : 'اختيار القالب'
+                            }
                         </button>
 
                     </div>
 
+                </div>
+
+            </article>
+
+        `;
+
+    }
+
+
+    /* =====================================================
+       RENDER TEMPLATES
+    ===================================================== */
+
+    function renderTemplates() {
+
+        if (!grid) {
+            return;
+        }
+
+
+        grid.innerHTML =
+            allTemplates
+                .map(
+                    createTemplateCard
+                )
+                .join('');
+
+    }
+
+
+    /* =====================================================
+       OPEN REAL PREVIEW PAGE
+       ما كاينش modal هنا
+    ===================================================== */
+
+    function openPreviewById(
+        templateId
+    ) {
+
+        const template =
+            allTemplates.find(
+                item =>
+                    item.id ===
+                    String(templateId)
+            );
+
+
+        if (!template) {
+
+            console.error(
+                '[TemplateCraft] Template not found:',
+                templateId
+            );
+
+            return;
+
+        }
+
+
+        const previewUrl =
+            getPreviewUrl(template);
+
+
+        if (!previewUrl) {
+
+            console.error(
+                '[TemplateCraft] Preview URL missing:',
+                template
+            );
+
+            return;
+
+        }
+
+
+        /*
+         * مهم:
+         *
+         * هذا ماشي Modal.
+         *
+         * كيفتح الـpreview الحقيقي
+         * فـbrowser tab جديد.
+         *
+         * الصفحة ديال create-project
+         * كتبقى محلولة.
+         */
+
+        window.open(
+            previewUrl,
+            '_blank',
+            'noopener,noreferrer'
+        );
+
+    }
+
+
+    /* =====================================================
+       SELECT TEMPLATE
+    ===================================================== */
+
+    function selectTemplateById(
+        templateId
+    ) {
+
+        const template =
+            allTemplates.find(
+                item =>
+                    item.id ===
+                    String(templateId)
+            );
+
+
+        if (!template) {
+            return;
+        }
+
+
+        selectedTemplate =
+            template;
+
+
+        if (selectedLabel) {
+
+            selectedLabel.innerHTML =
+                `
+                القالب المختار:
+                <strong>
+                    ${escapeHtml(template.name)}
+                </strong>
                 `;
 
+        }
 
-                const retryButton =
-                    document.getElementById(
-                        'retryTemplatesBtn'
+
+        renderTemplates();
+
+
+        window.dispatchEvent(
+            new CustomEvent(
+                'template:selected',
+                {
+                    detail: {
+                        templateId:
+                            template.id,
+
+                        projectType:
+                            template.projectType ||
+                            select?.value ||
+                            '',
+
+                        template:
+                            template
+                    }
+                }
+            )
+        );
+
+    }
+
+
+    /* =====================================================
+       GRID EVENTS
+    ===================================================== */
+
+    if (grid) {
+
+        grid.addEventListener(
+            'click',
+            function (event) {
+
+                const actionElement =
+                    event.target.closest(
+                        '[data-action]'
                     );
 
 
-                if (retryButton) {
-
-                    retryButton.addEventListener(
-                        'click',
-                        function () {
-
-                            loadTemplates(
-                                select.value
-                            );
-
-                        }
-                    );
-
+                if (!actionElement) {
+                    return;
                 }
 
-            }
+
+                const action =
+                    actionElement.dataset.action;
 
 
-            /* =====================================================
-               RENDER TEMPLATES
-            ===================================================== */
+                const templateId =
+                    actionElement.dataset.templateId;
 
-            function renderTemplates(
-                templates
-            ) {
+
+                if (!templateId) {
+                    return;
+                }
+
+
+                /* =========================================
+                   PREVIEW
+                   ========================================= */
 
                 if (
-                    !Array.isArray(
-                        templates
-                    ) ||
-                    templates.length === 0
+                    action ===
+                    'preview'
                 ) {
 
-                    renderTemplateEmpty(
-                        'مازال ما كاين حتى قالب داخل هذا التصنيف.'
+                    event.preventDefault();
+
+                    event.stopPropagation();
+
+                    openPreviewById(
+                        templateId
                     );
 
                     return;
@@ -2884,770 +2770,153 @@
                 }
 
 
-                selectedLabel.textContent =
-                    templates.length +
-                    (
-                        templates.length === 1
-                            ? ' قالب'
-                            : ' قوالب'
+                /* =========================================
+                   SELECT
+                   ========================================= */
+
+                if (
+                    action ===
+                    'select'
+                ) {
+
+                    event.preventDefault();
+
+                    event.stopPropagation();
+
+                    selectTemplateById(
+                        templateId
                     );
 
-
-                grid.innerHTML =
-                    templates
-                        .map(
-                            createTemplateCard
-                        )
-                        .join('');
-
-
-                bindTemplateCards();
+                }
 
             }
+        );
+
+    }
 
 
-            /* =====================================================
-               CREATE CARD
-            ===================================================== */
+    /* =====================================================
+       CATEGORY CHANGE
+    ===================================================== */
 
-            function createTemplateCard(
-                template
-            ) {
+    if (select) {
 
-                const image =
-                    getTemplateImage(
-                        template
-                    );
-
-
-                const preview =
-                    getPreviewUrl(
-                        template
-                    );
-
-
-                const features =
-                    Array.isArray(
-                        template.features
-                    )
-                        ? template.features
-                        : [];
-
+        select.addEventListener(
+            'change',
+            function () {
 
                 const projectType =
-                    template.projectType ||
-                    template.category ||
                     select.value;
 
 
-                const isSelected =
-                    selectedTemplate &&
-                    selectedTemplate.id ===
-                        template.id;
-
-
-                const featureHtml =
-                    features
-                        .slice(0, 5)
-                        .map(
-                            feature =>
-                                `
-                                <span class="template-feature">
-                                    ${escapeHtml(feature)}
-                                </span>
-                                `
-                        )
-                        .join('');
-
-
-                return `
-
-                    <article
-                        class="template-card ${
-                            isSelected
-                                ? 'selected'
-                                : ''
-                        }"
-                        data-template-id="${escapeHtml(template.id)}"
-                        data-project-type="${escapeHtml(projectType)}">
-
-                        <div class="template-image-wrapper">
-
-                            <img
-                                class="template-image"
-                                src="${escapeHtml(image)}"
-                                alt="${escapeHtml(template.name)}"
-                                loading="lazy"
-                                data-template-image="true">
-
-                            <div class="template-image-overlay"></div>
-
-                            <span class="template-badge">
-
-                                ${escapeHtml(
-                                    projectType
-                                )}
-
-                            </span>
-
-                            <span class="template-selected-badge">
-
-                                ✓ مختار
-
-                            </span>
-
-                        </div>
-
-
-                        <div class="template-card-body">
-
-                            <h3 class="template-title">
-
-                                ${escapeHtml(
-                                    template.name
-                                )}
-
-                            </h3>
-
-
-                            <p class="template-description">
-
-                                ${escapeHtml(
-                                    template.description
-                                )}
-
-                            </p>
-
-
-                            ${
-                                featureHtml
-                                    ? `
-                                        <div class="template-features">
-                                            ${featureHtml}
-                                        </div>
-                                      `
-                                    : ''
-                            }
-
-
-                            <div class="template-actions">
-
-                                <button
-                                    type="button"
-                                    class="template-preview-btn"
-                                    data-action="preview"
-                                    data-template-id="${escapeHtml(template.id)}">
-
-                                    👁️ معاينة
-
-                                </button>
-
-
-                                <button
-                                    type="button"
-                                    class="template-select-btn"
-                                    data-action="select"
-                                    data-template-id="${escapeHtml(template.id)}">
-
-                                    ${
-                                        isSelected
-                                            ? '✓ تم الاختيار'
-                                            : 'اختيار القالب'
-                                    }
-
-                                </button>
-
-                            </div>
-
-                        </div>
-
-                    </article>
-
-                `;
-
-            }
-
-
-            /* =====================================================
-               BIND CARD EVENTS
-            ===================================================== */
-
-            function bindTemplateCards() {
-
-                const cards =
-                    grid.querySelectorAll(
-                        '.template-card'
-                    );
-
-
-                cards.forEach(
-                    card => {
-
-                        const image =
-                            card.querySelector(
-                                '[data-template-image]'
-                            );
-
-
-                        if (image) {
-
-                            image.addEventListener(
-                                'error',
-                                function () {
-
-                                    const template =
-                                        allTemplates.find(
-                                            item =>
-                                                item.id ===
-                                                card.dataset.templateId
-                                        );
-
-
-                                    if (!template) {
-                                        return;
-                                    }
-
-
-                                    const fallback =
-                                        getFallbackImage(
-                                            template
-                                        );
-
-
-                                    if (
-                                        image.src !==
-                                        fallback
-                                    ) {
-
-                                        image.src =
-                                            fallback;
-
-                                    }
-
-                                },
-                                {
-                                    once: true
-                                }
-                            );
-
-                        }
-
-
-                        card.addEventListener(
-                            'click',
-                            function (event) {
-
-                                const actionButton =
-                                    event.target.closest(
-                                        '[data-action]'
-                                    );
-
-
-                                if (!actionButton) {
-
-                                    selectTemplateById(
-                                        card.dataset.templateId
-                                    );
-
-                                    return;
-
-                                }
-
-
-                                const action =
-                                    actionButton.dataset.action;
-
-
-                                const templateId =
-                                    actionButton.dataset.templateId;
-
-
-                                if (
-                                    action ===
-                                    'preview'
-                                ) {
-
-                                    event.preventDefault();
-
-                                    event.stopPropagation();
-
-                                    openPreviewById(
-                                        templateId
-                                    );
-
-                                    return;
-
-                                }
-
-
-                                if (
-                                    action ===
-                                    'select'
-                                ) {
-
-                                    event.preventDefault();
-
-                                    event.stopPropagation();
-
-                                    selectTemplateById(
-                                        templateId
-                                    );
-
-                                }
-
-                            }
-                        );
-
-                    }
-                );
-
-            }
-
-
-            /* =====================================================
-               SELECT TEMPLATE
-            ===================================================== */
-
-            function selectTemplateById(
-                templateId
-            ) {
-
-                const template =
-                    allTemplates.find(
-                        item =>
-                            item.id ===
-                            String(templateId)
-                    );
-
-
-                if (!template) {
-                    return;
-                }
-
-
                 selectedTemplate =
-                    template;
+                    null;
 
 
-                updateSelectedLabel();
-
-
-                renderTemplates(
-                    allTemplates
-                );
-
-
-                /*
-                 * نحافظ على النظام الخارجي
-                 * create-project-templates.js
-                 */
-
-                window.dispatchEvent(
-                    new CustomEvent(
-                        'template:selected',
-                        {
-                            detail: {
-                                templateId:
-                                    template.id,
-
-                                projectType:
-                                    template.projectType ||
-                                    select.value,
-
-                                template:
-                                    template
-                            }
-                        }
-                    )
-                );
-
-            }
-
-
-            /* =====================================================
-               SELECTED LABEL
-            ===================================================== */
-
-            function updateSelectedLabel() {
-
-                if (
-                    selectedTemplate
-                ) {
+                if (selectedLabel) {
 
                     selectedLabel.textContent =
-                        '✓ ' +
-                        selectedTemplate.name;
-
-                    selectedLabel.className =
-                        'text-xs text-green-700 bg-green-50 px-3 py-2 rounded-lg font-bold';
-
-                    return;
+                        'لم يتم اختيار أي قالب بعد.';
 
                 }
 
 
-                selectedLabel.textContent =
-                    allTemplates.length +
-                    ' قوالب متوفرة';
-
-                selectedLabel.className =
-                    'text-xs text-purple-700 bg-purple-50 px-3 py-2 rounded-lg font-bold';
+                loadTemplates(
+                    projectType
+                );
 
             }
+        );
+
+    }
 
 
-            /* =====================================================
-               OPEN PREVIEW
-            ===================================================== */
+    /* =====================================================
+       PUBLIC API
+    ===================================================== */
 
-            function openPreviewById(
+    window.TemplateCraftCreatePage = {
+
+        getTemplates:
+            function () {
+
+                return [
+                    ...allTemplates
+                ];
+
+            },
+
+
+        getSelectedTemplate:
+            function () {
+
+                return selectedTemplate;
+
+            },
+
+
+        selectTemplate:
+            function (
                 templateId
             ) {
 
-                const template =
-                    allTemplates.find(
-                        item =>
-                            item.id ===
-                            String(templateId)
-                    );
-
-
-                if (!template) {
-                    return;
-                }
-
-
-                previewTemplate =
-                    template;
-
-
-                const previewUrl =
-                    getPreviewUrl(
-                        template
-                    );
-
-
-                if (!previewUrl) {
-
-                    previewError.classList.remove(
-                        'hidden'
-                    );
-
-                    previewLoading.classList.add(
-                        'hidden'
-                    );
-
-                    previewFrame.classList.add(
-                        'hidden'
-                    );
-
-                    return;
-
-                }
-
-
-                previewTitle.textContent =
-                    'معاينة: ' +
-                    template.name;
-
-
-                previewLoading.classList.remove(
-                    'hidden'
+                selectTemplateById(
+                    templateId
                 );
 
+            },
 
-                previewError.classList.add(
-                    'hidden'
+
+        getPreviewUrl:
+            function (
+                template
+            ) {
+
+                return getPreviewUrl(
+                    template
                 );
 
+            },
 
-                previewFrame.classList.add(
-                    'hidden'
+
+        getTemplateAssetUrl:
+            function (
+                template,
+                assetPath
+            ) {
+
+                return getTemplateAssetUrl(
+                    template,
+                    assetPath
                 );
 
-
-                previewFrame.src =
-                    previewUrl;
+            },
 
 
-                previewModal.classList.add(
-                    'show'
-                );
+        openPreview:
+            function (
+                templateId
+            ) {
 
-
-                document.body.classList.add(
-                    'overflow-hidden'
+                openPreviewById(
+                    templateId
                 );
 
             }
 
+    };
 
-            /* =====================================================
-               CLOSE PREVIEW
-            ===================================================== */
 
-            function closePreview() {
+    /* =====================================================
+       INIT
+    ===================================================== */
 
-                previewModal.classList.remove(
-                    'show'
-                );
+    loadCategories();
 
 
-                document.body.classList.remove(
-                    'overflow-hidden'
-                );
+})();
 
-
-                setTimeout(
-                    function () {
-
-                        previewFrame.src =
-                            'about:blank';
-
-                    },
-                    200
-                );
-
-            }
-
-
-            /* =====================================================
-               PREVIEW LOADED
-            ===================================================== */
-
-            previewFrame.addEventListener(
-                'load',
-                function () {
-
-                    previewLoading.classList.add(
-                        'hidden'
-                    );
-
-
-                    previewError.classList.add(
-                        'hidden'
-                    );
-
-
-                    previewFrame.classList.remove(
-                        'hidden'
-                    );
-
-                }
-            );
-
-
-            /* =====================================================
-               PREVIEW ERROR
-            ===================================================== */
-
-            previewFrame.addEventListener(
-                'error',
-                function () {
-
-                    previewLoading.classList.add(
-                        'hidden'
-                    );
-
-
-                    previewFrame.classList.add(
-                        'hidden'
-                    );
-
-
-                    previewError.classList.remove(
-                        'hidden'
-                    );
-
-                }
-            );
-
-
-            /* =====================================================
-               CHOOSE FROM PREVIEW
-            ===================================================== */
-
-            if (choosePreviewBtn) {
-
-                choosePreviewBtn.addEventListener(
-                    'click',
-                    function () {
-
-                        if (
-                            previewTemplate
-                        ) {
-
-                            selectTemplateById(
-                                previewTemplate.id
-                            );
-
-                        }
-
-
-                        closePreview();
-
-                    }
-                );
-
-            }
-
-
-            /* =====================================================
-               CLOSE BUTTON
-            ===================================================== */
-
-            if (closePreviewBtn) {
-
-                closePreviewBtn.addEventListener(
-                    'click',
-                    closePreview
-                );
-
-            }
-
-
-            /* =====================================================
-               CLICK OUTSIDE MODAL
-            ===================================================== */
-
-            if (previewModal) {
-
-                previewModal.addEventListener(
-                    'click',
-                    function (event) {
-
-                        if (
-                            event.target ===
-                            previewModal
-                        ) {
-
-                            closePreview();
-
-                        }
-
-                    }
-                );
-
-            }
-
-
-            /* =====================================================
-               ESCAPE
-            ===================================================== */
-
-            document.addEventListener(
-                'keydown',
-                function (event) {
-
-                    if (
-                        event.key ===
-                        'Escape'
-                    ) {
-
-                        if (
-                            previewModal &&
-                            previewModal.classList.contains(
-                                'show'
-                            )
-                        ) {
-
-                            closePreview();
-
-                        }
-
-                    }
-
-                }
-            );
-
-
-            /* =====================================================
-               CATEGORY CHANGE
-            ===================================================== */
-
-            select.addEventListener(
-                'change',
-                function () {
-
-                    const projectType =
-                        String(
-                            select.value ||
-                            ''
-                        ).trim();
-
-
-                    selectedTemplate =
-                        null;
-
-
-                    updateSelectedLabel();
-
-
-                    if (!projectType) {
-
-                        renderTemplateEmpty(
-                            'اختار نوع الموقع.'
-                        );
-
-                        return;
-
-                    }
-
-
-                    loadTemplates(
-                        projectType
-                    );
-
-                }
-            );
-
-
-            /* =====================================================
-               EXPOSE API FOR OTHER SCRIPTS
-            ===================================================== */
-
-            window.TemplateCraftCreatePage = {
-
-                getTemplates:
-                    function () {
-                        return [
-                            ...allTemplates
-                        ];
-                    },
-
-                getSelectedTemplate:
-                    function () {
-                        return selectedTemplate;
-                    },
-
-                selectTemplate:
-                    function (templateId) {
-                        selectTemplateById(
-                            templateId
-                        );
-                    },
-
-                getPreviewUrl:
-                    getPreviewUrl,
-
-                getTemplateAssetUrl:
-                    getTemplateAssetUrl
-
-            };
-
-
-            /* =====================================================
-               START
-            ===================================================== */
-
-            loadCategories();
-
-
-        })();
-
-    </script>
-
+</script>
 
 </body>
-
     </html>
