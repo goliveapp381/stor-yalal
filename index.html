@@ -3,189 +3,1452 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>TemplateCraft Pro | منصة القوالب التجارية</title>
+
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap"
+    rel="stylesheet"
+  >
+
   <style>
-    body { font-family: 'Cairo', sans-serif; }
+    body {
+      font-family: 'Cairo', sans-serif;
+    }
 
     .animated-mesh-bg {
-      background: linear-gradient(-45deg, #0f172a, #2e1065, #4c1d95, #3b0764);
+      background: linear-gradient(
+        -45deg,
+        #0f172a,
+        #2e1065,
+        #4c1d95,
+        #3b0764
+      );
+
       background-size: 400% 400%;
-      animation: waveGradient 12s ease infinite;
+
+      animation:
+        waveGradient 12s ease infinite;
+
       position: relative;
     }
 
     .animated-mesh-bg::before {
       content: "";
+
       position: absolute;
+
       inset: 0;
-      background-image: 
-        radial-gradient(at 15% 20%, rgba(168, 85, 247, 0.45) 0px, transparent 50%),
-        radial-gradient(at 85% 80%, rgba(192, 132, 252, 0.35) 0px, transparent 50%),
-        linear-gradient(to right, rgba(255, 255, 255, 0.06) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
-      background-size: 100% 100%, 100% 100%, 40px 40px, 40px 40px;
+
+      background-image:
+        radial-gradient(
+          at 15% 20%,
+          rgba(168, 85, 247, 0.45) 0px,
+          transparent 50%
+        ),
+        radial-gradient(
+          at 85% 80%,
+          rgba(192, 132, 252, 0.35) 0px,
+          transparent 50%
+        ),
+        linear-gradient(
+          to right,
+          rgba(255, 255, 255, 0.06) 1px,
+          transparent 1px
+        ),
+        linear-gradient(
+          to bottom,
+          rgba(255, 255, 255, 0.06) 1px,
+          transparent 1px
+        );
+
+      background-size:
+        100% 100%,
+        100% 100%,
+        40px 40px,
+        40px 40px;
+
       pointer-events: none;
     }
 
     @keyframes waveGradient {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
+
+      0% {
+        background-position: 0% 50%;
+      }
+
+      50% {
+        background-position: 100% 50%;
+      }
+
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+
+    .template-card {
+      transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease;
+    }
+
+    .template-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .template-image {
+      transition: transform 0.4s ease;
+    }
+
+    .template-card:hover .template-image {
+      transform: scale(1.04);
     }
   </style>
 </head>
+
 <body class="bg-gray-50 text-gray-800">
 
-  <!-- Header -->
-  <header class="bg-white/90 backdrop-blur-md shadow-sm border-b sticky top-0 z-50">
-    <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
-      <div class="flex items-center space-x-4 space-x-reverse">
-        <h1 class="text-2xl font-bold text-purple-600">TemplateCraft Pro</h1>
-        <span class="text-sm bg-purple-50 text-purple-700 px-3 py-1 rounded-full font-semibold hidden md:inline-block">منصة القوالب الرقمية</span>
+  <!-- ========================================= -->
+  <!-- HEADER -->
+  <!-- ========================================= -->
+
+  <header
+    class="bg-white/90 backdrop-blur-md shadow-sm border-b sticky top-0 z-50"
+  >
+
+    <div
+      class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center"
+    >
+
+      <div
+        class="flex items-center space-x-4 space-x-reverse"
+      >
+
+        <h1 class="text-2xl font-bold text-purple-600">
+          TemplateCraft Pro
+        </h1>
+
+        <span
+          class="text-sm bg-purple-50 text-purple-700 px-3 py-1 rounded-full font-semibold hidden md:inline-block"
+        >
+          منصة القوالب الرقمية
+        </span>
+
       </div>
-      
-      <!-- منطقة الحساب وزر تسجيل الدخول -->
-      <div id="auth-section" class="flex items-center space-x-3 space-x-reverse">
-        <a href="login.html" class="bg-purple-600 hover:bg-purple-700 text-white px-5 py-2 rounded-xl text-sm font-bold shadow transition flex items-center gap-2">
+
+      <!-- منطقة الحساب -->
+
+      <div
+        id="auth-section"
+        class="flex items-center space-x-3 space-x-reverse"
+      >
+
+        <a
+          href="login.html"
+          class="bg-purple-600 hover:bg-purple-700 text-white px-5 py-2 rounded-xl text-sm font-bold shadow transition flex items-center gap-2"
+        >
           تسجيل الدخول / حساب جديد
         </a>
+
       </div>
+
     </div>
+
   </header>
 
-  <!-- Animated Wave Hero Section -->
-  <section class="animated-mesh-bg text-white py-24 text-center relative overflow-hidden">
-    <div class="max-w-4xl mx-auto px-4 relative z-10">
-      <span class="bg-purple-500/30 text-purple-200 border border-purple-400/30 text-xs font-bold px-3 py-1.5 rounded-full uppercase tracking-wider mb-4 inline-block">مُصممة للمحترفين</span>
-      <h2 class="text-4xl md:text-5xl font-bold mb-4 leading-tight">اكتشف أفضل القوالب التجارية الجاهزة</h2>
-      <p class="text-purple-100 text-lg mb-8 max-w-2xl mx-auto">قوالب احترافية متجاوبة، مستقلة، ومصممة خصيصاً لتطوير مشاريعك الرقمية بكفاءة عالية.</p>
+
+  <!-- ========================================= -->
+  <!-- HERO -->
+  <!-- ========================================= -->
+
+  <section
+    class="animated-mesh-bg text-white py-24 text-center relative overflow-hidden"
+  >
+
+    <div
+      class="max-w-4xl mx-auto px-4 relative z-10"
+    >
+
+      <span
+        class="bg-purple-500/30 text-purple-200 border border-purple-400/30 text-xs font-bold px-3 py-1.5 rounded-full uppercase tracking-wider mb-4 inline-block"
+      >
+        مُصممة للمحترفين
+      </span>
+
+      <h2
+        class="text-4xl md:text-5xl font-bold mb-4 leading-tight"
+      >
+        اكتشف أفضل القوالب التجارية الجاهزة
+      </h2>
+
+      <p
+        class="text-purple-100 text-lg mb-8 max-w-2xl mx-auto"
+      >
+        قوالب احترافية متجاوبة، مستقلة، ومصممة خصيصاً لتطوير مشاريعك الرقمية بكفاءة عالية.
+      </p>
+
     </div>
+
   </section>
 
-  <!-- Horizontal Categories Bar -->
-  <nav class="bg-white border-b shadow-xs py-4 overflow-x-auto">
-    <div class="max-w-7xl mx-auto px-4 flex justify-between items-center min-w-max">
-      
-      <!-- الأصناف في اليمين -->
-      <div class="flex space-x-4 space-x-reverse">
-        <a href="index.html" class="bg-purple-600 text-white px-5 py-2 rounded-full text-sm font-bold shadow transition">الكل</a>
-        <a href="templates/ecommerce/index.html" class="bg-gray-100 text-gray-700 hover:bg-purple-50 hover:text-purple-600 px-5 py-2 rounded-full text-sm font-semibold transition">متاجر إلكترونية</a>
-        <a href="templates/corporate/index.html" class="bg-gray-100 text-gray-700 hover:bg-purple-50 hover:text-purple-600 px-5 py-2 rounded-full text-sm font-semibold transition">شركات وخدمات</a>
-        <a href="templates/restaurant-demo/index.html" class="bg-gray-100 text-gray-700 hover:bg-purple-50 hover:text-purple-600 px-5 py-2 rounded-full text-sm font-semibold transition">مطاعم وضيافة</a>
-        <a href="templates/real-estate/index.html" class="bg-gray-100 text-gray-700 hover:bg-purple-50 hover:text-purple-600 px-5 py-2 rounded-full text-sm font-semibold transition">عقارات</a>
-        <a href="templates/blogs/index.html" class="bg-gray-100 text-gray-700 hover:bg-purple-50 hover:text-purple-600 px-5 py-2 rounded-full text-sm font-semibold transition">مدونات شخصية</a>
+
+  <!-- ========================================= -->
+  <!-- CATEGORIES -->
+  <!-- ========================================= -->
+
+  <nav
+    class="bg-white border-b shadow-sm py-4 overflow-x-auto"
+  >
+
+    <div
+      class="max-w-7xl mx-auto px-4 flex justify-between items-center min-w-max"
+    >
+
+      <!-- التصنيفات القادمة من Backend -->
+
+      <div
+        id="categories-container"
+        class="flex space-x-4 space-x-reverse"
+      >
+
+        <button
+          type="button"
+          data-category="all"
+          class="category-button bg-purple-600 text-white px-5 py-2 rounded-full text-sm font-bold shadow transition"
+        >
+          الكل
+        </button>
+
       </div>
 
-      <!-- زر إنشاء مشروع بخلفية متدرجة (بنفسجي وأزرق)، ظل قوي، وكتابة خضراء في أقصى اليسار -->
-      <div id="create-project-btn-container" class="hidden">
-        <a href="create-project.html" class="bg-gradient-to-r from-purple-700 via-indigo-600 to-blue-600 hover:from-purple-800 hover:to-blue-700 text-emerald-400 px-6 py-3 rounded-2xl text-base font-bold shadow-xl shadow-purple-900/30 transition flex items-center gap-2 border border-purple-400/20">
+
+      <!-- إنشاء مشروع -->
+
+      <div
+        id="create-project-btn-container"
+        class="hidden mr-6"
+      >
+
+        <a
+          href="create-project.html"
+          class="bg-gradient-to-r from-purple-700 via-indigo-600 to-blue-600 hover:from-purple-800 hover:to-blue-700 text-emerald-400 px-6 py-3 rounded-2xl text-base font-bold shadow-xl shadow-purple-900/30 transition flex items-center gap-2 border border-purple-400/20"
+        >
+
           <span>⚡</span>
-          <span>إنشاء مشروع جديد</span>
+
+          <span>
+            إنشاء مشروع جديد
+          </span>
+
         </a>
+
       </div>
 
     </div>
+
   </nav>
 
-  <!-- Latest Releases Section -->
-  <main class="max-w-7xl mx-auto px-4 py-12">
-    <div class="flex justify-between items-center mb-8">
-      <h3 class="text-2xl font-bold text-gray-900 border-r-4 border-purple-600 pr-3">أحدث الإصدارات والقوالب</h3>
-      <span class="text-sm text-gray-500">عرض جميع القوالب المتاحة</span>
-    </div>
-    
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-      
-      <!-- Card 1: Store -->
-      <div class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100 flex flex-col justify-between">
-        <div>
-          <img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=600" alt="متجر" class="w-full h-48 object-cover">
-          <div class="p-5">
-            <span class="text-xs bg-blue-50 text-blue-600 font-bold px-2.5 py-1 rounded">متجر إلكتروني</span>
-            <h4 class="text-xl font-bold mt-2 text-gray-800">قالب متجر ملابس عصري</h4>
-            <p class="text-gray-500 text-sm mt-2">قالب متكامل لعرض المنتجات مع سلة شراء وتصميم عصري متجاوب.</p>
-          </div>
-        </div>
-        <div class="p-5 pt-0 flex justify-between items-center border-t border-gray-50 mt-4">
-          <span class="font-bold text-purple-600 text-lg">مجاني</span>
-          <a href="./templates/store-demo/index.html" target="_blank" class="bg-purple-600 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-purple-700 transition">معاينة القالب</a>
-        </div>
-      </div>
 
-      <!-- Card 2: Company -->
-      <div class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100 flex flex-col justify-between">
-        <div>
-          <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=600" alt="شركة" class="w-full h-48 object-cover">
-          <div class="p-5">
-            <span class="text-xs bg-green-50 text-green-600 font-bold px-2.5 py-1 rounded">شركات وخدمات</span>
-            <h4 class="text-xl font-bold mt-2 text-gray-800">قالب شركة استشارات</h4>
-            <p class="text-gray-500 text-sm mt-2">تصميم احترافي للتعريف بالخدمات، الأعمال، وفريق العمل بأسلوب راقي.</p>
-          </div>
-        </div>
-        <div class="p-5 pt-0 flex justify-between items-center border-t border-gray-50 mt-4">
-          <span class="font-bold text-purple-600 text-lg">مجاني</span>
-          <a href="./templates/company-demo/index.html" target="_blank" class="bg-purple-600 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-purple-700 transition">معاينة القالب</a>
-        </div>
-      </div>
+  <!-- ========================================= -->
+  <!-- TEMPLATES -->
+  <!-- ========================================= -->
 
-      <!-- Card 3: Restaurant -->
-      <div class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100 flex flex-col justify-between">
-        <div>
-          <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=600" alt="مطعم" class="w-full h-48 object-cover">
-          <div class="p-5">
-            <span class="text-xs bg-orange-50 text-orange-600 font-bold px-2.5 py-1 rounded">مطاعم وضيافة</span>
-            <h4 class="text-xl font-bold mt-2 text-gray-800">قالب مطعم ومقاهي</h4>
-            <p class="text-gray-500 text-sm mt-2">قالب يعرض قائمة الطعام، الحجوزات، وأوقات العمل بشكل جذاب ورائع.</p>
-          </div>
-        </div>
-        <div class="p-5 pt-0 flex justify-between items-center border-t border-gray-50 mt-4">
-          <span class="font-bold text-purple-600 text-lg">مجاني</span>
-          <a href="./templates/restaurant-demo/index.html" target="_blank" class="bg-purple-600 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-purple-700 transition">معاينة القالب</a>
-        </div>
-      </div>
+  <main
+    class="max-w-7xl mx-auto px-4 py-12"
+  >
+
+    <div
+      class="flex justify-between items-center mb-8"
+    >
+
+      <h3
+        class="text-2xl font-bold text-gray-900 border-r-4 border-purple-600 pr-3"
+      >
+        أحدث الإصدارات والقوالب
+      </h3>
+
+      <span
+        id="templates-count"
+        class="text-sm text-gray-500"
+      >
+        جاري تحميل القوالب...
+      </span>
 
     </div>
+
+
+    <!-- Loading -->
+
+    <div
+      id="templates-loading"
+      class="text-center py-16"
+    >
+
+      <div
+        class="inline-block w-10 h-10 border-4 border-purple-200 border-t-purple-600 rounded-full animate-spin"
+      ></div>
+
+      <p class="mt-4 text-gray-500">
+        جاري تحميل القوالب من المنصة...
+      </p>
+
+    </div>
+
+
+    <!-- Error -->
+
+    <div
+      id="templates-error"
+      class="hidden text-center py-16"
+    >
+
+      <div
+        class="bg-red-50 border border-red-100 rounded-2xl p-8 max-w-xl mx-auto"
+      >
+
+        <div class="text-4xl mb-4">
+          ⚠️
+        </div>
+
+        <h4
+          class="text-xl font-bold text-red-700 mb-2"
+        >
+          تعذر تحميل القوالب
+        </h4>
+
+        <p
+          id="templates-error-message"
+          class="text-red-600 text-sm mb-5"
+        >
+          حدث خطأ أثناء الاتصال بالخادم.
+        </p>
+
+        <button
+          id="retry-templates"
+          type="button"
+          class="bg-red-600 hover:bg-red-700 text-white px-5 py-2 rounded-xl font-bold transition"
+        >
+          إعادة المحاولة
+        </button>
+
+      </div>
+
+    </div>
+
+
+    <!-- Empty -->
+
+    <div
+      id="templates-empty"
+      class="hidden text-center py-16"
+    >
+
+      <div class="text-5xl mb-4">
+        📦
+      </div>
+
+      <h4
+        class="text-xl font-bold text-gray-700"
+      >
+        لا توجد قوالب حالياً
+      </h4>
+
+      <p class="text-gray-500 mt-2">
+        سيتم إضافة قوالب جديدة قريباً.
+      </p>
+
+    </div>
+
+
+    <!-- Dynamic templates -->
+
+    <div
+      id="templates-grid"
+      class="hidden grid grid-cols-1 md:grid-cols-3 gap-8"
+    ></div>
+
   </main>
 
-  <footer class="bg-white border-t py-6 text-center text-gray-500 text-sm mt-12">
+
+  <!-- ========================================= -->
+  <!-- FOOTER -->
+  <!-- ========================================= -->
+
+  <footer
+    class="bg-white border-t py-6 text-center text-gray-500 text-sm mt-12"
+  >
+
     جميع الحقوق محفوظة © 2026 - منصة TemplateCraft Pro
+
   </footer>
 
-  <!-- استدعاء ملف الإنديكس المركزي -->
-  <script src="./client-api.js"></script>
-  <script>
-    window.addEventListener('DOMContentLoaded', () => {
-      const storedUser = localStorage.getItem('user');
-      const authSection = document.getElementById('auth-section');
-      const createProjectBtnContainer = document.getElementById('create-project-btn-container');
 
-      if (storedUser) {
-        const user = JSON.parse(storedUser);
-        
-        if (createProjectBtnContainer) {
-          createProjectBtnContainer.classList.remove('hidden');
+  <!-- ========================================= -->
+  <!-- CLIENT API -->
+  <!-- ========================================= -->
+
+  <script src="./client-api.js"></script>
+
+
+  <!-- ========================================= -->
+  <!-- BACKEND TEMPLATE SYSTEM -->
+  <!-- ========================================= -->
+
+  <script>
+
+    /*
+    =================================================
+    TEMPLATECRAFT PRO
+    FRONTEND TEMPLATE LOADER
+
+    القوالب لا تأتي من:
+
+        ./templates/
+
+    وإنما من:
+
+        Backend API
+
+        /api/templates
+
+    =================================================
+    */
+
+
+    let allTemplates = [];
+
+    let activeCategory = 'all';
+
+
+    // =============================================
+    // DOM
+    // =============================================
+
+    const templatesGrid =
+      document.getElementById(
+        'templates-grid'
+      );
+
+    const templatesLoading =
+      document.getElementById(
+        'templates-loading'
+      );
+
+    const templatesError =
+      document.getElementById(
+        'templates-error'
+      );
+
+    const templatesErrorMessage =
+      document.getElementById(
+        'templates-error-message'
+      );
+
+    const templatesEmpty =
+      document.getElementById(
+        'templates-empty'
+      );
+
+    const templatesCount =
+      document.getElementById(
+        'templates-count'
+      );
+
+    const categoriesContainer =
+      document.getElementById(
+        'categories-container'
+      );
+
+    const retryButton =
+      document.getElementById(
+        'retry-templates'
+      );
+
+
+    // =============================================
+    // IMAGE FALLBACK
+    // =============================================
+
+    const fallbackImages = {
+
+      ecommerce:
+        'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800',
+
+      corporate:
+        'https://images.unsplash.com/photo-1497366216548-37526070297c?w=800',
+
+      restaurant:
+        'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800',
+
+      'restaurant-demo':
+        'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800',
+
+      'real-estate':
+        'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800',
+
+      blogs:
+        'https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=800',
+
+      default:
+        'https://images.unsplash.com/photo-1497366754035-f200968a6e72?w=800'
+    };
+
+
+    function getTemplateImage(
+      template
+    ) {
+
+      if (
+        template &&
+        template.thumbnail
+      ) {
+
+        return template.thumbnail;
+      }
+
+      const type =
+        String(
+          template?.projectType ||
+          ''
+        )
+          .trim()
+          .toLowerCase();
+
+      return (
+        fallbackImages[type] ||
+        fallbackImages.default
+      );
+    }
+
+
+    // =============================================
+    // CATEGORY LABEL
+    // =============================================
+
+    function getCategoryLabel(
+      category
+    ) {
+
+      const labels = {
+
+        ecommerce:
+          'متاجر إلكترونية',
+
+        corporate:
+          'شركات وخدمات',
+
+        'restaurant-demo':
+          'مطاعم وضيافة',
+
+        restaurant:
+          'مطاعم وضيافة',
+
+        'real-estate':
+          'عقارات',
+
+        blogs:
+          'مدونات شخصية',
+
+        'company-demo':
+          'شركات وخدمات',
+
+        'store-demo':
+          'متاجر إلكترونية'
+      };
+
+      return (
+        labels[category] ||
+        category ||
+        'قالب'
+      );
+    }
+
+
+    // =============================================
+    // ESCAPE HTML
+    // =============================================
+
+    function escapeHtml(
+      value
+    ) {
+
+      return String(
+        value ?? ''
+      )
+        .replace(
+          /&/g,
+          '&amp;'
+        )
+        .replace(
+          /</g,
+          '&lt;'
+        )
+        .replace(
+          />/g,
+          '&gt;'
+        )
+        .replace(
+          /"/g,
+          '&quot;'
+        )
+        .replace(
+          /'/g,
+          '&#039;'
+        );
+    }
+
+
+    // =============================================
+    // TEMPLATE PREVIEW URL
+    // =============================================
+
+    function getPreviewUrl(
+      template
+    ) {
+
+      if (
+        template?.previewUrl
+      ) {
+
+        const base =
+          window.TEMPLATECRAFT_API_BASE_URL ||
+          'https://templatecraft-backend.onrender.com';
+
+        return (
+          base.replace(/\/+$/, '') +
+          template.previewUrl
+        );
+      }
+
+
+      const base =
+        window.TEMPLATECRAFT_API_BASE_URL ||
+        'https://templatecraft-backend.onrender.com';
+
+
+      return (
+        base.replace(/\/+$/, '') +
+        '/api/templates/' +
+        encodeURIComponent(
+          template.projectType
+        ) +
+        '/' +
+        encodeURIComponent(
+          template.id
+        ) +
+        '/preview'
+      );
+    }
+
+
+    // =============================================
+    // LOAD TEMPLATES
+    // =============================================
+
+    async function loadTemplates() {
+
+      showLoading();
+
+
+      try {
+
+        let response;
+
+
+        /*
+        =============================================
+        الأفضل: استعمال client-api.js
+        =============================================
+        */
+
+        if (
+          window.templateCraftAPI &&
+          typeof window.templateCraftAPI.getTemplates ===
+            'function'
+        ) {
+
+          response =
+            await window.templateCraftAPI.getTemplates();
+
         }
 
-        authSection.innerHTML = `
-          <div class="flex items-center gap-3">
-            <a href="profile.html" class="flex items-center gap-2 text-sm font-bold text-purple-700 bg-purple-50 hover:bg-purple-100 px-4 py-2 rounded-xl border border-purple-100 transition shadow-xs">
-              <span>👤</span>
-              <span>${user.username}</span>
-            </a>
-            <button onclick="logout()" class="bg-red-50 hover:bg-red-100 text-red-600 px-3 py-2 rounded-xl text-sm font-bold transition">
-              خروج
-            </button>
-          </div>
-        `;
+        /*
+        =============================================
+        fallback مباشر للـBackend
+        =============================================
+        */
+
+        else {
+
+          const base =
+            window.TEMPLATECRAFT_API_BASE_URL ||
+            'https://templatecraft-backend.onrender.com';
+
+          const request =
+            await fetch(
+              base.replace(/\/+$/, '') +
+              '/api/templates',
+              {
+                method: 'GET',
+
+                headers: {
+                  'Accept':
+                    'application/json'
+                }
+              }
+            );
+
+
+          if (!request.ok) {
+
+            throw new Error(
+              `HTTP ${request.status}`
+            );
+          }
+
+
+          response =
+            await request.json();
+        }
+
+
+        if (
+          !response ||
+          response.success !== true
+        ) {
+
+          throw new Error(
+            response?.error ||
+            'استجابة غير صالحة من Backend'
+          );
+        }
+
+
+        allTemplates =
+          Array.isArray(
+            response.templates
+          )
+            ? response.templates
+            : [];
+
+
+        /*
+        =============================================
+        بناء التصنيفات من Backend
+        =============================================
+        */
+
+        const categories =
+          Array.isArray(
+            response.categories
+          )
+            ? response.categories
+            : [];
+
+
+        renderCategories(
+          categories
+        );
+
+
+        /*
+        =============================================
+        عرض القوالب
+        =============================================
+        */
+
+        renderTemplates();
+
+
+      } catch (error) {
+
+        console.error(
+          'Template loading error:',
+          error
+        );
+
+
+        showError(
+          error?.message ||
+          'تعذر الاتصال بالخادم'
+        );
       }
-    });
+
+    }
+
+
+    // =============================================
+    // RENDER CATEGORIES
+    // =============================================
+
+    function renderCategories(
+      categories
+    ) {
+
+      categoriesContainer.innerHTML = '';
+
+
+      // الكل
+
+      const allButton =
+        document.createElement(
+          'button'
+        );
+
+      allButton.type = 'button';
+
+      allButton.dataset.category =
+        'all';
+
+      allButton.className =
+        'category-button bg-purple-600 text-white px-5 py-2 rounded-full text-sm font-bold shadow transition';
+
+      allButton.textContent =
+        'الكل';
+
+
+      allButton.addEventListener(
+        'click',
+        () => {
+
+          activeCategory =
+            'all';
+
+          updateCategoryButtons();
+
+          renderTemplates();
+
+        }
+      );
+
+
+      categoriesContainer.appendChild(
+        allButton
+      );
+
+
+      /*
+      =============================================
+      التصنيفات القادمة من Backend
+      =============================================
+      */
+
+      categories.forEach(
+        category => {
+
+          if (!category) {
+            return;
+          }
+
+
+          const button =
+            document.createElement(
+              'button'
+            );
+
+          button.type = 'button';
+
+          button.dataset.category =
+            category;
+
+
+          button.className =
+            'category-button bg-gray-100 text-gray-700 hover:bg-purple-50 hover:text-purple-600 px-5 py-2 rounded-full text-sm font-semibold transition';
+
+
+          button.textContent =
+            getCategoryLabel(
+              category
+            );
+
+
+          button.addEventListener(
+            'click',
+            () => {
+
+              activeCategory =
+                category;
+
+              updateCategoryButtons();
+
+              renderTemplates();
+
+            }
+          );
+
+
+          categoriesContainer.appendChild(
+            button
+          );
+
+        }
+      );
+
+    }
+
+
+    // =============================================
+    // CATEGORY BUTTON STATE
+    // =============================================
+
+    function updateCategoryButtons() {
+
+      const buttons =
+        categoriesContainer.querySelectorAll(
+          '.category-button'
+        );
+
+
+      buttons.forEach(
+        button => {
+
+          const isActive =
+            button.dataset.category ===
+            activeCategory;
+
+
+          if (isActive) {
+
+            button.classList.remove(
+              'bg-gray-100',
+              'text-gray-700',
+              'font-semibold'
+            );
+
+            button.classList.add(
+              'bg-purple-600',
+              'text-white',
+              'font-bold',
+              'shadow'
+            );
+
+          } else {
+
+            button.classList.remove(
+              'bg-purple-600',
+              'text-white',
+              'font-bold',
+              'shadow'
+            );
+
+            button.classList.add(
+              'bg-gray-100',
+              'text-gray-700',
+              'font-semibold'
+            );
+
+          }
+
+        }
+      );
+
+    }
+
+
+    // =============================================
+    // RENDER TEMPLATES
+    // =============================================
+
+    function renderTemplates() {
+
+      const filtered =
+        activeCategory === 'all'
+          ? allTemplates
+          : allTemplates.filter(
+              template =>
+                String(
+                  template.projectType ||
+                  template.category ||
+                  ''
+                ) ===
+                String(
+                  activeCategory
+                )
+            );
+
+
+      templatesGrid.innerHTML = '';
+
+
+      if (
+        filtered.length === 0
+      ) {
+
+        templatesGrid.classList.add(
+          'hidden'
+        );
+
+        templatesEmpty.classList.remove(
+          'hidden'
+        );
+
+        templatesCount.textContent =
+          '0 قالب';
+
+        hideLoading();
+
+        return;
+      }
+
+
+      templatesEmpty.classList.add(
+        'hidden'
+      );
+
+
+      templatesGrid.classList.remove(
+        'hidden'
+      );
+
+
+      templatesCount.textContent =
+        activeCategory === 'all'
+          ? `${filtered.length} قالب متاح`
+          : `${filtered.length} قالب في هذا التصنيف`;
+
+
+      filtered.forEach(
+        template => {
+
+          templatesGrid.appendChild(
+            createTemplateCard(
+              template
+            )
+          );
+
+        }
+      );
+
+
+      hideLoading();
+
+    }
+
+
+    // =============================================
+    // TEMPLATE CARD
+    // =============================================
+
+    function createTemplateCard(
+      template
+    ) {
+
+      const card =
+        document.createElement(
+          'div'
+        );
+
+
+      card.className =
+        'template-card bg-white rounded-xl shadow-md overflow-hidden border border-gray-100 flex flex-col justify-between';
+
+
+      const image =
+        getTemplateImage(
+          template
+        );
+
+
+      const category =
+        getCategoryLabel(
+          template.projectType ||
+          template.category
+        );
+
+
+      const name =
+        template.name ||
+        template.id ||
+        'قالب بدون اسم';
+
+
+      const description =
+        template.description ||
+        'قالب احترافي جاهز ومتجاوب لمشروعك الرقمي.';
+
+
+      const previewUrl =
+        getPreviewUrl(
+          template
+        );
+
+
+      const templateId =
+        escapeHtml(
+          template.id
+        );
+
+
+      const projectType =
+        escapeHtml(
+          template.projectType
+        );
+
+
+      card.innerHTML = `
+
+        <div>
+
+          <div
+            class="w-full h-48 overflow-hidden bg-gray-100"
+          >
+
+            <img
+              src="${escapeHtml(image)}"
+              alt="${escapeHtml(name)}"
+              class="template-image w-full h-full object-cover"
+              loading="lazy"
+              onerror="this.src='${fallbackImages.default}'"
+            >
+
+          </div>
+
+
+          <div class="p-5">
+
+            <span
+              class="text-xs bg-purple-50 text-purple-600 font-bold px-2.5 py-1 rounded"
+            >
+              ${escapeHtml(category)}
+            </span>
+
+
+            <h4
+              class="text-xl font-bold mt-3 text-gray-800"
+            >
+              ${escapeHtml(name)}
+            </h4>
+
+
+            <p
+              class="text-gray-500 text-sm mt-2 leading-6"
+            >
+              ${escapeHtml(description)}
+            </p>
+
+
+            <div
+              class="flex flex-wrap gap-2 mt-4"
+            >
+
+              ${
+                template.features?.responsive
+                  ? `
+                    <span
+                      class="text-xs bg-green-50 text-green-600 px-2 py-1 rounded"
+                    >
+                      متجاوب
+                    </span>
+                  `
+                  : ''
+              }
+
+
+              ${
+                template.features?.animations
+                  ? `
+                    <span
+                      class="text-xs bg-blue-50 text-blue-600 px-2 py-1 rounded"
+                    >
+                      Animations
+                    </span>
+                  `
+                  : ''
+              }
+
+
+              ${
+                template.features?.['3d']
+                  ? `
+                    <span
+                      class="text-xs bg-purple-50 text-purple-600 px-2 py-1 rounded"
+                    >
+                      3D
+                    </span>
+                  `
+                  : ''
+              }
+
+
+              ${
+                template.features?.darkMode
+                  ? `
+                    <span
+                      class="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded"
+                    >
+                      Dark Mode
+                    </span>
+                  `
+                  : ''
+              }
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <div
+          class="p-5 pt-0 flex justify-between items-center border-t border-gray-50 mt-4"
+        >
+
+          <span
+            class="font-bold text-purple-600 text-lg"
+          >
+            مجاني
+          </span>
+
+
+          <a
+            href="${escapeHtml(previewUrl)}"
+            target="_blank"
+            rel="noopener noreferrer"
+            data-template-id="${templateId}"
+            data-project-type="${projectType}"
+            class="bg-purple-600 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-purple-700 transition"
+          >
+            معاينة القالب
+          </a>
+
+        </div>
+
+      `;
+
+
+      return card;
+
+    }
+
+
+    // =============================================
+    // LOADING
+    // =============================================
+
+    function showLoading() {
+
+      templatesLoading.classList.remove(
+        'hidden'
+      );
+
+      templatesError.classList.add(
+        'hidden'
+      );
+
+      templatesEmpty.classList.add(
+        'hidden'
+      );
+
+      templatesGrid.classList.add(
+        'hidden'
+      );
+
+      templatesCount.textContent =
+        'جاري تحميل القوالب...';
+
+    }
+
+
+    function hideLoading() {
+
+      templatesLoading.classList.add(
+        'hidden'
+      );
+
+    }
+
+
+    // =============================================
+    // ERROR
+    // =============================================
+
+    function showError(
+      message
+    ) {
+
+      templatesLoading.classList.add(
+        'hidden'
+      );
+
+      templatesGrid.classList.add(
+        'hidden'
+      );
+
+      templatesEmpty.classList.add(
+        'hidden'
+      );
+
+      templatesError.classList.remove(
+        'hidden'
+      );
+
+
+      templatesErrorMessage.textContent =
+        message ||
+        'تعذر الاتصال بالخادم';
+
+
+      templatesCount.textContent =
+        'تعذر تحميل القوالب';
+
+    }
+
+
+    // =============================================
+    // RETRY
+    // =============================================
+
+    retryButton.addEventListener(
+      'click',
+      loadTemplates
+    );
+
+
+    // =============================================
+    // AUTH
+    // =============================================
+
+    window.addEventListener(
+      'DOMContentLoaded',
+      () => {
+
+        const storedUser =
+          localStorage.getItem(
+            'user'
+          );
+
+
+        const authSection =
+          document.getElementById(
+            'auth-section'
+          );
+
+
+        const createProjectBtnContainer =
+          document.getElementById(
+            'create-project-btn-container'
+          );
+
+
+        if (
+          !storedUser
+        ) {
+
+          return;
+
+        }
+
+
+        let user;
+
+
+        try {
+
+          user =
+            JSON.parse(
+              storedUser
+            );
+
+        } catch {
+
+          localStorage.removeItem(
+            'user'
+          );
+
+          return;
+
+        }
+
+
+        if (
+          createProjectBtnContainer
+        ) {
+
+          createProjectBtnContainer.classList.remove(
+            'hidden'
+          );
+
+        }
+
+
+        if (
+          authSection
+        ) {
+
+          const username =
+            escapeHtml(
+              user?.username ||
+              'المستخدم'
+            );
+
+
+          authSection.innerHTML = `
+
+            <div
+              class="flex items-center gap-3"
+            >
+
+              <a
+                href="profile.html"
+                class="flex items-center gap-2 text-sm font-bold text-purple-700 bg-purple-50 hover:bg-purple-100 px-4 py-2 rounded-xl border border-purple-100 transition shadow-sm"
+              >
+
+                <span>
+                  👤
+                </span>
+
+                <span>
+                  ${username}
+                </span>
+
+              </a>
+
+
+              <button
+                type="button"
+                onclick="logout()"
+                class="bg-red-50 hover:bg-red-100 text-red-600 px-3 py-2 rounded-xl text-sm font-bold transition"
+              >
+                خروج
+              </button>
+
+            </div>
+
+          `;
+
+        }
+
+      }
+    );
+
+
+    // =============================================
+    // LOGOUT
+    // =============================================
 
     function logout() {
-      localStorage.removeItem('user');
+
+      localStorage.removeItem(
+        'user'
+      );
+
+      localStorage.removeItem(
+        'token'
+      );
+
       window.location.reload();
+
     }
+
+
+    // =============================================
+    // START
+    // =============================================
+
+    loadTemplates();
+
   </script>
 
 </body>
