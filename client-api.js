@@ -510,6 +510,11 @@ function normalizeSite(
             site.templateId ||
             '',
 
+        projectType:
+            site.projectType ||
+            site.type ||
+            '',
+
         status:
             site.status ||
             'unknown',
@@ -730,7 +735,161 @@ function buildQuery(
 
 
 // ============================================
-// 8. TEMPLATECRAFT API
+// 8. TEMPLATE NORMALIZATION
+// ============================================
+
+function normalizeTemplate(
+    template = {}
+) {
+
+    if (
+        !template ||
+        typeof template !== 'object' ||
+        Array.isArray(template)
+    ) {
+
+        return {};
+
+    }
+
+
+    const projectType =
+        template.projectType ||
+        template.category ||
+        template.type ||
+        '';
+
+
+    const templateId =
+        template.templateId ||
+        template.id ||
+        template.slug ||
+        '';
+
+
+    let previewUrl =
+        template.previewUrl ||
+        template.preview ||
+        '';
+
+
+    /*
+    ============================================
+    BUILD PREVIEW URL IF BACKEND DID NOT SEND IT
+    ============================================
+    */
+
+    if (
+        !previewUrl &&
+        projectType &&
+        templateId
+    ) {
+
+        previewUrl =
+            TemplateCraftAPI.getTemplatePreviewUrl(
+                templateId,
+                projectType
+            );
+
+    }
+
+
+    return {
+
+        ...template,
+
+        id:
+            templateId,
+
+        templateId,
+
+        projectType,
+
+        name:
+            template.name ||
+            template.title ||
+            templateId,
+
+        title:
+            template.title ||
+            template.name ||
+            templateId,
+
+        previewUrl
+
+    };
+
+}
+
+
+function normalizeTemplateResponse(
+    response = {}
+) {
+
+    if (
+        !response ||
+        typeof response !== 'object'
+    ) {
+
+        return response;
+
+    }
+
+
+    const payload =
+        response.data &&
+        typeof response.data === 'object'
+            ? response.data
+            : response;
+
+
+    let templates = [];
+
+
+    if (
+        Array.isArray(payload)
+    ) {
+
+        templates =
+            payload;
+
+    } else if (
+        Array.isArray(
+            payload.templates
+        )
+    ) {
+
+        templates =
+            payload.templates;
+
+    } else if (
+        Array.isArray(
+            payload.data
+        )
+    ) {
+
+        templates =
+            payload.data;
+
+    }
+
+
+    return {
+
+        ...response,
+
+        templates:
+            templates.map(
+                normalizeTemplate
+            )
+
+    };
+
+}
+
+
+// ============================================
+// 9. TEMPLATECRAFT API
 // ============================================
 
 const TemplateCraftAPI = {
@@ -1056,11 +1215,24 @@ const TemplateCraftAPI = {
 
     async getTemplates() {
 
-        return apiRequest(
-            '/api/templates',
-            {
-                method: 'GET'
-            }
+        const response =
+            await apiRequest(
+                '/api/templates',
+                {
+                    method: 'GET'
+                }
+            );
+
+
+        if (!response.success) {
+
+            return response;
+
+        }
+
+
+        return normalizeTemplateResponse(
+            response
         );
 
     },
@@ -1087,14 +1259,67 @@ const TemplateCraftAPI = {
         }
 
 
-        return apiRequest(
-            `/api/templates/` +
-            `${encodeURIComponent(projectType)}/` +
-            `${encodeURIComponent(templateId)}`,
-            {
-                method: 'GET'
+        const response =
+            await apiRequest(
+                `/api/templates/` +
+                `${encodeURIComponent(projectType)}/` +
+                `${encodeURIComponent(templateId)}`,
+                {
+                    method: 'GET'
+                }
+            );
+
+
+        if (
+            response.success
+        ) {
+
+            /*
+            ====================================
+            NORMALIZE TEMPLATE OBJECT
+            ====================================
+            */
+
+            if (
+                response.template
+            ) {
+
+                response.template =
+                    normalizeTemplate(
+                        response.template
+                    );
+
             }
-        );
+
+
+            /*
+            ====================================
+            SOME BACKENDS RETURN TEMPLATE DIRECTLY
+            ====================================
+            */
+
+            else if (
+                response.templateId ||
+                response.id
+            ) {
+
+                return {
+
+                    ...response,
+
+                    template:
+                        normalizeTemplate(
+                            response
+                        )
+
+                };
+
+            }
+
+        }
+
+
+        return response;
 
     },
 
@@ -1144,6 +1369,13 @@ const TemplateCraftAPI = {
             ).trim();
 
 
+        if (!cleanTemplateId) {
+
+            return '';
+
+        }
+
+
         /*
         ========================================
         PREFERRED ROUTE
@@ -1176,7 +1408,7 @@ const TemplateCraftAPI = {
         LEGACY ROUTE
         ========================================
 
-        Kept for compatibility with old templates.
+        Kept for old templates / old frontend code.
 
         ========================================
         */
@@ -1421,7 +1653,7 @@ const TemplateCraftAPI = {
 
 
 // ============================================
-// 9. GLOBAL EXPORTS
+// 10. GLOBAL EXPORTS
 // ============================================
 
 window.TemplateCraftAPI =
@@ -1437,7 +1669,7 @@ window.TEMPLATECRAFT_API_BASE_URL =
 
 
 // ============================================
-// 10. OPTIONAL DEBUG INFORMATION
+// 11. OPTIONAL DEBUG INFORMATION
 // ============================================
 
 console.log(
