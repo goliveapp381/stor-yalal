@@ -80,6 +80,7 @@
                     id="siteNameInput"
                     maxlength="50"
                     placeholder="مثال: my-awesome-store"
+                    autocomplete="off"
                     class="w-full p-3 border border-gray-300 rounded-xl outline-none focus:ring-2 focus:ring-purple-500">
 
                 <p class="text-xs text-gray-400 mt-2">
@@ -91,6 +92,10 @@
 
             <!-- =====================================================
                  CATEGORY
+                 
+                 التصنيفات الآن يتم تحميلها من Backend
+                 عبر:
+                 GET /api/templates/categories
             ====================================================== -->
             <div class="mb-8">
 
@@ -102,29 +107,26 @@
 
                 <select
                     id="projectTypeSelect"
-                    class="w-full p-3 border border-gray-300 rounded-xl bg-white outline-none focus:ring-2 focus:ring-purple-500">
+                    disabled
+                    class="w-full p-3 border border-gray-300 rounded-xl bg-white outline-none focus:ring-2 focus:ring-purple-500 disabled:bg-gray-100 disabled:text-gray-500">
 
-                    <option value="blogs">
-                        📝 المدونات والمقالات
-                    </option>
-
-                    <option value="corporate">
-                        🏢 مواقع الشركات
-                    </option>
-
-                    <option value="ecommerce">
-                        🛒 المتاجر الإلكترونية
-                    </option>
-
-                    <option value="real-estate">
-                        🏠 العقارات
-                    </option>
-
-                    <option value="restaurant-demo">
-                        🍽️ المطاعم والمقاهي
+                    <option value="">
+                        جاري تحميل أنواع المواقع...
                     </option>
 
                 </select>
+
+                <p
+                    id="categoryLoadingMessage"
+                    class="text-xs text-gray-400 mt-2">
+                    جاري تحميل التصنيفات المتوفرة من TemplateCraft Pro...
+                </p>
+
+                <p
+                    id="categoryErrorMessage"
+                    class="hidden text-xs text-red-600 mt-2 font-bold">
+                    تعذر تحميل أنواع المواقع. حاول إعادة تحميل الصفحة.
+                </p>
 
             </div>
 
@@ -151,10 +153,11 @@
                     <span
                         id="selectedLabel"
                         class="text-xs text-purple-700 bg-purple-50 px-3 py-2 rounded-lg font-bold">
-                        القالب 1 محدد
+                        جاري تحميل القوالب...
                     </span>
 
                 </div>
+
 
                 <div
                     id="templatesGrid"
@@ -210,6 +213,7 @@
                         </div>
 
                     </div>
+
 
                     <div class="flex items-center gap-2">
 
@@ -417,6 +421,7 @@
                     جاري تجهيز الدومين الخاص بموقعك.
                 </p>
 
+
                 <div
                     id="resultDomainBox"
                     class="bg-white border border-green-200 rounded-xl p-3 mb-4">
@@ -583,7 +588,6 @@
         <div
             class="create-modal-card bg-white w-full max-w-3xl max-h-[90vh] rounded-3xl shadow-2xl overflow-hidden flex flex-col">
 
-
             <!-- HEADER -->
             <div
                 class="relative overflow-hidden p-6 md:p-8 text-white bg-gradient-to-br from-slate-900 via-purple-950 to-blue-950 flex-shrink-0">
@@ -597,9 +601,11 @@
                     <div class="flex items-center gap-4">
 
                         <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-green-400 via-blue-500 to-purple-600 flex items-center justify-center shadow-lg">
+
                             <span class="text-2xl">
                                 ✦
                             </span>
+
                         </div>
 
                         <div>
@@ -628,7 +634,6 @@
 
             <!-- BODY -->
             <div class="p-5 md:p-7 overflow-y-auto flex-1 min-h-0">
-
 
                 <!-- SITE NAME -->
                 <div class="mb-6 rounded-2xl border border-purple-100 bg-purple-50 p-4">
@@ -713,205 +718,125 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
 
                     <div class="feature-card border border-gray-200 rounded-2xl p-4">
-
                         <div class="flex items-start gap-3">
-
-                            <span class="text-2xl">
-                                🌐
-                            </span>
-
+                            <span class="text-2xl">🌐</span>
                             <div>
-
                                 <h3 class="font-extrabold text-gray-900">
                                     دومين مجاني
                                 </h3>
-
                                 <p class="text-xs text-gray-500 mt-1 leading-5">
                                     احصل على نطاق فرعي مجاني باسم موقعك ضمن
                                     <span dir="ltr">
                                         templatecraftpro.com
                                     </span>.
                                 </p>
-
                             </div>
-
                         </div>
-
                     </div>
 
 
                     <div class="feature-card border border-gray-200 rounded-2xl p-4">
-
                         <div class="flex items-start gap-3">
-
-                            <span class="text-2xl">
-                                🔒
-                            </span>
-
+                            <span class="text-2xl">🔒</span>
                             <div>
-
                                 <h3 class="font-extrabold text-gray-900">
                                     حماية SSL مجانية
                                 </h3>
-
                                 <p class="text-xs text-gray-500 mt-1 leading-5">
                                     اتصال آمن ومحمي لموقعك مع دعم HTTPS.
                                 </p>
-
                             </div>
-
                         </div>
-
                     </div>
 
 
                     <div class="feature-card border border-gray-200 rounded-2xl p-4">
-
                         <div class="flex items-start gap-3">
-
-                            <span class="text-2xl">
-                                🎨
-                            </span>
-
+                            <span class="text-2xl">🎨</span>
                             <div>
-
                                 <h3 class="font-extrabold text-gray-900">
                                     قالب احترافي متوازن
                                 </h3>
-
                                 <p class="text-xs text-gray-500 mt-1 leading-5">
                                     تصميم متناسق ومهيأ لمختلف أحجام الشاشات.
                                 </p>
-
                             </div>
-
                         </div>
-
                     </div>
 
 
                     <div class="feature-card border border-gray-200 rounded-2xl p-4">
-
                         <div class="flex items-start gap-3">
-
-                            <span class="text-2xl">
-                                ✏️
-                            </span>
-
+                            <span class="text-2xl">✏️</span>
                             <div>
-
                                 <h3 class="font-extrabold text-gray-900">
                                     تخصيص الواجهة
                                 </h3>
-
                                 <p class="text-xs text-gray-500 mt-1 leading-5">
                                     عدّل محتوى وتصميم موقعك بما يناسب مشروعك.
                                 </p>
-
                             </div>
-
                         </div>
-
                     </div>
 
 
                     <div class="feature-card border border-gray-200 rounded-2xl p-4">
-
                         <div class="flex items-start gap-3">
-
-                            <span class="text-2xl">
-                                📱
-                            </span>
-
+                            <span class="text-2xl">📱</span>
                             <div>
-
                                 <h3 class="font-extrabold text-gray-900">
                                     تصميم متجاوب
                                 </h3>
-
                                 <p class="text-xs text-gray-500 mt-1 leading-5">
                                     تجربة استخدام محسّنة للهاتف واللوحي والكمبيوتر.
                                 </p>
-
                             </div>
-
                         </div>
-
                     </div>
 
 
                     <div class="feature-card border border-gray-200 rounded-2xl p-4">
-
                         <div class="flex items-start gap-3">
-
-                            <span class="text-2xl">
-                                ⚡
-                            </span>
-
+                            <span class="text-2xl">⚡</span>
                             <div>
-
                                 <h3 class="font-extrabold text-gray-900">
                                     نشر سريع
                                 </h3>
-
                                 <p class="text-xs text-gray-500 mt-1 leading-5">
                                     إنشاء وتجهيز ونشر موقعك عبر منصة واحدة.
                                 </p>
-
                             </div>
-
                         </div>
-
                     </div>
 
 
                     <div class="feature-card border border-gray-200 rounded-2xl p-4">
-
                         <div class="flex items-start gap-3">
-
-                            <span class="text-2xl">
-                                🌍
-                            </span>
-
+                            <span class="text-2xl">🌍</span>
                             <div>
-
                                 <h3 class="font-extrabold text-gray-900">
                                     ربط أي دومين خارجي
                                 </h3>
-
                                 <p class="text-xs text-gray-500 mt-1 leading-5">
                                     يمكنك لاحقاً ربط موقعك بدومين خاص تملكه.
                                 </p>
-
                             </div>
-
                         </div>
-
                     </div>
 
 
                     <div class="feature-card border border-gray-200 rounded-2xl p-4">
-
                         <div class="flex items-start gap-3">
-
-                            <span class="text-2xl">
-                                ☁️
-                            </span>
-
+                            <span class="text-2xl">☁️</span>
                             <div>
-
                                 <h3 class="font-extrabold text-gray-900">
                                     بنية نشر موثوقة
                                 </h3>
-
                                 <p class="text-xs text-gray-500 mt-1 leading-5">
                                     إدارة ونشر مشروعك بسهولة من لوحة واحدة.
                                 </p>
-
                             </div>
-
                         </div>
-
                     </div>
 
                 </div>
@@ -1115,9 +1040,6 @@
 
     <!-- =========================================================
          SSL PREPARATION INFORMATION MODAL
-         
-         يظهر تلقائياً بعد نجاح إنشاء الموقع.
-         فيه زر واحد فقط: موافق
     ========================================================== -->
     <div
         id="sslPreparationModal"
@@ -1130,13 +1052,11 @@
             aria-modal="true"
             aria-labelledby="sslPreparationTitle">
 
-            <!-- ICON -->
             <div class="text-5xl mb-4">
                 🔐
             </div>
 
 
-            <!-- TITLE -->
             <h2
                 id="sslPreparationTitle"
                 class="text-xl font-extrabold text-gray-900">
@@ -1144,7 +1064,6 @@
             </h2>
 
 
-            <!-- MESSAGE -->
             <p
                 id="sslPreparationMessage"
                 class="mt-4 text-sm leading-7 text-gray-600">
@@ -1153,7 +1072,6 @@
             </p>
 
 
-            <!-- ONLY BUTTON -->
             <button
                 id="sslPreparationOkBtn"
                 type="button"
@@ -1200,6 +1118,240 @@
          DEPLOYMENT
     ========================================================== -->
     <script src="./create-project-deployment.js"></script>
+
+
+    <!-- =========================================================
+         DYNAMIC TEMPLATE CATEGORIES
+         
+         هذا الجزء يجعل أنواع المواقع تأتي من Backend
+         بدل ما نبقاو نكتبو blogs / ecommerce / ...
+         يدوياً داخل HTML.
+    ========================================================== -->
+    <script>
+        (function () {
+            'use strict';
+
+            const select = document.getElementById('projectTypeSelect');
+            const loadingMessage = document.getElementById('categoryLoadingMessage');
+            const errorMessage = document.getElementById('categoryErrorMessage');
+
+            if (!select) {
+                return;
+            }
+
+            function getApiBaseUrl() {
+                const apiBase =
+                    window.TEMPLATECRAFT_API_BASE_URL ||
+                    'https://templatecraft-backend.onrender.com';
+
+                return String(apiBase).replace(/\/+$/, '');
+            }
+
+            function normalizeCategories(data) {
+
+                if (Array.isArray(data)) {
+                    return data;
+                }
+
+                if (data && Array.isArray(data.categories)) {
+                    return data.categories;
+                }
+
+                if (data && Array.isArray(data.data)) {
+                    return data.data;
+                }
+
+                if (data && data.data && Array.isArray(data.data.categories)) {
+                    return data.data.categories;
+                }
+
+                return [];
+            }
+
+            function normalizeCategory(item) {
+
+                if (typeof item === 'string') {
+
+                    return {
+                        id: item,
+                        name: item
+                    };
+
+                }
+
+                if (!item || typeof item !== 'object') {
+                    return null;
+                }
+
+                const id =
+                    item.id ||
+                    item.value ||
+                    item.projectType ||
+                    item.category ||
+                    item.slug;
+
+                const name =
+                    item.name ||
+                    item.label ||
+                    item.title ||
+                    item.displayName ||
+                    id;
+
+                if (!id) {
+                    return null;
+                }
+
+                return {
+                    id: String(id),
+                    name: String(name)
+                };
+            }
+
+            function makeCategoryLabel(category) {
+
+                const knownLabels = {
+                    blogs: '📝 المدونات والمقالات',
+                    corporate: '🏢 مواقع الشركات',
+                    ecommerce: '🛒 المتاجر الإلكترونية',
+                    'real-estate': '🏠 العقارات',
+                    'restaurant-demo': '🍽️ المطاعم والمقاهي',
+                    restaurants: '🍽️ المطاعم والمقاهي',
+                    education: '🎓 التعليم',
+                    portfolio: '💼 معرض الأعمال',
+                    news: '📰 الأخبار',
+                    landing: '🚀 صفحات الهبوط',
+                    services: '🛠️ الخدمات',
+                    travel: '✈️ السفر والسياحة'
+                };
+
+                return knownLabels[category.id] || category.name;
+            }
+
+            async function loadCategories() {
+
+                try {
+
+                    select.disabled = true;
+
+                    loadingMessage.classList.remove('hidden');
+                    errorMessage.classList.add('hidden');
+
+                    select.innerHTML = '';
+
+                    const response = await fetch(
+                        getApiBaseUrl() + '/api/templates/categories',
+                        {
+                            method: 'GET',
+                            headers: {
+                                'Accept': 'application/json'
+                            },
+                            cache: 'no-store'
+                        }
+                    );
+
+                    if (!response.ok) {
+                        throw new Error(
+                            'Categories request failed: HTTP ' + response.status
+                        );
+                    }
+
+                    const data = await response.json();
+
+                    const rawCategories = normalizeCategories(data);
+
+                    const categories = rawCategories
+                        .map(normalizeCategory)
+                        .filter(Boolean);
+
+                    const uniqueCategories = [];
+                    const seen = new Set();
+
+                    for (const category of categories) {
+
+                        const key = category.id.toLowerCase();
+
+                        if (seen.has(key)) {
+                            continue;
+                        }
+
+                        seen.add(key);
+                        uniqueCategories.push(category);
+                    }
+
+                    if (uniqueCategories.length === 0) {
+                        throw new Error(
+                            'لم يتم العثور على أي category في Backend.'
+                        );
+                    }
+
+                    for (const category of uniqueCategories) {
+
+                        const option = document.createElement('option');
+
+                        option.value = category.id;
+                        option.textContent = makeCategoryLabel(category);
+
+                        select.appendChild(option);
+                    }
+
+                    /*
+                     * نختار ecommerce إذا كانت موجودة،
+                     * وإلا نختار أول category موجودة.
+                     */
+                    const ecommerceOption = uniqueCategories.find(
+                        category => category.id === 'ecommerce'
+                    );
+
+                    select.value =
+                        ecommerceOption
+                            ? ecommerceOption.id
+                            : uniqueCategories[0].id;
+
+                    select.disabled = false;
+
+                    loadingMessage.textContent =
+                        uniqueCategories.length +
+                        ' تصنيف متوفر حالياً من TemplateCraft Pro.';
+
+                    /*
+                     * نطلق change حتى create-project-templates.js
+                     * يعاود تحميل القوالب حسب category.
+                     */
+                    select.dispatchEvent(
+                        new Event('change', { bubbles: true })
+                    );
+
+                } catch (error) {
+
+                    console.error(
+                        '[TemplateCraft] Failed to load categories:',
+                        error
+                    );
+
+                    select.disabled = true;
+
+                    select.innerHTML = '';
+
+                    const option = document.createElement('option');
+
+                    option.value = '';
+
+                    option.textContent =
+                        'تعذر تحميل أنواع المواقع';
+
+                    select.appendChild(option);
+
+                    loadingMessage.classList.add('hidden');
+                    errorMessage.classList.remove('hidden');
+
+                }
+
+            }
+
+            loadCategories();
+
+        })();
+    </script>
 
 </body>
 </html>
