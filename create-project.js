@@ -5,28 +5,26 @@
 ====================================================
 
  مسؤول عن:
+
  - Authentication
  - Core Elements
  - API Check
  - Netlify Readiness
  - User Information
  - Site Data
- - Create Modal Core
+ - Create Modal
  - Status
  - Initialization
-
- الملفات المساعدة:
- - create-project-templates.js
- - create-project-netlify-ui.js
- - create-project-deployment.js
 
 ====================================================
 */
 
+'use strict';
 
-// ================================================
+
+// ====================================================
 // 1. AUTHENTICATION
-// ================================================
+// ====================================================
 
 let user = null;
 
@@ -69,24 +67,24 @@ if (
     );
 
     throw new Error(
-        'Authentication required: JWT token missing'
+        'Authentication required'
     );
 
 }
 
 
-// ================================================
-// 2. CORE STATE
-// ================================================
+// ====================================================
+// 2. STATE
+// ====================================================
 
 let publishedSiteUrl = null;
 
 let createdSiteId = null;
 
 
-// ================================================
+// ====================================================
 // 3. CORE ELEMENTS
-// ================================================
+// ====================================================
 
 const templatesGrid =
     document.getElementById(
@@ -98,90 +96,45 @@ const projectTypeSelect =
         'projectTypeSelect'
     );
 
+
+/*
+ IMPORTANT:
+ HTML عندك id="siteName"
+*/
+
 const siteNameInput =
     document.getElementById(
-        'siteNameInput'
+        'siteName'
     );
+
 
 const selectedLabel =
     document.getElementById(
         'selectedLabel'
     );
 
-const deployBtn =
+
+const createProjectBtn =
     document.getElementById(
-        'deployBtn'
+        'createProjectBtn'
     );
+
+
+const createResult =
+    document.getElementById(
+        'createResult'
+    );
+
 
 const statusMessage =
     document.getElementById(
-        'statusMessage'
-    );
-
-const resultContainer =
-    document.getElementById(
-        'resultContainer'
-    );
-
-const resultTitle =
-    document.getElementById(
-        'resultTitle'
-    );
-
-const resultDescription =
-    document.getElementById(
-        'resultDescription'
-    );
-
-const resultUrl =
-    document.getElementById(
-        'resultUrl'
-    );
-
-const resultLink =
-    document.getElementById(
-        'resultLink'
-    );
-
-const resultPending =
-    document.getElementById(
-        'resultPending'
-    );
-
-const copyLinkBtn =
-    document.getElementById(
-        'copyLinkBtn'
+        'netlifyStatusDescription'
     );
 
 
-// ================================================
-// PREVIEW ELEMENTS
-// ================================================
-
-const previewModal =
-    document.getElementById(
-        'previewModal'
-    );
-
-const previewFrame =
-    document.getElementById(
-        'previewFrame'
-    );
-
-const previewLoading =
-    document.getElementById(
-        'previewLoading'
-    );
-
-const previewError =
-    document.getElementById(
-        'previewError'
-    );
-
-
-// ================================================
-// CREATE MODAL
-// ================================================
+// ====================================================
+// 4. CREATE MODAL
+// ====================================================
 
 const createModal =
     document.getElementById(
@@ -198,77 +151,99 @@ const cancelCreateBtn =
         'cancelCreateBtn'
     );
 
-const confirmSiteName =
+const closeCreateModalBtn =
     document.getElementById(
-        'confirmSiteName'
+        'closeCreateModalBtn'
     );
 
-const confirmDomain =
+const createModalContent =
     document.getElementById(
-        'confirmDomain'
-    );
-
-const confirmNetlifyTeamBox =
-    document.getElementById(
-        'confirmNetlifyTeamBox'
-    );
-
-const confirmNetlifyTeamName =
-    document.getElementById(
-        'confirmNetlifyTeamName'
-    );
-
-const confirmNetlifyWarning =
-    document.getElementById(
-        'confirmNetlifyWarning'
+        'createModalContent'
     );
 
 
-// ================================================
-// USER INFO
-// ================================================
+// ====================================================
+// 5. NETLIFY ELEMENTS
+// ====================================================
 
-const userInfo =
+const netlifyStatusTitle =
     document.getElementById(
-        'userInfo'
+        'netlifyStatusTitle'
     );
 
-const userEmail =
+const netlifyStatusDescription =
     document.getElementById(
-        'userEmail'
+        'netlifyStatusDescription'
+    );
+
+const netlifyStatusBadge =
+    document.getElementById(
+        'netlifyStatusBadge'
+    );
+
+const netlifyConnectContainer =
+    document.getElementById(
+        'netlifyConnectContainer'
+    );
+
+const connectNetlifyBtn =
+    document.getElementById(
+        'connectNetlifyBtn'
+    );
+
+const netlifyTeamsContainer =
+    document.getElementById(
+        'netlifyTeamsContainer'
+    );
+
+const netlifyTeamSelect =
+    document.getElementById(
+        'netlifyTeamSelect'
     );
 
 
-// ================================================
-// 4. API CHECK
-// ================================================
+// ====================================================
+// 6. DEPLOYMENT ELEMENTS
+// ====================================================
+
+const deploymentOverlay =
+    document.getElementById(
+        'deploymentOverlay'
+    );
+
+const deploymentTitle =
+    document.getElementById(
+        'deploymentTitle'
+    );
+
+const deploymentMessage =
+    document.getElementById(
+        'deploymentMessage'
+    );
+
+const deploymentProgress =
+    document.getElementById(
+        'deploymentProgress'
+    );
+
+
+// ====================================================
+// 7. API CHECK
+// ====================================================
 
 function apiAvailable() {
 
     return (
-
         typeof window.TemplateCraftAPI !==
             'undefined'
-
-        &&
-
-        typeof window.TemplateCraftAPI
-            .getTemplatePreviewUrl ===
-            'function'
-
-        &&
-
-        typeof window.TemplateCraftAPI.deploy ===
-            'function'
-
     );
 
 }
 
 
-// ================================================
-// 5. NETLIFY STATE
-// ================================================
+// ====================================================
+// 8. NETLIFY STATE
+// ====================================================
 
 function getNetlifyState() {
 
@@ -335,32 +310,25 @@ function getNetlifyState() {
 }
 
 
-// ================================================
-// 6. NETLIFY READY
-// ================================================
+// ====================================================
+// 9. NETLIFY READY
+// ====================================================
 
 function netlifyReady(state) {
 
     return (
-
         state &&
-
         state.connected === true &&
-
         state.teamSelected === true &&
-
-        Boolean(
-            state.teamSlug
-        )
-
+        Boolean(state.teamSlug)
     );
 
 }
 
 
-// ================================================
-// 7. NETLIFY READINESS MESSAGE
-// ================================================
+// ====================================================
+// 10. NETLIFY MESSAGE
+// ====================================================
 
 function getNetlifyReadinessMessage(
     state
@@ -386,19 +354,18 @@ function getNetlifyReadinessMessage(
             Array.isArray(
                 state.availableTeams
             ) &&
-
             state.availableTeams.length > 0
         ) {
 
             return (
-                'الـ Team السابق لم يعد موجوداً. اختر Team جديد من القائمة ثم حاول إنشاء الموقع.'
+                'الـ Team السابق لم يعد موجوداً. اختار Team جديد.'
             );
 
         }
 
 
         return (
-            'الـ Team السابق لم يعد موجوداً ولا يوجد حالياً أي Team متاح. أنشئ Team جديد في Netlify ثم حدّث الصفحة.'
+            'ما كاين حتى Team متاح حالياً في Netlify.'
         );
 
     }
@@ -408,29 +375,11 @@ function getNetlifyReadinessMessage(
         Array.isArray(
             state.availableTeams
         ) &&
-
-        state.availableTeams.length > 1 &&
-
-        !state.teamSelected
-    ) {
-
-        return (
-            'عندك أكثر من Team في Netlify. اختار Team الذي تريد استعماله قبل إنشاء الموقع.'
-        );
-
-    }
-
-
-    if (
-        Array.isArray(
-            state.availableTeams
-        ) &&
-
         state.availableTeams.length === 0
     ) {
 
         return (
-            'ما كاين حتى Team في حساب Netlify. أنشئ Team في Netlify ثم حدّث الصفحة.'
+            'ما كاين حتى Team في حساب Netlify.'
         );
 
     }
@@ -449,613 +398,721 @@ function getNetlifyReadinessMessage(
 
 
     return (
-        'تعذر تأكيد Netlify Team. حاول تحديث الحالة ثم أعد المحاولة.'
+        'تعذر تأكيد حالة Netlify.'
     );
 
 }
 
 
-// ================================================
-// 8. REFRESH NETLIFY
-// ================================================
+// ====================================================
+// 11. TIMEOUT HELPER
+// ====================================================
+
+function withTimeout(
+    promise,
+    milliseconds = 8000
+) {
+
+    return Promise.race([
+
+        promise,
+
+        new Promise(
+            (_, reject) => {
+
+                setTimeout(
+                    () => {
+
+                        reject(
+                            new Error(
+                                'TIMEOUT'
+                            )
+                        );
+
+                    },
+                    milliseconds
+                );
+
+            }
+        )
+
+    ]);
+
+}
+
+
+// ====================================================
+// 12. REFRESH NETLIFY STATE
+// ====================================================
 
 async function refreshNetlifyState() {
 
-    if (
-        window.TemplateCraftNetlify &&
+    /*
+    ----------------------------------------------------
+    مهم جداً:
 
+    ما نخليوش الصفحة عالقة للأبد
+    فـ "جاري التحقق..."
+    ----------------------------------------------------
+    */
+
+    if (
+        !window.TemplateCraftNetlify ||
         typeof window.TemplateCraftNetlify
-            .refreshStatus ===
+            .refreshStatus !==
             'function'
     ) {
 
-        try {
-
-            await window.TemplateCraftNetlify
-                .refreshStatus();
-
-        } catch (error) {
-
-            console.error(
-                'Netlify status refresh error:',
-                error
-            );
-
-        }
-
-    }
-
-
-    return getNetlifyState();
-
-}
-
-
-// ================================================
-// 9. TEMPLATE PREVIEW URL
-// ================================================
-
-function getPreviewUrl(
-    templateId
-) {
-
-    if (!apiAvailable()) {
-
-        return null;
-
-    }
-
-
-    return TemplateCraftAPI
-        .getTemplatePreviewUrl(
-            templateId
+        updateNetlifyUI(
+            getNetlifyState()
         );
 
-}
-
-
-// ================================================
-// 10. USER INFORMATION
-// ================================================
-
-function initializeUserInfo() {
-
-    if (userInfo) {
-
-        userInfo.classList.remove(
-            'hidden'
-        );
-
-    }
-
-
-    if (userEmail) {
-
-        userEmail.textContent =
-            user.email ||
-            user.username ||
-            '';
-
-    }
-
-}
-
-
-// ================================================
-// 11. SITE DATA
-// ================================================
-
-function getSiteData(
-    result
-) {
-
-    const site =
-        result?.site ||
-        result?.project ||
-        {};
-
-
-    return {
-
-        siteId:
-            site._id ||
-            site.id ||
-            result?.siteId ||
-            result?.projectId ||
-            null,
-
-        customUrl:
-            result?.customUrl ||
-            result?.publicUrl ||
-            site.customUrl ||
-            site.publicUrl ||
-            null,
-
-        customDomain:
-            result?.customDomain ||
-            site.customDomain ||
-            null,
-
-        domainStatus:
-            result?.domainStatus ||
-            site.domainStatus ||
-            'pending',
-
-        liveUrl:
-            result?.liveUrl ||
-            result?.deployUrl ||
-            site.liveUrl ||
-            null
-
-    };
-
-}
-
-
-// ================================================
-// 12. SAFE CUSTOM URL
-// ================================================
-
-function getSafeCustomUrl(
-    url,
-    domainStatus
-) {
-
-    if (
-        domainStatus !== 'active' ||
-        !url ||
-        typeof url !== 'string'
-    ) {
-
-        return null;
+        return getNetlifyState();
 
     }
 
 
     try {
 
-        const parsed =
-            new URL(url);
+        await withTimeout(
 
+            window.TemplateCraftNetlify
+                .refreshStatus(),
 
-        if (
-            parsed.protocol !== 'https:'
-        ) {
+            8000
 
-            return null;
-
-        }
-
-
-        const hostname =
-            parsed.hostname.toLowerCase();
-
-
-        if (
-            !hostname.endsWith(
-                '.gollivetv.com'
-            ) ||
-
-            hostname ===
-                'gollivetv.com'
-        ) {
-
-            return null;
-
-        }
-
-
-        return parsed.href;
+        );
 
     } catch (error) {
 
-        return null;
+        console.error(
+            '[TemplateCraft] Netlify refresh:',
+            error
+        );
 
     }
+
+
+    const state =
+        getNetlifyState();
+
+
+    updateNetlifyUI(
+        state
+    );
+
+
+    return state;
 
 }
 
 
-// ================================================
-// 13. SHOW DEPLOY RESULT
-// ================================================
+// ====================================================
+// 13. NETLIFY UI
+// ====================================================
 
-function showDeployResult(
-    siteData
+function updateNetlifyUI(
+    state
 ) {
 
-    const verifiedUrl =
-        getSafeCustomUrl(
-            siteData.customUrl,
-            siteData.domainStatus
-        );
-
-
-    publishedSiteUrl =
-        verifiedUrl;
-
-
-    if (resultContainer) {
-
-        resultContainer.classList.remove(
-            'hidden'
-        );
-
-    }
-
-
-    if (resultUrl) {
-
-        resultUrl.textContent =
-            '';
-
-        resultUrl.removeAttribute(
-            'href'
-        );
-
-    }
-
-
-    if (resultLink) {
-
-        resultLink.classList.add(
-            'hidden'
-        );
-
-    }
-
-
-    if (resultPending) {
-
-        resultPending.classList.add(
-            'hidden'
-        );
-
-    }
-
-
-    if (copyLinkBtn) {
-
-        copyLinkBtn.disabled =
-            true;
-
-    }
-
-
-    if (verifiedUrl) {
-
-        if (resultTitle) {
-
-            resultTitle.textContent =
-                '✅ تم نشر موقعك والدومين جاهز!';
-
-        }
-
-
-        if (resultDescription) {
-
-            resultDescription.textContent =
-                'موقعك متاح الآن عبر الدومين الخاص بك.';
-
-        }
-
-
-        if (resultUrl) {
-
-            resultUrl.textContent =
-                verifiedUrl;
-
-            resultUrl.href =
-                verifiedUrl;
-
-        }
-
-
-        if (resultLink) {
-
-            resultLink.href =
-                verifiedUrl;
-
-            resultLink.classList.remove(
-                'hidden'
-            );
-
-        }
-
-
-        if (copyLinkBtn) {
-
-            copyLinkBtn.disabled =
-                false;
-
-        }
-
-
-        showStatus(
-            'تم نشر الموقع وتأكيد الدومين وشهادة SSL بنجاح! 🎉',
-            'success'
-        );
-
-    } else {
-
-        if (resultTitle) {
-
-            resultTitle.textContent =
-                '✅ تم إنشاء مشروعك بنجاح!';
-
-        }
-
-
-        if (resultDescription) {
-
-            resultDescription.textContent =
-                'تم إنشاء المشروع. الدومين الخاص مازال قيد التجهيز.';
-
-        }
-
-
-        if (resultPending) {
-
-            resultPending.classList.remove(
-                'hidden'
-            );
-
-        }
-
-
-        showStatus(
-            'تم إنشاء المشروع. الدومين الخاص وSSL مازال قيد التجهيز. يمكنك متابعة الحالة من صفحة مشاريعي.',
-            'success'
-        );
-
-    }
-
-
     if (
-        resultContainer
+        !netlifyStatusBadge ||
+        !netlifyStatusDescription
     ) {
-
-        resultContainer.scrollIntoView({
-            behavior: 'smooth',
-            block: 'center'
-        });
-
-    }
-
-}
-
-
-// ================================================
-// 14. CREATE MODAL
-// ================================================
-
-async function openCreateModal() {
-
-    const siteName =
-        siteNameInput.value.trim();
-
-
-    confirmSiteName.textContent =
-        siteName || '—';
-
-
-    /*
-    ==================================================
-    IMPORTANT:
-
-    هذا التغيير خاص فقط بالدومين الذي يظهر
-    داخل نافذة تأكيد إنشاء المشروع.
-
-    لا يغير:
-    - Backend
-    - Netlify
-    - Cloudflare
-    - getSafeCustomUrl()
-    - domain validation
-    - أي استعمال آخر لـ gollivetv.com
-    ==================================================
-    */
-
-    confirmDomain.textContent =
-        siteName
-            ? `${siteName}.templatecraftpro.com`
-            : '—';
-
-
-    confirmNetlifyTeamBox.classList.add(
-        'hidden'
-    );
-
-
-    confirmNetlifyWarning.classList.add(
-        'hidden'
-    );
-
-
-    confirmCreateBtn.disabled =
-        true;
-
-
-    confirmCreateBtn.textContent =
-        '⏳ جاري التحقق من Netlify...';
-
-
-    createModal.classList.add(
-        'active'
-    );
-
-
-    const netlifyState =
-        await refreshNetlifyState();
-
-
-    if (
-        netlifyReady(
-            netlifyState
-        )
-    ) {
-
-        if (
-            typeof window.updateNetlifyConfirmationUI ===
-                'function'
-        ) {
-
-            window.updateNetlifyConfirmationUI(
-                netlifyState
-            );
-
-        } else {
-
-            confirmNetlifyTeamName.textContent =
-                netlifyState.teamName ||
-                netlifyState.teamSlug ||
-                'Netlify Team';
-
-            confirmNetlifyTeamBox.classList.remove(
-                'hidden'
-            );
-
-        }
-
-
-        confirmNetlifyWarning.classList.add(
-            'hidden'
-        );
-
-
-        confirmCreateBtn.disabled =
-            false;
-
-
-        confirmCreateBtn.textContent =
-            '🚀 متابعة وإنشاء الموقع';
-
-    } else {
-
-        confirmNetlifyTeamBox.classList.add(
-            'hidden'
-        );
-
-
-        confirmNetlifyWarning.classList.remove(
-            'hidden'
-        );
-
-
-        confirmNetlifyWarning.textContent =
-            getNetlifyReadinessMessage(
-                netlifyState
-            );
-
-
-        confirmCreateBtn.disabled =
-            true;
-
-
-        confirmCreateBtn.textContent =
-            'خاصك تختار Netlify Team أولاً';
-
-    }
-
-}
-
-
-// ================================================
-// 15. CLOSE CREATE MODAL
-// ================================================
-
-function closeCreateModal() {
-
-    createModal.classList.remove(
-        'active'
-    );
-
-}
-
-
-// ================================================
-// 16. CREATE MODAL EVENTS
-// ================================================
-
-function initializeCreateModalEvents() {
-
-    if (cancelCreateBtn) {
-
-        cancelCreateBtn.addEventListener(
-            'click',
-            closeCreateModal
-        );
-
-    }
-
-
-    if (createModal) {
-
-        createModal.addEventListener(
-            'click',
-            function(event) {
-
-                if (
-                    event.target ===
-                    createModal
-                ) {
-
-                    closeCreateModal();
-
-                }
-
-            }
-        );
-
-    }
-
-}
-
-
-// ================================================
-// 17. STATUS MESSAGE
-// ================================================
-
-function showStatus(
-    message,
-    type
-) {
-
-    if (!statusMessage) {
 
         return;
 
     }
 
 
-    statusMessage.textContent =
-        message;
+    /*
+    -----------------------------------------------
+    Connected
+    -----------------------------------------------
+    */
+
+    if (
+        netlifyReady(state)
+    ) {
+
+        netlifyStatusTitle.textContent =
+            'Netlify متصل';
+
+        netlifyStatusDescription.textContent =
+            `Team: ${
+                state.teamName ||
+                state.teamSlug
+            }`;
+
+        netlifyStatusBadge.textContent =
+            '✓ متصل وجاهز';
+
+        netlifyStatusBadge.className =
+            'status-badge success';
 
 
-    statusMessage.className =
-        'mt-5 text-center text-sm font-bold';
+        netlifyConnectContainer?.classList.add(
+            'hidden'
+        );
+
+
+        if (
+            Array.isArray(
+                state.availableTeams
+            ) &&
+            state.availableTeams.length > 0
+        ) {
+
+            netlifyTeamsContainer?.classList.remove(
+                'hidden'
+            );
+
+        }
+
+
+        populateNetlifyTeams(
+            state
+        );
+
+
+        return;
+
+    }
+
+
+    /*
+    -----------------------------------------------
+    Not connected
+    -----------------------------------------------
+    */
+
+    if (
+        !state.connected
+    ) {
+
+        netlifyStatusTitle.textContent =
+            'Netlify غير متصل';
+
+        netlifyStatusDescription.textContent =
+            'خاصك تربط حساب Netlify باش تقدر تنشر المشروع.';
+
+        netlifyStatusBadge.textContent =
+            '⚠ غير متصل';
+
+        netlifyStatusBadge.className =
+            'status-badge warning';
+
+
+        netlifyConnectContainer?.classList.remove(
+            'hidden'
+        );
+
+
+        netlifyTeamsContainer?.classList.add(
+            'hidden'
+        );
+
+
+        return;
+
+    }
+
+
+    /*
+    -----------------------------------------------
+    Connected but Team missing
+    -----------------------------------------------
+    */
+
+    netlifyStatusTitle.textContent =
+        'Netlify متصل';
+
+    netlifyStatusDescription.textContent =
+        getNetlifyReadinessMessage(
+            state
+        );
+
+    netlifyStatusBadge.textContent =
+        '⚠ اختار Team';
+
+    netlifyStatusBadge.className =
+        'status-badge warning';
+
+
+    netlifyConnectContainer?.classList.add(
+        'hidden'
+    );
 
 
     if (
-        type === 'success'
+        Array.isArray(
+            state.availableTeams
+        ) &&
+        state.availableTeams.length > 0
     ) {
 
-        statusMessage.classList.add(
-            'text-green-600'
+        netlifyTeamsContainer?.classList.remove(
+            'hidden'
         );
 
-    } else if (
-        type === 'error'
+    }
+
+    populateNetlifyTeams(
+        state
+    );
+
+}
+
+
+// ====================================================
+// 14. POPULATE NETLIFY TEAMS
+// ====================================================
+
+function populateNetlifyTeams(
+    state
+) {
+
+    if (
+        !netlifyTeamSelect
     ) {
 
-        statusMessage.classList.add(
-            'text-red-600'
+        return;
+
+    }
+
+
+    const teams =
+        Array.isArray(
+            state?.availableTeams
+        )
+            ? state.availableTeams
+            : [];
+
+
+    netlifyTeamSelect.innerHTML =
+        '';
+
+
+    if (
+        teams.length === 0
+    ) {
+
+        netlifyTeamSelect.innerHTML =
+            `
+            <option value="">
+                لا توجد فرق متاحة
+            </option>
+            `;
+
+        return;
+
+    }
+
+
+    const placeholder =
+        document.createElement(
+            'option'
         );
+
+    placeholder.value = '';
+
+    placeholder.textContent =
+        'اختار Team';
+
+
+    netlifyTeamSelect.appendChild(
+        placeholder
+    );
+
+
+    teams.forEach(
+        team => {
+
+            const option =
+                document.createElement(
+                    'option'
+                );
+
+
+            const id =
+                team.id ||
+                team.teamId ||
+                team.slug;
+
+
+            const name =
+                team.name ||
+                team.slug ||
+                id;
+
+
+            option.value =
+                id || '';
+
+
+            option.textContent =
+                name;
+
+
+            if (
+                state.teamId &&
+                String(id) ===
+                String(state.teamId)
+            ) {
+
+                option.selected =
+                    true;
+
+            }
+
+
+            netlifyTeamSelect.appendChild(
+                option
+            );
+
+        }
+    );
+
+}
+
+
+// ====================================================
+// 15. CONNECT NETLIFY
+// ====================================================
+
+if (
+    connectNetlifyBtn
+) {
+
+    connectNetlifyBtn.addEventListener(
+        'click',
+        async function () {
+
+            if (
+                !window.TemplateCraftNetlify
+            ) {
+
+                return;
+
+            }
+
+
+            try {
+
+                if (
+                    typeof window.TemplateCraftNetlify
+                        .connect ===
+                        'function'
+                ) {
+
+                    await window.TemplateCraftNetlify
+                        .connect();
+
+                }
+
+
+                await refreshNetlifyState();
+
+            } catch (error) {
+
+                console.error(
+                    '[TemplateCraft] Netlify connect:',
+                    error
+                );
+
+            }
+
+        }
+    );
+
+}
+
+
+// ====================================================
+// 16. SELECT TEAM
+// ====================================================
+
+if (
+    netlifyTeamSelect
+) {
+
+    netlifyTeamSelect.addEventListener(
+        'change',
+        async function () {
+
+            const teamId =
+                netlifyTeamSelect.value;
+
+
+            if (!teamId) {
+                return;
+            }
+
+
+            if (
+                !window.TemplateCraftNetlify
+            ) {
+
+                return;
+
+            }
+
+
+            try {
+
+                if (
+                    typeof window.TemplateCraftNetlify
+                        .selectTeam ===
+                        'function'
+                ) {
+
+                    await window.TemplateCraftNetlify
+                        .selectTeam(
+                            teamId
+                        );
+
+                }
+
+
+                await refreshNetlifyState();
+
+            } catch (error) {
+
+                console.error(
+                    '[TemplateCraft] Select Netlify team:',
+                    error
+                );
+
+            }
+
+        }
+    );
+
+}
+
+
+// ====================================================
+// 17. OPEN CREATE MODAL
+// ====================================================
+
+async function openCreateModal() {
+
+    const siteName =
+        String(
+            siteNameInput?.value || ''
+        ).trim();
+
+
+    const selected =
+        window.TemplateCraftCreatePage?.getSelectedTemplate?.();
+
+
+    if (!siteName) {
+
+        alert(
+            'دخل اسم المشروع أولاً.'
+        );
+
+        siteNameInput?.focus();
+
+        return;
+
+    }
+
+
+    if (!selected) {
+
+        alert(
+            'اختار قالب أولاً.'
+        );
+
+        return;
+
+    }
+
+
+    /*
+    -----------------------------------------------
+    Modal content
+    -----------------------------------------------
+    */
+
+    if (
+        createModalContent
+    ) {
+
+        createModalContent.innerHTML =
+            `
+            <div
+                style="
+                    display:grid;
+                    gap:10px;
+                "
+            >
+
+                <div>
+                    <strong>اسم المشروع</strong>
+                    <div
+                        style="
+                            color:#64748b;
+                            margin-top:3px;
+                        "
+                    >
+                        ${escapeHtmlSafe(siteName)}
+                    </div>
+                </div>
+
+                <div>
+                    <strong>القالب</strong>
+                    <div
+                        style="
+                            color:#64748b;
+                            margin-top:3px;
+                        "
+                    >
+                        ${escapeHtmlSafe(selected.name)}
+                    </div>
+                </div>
+
+                <div>
+                    <strong>الفئة</strong>
+                    <div
+                        style="
+                            color:#64748b;
+                            margin-top:3px;
+                        "
+                    >
+                        ${escapeHtmlSafe(
+                            selected.projectType ||
+                            selected.category ||
+                            ''
+                        )}
+                    </div>
+                </div>
+
+            </div>
+            `;
+
+    }
+
+
+    if (
+        createModal
+    ) {
+
+        createModal.classList.add(
+            'show'
+        );
+
+        createModal.classList.add(
+            'active'
+        );
+
+    }
+
+
+    if (
+        confirmCreateBtn
+    ) {
+
+        confirmCreateBtn.disabled =
+            true;
+
+        confirmCreateBtn.textContent =
+            '⏳ جاري التحقق من Netlify...';
+
+    }
+
+
+    /*
+    -----------------------------------------------
+    Refresh with timeout
+    -----------------------------------------------
+    */
+
+    const state =
+        await refreshNetlifyState();
+
+
+    if (
+        netlifyReady(state)
+    ) {
+
+        if (
+            confirmCreateBtn
+        ) {
+
+            confirmCreateBtn.disabled =
+                false;
+
+            confirmCreateBtn.textContent =
+                '🚀 تأكيد إنشاء المشروع';
+
+        }
 
     } else {
 
-        statusMessage.classList.add(
-            'text-blue-600'
+        if (
+            confirmCreateBtn
+        ) {
+
+            confirmCreateBtn.disabled =
+                true;
+
+            confirmCreateBtn.textContent =
+                '⚠ خاصك تجهيز Netlify أولاً';
+
+        }
+
+
+        if (
+            createModalContent
+        ) {
+
+            createModalContent.innerHTML +=
+                `
+                <div
+                    style="
+                        margin-top:15px;
+                        padding:12px;
+                        border-radius:12px;
+                        background:#fff7ed;
+                        color:#9a3412;
+                        font-size:12px;
+                        font-weight:700;
+                    "
+                >
+                    ${escapeHtmlSafe(
+                        getNetlifyReadinessMessage(
+                            state
+                        )
+                    )}
+                </div>
+                `;
+
+        }
+
+    }
+
+}
+
+
+// ====================================================
+// 18. CLOSE CREATE MODAL
+// ====================================================
+
+function closeCreateModal() {
+
+    if (
+        createModal
+    ) {
+
+        createModal.classList.remove(
+            'show'
+        );
+
+        createModal.classList.remove(
+            'active'
         );
 
     }
@@ -1063,17 +1120,227 @@ function showStatus(
 }
 
 
-// ================================================
-// 18. INITIALIZE
-// ================================================
+// ====================================================
+// 19. MODAL EVENTS
+// ====================================================
+
+cancelCreateBtn?.addEventListener(
+    'click',
+    closeCreateModal
+);
+
+
+closeCreateModalBtn?.addEventListener(
+    'click',
+    closeCreateModal
+);
+
+
+createModal?.addEventListener(
+    'click',
+    function (event) {
+
+        if (
+            event.target ===
+            createModal
+        ) {
+
+            closeCreateModal();
+
+        }
+
+    }
+);
+
+
+// ====================================================
+// 20. CREATE PROJECT BUTTON
+// ====================================================
+
+createProjectBtn?.addEventListener(
+    'click',
+    async function () {
+
+        await openCreateModal();
+
+    }
+);
+
+
+// ====================================================
+// 21. CONFIRM CREATE
+// ====================================================
+
+confirmCreateBtn?.addEventListener(
+    'click',
+    async function () {
+
+        if (
+            confirmCreateBtn.disabled
+        ) {
+
+            return;
+
+        }
+
+
+        const selected =
+            window.TemplateCraftCreatePage
+                ?.getSelectedTemplate?.();
+
+
+        const siteName =
+            String(
+                siteNameInput?.value || ''
+            ).trim();
+
+
+        if (
+            !selected ||
+            !siteName
+        ) {
+
+            return;
+
+        }
+
+
+        const state =
+            await refreshNetlifyState();
+
+
+        if (
+            !netlifyReady(state)
+        ) {
+
+            alert(
+                getNetlifyReadinessMessage(
+                    state
+                )
+            );
+
+            return;
+
+        }
+
+
+        confirmCreateBtn.disabled =
+            true;
+
+        confirmCreateBtn.textContent =
+            '⏳ جاري إنشاء المشروع...';
+
+
+        /*
+        ------------------------------------------------
+        هنا نخلي ملفات deployment الحالية
+        هي اللي تتكلف بعملية الإنشاء.
+        ------------------------------------------------
+        */
+
+        window.dispatchEvent(
+            new CustomEvent(
+                'templatecraft:create-project',
+                {
+                    detail: {
+
+                        siteName,
+
+                        template:
+                            selected,
+
+                        templateId:
+                            selected.id,
+
+                        projectType:
+                            selected.projectType ||
+                            selected.category,
+
+                        netlify:
+                            state
+
+                    }
+
+                }
+            )
+        );
+
+
+        /*
+        إذا كان create-project-deployment.js
+        عندو API معروف، يستقبل الحدث أعلاه.
+        */
+
+    }
+);
+
+
+// ====================================================
+// 22. SAFE HTML
+// ====================================================
+
+function escapeHtmlSafe(
+    value
+) {
+
+    return String(
+        value ?? ''
+    )
+        .replace(
+            /&/g,
+            '&amp;'
+        )
+        .replace(
+            /</g,
+            '&lt;'
+        )
+        .replace(
+            />/g,
+            '&gt;'
+        )
+        .replace(
+            /"/g,
+            '&quot;'
+        )
+        .replace(
+            /'/g,
+            '&#039;'
+        );
+
+}
+
+
+// ====================================================
+// 23. USER INFO
+// ====================================================
+
+function initializeUserInfo() {
+
+    /*
+    HTML الحالي ما فيهومش userInfo/userEmail،
+    لذلك ما نديروش أي error.
+    */
+
+}
+
+
+// ====================================================
+// 24. INITIALIZE
+// ====================================================
 
 async function initializeCreateProjectPage() {
 
-    if (!apiAvailable()) {
+    console.log(
+        '[TemplateCraft] Create Project initialized'
+    );
 
-        showStatus(
-            'تعذر تحميل API. تأكد من ملف client-api.js.',
-            'error'
+
+    if (
+        !apiAvailable()
+    ) {
+
+        console.warn(
+            '[TemplateCraft] TemplateCraftAPI not available'
         );
 
     }
@@ -1081,37 +1348,52 @@ async function initializeCreateProjectPage() {
 
     initializeUserInfo();
 
-    initializeCreateModalEvents();
 
-
-    if (
-        typeof window.initializeTemplateSystem ===
-            'function'
-    ) {
-
-        window.initializeTemplateSystem();
-
-    }
-
+    /*
+    -----------------------------------------------
+    Netlify
+    -----------------------------------------------
+    */
 
     await refreshNetlifyState();
 
+
+    /*
+    -----------------------------------------------
+    Deployment system
+    -----------------------------------------------
+    */
 
     if (
         typeof window.initializeDeploymentSystem ===
             'function'
     ) {
 
-        window.initializeDeploymentSystem();
+        try {
+
+            window.initializeDeploymentSystem();
+
+        } catch (error) {
+
+            console.error(
+                '[TemplateCraft] Deployment initialization:',
+                error
+            );
+
+        }
 
     }
 
 }
 
 
+// ====================================================
+// 25. DOM READY
+// ====================================================
+
 window.addEventListener(
     'DOMContentLoaded',
-    function() {
+    function () {
 
         initializeCreateProjectPage();
 
