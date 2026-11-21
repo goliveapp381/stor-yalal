@@ -1,7 +1,7 @@
 /* =========================================
    TEMPLATECRAFT PRO
    CREATE PROJECT
-   PREMIUM GLASS / IMAGE CARD EDITION
+   PREMIUM FULL IMAGE TEMPLATE CARDS
 ========================================= */
 
 * {
@@ -47,9 +47,11 @@ button {
     -webkit-tap-highlight-color: transparent;
 }
 
-.hidden {
+.hidden,
+.is-hidden {
     display: none !important;
 }
+
 
 /* =========================================
    PAGE
@@ -68,6 +70,7 @@ button {
     margin: 0 auto;
 }
 
+
 /* =========================================
    HEADER
 ========================================= */
@@ -79,7 +82,7 @@ button {
     z-index: 1000;
 
     background:
-        rgba(255, 255, 255, .88);
+        rgba(255, 255, 255, .90);
 
     border-bottom:
         1px solid #e2e8f0;
@@ -115,11 +118,11 @@ button {
     width: 44px;
     height: 44px;
 
-    border-radius: 14px;
-
     display: flex;
     align-items: center;
     justify-content: center;
+
+    border-radius: 14px;
 
     color: white;
 
@@ -151,11 +154,12 @@ button {
 
     margin-top: 1px;
 
-    font-size: 11px;
-
     color: #64748b;
+
+    font-size: 11px;
     font-weight: 600;
 }
+
 
 /* =========================================
    HERO
@@ -163,7 +167,7 @@ button {
 
 .hero {
     padding:
-        86px 0 38px;
+        72px 0 38px;
 }
 
 .hero-content {
@@ -241,7 +245,6 @@ button {
 
 .hero-card > * {
     position: relative;
-
     z-index: 2;
 }
 
@@ -272,9 +275,6 @@ button {
 
     backdrop-filter:
         blur(10px);
-
-    -webkit-backdrop-filter:
-        blur(10px);
 }
 
 .hero-title {
@@ -293,8 +293,6 @@ button {
     line-height: 1.18;
 
     font-weight: 900;
-
-    letter-spacing: -.5px;
 }
 
 .hero-description {
@@ -385,6 +383,7 @@ button {
     line-height: 1.65;
 }
 
+
 /* =========================================
    SECTIONS
 ========================================= */
@@ -434,6 +433,7 @@ button {
 
     line-height: 1.7;
 }
+
 
 /* =========================================
    FORM
@@ -494,6 +494,7 @@ button {
         rgba(99, 102, 241, .10);
 }
 
+
 /* =========================================
    SELECTED TEMPLATE
 ========================================= */
@@ -521,6 +522,7 @@ button {
     color: #4f46e5;
 }
 
+
 /* =========================================
    TEMPLATE GRID
 ========================================= */
@@ -535,18 +537,21 @@ button {
         );
 
     gap: 22px;
+
+    width: 100%;
 }
+
 
 /* =========================================
    TEMPLATE CARD
-   FULL IMAGE SURFACE
 ========================================= */
 
 .template-card {
     position: relative;
 
-    height: 440px;
+    width: 100%;
 
+    height: 440px;
     min-height: 440px;
 
     overflow: hidden;
@@ -583,8 +588,8 @@ button {
         rgba(15, 23, 42, .20);
 }
 
-.template-card.selected,
-.template-card.is-selected {
+.template-card.is-selected,
+.template-card.selected {
     border-color:
         rgba(99, 102, 241, .85) !important;
 
@@ -596,69 +601,13 @@ button {
         rgba(79, 70, 229, .20);
 }
 
-/* =========================================
-   SELECTED ANIMATED BORDER
-========================================= */
-
-.template-card.selected::before,
-.template-card.is-selected::before {
-    content: "";
-
-    position: absolute;
-
-    inset: -2px;
-
-    z-index: -1;
-
-    border-radius: 26px;
-
-    background:
-        linear-gradient(
-            120deg,
-            #22c55e,
-            #06b6d4,
-            #3b82f6,
-            #8b5cf6,
-            #a855f7,
-            #22c55e
-        );
-
-    background-size:
-        300% 300%;
-
-    filter:
-        blur(7px);
-
-    opacity: .55;
-
-    animation:
-        selectedGradient
-        5s ease infinite;
-}
-
-@keyframes selectedGradient {
-
-    0% {
-        background-position:
-            0% 50%;
-    }
-
-    50% {
-        background-position:
-            100% 50%;
-    }
-
-    100% {
-        background-position:
-            0% 50%;
-    }
-}
 
 /* =========================================
-   IMAGE WRAPPER
+   IMPORTANT
+   FULL PREVIEW AREA
 ========================================= */
 
-.template-image-wrapper {
+.template-card-preview {
     position: absolute;
 
     inset: 0;
@@ -674,27 +623,46 @@ button {
     z-index: 0;
 }
 
-.template-image {
+
+/* =========================================
+   TEMPLATE THUMBNAIL
+========================================= */
+
+.template-thumbnail {
     position: absolute;
 
     inset: 0;
 
-    width: 100%;
-    height: 100%;
+    width: 100% !important;
+    height: 100% !important;
+
+    min-width: 100%;
+    min-height: 100%;
 
     display: block;
 
-    object-fit: cover;
+    border: 0;
+
+    object-fit: cover !important;
 
     object-position:
-        center top;
+        center center;
+
+    background:
+        #0f172a;
+
+    transform:
+        scale(1.001);
+
+    transform-origin:
+        center center;
 
     transition:
         transform .7s ease,
         filter .5s ease;
 }
 
-.template-card:hover .template-image {
+.template-card:hover .template-thumbnail {
     transform:
         scale(1.045);
 
@@ -702,12 +670,52 @@ button {
         brightness(.86);
 }
 
+
 /* =========================================
-   IFRAME / PREVIEW INSIDE CARD
+   IF PREVIEW IS IFRAME
 ========================================= */
 
-.template-image-wrapper iframe,
-.template-image-wrapper .preview-frame {
+.template-card-preview iframe {
+    position: absolute !important;
+
+    top: 0 !important;
+    left: 0 !important;
+
+    width: 100% !important;
+    height: 100% !important;
+
+    min-width: 100% !important;
+    min-height: 100% !important;
+
+    max-width: none !important;
+    max-height: none !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    border: 0 !important;
+
+    display: block !important;
+
+    background: white;
+
+    transform:
+        none !important;
+
+    transform-origin:
+        center center;
+
+    pointer-events: none;
+
+    overflow: hidden;
+}
+
+
+/* =========================================
+   FALLBACK PREVIEW
+========================================= */
+
+.template-fallback-preview {
     position: absolute;
 
     inset: 0;
@@ -717,22 +725,98 @@ button {
 
     border: 0;
 
-    background: white;
+    background:
+        linear-gradient(
+            135deg,
+            #0f172a,
+            #1e293b,
+            #312e81
+        );
 
-    pointer-events: none;
-
-    transform-origin:
-        center center;
+    overflow: hidden;
 }
 
-/* =========================================
-   IMAGE FALLBACK
-========================================= */
-
-.template-image-fallback {
+.template-fallback-preview iframe {
     position: absolute;
 
     inset: 0;
+
+    width: 100% !important;
+    height: 100% !important;
+
+    border: 0;
+
+    display: block;
+
+    background: white;
+
+    pointer-events: none;
+}
+
+
+/* =========================================
+   PREVIEW IMAGE
+========================================= */
+
+.template-card-preview img {
+    position: absolute;
+
+    inset: 0;
+
+    width: 100% !important;
+    height: 100% !important;
+
+    display: block;
+
+    object-fit: cover !important;
+
+    object-position:
+        center center;
+}
+
+
+/* =========================================
+   GRADIENT OVERLAY
+========================================= */
+
+.template-card-gradient {
+    position: absolute;
+
+    inset: 0;
+
+    z-index: 2;
+
+    pointer-events: none;
+
+    background:
+        linear-gradient(
+            to bottom,
+
+            rgba(15, 23, 42, .00) 0%,
+
+            rgba(15, 23, 42, .02) 25%,
+
+            rgba(15, 23, 42, .08) 42%,
+
+            rgba(15, 23, 42, .32) 58%,
+
+            rgba(15, 23, 42, .72) 76%,
+
+            rgba(15, 23, 42, .94) 100%
+        );
+}
+
+
+/* =========================================
+   NO PREVIEW
+========================================= */
+
+.template-no-preview {
+    position: absolute;
+
+    inset: 0;
+
+    z-index: 1;
 
     display: flex;
 
@@ -757,55 +841,20 @@ button {
         );
 }
 
-.template-image-fallback.hidden {
-    display: none !important;
-}
 
 /* =========================================
-   IMAGE OVERLAY
+   CATEGORY
 ========================================= */
 
-.template-image-overlay {
-    position: absolute;
+.template-category {
+    display: inline-flex;
 
-    inset: 0;
-
-    z-index: 1;
-
-    pointer-events: none;
-
-    background:
-        linear-gradient(
-            to bottom,
-
-            rgba(15, 23, 42, .02) 0%,
-
-            rgba(15, 23, 42, .04) 20%,
-
-            rgba(15, 23, 42, .10) 38%,
-
-            rgba(15, 23, 42, .28) 53%,
-
-            rgba(15, 23, 42, .70) 72%,
-
-            rgba(15, 23, 42, .94) 100%
-        );
-}
-
-/* =========================================
-   TOP BADGES
-========================================= */
-
-.template-badge {
-    position: absolute;
-
-    top: 14px;
-    right: 14px;
-
-    z-index: 10;
+    align-items: center;
 
     padding:
-        7px 11px;
+        6px 10px;
+
+    margin-bottom: 8px;
 
     border:
         1px solid
@@ -814,23 +863,24 @@ button {
     border-radius: 999px;
 
     background:
-        rgba(15, 23, 42, .62);
+        rgba(15, 23, 42, .55);
 
     color: white;
 
-    font-size: 10px;
+    font-size: 9px;
     font-weight: 900;
 
     backdrop-filter:
-        blur(12px);
+        blur(10px);
 
     -webkit-backdrop-filter:
-        blur(12px);
-
-    box-shadow:
-        0 8px 20px
-        rgba(0, 0, 0, .12);
+        blur(10px);
 }
+
+
+/* =========================================
+   SELECTED BADGE
+========================================= */
 
 .template-selected-badge {
     position: absolute;
@@ -838,7 +888,7 @@ button {
     top: 14px;
     left: 14px;
 
-    z-index: 11;
+    z-index: 20;
 
     padding:
         7px 11px;
@@ -868,51 +918,10 @@ button {
         rgba(16, 185, 129, .22);
 }
 
-/* =========================================
-   MOVING GLOW LINE
-========================================= */
-
-.template-card.selected .selectedGlowLine,
-.template-card.is-selected .selectedGlowLine {
-    position: absolute;
-
-    top: 0;
-    left: -100%;
-
-    width: 70%;
-    height: 2px;
-
-    z-index: 20;
-
-    background:
-        linear-gradient(
-            90deg,
-            transparent,
-            #22c55e,
-            #3b82f6,
-            #a855f7,
-            transparent
-        );
-
-    animation:
-        glowLine
-        3s linear infinite;
-}
-
-@keyframes glowLine {
-
-    0% {
-        left: -100%;
-    }
-
-    100% {
-        left: 150%;
-    }
-}
 
 /* =========================================
    CARD BODY
-   OVERLAY / GLASS
+   GLASS OVER IMAGE
 ========================================= */
 
 .template-card-body {
@@ -922,7 +931,9 @@ button {
     right: 0;
     bottom: 0;
 
-    z-index: 5;
+    width: 100%;
+
+    z-index: 10;
 
     padding:
         24px 20px 20px;
@@ -933,13 +944,13 @@ button {
 
             rgba(15, 23, 42, 0) 0%,
 
-            rgba(15, 23, 42, .20) 10%,
+            rgba(15, 23, 42, .18) 8%,
 
-            rgba(15, 23, 42, .52) 32%,
+            rgba(15, 23, 42, .48) 28%,
 
-            rgba(15, 23, 42, .74) 60%,
+            rgba(15, 23, 42, .72) 55%,
 
-            rgba(15, 23, 42, .84) 100%
+            rgba(15, 23, 42, .86) 100%
         );
 
     backdrop-filter:
@@ -947,34 +958,20 @@ button {
 
     -webkit-backdrop-filter:
         blur(5px);
-
-    transition:
-        background .3s ease,
-        backdrop-filter .3s ease;
 }
 
-.template-card:hover .template-card-body {
-    background:
-        linear-gradient(
-            to bottom,
-
-            rgba(15, 23, 42, 0) 0%,
-
-            rgba(15, 23, 42, .25) 10%,
-
-            rgba(15, 23, 42, .58) 34%,
-
-            rgba(15, 23, 42, .78) 62%,
-
-            rgba(15, 23, 42, .88) 100%
-        );
-}
 
 /* =========================================
-   CARD TITLE
+   TEMPLATE INFO
 ========================================= */
 
-.template-title {
+.template-card-info {
+    position: relative;
+
+    z-index: 11;
+}
+
+.template-name {
     margin:
         0 0 5px;
 
@@ -990,10 +987,6 @@ button {
         0 2px 14px
         rgba(0, 0, 0, .45);
 }
-
-/* =========================================
-   CARD DESCRIPTION
-========================================= */
 
 .template-description {
     margin:
@@ -1016,61 +1009,32 @@ button {
     overflow: hidden;
 }
 
-/* =========================================
-   FEATURES
-========================================= */
-
-.template-features {
-    display: flex;
-
-    flex-wrap: wrap;
-
-    gap: 6px;
-
-    margin-bottom: 15px;
-}
-
-.template-feature {
-    padding:
-        5px 8px;
-
-    border:
-        1px solid
-        rgba(255, 255, 255, .13);
-
-    border-radius: 8px;
-
-    background:
-        rgba(255, 255, 255, .11);
-
-    color:
-        rgba(255, 255, 255, .92);
-
-    font-size: 9px;
-    font-weight: 800;
-
-    backdrop-filter:
-        blur(8px);
-
-    -webkit-backdrop-filter:
-        blur(8px);
-}
 
 /* =========================================
-   ACTIONS
+   CARD ACTIONS
 ========================================= */
 
-.template-actions {
+.template-card-actions {
+    position: relative;
+
+    z-index: 20;
+
     display: grid;
 
     grid-template-columns:
         1fr 1fr;
 
     gap: 9px;
+
+    margin-top: 12px;
 }
 
-.template-preview-btn,
-.template-select-btn {
+
+/* =========================================
+   PREVIEW BUTTON
+========================================= */
+
+.preview-template-btn {
     min-height: 43px;
 
     display: flex;
@@ -1081,7 +1045,16 @@ button {
     padding:
         0 12px;
 
+    border:
+        1px solid
+        rgba(255, 255, 255, .28);
+
     border-radius: 12px;
+
+    background:
+        rgba(255, 255, 255, .12);
+
+    color: white;
 
     font-size: 11px;
     font-weight: 900;
@@ -1090,31 +1063,19 @@ button {
 
     text-decoration: none;
 
-    transition:
-        transform .2s ease,
-        box-shadow .2s ease,
-        background .2s ease,
-        opacity .2s ease;
-}
-
-.template-preview-btn {
-    border:
-        1px solid
-        rgba(255, 255, 255, .28);
-
-    background:
-        rgba(255, 255, 255, .12);
-
-    color: white;
-
     backdrop-filter:
         blur(12px);
 
     -webkit-backdrop-filter:
         blur(12px);
+
+    transition:
+        transform .2s ease,
+        background .2s ease,
+        box-shadow .2s ease;
 }
 
-.template-preview-btn:hover {
+.preview-template-btn:hover {
     transform:
         translateY(-2px);
 
@@ -1126,10 +1087,25 @@ button {
         rgba(0, 0, 0, .18);
 }
 
-.template-select-btn {
+
+/* =========================================
+   SELECT BUTTON
+========================================= */
+
+.select-template-btn {
+    min-height: 43px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    padding:
+        0 12px;
+
     border: 0;
 
-    color: white;
+    border-radius: 12px;
 
     background:
         linear-gradient(
@@ -1138,12 +1114,23 @@ button {
             #7c3aed
         );
 
+    color: white;
+
+    font-size: 11px;
+    font-weight: 900;
+
+    cursor: pointer;
+
     box-shadow:
         0 10px 25px
         rgba(79, 70, 229, .25);
+
+    transition:
+        transform .2s ease,
+        box-shadow .2s ease;
 }
 
-.template-select-btn:hover {
+.select-template-btn:hover {
     transform:
         translateY(-2px);
 
@@ -1152,11 +1139,12 @@ button {
         rgba(79, 70, 229, .35);
 }
 
+
 /* =========================================
-   STATE / LOADING
+   TEMPLATE STATE
 ========================================= */
 
-.state-message {
+.template-state-card {
     width: 100%;
 
     padding:
@@ -1179,7 +1167,7 @@ button {
     line-height: 1.8;
 }
 
-.state-message.error {
+.template-state-error {
     border-color:
         #fecaca;
 
@@ -1190,203 +1178,43 @@ button {
         #b91c1c;
 }
 
-/* =========================================
-   MODAL
-========================================= */
+.template-spinner {
+    width: 34px;
+    height: 34px;
 
-.modal {
-    display: none;
-}
-
-.modal.active,
-.modal.show {
-    display: flex;
-}
-
-/* =========================================
-   CREATE MODAL
-========================================= */
-
-.create-modal-backdrop {
-    position: fixed;
-
-    inset: 0;
-
-    z-index: 5000;
-
-    display: none;
-
-    align-items: center;
-    justify-content: center;
-
-    padding: 20px;
-
-    background:
-        rgba(15, 23, 42, .64);
-
-    backdrop-filter:
-        blur(10px);
-
-    -webkit-backdrop-filter:
-        blur(10px);
-}
-
-.create-modal-backdrop.active,
-.create-modal-backdrop.show {
-    display: flex;
-}
-
-.create-modal-card {
-    position: relative;
-
-    width:
-        min(
-            560px,
-            100%
-        );
-
-    max-height:
-        calc(100vh - 40px);
-
-    overflow-y: auto;
-
-    padding: 25px;
-
-    border-radius: 24px;
-
-    background: white;
-
-    box-shadow:
-        0 30px 100px
-        rgba(15, 23, 42, .30);
-
-    animation:
-        modalIn
-        .35s
-        cubic-bezier(.2, .8, .2, 1);
-}
-
-@keyframes modalIn {
-
-    from {
-        opacity: 0;
-
-        transform:
-            translateY(25px)
-            scale(.96);
-    }
-
-    to {
-        opacity: 1;
-
-        transform:
-            translateY(0)
-            scale(1);
-    }
-}
-
-/* =========================================
-   BUTTONS
-========================================= */
-
-button:disabled {
-    opacity: .60;
-
-    cursor:
-        not-allowed;
-}
-
-.primary-button {
-    width: 100%;
-
-    min-height: 54px;
-
-    padding:
-        0 18px;
-
-    border: 0;
-
-    border-radius: 15px;
-
-    background:
-        linear-gradient(
-            135deg,
-            #4f46e5,
-            #7c3aed
-        );
-
-    color: white;
-
-    font-size: 14px;
-    font-weight: 900;
-
-    cursor: pointer;
-
-    box-shadow:
-        0 15px 35px
-        rgba(79, 70, 229, .22);
-
-    transition:
-        transform .2s ease,
-        box-shadow .2s ease,
-        opacity .2s ease;
-}
-
-.primary-button:hover:not(:disabled) {
-    transform:
-        translateY(-2px);
-
-    box-shadow:
-        0 20px 45px
-        rgba(79, 70, 229, .28);
-}
-
-.secondary-button {
-    min-height: 44px;
-
-    padding:
-        0 16px;
+    margin:
+        0 auto 12px;
 
     border:
-        1px solid #cbd5e1;
+        3px solid #e2e8f0;
 
-    border-radius: 12px;
+    border-top-color:
+        #6366f1;
 
-    background: white;
+    border-radius: 50%;
 
-    color: #334155;
-
-    font-size: 12px;
-    font-weight: 800;
-
-    cursor: pointer;
-
-    transition:
-        background .2s ease,
-        border-color .2s ease,
-        transform .2s ease;
+    animation:
+        templateSpin
+        .8s linear infinite;
 }
 
-.secondary-button:hover {
-    background:
-        #f8fafc;
+@keyframes templateSpin {
 
-    border-color:
-        #94a3b8;
+    to {
+        transform:
+            rotate(360deg);
+    }
 }
+
 
 /* =========================================
-   NETLIFY OUTER BOX
+   NETLIFY
 ========================================= */
 
 .netlify-box {
     position: relative;
 
-    width: 100%;
-
-    min-height: 210px;
-
-    padding: 20px;
+    padding: 19px;
 
     overflow: hidden;
 
@@ -1401,10 +1229,6 @@ button:disabled {
             #ffffff,
             #f8fafc
         );
-
-    box-shadow:
-        0 10px 30px
-        rgba(15, 23, 42, .04);
 }
 
 .netlify-box::before {
@@ -1412,11 +1236,11 @@ button:disabled {
 
     position: absolute;
 
-    width: 180px;
-    height: 180px;
+    width: 150px;
+    height: 150px;
 
-    top: -100px;
-    left: -70px;
+    top: -90px;
+    left: -60px;
 
     border-radius: 50%;
 
@@ -1508,329 +1332,115 @@ button:disabled {
         #b91c1c;
 }
 
-
-/* =========================================
-   NETLIFY — CURRENT UI
-   FULL WIDTH / FULL HEIGHT FIX
-========================================= */
-
-#netlifyStatusContainer {
-    position: relative;
-
-    width: 100% !important;
-
-    min-width: 0;
-
-    min-height: 190px;
-
-    display: flex;
-
-    flex-direction: column;
-
-    gap: 0;
-
-    box-sizing: border-box;
-
-    padding: 22px !important;
-
-    margin: 0 !important;
-
-    overflow: hidden;
-
-    border-radius: 20px;
-
-    border:
-        1px solid
-        rgba(226, 232, 240, .95);
-
-    background:
-        linear-gradient(
-            135deg,
-            rgba(255, 255, 255, .96),
-            rgba(248, 250, 252, .96)
-        );
-
-    box-shadow:
-        0 12px 35px
-        rgba(15, 23, 42, .05);
-
-    isolation: isolate;
-}
-
-
-/* Decorative background */
-
-#netlifyStatusContainer::before {
-    content: "";
-
-    position: absolute;
-
-    width: 220px;
-    height: 220px;
-
-    right: -100px;
-    top: -130px;
-
-    border-radius: 50%;
-
-    background:
-        rgba(99, 102, 241, .055);
-
-    pointer-events: none;
-
-    z-index: -1;
-}
-
-
-/* =========================================
-   NETLIFY TITLE
-========================================= */
-
-#netlifyStatusTitle {
-    position: relative;
-
-    width: 100%;
-
-    margin: 0 0 7px !important;
-
-    padding: 0;
-
-    color: #0f172a;
-
-    font-size: 17px;
-
-    line-height: 1.6;
-
-    font-weight: 900;
-}
-
-
-/* =========================================
-   NETLIFY DESCRIPTION
-========================================= */
-
-#netlifyStatusDescription {
-    position: relative;
-
-    width: 100%;
-
-    margin: 0 !important;
-
-    padding: 0;
-
-    color: #64748b;
-
-    font-size: 12px;
-
-    line-height: 1.8;
-}
-
-
-/* =========================================
-   NETLIFY BADGE
-========================================= */
-
-#netlifyStatusBadge {
-    position: relative;
-
-    display: inline-flex;
-
-    align-items: center;
-    justify-content: center;
-
-    width: fit-content;
-
-    min-height: 30px;
-
-    margin-top: 13px;
-
-    padding:
-        6px 12px;
-
-    border-radius: 999px;
-
-    font-size: 11px;
-
-    font-weight: 900;
-
-    line-height: 1;
-
-    white-space: nowrap;
-}
-
-#netlifyStatusBadge.connected {
-    background:
-        #dcfce7;
-
-    color:
-        #166534;
-}
-
-#netlifyStatusBadge.disconnected {
-    background:
-        #fee2e2;
-
-    color:
-        #991b1b;
-}
-
-#netlifyStatusBadge.warning {
-    background:
-        #fef3c7;
-
-    color:
-        #92400e;
-}
-
-#netlifyStatusBadge.loading {
-    background:
-        #eef2ff;
-
-    color:
-        #4338ca;
-}
-
-
-/* =========================================
-   NETLIFY CONNECT AREA
-========================================= */
-
-#netlifyConnectContainer {
-    position: relative;
-
-    width: 100% !important;
-
-    min-width: 0;
-
-    margin-top: 18px !important;
-
-    padding: 16px !important;
-
-    box-sizing: border-box;
-
-    border-radius: 15px;
-
-    background:
-        rgba(248, 250, 252, .95);
-
-    border:
-        1px solid
-        rgba(226, 232, 240, .85);
-
-    z-index: 3;
-}
-
-
-/* =========================================
-   NETLIFY TEAMS AREA
-========================================= */
-
+#netlifyConnectContainer,
 #netlifyTeamsContainer {
     position: relative;
 
-    width: 100% !important;
-
-    min-width: 0;
-
-    margin-top: 18px !important;
-
-    padding: 16px !important;
-
-    box-sizing: border-box;
-
-    border-radius: 15px;
-
-    background:
-        rgba(248, 250, 252, .95);
-
-    border:
-        1px solid
-        rgba(226, 232, 240, .85);
-
-    z-index: 3;
+    z-index: 5;
 }
 
-
-/* =========================================
-   NETLIFY SELECT
-========================================= */
-
-#netlifyTeamSelect {
-    display: block;
-
-    width: 100% !important;
-
-    min-width: 0;
-
-    min-height: 48px;
-
-    margin: 0;
-
-    padding:
-        0 14px;
-
-    box-sizing: border-box;
-
-    border:
-        1px solid #e2e8f0;
-
-    border-radius: 12px;
-
-    outline: none;
-
-    background:
-        #ffffff;
-
-    color:
-        #334155;
-
-    font-family: inherit;
-
-    font-size: 12px;
-
-    cursor: pointer;
-
-    appearance: auto;
-
+.netlify-connect-btn {
     transition:
-        border-color .2s ease,
-        box-shadow .2s ease;
+        all .25s ease;
 }
 
-#netlifyTeamSelect:focus {
-    border-color:
-        #6366f1;
+.netlify-connect-btn:hover {
+    transform:
+        translateY(-1px);
 
     box-shadow:
-        0 0 0 4px
-        rgba(99, 102, 241, .10);
+        0 8px 20px
+        rgba(15, 23, 42, .15);
 }
 
 
 /* =========================================
-   NETLIFY CONNECT BUTTON
+   MODAL
 ========================================= */
 
-#connectNetlifyBtn {
+.modal {
+    display: none;
+}
+
+.modal.active,
+.modal.show {
     display: flex;
+}
+
+.create-modal-backdrop {
+    position: fixed;
+
+    inset: 0;
+
+    z-index: 5000;
+
+    display: none;
 
     align-items: center;
     justify-content: center;
 
-    width: 100% !important;
+    padding: 20px;
 
-    min-height: 48px;
+    background:
+        rgba(15, 23, 42, .64);
 
-    margin: 0;
+    backdrop-filter:
+        blur(10px);
+}
+
+.create-modal-backdrop.active,
+.create-modal-backdrop.show {
+    display: flex;
+}
+
+.create-modal-card {
+    position: relative;
+
+    width:
+        min(
+            560px,
+            100%
+        );
+
+    max-height:
+        calc(100vh - 40px);
+
+    overflow-y: auto;
+
+    padding: 25px;
+
+    border-radius: 24px;
+
+    background: white;
+
+    box-shadow:
+        0 30px 100px
+        rgba(15, 23, 42, .30);
+}
+
+
+/* =========================================
+   BUTTONS
+========================================= */
+
+button:disabled {
+    opacity: .60;
+
+    cursor:
+        not-allowed;
+}
+
+.primary-button {
+    width: 100%;
+
+    min-height: 54px;
 
     padding:
         0 18px;
 
     border: 0;
 
-    border-radius: 13px;
-
-    outline: none;
+    border-radius: 15px;
 
     background:
         linear-gradient(
@@ -1839,162 +1449,42 @@ button:disabled {
             #7c3aed
         );
 
-    color: #ffffff;
+    color: white;
 
-    font-family: inherit;
-
-    font-size: 13px;
-
+    font-size: 14px;
     font-weight: 900;
 
     cursor: pointer;
 
     box-shadow:
-        0 9px 24px
-        rgba(79, 70, 229, .20);
-
-    transition:
-        transform .2s ease,
-        box-shadow .2s ease,
-        opacity .2s ease;
+        0 15px 35px
+        rgba(79, 70, 229, .22);
 }
 
-#connectNetlifyBtn:hover {
-    transform:
-        translateY(-1px);
+.secondary-button {
+    min-height: 44px;
 
-    box-shadow:
-        0 13px 30px
-        rgba(79, 70, 229, .27);
-}
-
-#connectNetlifyBtn:active {
-    transform:
-        translateY(0);
-}
-
-
-/* =========================================
-   NETLIFY HIDDEN STATES
-========================================= */
-
-#netlifyStatusContainer .hidden,
-#netlifyStatusContainer .is-hidden,
-#netlifyConnectContainer.hidden,
-#netlifyTeamsContainer.hidden {
-    display: none !important;
-}
-
-
-/* =========================================
-   OLD NETLIFY COMPATIBILITY
-========================================= */
-
-.netlify-card {
-    position: relative;
-
-    overflow: hidden;
+    padding:
+        0 16px;
 
     border:
-        1px solid #e2e8f0;
+        1px solid #cbd5e1;
 
-    background:
-        linear-gradient(
-            135deg,
-            #ffffff,
-            #f8fafc
-        );
+    border-radius: 12px;
 
-    transition:
-        all .3s ease;
-}
+    background: white;
 
-.netlify-card:hover {
-    transform:
-        translateY(-2px);
+    color: #334155;
 
-    box-shadow:
-        0 14px 35px
-        rgba(15, 23, 42, .08);
-}
+    font-size: 12px;
+    font-weight: 800;
 
-.netlify-icon {
-    width: 48px;
-    height: 48px;
-
-    display: flex;
-
-    align-items: center;
-    justify-content: center;
-
-    border-radius: 15px;
-
-    color: white;
-
-    font-size: 23px;
-    font-weight: 900;
-
-    background:
-        linear-gradient(
-            135deg,
-            #0f172a,
-            #334155
-        );
-
-    box-shadow:
-        0 8px 20px
-        rgba(15, 23, 42, .18);
-}
-
-.netlify-status-dot {
-    width: 9px;
-    height: 9px;
-
-    display: inline-block;
-
-    border-radius: 50%;
-
-    background: #94a3b8;
-}
-
-.netlify-status-dot.connected {
-    background: #22c55e;
-
-    box-shadow:
-        0 0 0 4px
-        rgba(34, 197, 94, .12);
-
-    animation:
-        netlifyPulse
-        2s infinite;
-}
-
-@keyframes netlifyPulse {
-
-    0%,
-    100% {
-        box-shadow:
-            0 0 0 4px
-            rgba(34, 197, 94, .12);
-    }
-
-    50% {
-        box-shadow:
-            0 0 0 7px
-            rgba(34, 197, 94, .04);
-    }
-}
-
-.netlify-team-box {
-    animation:
-        modalIn
-        .3s ease;
+    cursor: pointer;
 }
 
 
 /* =========================================
    DEPLOYMENT OVERLAY
-   CURRENT HTML
 ========================================= */
 
 .deployment-overlay {
@@ -2016,9 +1506,6 @@ button:disabled {
 
     backdrop-filter:
         blur(12px);
-
-    -webkit-backdrop-filter:
-        blur(12px);
 }
 
 .deployment-overlay.show,
@@ -2027,8 +1514,6 @@ button:disabled {
 }
 
 .deployment-card {
-    position: relative;
-
     width:
         min(
             560px,
@@ -2036,10 +1521,6 @@ button:disabled {
         );
 
     padding: 30px;
-
-    border:
-        1px solid
-        rgba(255, 255, 255, .15);
 
     border-radius: 26px;
 
@@ -2051,305 +1532,11 @@ button:disabled {
         rgba(15, 23, 42, .30);
 
     text-align: center;
-
-    animation:
-        deployPanelIn
-        .45s ease;
-}
-
-@keyframes deployPanelIn {
-
-    from {
-        opacity: 0;
-
-        transform:
-            scale(.94)
-            translateY(20px);
-    }
-
-    to {
-        opacity: 1;
-
-        transform:
-            scale(1)
-            translateY(0);
-    }
 }
 
 #deploymentProgress {
     transition:
         width .4s ease;
-}
-
-/* =========================================
-   OLD DEPLOYMENT COMPATIBILITY
-========================================= */
-
-.deploy-overlay {
-    display: none;
-}
-
-.deploy-overlay.active,
-.deploy-overlay.show {
-    display: flex;
-}
-
-.deploy-bg {
-    position: absolute;
-
-    inset: 0;
-
-    background:
-        radial-gradient(
-            circle at 15% 20%,
-            rgba(34, 197, 94, .28),
-            transparent 30%
-        ),
-        radial-gradient(
-            circle at 85% 25%,
-            rgba(59, 130, 246, .30),
-            transparent 32%
-        ),
-        radial-gradient(
-            circle at 50% 90%,
-            rgba(139, 92, 246, .30),
-            transparent 35%
-        ),
-        linear-gradient(
-            135deg,
-            #111827,
-            #374151,
-            #172554,
-            #312e81,
-            #111827
-        );
-
-    background-size:
-        auto,
-        auto,
-        auto,
-        400% 400%;
-
-    animation:
-        deployBackground
-        9s ease infinite;
-}
-
-@keyframes deployBackground {
-
-    0% {
-        background-position:
-            0 0,
-            0 0,
-            0 0,
-            0% 50%;
-    }
-
-    50% {
-        background-position:
-            15% 20%,
-            85% 25%,
-            50% 90%,
-            100% 50%;
-    }
-
-    100% {
-        background-position:
-            0 0,
-            0 0,
-            0 0,
-            0% 50%;
-    }
-}
-
-.deploy-panel {
-    position: relative;
-
-    z-index: 5;
-
-    width:
-        min(
-            94%,
-            620px
-        );
-
-    padding: 32px;
-
-    border:
-        1px solid
-        rgba(255, 255, 255, .15);
-
-    border-radius: 28px;
-
-    background:
-        rgba(15, 23, 42, .78);
-
-    backdrop-filter:
-        blur(22px);
-
-    -webkit-backdrop-filter:
-        blur(22px);
-
-    box-shadow:
-        0 30px 100px
-        rgba(0, 0, 0, .45);
-}
-
-.deploy-logo {
-    width: 74px;
-    height: 74px;
-
-    display: flex;
-
-    align-items: center;
-    justify-content: center;
-
-    margin: 0 auto;
-
-    border-radius: 22px;
-
-    color: white;
-
-    background:
-        linear-gradient(
-            135deg,
-            #22c55e,
-            #06b6d4,
-            #3b82f6,
-            #8b5cf6
-        );
-
-    background-size:
-        250% 250%;
-
-    animation:
-        logoGradient
-        4s ease infinite;
-}
-
-@keyframes logoGradient {
-
-    0% {
-        background-position: 0% 50%;
-    }
-
-    50% {
-        background-position: 100% 50%;
-    }
-
-    100% {
-        background-position: 0% 50%;
-    }
-}
-
-.deploy-spinner {
-    width: 52px;
-    height: 52px;
-
-    margin: 20px auto;
-
-    border:
-        4px solid
-        rgba(255, 255, 255, .15);
-
-    border-top-color: #22c55e;
-    border-right-color: #3b82f6;
-    border-bottom-color: #a855f7;
-
-    border-radius: 50%;
-
-    animation:
-        deploySpin
-        1s linear infinite;
-}
-
-@keyframes deploySpin {
-
-    to {
-        transform:
-            rotate(360deg);
-    }
-}
-
-.deploy-progress {
-    width: 100%;
-    height: 5px;
-
-    overflow: hidden;
-
-    border-radius: 999px;
-
-    background:
-        rgba(255, 255, 255, .10);
-}
-
-.deploy-progress-bar {
-    width: 10%;
-    height: 100%;
-
-    border-radius: inherit;
-
-    background:
-        linear-gradient(
-            90deg,
-            #22c55e,
-            #06b6d4,
-            #3b82f6,
-            #8b5cf6
-        );
-
-    background-size:
-        300% 100%;
-
-    animation:
-        progressGradient
-        2s linear infinite;
-}
-
-@keyframes progressGradient {
-
-    0% {
-        background-position:
-            0% 50%;
-    }
-
-    100% {
-        background-position:
-            300% 50%;
-    }
-}
-
-.deploy-stage {
-    transition:
-        all .3s ease;
-}
-
-.deploy-stage.active {
-    color: white;
-}
-
-.deploy-stage.done {
-    color: #86efac;
-}
-
-.deploy-stage.pending {
-    color:
-        rgba(255, 255, 255, .38);
-}
-
-.stage-icon {
-    width: 34px;
-    height: 34px;
-
-    display: flex;
-
-    align-items: center;
-    justify-content: center;
-
-    border-radius: 10px;
-
-    background:
-        rgba(255, 255, 255, .07);
 }
 
 
@@ -2375,9 +1562,6 @@ button:disabled {
         rgba(15, 23, 42, .70);
 
     backdrop-filter:
-        blur(10px);
-
-    -webkit-backdrop-filter:
         blur(10px);
 }
 
@@ -2406,51 +1590,11 @@ button:disabled {
 
 
 /* =========================================
-   PREVIEW
+   RESULT
 ========================================= */
 
-.preview-frame {
-    width: 100%;
-    height: 190px;
-
-    border: 0;
-
-    background: white;
-
-    pointer-events: none;
-}
-
-.modal-frame {
-    width: 100%;
-    height: 70vh;
-
-    border: 0;
-
-    background: white;
-}
-
-
-/* =========================================
-   FEATURE CARD
-========================================= */
-
-.feature-card {
-    transition:
-        transform .25s ease,
-        box-shadow .25s ease,
-        border-color .25s ease;
-}
-
-.feature-card:hover {
-    transform:
-        translateY(-2px);
-
-    box-shadow:
-        0 10px 25px
-        rgba(15, 23, 42, .06);
-
-    border-color:
-        #c4b5fd;
+.create-result {
+    margin-top: 18px;
 }
 
 
@@ -2472,10 +1616,6 @@ button:disabled {
         grid-template-columns:
             1fr;
     }
-
-    .hero-side {
-        min-height: auto;
-    }
 }
 
 
@@ -2492,7 +1632,7 @@ button:disabled {
 
     .hero {
         padding:
-            52px 0 28px;
+            48px 0 28px;
     }
 
     .hero-card {
@@ -2526,20 +1666,37 @@ button:disabled {
         padding: 18px;
     }
 
-    .section-header {
-        margin-bottom: 18px;
-    }
-
     .templates-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns:
+            1fr;
 
         gap: 18px;
     }
 
     .template-card {
-        height: 430px;
+        width: 100%;
 
+        height: 430px;
         min-height: 430px;
+
+        border-radius: 22px;
+    }
+
+    .template-card-preview {
+        width: 100%;
+        height: 100%;
+    }
+
+    .template-thumbnail {
+        width: 100% !important;
+        height: 100% !important;
+
+        object-fit: cover !important;
+    }
+
+    .template-card-preview iframe {
+        width: 100% !important;
+        height: 100% !important;
     }
 
     .template-card-body {
@@ -2547,61 +1704,8 @@ button:disabled {
             22px 17px 17px;
     }
 
-    .template-title {
+    .template-name {
         font-size: 17px;
-    }
-
-    .deployment-card,
-    .create-modal-card,
-    .ssl-card {
-        border-radius: 20px;
-
-        padding: 21px;
-    }
-
-
-    /* =====================================
-       NETLIFY MOBILE
-    ===================================== */
-
-    #netlifyStatusContainer {
-        width: 100% !important;
-
-        min-height: 185px;
-
-        padding: 18px !important;
-
-        border-radius: 18px;
-    }
-
-    #netlifyStatusTitle {
-        font-size: 16px;
-
-        margin-bottom: 6px !important;
-    }
-
-    #netlifyStatusDescription {
-        font-size: 11px;
-
-        line-height: 1.8;
-    }
-
-    #netlifyConnectContainer,
-    #netlifyTeamsContainer {
-        width: 100% !important;
-
-        margin-top: 14px !important;
-
-        padding: 13px !important;
-
-        border-radius: 14px;
-    }
-
-    #netlifyTeamSelect,
-    #connectNetlifyBtn {
-        width: 100% !important;
-
-        min-height: 46px;
     }
 }
 
@@ -2631,9 +1735,35 @@ button:disabled {
     }
 
     .template-card {
-        height: 410px;
+        width: 100%;
 
+        height: 410px;
         min-height: 410px;
+    }
+
+    .template-card-preview {
+        position: absolute;
+
+        inset: 0;
+
+        width: 100%;
+        height: 100%;
+    }
+
+    .template-thumbnail,
+    .template-card-preview iframe {
+        position: absolute !important;
+
+        inset: 0 !important;
+
+        width: 100% !important;
+        height: 100% !important;
+
+        min-width: 100% !important;
+        min-height: 100% !important;
+
+        max-width: none !important;
+        max-height: none !important;
     }
 
     .template-card-body {
@@ -2641,12 +1771,12 @@ button:disabled {
             19px 14px 14px;
     }
 
-    .template-actions {
+    .template-card-actions {
         gap: 7px;
     }
 
-    .template-preview-btn,
-    .template-select-btn {
+    .preview-template-btn,
+    .select-template-btn {
         min-height: 41px;
 
         font-size: 10px;
@@ -2660,16 +1790,6 @@ button:disabled {
 
     .status-badge {
         align-self: flex-start;
-    }
-
-    #netlifyStatusContainer {
-        min-height: 180px;
-
-        padding: 16px !important;
-    }
-
-    #netlifyStatusBadge {
-        margin-top: 10px;
     }
 }
 
