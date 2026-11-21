@@ -21,9 +21,9 @@
     'use strict';
 
 
-    // =================================================
-    // 1. CONFIGURATION
-    // =================================================
+    /* =================================================
+       1. CONFIGURATION
+    ================================================= */
 
     const API =
         window.TemplateCraftAPI || null;
@@ -36,6 +36,7 @@
 
     let BACKEND_ORIGIN = '';
 
+
     try {
 
         BACKEND_ORIGIN =
@@ -46,9 +47,10 @@
     } catch (error) {
 
         console.error(
-            'Invalid BACKEND_URL:',
+            '[TemplateCraft] Invalid BACKEND_URL:',
             error
         );
+
     }
 
 
@@ -68,9 +70,9 @@
         20000;
 
 
-    // =================================================
-    // 2. STATE
-    // =================================================
+    /* =================================================
+       2. STATE
+    ================================================= */
 
     let netlifyState = {
 
@@ -95,25 +97,18 @@
     };
 
 
-    let oauthPopup =
-        null;
+    let oauthPopup = null;
+
+    let oauthCheckInterval = null;
+
+    let refreshPromise = null;
+
+    let oauthCompleted = false;
 
 
-    let oauthCheckInterval =
-        null;
-
-
-    let refreshPromise =
-        null;
-
-
-    let oauthCompleted =
-        false;
-
-
-    // =================================================
-    // 3. DOM HELPERS
-    // =================================================
+    /* =================================================
+       3. DOM HELPERS
+    ================================================= */
 
     function getElement(id) {
 
@@ -127,17 +122,20 @@
         const element =
             getElement(id);
 
+
         if (!element) {
             return;
         }
 
-        element.classList.remove(
-            'hidden'
-        );
 
         element.classList.remove(
+            'hidden',
             'is-hidden'
         );
+
+
+        element.style.display =
+            '';
 
     }
 
@@ -147,17 +145,20 @@
         const element =
             getElement(id);
 
+
         if (!element) {
             return;
         }
 
-        element.classList.add(
-            'hidden'
-        );
 
         element.classList.add(
+            'hidden',
             'is-hidden'
         );
+
+
+        element.style.display =
+            'none';
 
     }
 
@@ -170,9 +171,11 @@
         const element =
             getElement(id);
 
+
         if (!element) {
             return;
         }
+
 
         element.textContent =
             value == null
@@ -182,9 +185,9 @@
     }
 
 
-    // =================================================
-    // 4. MESSAGE
-    // =================================================
+    /* =================================================
+       4. MESSAGE
+    ================================================= */
 
     function setMessage(
         message,
@@ -240,6 +243,7 @@
             element.classList.add(
                 'text-green-600'
             );
+
         }
 
     }
@@ -258,15 +262,16 @@
     }
 
 
-    // =================================================
-    // 5. AUTH
-    // =================================================
+    /* =================================================
+       5. AUTH
+    ================================================= */
 
     function getToken() {
 
         return (
             localStorage.getItem('token') ||
             localStorage.getItem('authToken') ||
+            localStorage.getItem('templatecraft_token') ||
             ''
         );
 
@@ -284,8 +289,7 @@
         }
 
 
-        let user =
-            null;
+        let user = null;
 
 
         try {
@@ -294,30 +298,33 @@
                 JSON.parse(
                     localStorage.getItem(
                         'user'
-                    ) || 'null'
+                    ) ||
+                    localStorage.getItem(
+                        'templatecraft_user'
+                    ) ||
+                    'null'
                 );
 
         } catch (error) {
 
-            user =
-                null;
+            user = null;
+
         }
 
 
-        return Boolean(
-            user &&
-            (
-                user.id ||
-                user._id
-            )
-        );
+        /*
+        إذا كان عندنا Token صالح،
+        لا نفرض وجود user object هنا.
+        */
+
+        return true;
 
     }
 
 
-    // =================================================
-    // 6. API
-    // =================================================
+    /* =================================================
+       6. API
+    ================================================= */
 
     function validateResponse(
         response,
@@ -332,6 +339,7 @@
             throw new Error(
                 defaultMessage
             );
+
         }
 
 
@@ -344,6 +352,7 @@
                 response.error ||
                 defaultMessage
             );
+
         }
 
 
@@ -391,8 +400,9 @@
             ) {
 
                 throw new Error(
-                    'انتهت مهلة الاتصال بالخادم. حاول مرة أخرى.'
+                    'انتهت مهلة الاتصال بالخادم. يرجى المحاولة مرة أخرى.'
                 );
+
             }
 
 
@@ -403,6 +413,7 @@
             window.clearTimeout(
                 timeout
             );
+
         }
 
     }
@@ -417,9 +428,9 @@
         let response;
 
 
-        // ---------------------------------------------
-        // Use client-api.js when available
-        // ---------------------------------------------
+        /* ---------------------------------------------
+           client-api.js
+        --------------------------------------------- */
 
         if (
             API &&
@@ -435,14 +446,15 @@
 
             return validateResponse(
                 response,
-                'وقع خطأ في الاتصال بالخادم.'
+                'تعذر الاتصال بالخادم.'
             );
+
         }
 
 
-        // ---------------------------------------------
-        // Fallback fetch
-        // ---------------------------------------------
+        /* ---------------------------------------------
+           fallback fetch
+        --------------------------------------------- */
 
         const token =
             getToken();
@@ -451,8 +463,9 @@
         if (!token) {
 
             throw new Error(
-                'خاصك تسجل الدخول أولاً.'
+                'يرجى تسجيل الدخول أولاً.'
             );
+
         }
 
 
@@ -490,6 +503,7 @@
                 JSON.stringify(
                     options.body
                 );
+
         }
 
 
@@ -500,8 +514,7 @@
             );
 
 
-        let data =
-            null;
+        let data = null;
 
 
         try {
@@ -511,8 +524,8 @@
 
         } catch (error) {
 
-            data =
-                {};
+            data = {};
+
         }
 
 
@@ -525,20 +538,21 @@
 
             data.status =
                 responseObject.status;
+
         }
 
 
         return validateResponse(
             data,
-            'وقع خطأ في الاتصال بالخادم.'
+            'تعذر الاتصال بالخادم.'
         );
 
     }
 
 
-    // =================================================
-    // 7. TEAM HELPERS
-    // =================================================
+    /* =================================================
+       7. TEAM STATE
+    ================================================= */
 
     function clearTeamSelection(
         deleted = false
@@ -547,18 +561,14 @@
         netlifyState.teamSelected =
             false;
 
-
         netlifyState.teamName =
             '';
-
 
         netlifyState.teamSlug =
             '';
 
-
         netlifyState.teamId =
             '';
-
 
         netlifyState.teamDeleted =
             Boolean(deleted);
@@ -571,10 +581,22 @@
     ) {
 
         if (
-            !team ||
-            !team.slug
+            !team
         ) {
 
+            return false;
+
+        }
+
+
+        const slug =
+            team.slug ||
+            team.account_slug ||
+            team.id ||
+            '';
+
+
+        if (!slug) {
             return false;
         }
 
@@ -589,14 +611,13 @@
 
         netlifyState.teamName =
             team.name ||
-            team.slug ||
-            'Netlify Team';
+            team.account_name ||
+            slug ||
+            'فريق Netlify';
 
 
         netlifyState.teamSlug =
-            String(
-                team.slug
-            );
+            String(slug);
 
 
         netlifyState.teamId =
@@ -614,26 +635,20 @@
         netlifyState.connected =
             false;
 
-
         netlifyState.teamSelected =
             false;
-
 
         netlifyState.teamDeleted =
             false;
 
-
         netlifyState.teamName =
             '';
-
 
         netlifyState.teamSlug =
             '';
 
-
         netlifyState.teamId =
             '';
-
 
         netlifyState.availableTeams =
             [];
@@ -641,9 +656,9 @@
     }
 
 
-    // =================================================
-    // 8. TEAM PICKER
-    // =================================================
+    /* =================================================
+       8. TEAM PICKER
+    ================================================= */
 
     function ensureTeamPicker() {
 
@@ -669,11 +684,8 @@
 
         if (!parent) {
 
-            console.warn(
-                'Netlify Team picker parent not found.'
-            );
-
             return null;
+
         }
 
 
@@ -706,7 +718,7 @@
 
 
         title.textContent =
-            'اختار Team للنشر';
+            'اختيار فريق النشر';
 
 
         const description =
@@ -720,7 +732,7 @@
 
 
         description.textContent =
-            'اختار Team اللي بغيتي TemplateCraft يستعملها لإنشاء المشاريع الجديدة.';
+            'اختر الفريق الذي سيُستخدم لإنشاء مشاريعك الجديدة.';
 
 
         const select =
@@ -748,7 +760,7 @@
 
 
         defaultOption.textContent =
-            'اختار Team...';
+            'اختر فريقاً...';
 
 
         defaultOption.disabled =
@@ -783,7 +795,7 @@
 
 
         button.textContent =
-            'اختيار Team';
+            'اختيار الفريق';
 
 
         const message =
@@ -848,11 +860,12 @@
                 if (!select.value) {
 
                     showTeamPickerMessage(
-                        'اختار Team أولاً.',
+                        'يرجى اختيار فريق أولاً.',
                         true
                     );
 
                     return;
+
                 }
 
 
@@ -947,6 +960,7 @@
         ) {
 
             return;
+
         }
 
 
@@ -971,6 +985,7 @@
             );
 
             return;
+
         }
 
 
@@ -999,6 +1014,7 @@
                 ) {
 
                     return;
+
                 }
 
 
@@ -1014,15 +1030,9 @@
                     );
 
 
-                const name =
+                option.textContent =
                     team.name ||
                     team.slug;
-
-
-                option.textContent =
-                    name === team.slug
-                        ? name
-                        : `${name} — ${team.slug}`;
 
 
                 select.appendChild(
@@ -1043,26 +1053,12 @@
 
         clearTeamPickerMessage();
 
-
-        if (
-            netlifyState.teamDeleted
-        ) {
-
-            showTeamPickerMessage(
-                teams.length === 1
-                    ? 'Team القديمة تحيدات. كاينة Team جديدة متاحة.'
-                    : 'Team القديمة تحيدات. اختار Team جديدة.',
-                false
-            );
-
-        }
-
     }
 
 
-    // =================================================
-    // 9. SELECT TEAM
-    // =================================================
+    /* =================================================
+       9. SELECT TEAM
+    ================================================= */
 
     async function selectTeam(
         slug
@@ -1075,7 +1071,6 @@
 
 
         if (!slug) {
-
             return false;
         }
 
@@ -1088,19 +1083,13 @@
 
         try {
 
-            // مهم:
-            // هنا ما نبدلوش netlifyState.loading
-            // إلى true لأن refreshStatus يمكن يكون خدام.
-            // فقط زر الاختيار هو اللي يتقفل.
-
             if (button) {
 
                 button.disabled =
                     true;
 
-
                 button.textContent =
-                    'جاري اختيار Team...';
+                    'جارٍ اختيار الفريق...';
 
             }
 
@@ -1124,6 +1113,7 @@
                             accountSlug:
                                 slug
                         }
+
                     }
                 );
 
@@ -1149,13 +1139,14 @@
             ) {
 
                 throw new Error(
-                    'السيرفر لم يؤكد اختيار Team.'
+                    'لم يؤكد الخادم اختيار الفريق.'
                 );
+
             }
 
 
             setMessage(
-                'تم اختيار Team بنجاح. Netlify جاهز للنشر.'
+                'تم اختيار الفريق بنجاح. Netlify جاهز للنشر.'
             );
 
 
@@ -1167,21 +1158,21 @@
         } catch (error) {
 
             console.error(
-                'Netlify team selection error:',
+                '[TemplateCraft] Team selection error:',
                 error
             );
 
 
             showTeamPickerMessage(
                 error.message ||
-                'تعذر اختيار Team.',
+                'تعذر اختيار الفريق.',
                 true
             );
 
 
             setMessage(
                 error.message ||
-                'تعذر اختيار Team.',
+                'تعذر اختيار الفريق.',
                 true
             );
 
@@ -1193,7 +1184,7 @@
             if (button) {
 
                 button.textContent =
-                    'اختيار Team';
+                    'اختيار الفريق';
 
             }
 
@@ -1202,9 +1193,9 @@
     }
 
 
-    // =================================================
-    // 10. AUTO TEAM SELECTION
-    // =================================================
+    /* =================================================
+       10. AUTO TEAM SELECTION
+    ================================================= */
 
     async function resolveTeam(
         teams,
@@ -1221,13 +1212,7 @@
             teams;
 
 
-        // ---------------------------------------------
-        // No teams
-        // ---------------------------------------------
-
-        if (
-            teams.length === 0
-        ) {
+        if (!teams.length) {
 
             clearTeamSelection(
                 deletedTeam
@@ -1236,20 +1221,21 @@
 
             setMessage(
                 deletedTeam
-                    ? 'Team السابقة تحيدات وما كايناش Team متاحة حالياً.'
-                    : 'ما لقيناش Team متاحة في حساب Netlify.',
+                    ? 'الفريق السابق لم يعد متاحاً، ولا يوجد فريق متاح حالياً.'
+                    : 'لم يتم العثور على أي فريق متاح في حساب Netlify.',
                 false,
                 true
             );
 
 
             return false;
+
         }
 
 
-        // ---------------------------------------------
-        // One team
-        // ---------------------------------------------
+        /* ===========================================
+           فريق واحد → اختيار تلقائي
+        =========================================== */
 
         if (
             teams.length === 1 &&
@@ -1263,7 +1249,6 @@
 
 
             if (success) {
-
                 return true;
             }
 
@@ -1274,19 +1259,20 @@
 
 
             setMessage(
-                'كاينة Team وحدة ولكن الاختيار الأوتوماتيكي فشل. اختارها يدوياً.',
+                'يوجد فريق واحد، لكن تعذر اختياره تلقائياً. يرجى اختياره يدوياً.',
                 false,
                 true
             );
 
 
             return false;
+
         }
 
 
-        // ---------------------------------------------
-        // Multiple teams
-        // ---------------------------------------------
+        /* ===========================================
+           أكثر من فريق
+        =========================================== */
 
         clearTeamSelection(
             deletedTeam
@@ -1295,8 +1281,8 @@
 
         setMessage(
             deletedTeam
-                ? 'Team السابقة تحيدات. اختار Team جديدة.'
-                : 'حساب Netlify فيه أكثر من Team. اختار Team للنشر.',
+                ? 'الفريق السابق لم يعد متاحاً. يرجى اختيار فريق جديد.'
+                : 'يوجد أكثر من فريق في حساب Netlify. يرجى اختيار فريق للنشر.',
             false,
             true
         );
@@ -1307,9 +1293,9 @@
     }
 
 
-    // =================================================
-    // 11. RENDER STATE
-    // =================================================
+    /* =================================================
+       11. RENDER STATE
+    ================================================= */
 
     function renderNetlifyState() {
 
@@ -1329,9 +1315,9 @@
             netlifyState.teamName;
 
 
-        // ---------------------------------------------
-        // Status dot
-        // ---------------------------------------------
+        /* ---------------------------------------------
+           Status dot
+        --------------------------------------------- */
 
         const dot =
             getElement(
@@ -1383,15 +1369,15 @@
         }
 
 
-        // ---------------------------------------------
-        // Status text
-        // ---------------------------------------------
+        /* ---------------------------------------------
+           Status text
+        --------------------------------------------- */
 
         if (loading) {
 
             setText(
                 'netlifyStatusText',
-                'جاري التحقق من Netlify...'
+                'جاري التحقق من اتصال Netlify...'
             );
 
         } else if (
@@ -1411,7 +1397,7 @@
 
             setText(
                 'netlifyStatusText',
-                'Team السابقة لم تعد متاحة — اختار Team جديدة'
+                'الفريق السابق لم يعد متاحاً — يرجى اختيار فريق جديد'
             );
 
         } else if (
@@ -1420,7 +1406,7 @@
 
             setText(
                 'netlifyStatusText',
-                'Netlify متصل، ولكن Team غير محدد'
+                'Netlify متصل، ولكن لم يتم تحديد فريق'
             );
 
         } else {
@@ -1433,9 +1419,9 @@
         }
 
 
-        // ---------------------------------------------
-        // Connected area
-        // ---------------------------------------------
+        /* ---------------------------------------------
+           Connected area
+        --------------------------------------------- */
 
         if (connected) {
 
@@ -1454,8 +1440,8 @@
                 teamSelected
                     ? teamName
                     : netlifyState.teamDeleted
-                        ? 'Team السابقة تحيدات'
-                        : 'لم يتم تحديد Team'
+                        ? 'الفريق السابق لم يعد متاحاً'
+                        : 'لم يتم تحديد فريق'
             );
 
         } else {
@@ -1478,16 +1464,12 @@
         }
 
 
-        // ---------------------------------------------
-        // Team picker
-        // ---------------------------------------------
-
         renderTeamPicker();
 
 
-        // ---------------------------------------------
-        // Connect button
-        // ---------------------------------------------
+        /* ---------------------------------------------
+           Connect button
+        --------------------------------------------- */
 
         const connectButton =
             getElement(
@@ -1518,16 +1500,16 @@
         setText(
             'connectNetlifyBtnText',
             loading
-                ? 'جاري المعالجة...'
+                ? 'جارٍ التحقق...'
                 : connected
                     ? 'تحديث اتصال Netlify'
                     : 'ربط حساب Netlify'
         );
 
 
-        // ---------------------------------------------
-        // Confirmation UI
-        // ---------------------------------------------
+        /* ---------------------------------------------
+           Confirmation
+        --------------------------------------------- */
 
         if (
             connected &&
@@ -1563,9 +1545,9 @@
         }
 
 
-        // ---------------------------------------------
-        // Notify other scripts
-        // ---------------------------------------------
+        /* ---------------------------------------------
+           Notify UI
+        --------------------------------------------- */
 
         window.dispatchEvent(
             new CustomEvent(
@@ -1581,16 +1563,16 @@
     }
 
 
-    // =================================================
-    // 12. REFRESH STATUS
-    // =================================================
+    /* =================================================
+       12. REFRESH STATUS
+    ================================================= */
 
     async function refreshStatus() {
 
-        // منع refresh متكرر
         if (refreshPromise) {
 
             return refreshPromise;
+
         }
 
 
@@ -1606,16 +1588,15 @@
 
                 try {
 
-                    if (
-                        !isLoggedIn()
-                    ) {
+                    if (!isLoggedIn()) {
 
                         clearConnectionState();
 
 
                         throw new Error(
-                            'خاصك تسجل الدخول باش تتحقق من Netlify.'
+                            'يرجى تسجيل الدخول للتحقق من اتصال Netlify.'
                         );
+
                     }
 
 
@@ -1629,12 +1610,13 @@
                     const netlify =
                         response.netlify ||
                         response.data ||
+                        response ||
                         {};
 
 
-                    // ---------------------------------
-                    // Connection
-                    // ---------------------------------
+                    /* =================================
+                       NOT CONNECTED
+                    ================================= */
 
                     if (
                         netlify.connected !== true
@@ -1643,9 +1625,17 @@
                         clearConnectionState();
 
 
+                        setMessage(
+                            'لم يتم ربط حساب Netlify بعد.',
+                            false,
+                            true
+                        );
+
+
                         return {
                             ...netlifyState
                         };
+
                     }
 
 
@@ -1653,9 +1643,9 @@
                         true;
 
 
-                    // ---------------------------------
-                    // Teams
-                    // ---------------------------------
+                    /* =================================
+                       TEAMS
+                    ================================= */
 
                     netlifyState.availableTeams =
                         Array.isArray(
@@ -1669,17 +1659,17 @@
                                 : [];
 
 
-                    // ---------------------------------
-                    // Deleted Team
-                    // ---------------------------------
+                    /* =================================
+                       DELETED TEAM
+                    ================================= */
 
                     netlifyState.teamDeleted =
                         netlify.teamDeleted === true;
 
 
-                    // ---------------------------------
-                    // Existing selected Team
-                    // ---------------------------------
+                    /* =================================
+                       SELECTED TEAM
+                    ================================= */
 
                     const selectedTeam =
                         netlify.selectedTeam ||
@@ -1738,21 +1728,18 @@
                         return {
                             ...netlifyState
                         };
+
                     }
 
 
-                    // ---------------------------------
-                    // No valid selected Team
-                    // ---------------------------------
+                    /* =================================
+                       NO SELECTED TEAM
+                    ================================= */
 
                     clearTeamSelection(
                         netlifyState.teamDeleted
                     );
 
-
-                    // ---------------------------------
-                    // Resolve available Team
-                    // ---------------------------------
 
                     await resolveTeam(
                         netlifyState.availableTeams,
@@ -1768,7 +1755,7 @@
                 } catch (error) {
 
                     console.error(
-                        'Netlify status error:',
+                        '[TemplateCraft] Netlify status error:',
                         error
                     );
 
@@ -1810,16 +1797,13 @@
     }
 
 
-    // =================================================
-    // 13. CONNECT NETLIFY
-    // =================================================
+    /* =================================================
+       13. CONNECT NETLIFY
+    ================================================= */
 
     async function connectNetlify() {
 
-        if (
-            netlifyState.loading
-        ) {
-
+        if (netlifyState.loading) {
             return;
         }
 
@@ -1827,23 +1811,18 @@
         clearMessage();
 
 
-        if (
-            !isLoggedIn()
-        ) {
+        if (!isLoggedIn()) {
 
             setMessage(
-                'خاصك تسجل الدخول قبل ربط Netlify.',
+                'يرجى تسجيل الدخول قبل ربط حساب Netlify.',
                 true
             );
 
 
             return;
+
         }
 
-
-        // ---------------------------------------------
-        // Open popup immediately
-        // ---------------------------------------------
 
         const left =
             Math.max(
@@ -1883,12 +1862,13 @@
         if (!oauthPopup) {
 
             setMessage(
-                'المتصفح منع النافذة المنبثقة. سمح بـ Popups لهذا الموقع وحاول مرة أخرى.',
+                'تم منع النافذة المنبثقة. يرجى السماح بالنوافذ المنبثقة لهذا الموقع ثم المحاولة مرة أخرى.',
                 true
             );
 
 
             return;
+
         }
 
 
@@ -1920,13 +1900,12 @@
                 response.authorizationUrl;
 
 
-            if (
-                !authorizationUrl
-            ) {
+            if (!authorizationUrl) {
 
                 throw new Error(
-                    'الخادم لم يرجع رابط تفويض Netlify.'
+                    'لم يُرجع الخادم رابط تفويض Netlify.'
                 );
+
             }
 
 
@@ -1944,6 +1923,7 @@
                 throw new Error(
                     'رابط Netlify غير آمن.'
                 );
+
             }
 
 
@@ -1957,7 +1937,7 @@
         } catch (error) {
 
             console.error(
-                'Netlify connect error:',
+                '[TemplateCraft] Netlify connect error:',
                 error
             );
 
@@ -1968,6 +1948,7 @@
             ) {
 
                 oauthPopup.close();
+
             }
 
 
@@ -1977,7 +1958,7 @@
 
             setMessage(
                 error.message ||
-                'تعذر بدء ربط Netlify.',
+                'تعذر بدء ربط حساب Netlify.',
                 true
             );
 
@@ -1995,9 +1976,9 @@
     }
 
 
-    // =================================================
-    // 14. POPUP WATCHER
-    // =================================================
+    /* =================================================
+       14. POPUP WATCHER
+    ================================================= */
 
     function startPopupWatcher() {
 
@@ -2025,6 +2006,7 @@
                         ) {
 
                             return;
+
                         }
 
 
@@ -2034,7 +2016,7 @@
                                 refreshStatus();
 
                             },
-                            1000
+                            700
                         );
 
                     }
@@ -2059,14 +2041,15 @@
 
             oauthCheckInterval =
                 null;
+
         }
 
     }
 
 
-    // =================================================
-    // 15. OAUTH MESSAGE
-    // =================================================
+    /* =================================================
+       15. OAUTH MESSAGE
+    ================================================= */
 
     window.addEventListener(
         'message',
@@ -2079,6 +2062,7 @@
             ) {
 
                 return;
+
             }
 
 
@@ -2092,6 +2076,7 @@
             ) {
 
                 return;
+
             }
 
 
@@ -2108,6 +2093,7 @@
             ) {
 
                 oauthPopup.close();
+
             }
 
 
@@ -2130,11 +2116,12 @@
 
 
                 return;
+
             }
 
 
             setMessage(
-                'تمت المصادقة مع Netlify. جاري التحقق من Team...'
+                'تمت المصادقة مع Netlify. جارٍ التحقق من الحساب والفريق...'
             );
 
 
@@ -2147,7 +2134,7 @@
             ) {
 
                 setMessage(
-                    'تم ربط Netlify بنجاح.'
+                    'تم ربط Netlify بنجاح وأصبح جاهزاً للنشر.'
                 );
 
             } else if (
@@ -2156,7 +2143,7 @@
             ) {
 
                 setMessage(
-                    'تم ربط الحساب. اختار Team للنشر من اللائحة.',
+                    'تم ربط الحساب. يرجى اختيار فريق للنشر.',
                     false,
                     true
                 );
@@ -2166,7 +2153,7 @@
             ) {
 
                 setMessage(
-                    'تم ربط الحساب، ولكن خاص تحديد Team قبل النشر.',
+                    'تم ربط الحساب، ولكن يجب تحديد فريق قبل النشر.',
                     false,
                     true
                 );
@@ -2174,7 +2161,7 @@
             } else {
 
                 setMessage(
-                    'وصلت نتيجة OAuth، ولكن السيرفر لم يؤكد الاتصال.',
+                    'تمت المصادقة، ولكن لم يؤكد الخادم اتصال Netlify.',
                     true
                 );
 
@@ -2184,23 +2171,20 @@
     );
 
 
-    // =================================================
-    // 16. DISCONNECT
-    // =================================================
+    /* =================================================
+       16. DISCONNECT
+    ================================================= */
 
     async function disconnectNetlify() {
 
-        if (
-            netlifyState.loading
-        ) {
-
+        if (netlifyState.loading) {
             return;
         }
 
 
         const confirmed =
             window.confirm(
-                'واش متأكد أنك باغي تقطع اتصال Netlify؟ المشاريع الموجودة ما غاديش تتمسح.'
+                'هل أنت متأكد من رغبتك في قطع اتصال Netlify؟ لن يتم حذف المشاريع الموجودة.'
             );
 
 
@@ -2242,7 +2226,7 @@
         } catch (error) {
 
             console.error(
-                'Netlify disconnect error:',
+                '[TemplateCraft] Netlify disconnect error:',
                 error
             );
 
@@ -2267,9 +2251,9 @@
     }
 
 
-    // =================================================
-    // 17. PUBLIC API
-    // =================================================
+    /* =================================================
+       17. PUBLIC API
+    ================================================= */
 
     window.TemplateCraftNetlify = {
 
@@ -2281,6 +2265,9 @@
 
         disconnect:
             disconnectNetlify,
+
+        selectTeam:
+            selectTeam,
 
         getState:
             function () {
@@ -2307,9 +2294,9 @@
     };
 
 
-    // =================================================
-    // 18. BUTTONS
-    // =================================================
+    /* =================================================
+       18. BUTTONS
+    ================================================= */
 
     function initializeButtons() {
 
@@ -2361,9 +2348,9 @@
     }
 
 
-    // =================================================
-    // 19. INITIALIZATION
-    // =================================================
+    /* =================================================
+       19. INITIALIZATION
+    ================================================= */
 
     async function initialize() {
 
