@@ -1376,13 +1376,17 @@ button:disabled {
 }
 
 /* =========================================
-   NETLIFY
+   NETLIFY OUTER BOX
 ========================================= */
 
 .netlify-box {
     position: relative;
 
-    padding: 19px;
+    width: 100%;
+
+    min-height: 210px;
+
+    padding: 20px;
 
     overflow: hidden;
 
@@ -1397,6 +1401,10 @@ button:disabled {
             #ffffff,
             #f8fafc
         );
+
+    box-shadow:
+        0 10px 30px
+        rgba(15, 23, 42, .04);
 }
 
 .netlify-box::before {
@@ -1404,11 +1412,11 @@ button:disabled {
 
     position: absolute;
 
-    width: 150px;
-    height: 150px;
+    width: 180px;
+    height: 180px;
 
-    top: -90px;
-    left: -60px;
+    top: -100px;
+    left: -70px;
 
     border-radius: 50%;
 
@@ -1500,26 +1508,383 @@ button:disabled {
         #b91c1c;
 }
 
-#netlifyConnectContainer,
-#netlifyTeamsContainer {
+
+/* =========================================
+   NETLIFY — CURRENT UI
+   FULL WIDTH / FULL HEIGHT FIX
+========================================= */
+
+#netlifyStatusContainer {
     position: relative;
+
+    width: 100% !important;
+
+    min-width: 0;
+
+    min-height: 190px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 0;
+
+    box-sizing: border-box;
+
+    padding: 22px !important;
+
+    margin: 0 !important;
+
+    overflow: hidden;
+
+    border-radius: 20px;
+
+    border:
+        1px solid
+        rgba(226, 232, 240, .95);
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(255, 255, 255, .96),
+            rgba(248, 250, 252, .96)
+        );
+
+    box-shadow:
+        0 12px 35px
+        rgba(15, 23, 42, .05);
+
+    isolation: isolate;
+}
+
+
+/* Decorative background */
+
+#netlifyStatusContainer::before {
+    content: "";
+
+    position: absolute;
+
+    width: 220px;
+    height: 220px;
+
+    right: -100px;
+    top: -130px;
+
+    border-radius: 50%;
+
+    background:
+        rgba(99, 102, 241, .055);
+
+    pointer-events: none;
+
+    z-index: -1;
+}
+
+
+/* =========================================
+   NETLIFY TITLE
+========================================= */
+
+#netlifyStatusTitle {
+    position: relative;
+
+    width: 100%;
+
+    margin: 0 0 7px !important;
+
+    padding: 0;
+
+    color: #0f172a;
+
+    font-size: 17px;
+
+    line-height: 1.6;
+
+    font-weight: 900;
+}
+
+
+/* =========================================
+   NETLIFY DESCRIPTION
+========================================= */
+
+#netlifyStatusDescription {
+    position: relative;
+
+    width: 100%;
+
+    margin: 0 !important;
+
+    padding: 0;
+
+    color: #64748b;
+
+    font-size: 12px;
+
+    line-height: 1.8;
+}
+
+
+/* =========================================
+   NETLIFY BADGE
+========================================= */
+
+#netlifyStatusBadge {
+    position: relative;
+
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    width: fit-content;
+
+    min-height: 30px;
+
+    margin-top: 13px;
+
+    padding:
+        6px 12px;
+
+    border-radius: 999px;
+
+    font-size: 11px;
+
+    font-weight: 900;
+
+    line-height: 1;
+
+    white-space: nowrap;
+}
+
+#netlifyStatusBadge.connected {
+    background:
+        #dcfce7;
+
+    color:
+        #166534;
+}
+
+#netlifyStatusBadge.disconnected {
+    background:
+        #fee2e2;
+
+    color:
+        #991b1b;
+}
+
+#netlifyStatusBadge.warning {
+    background:
+        #fef3c7;
+
+    color:
+        #92400e;
+}
+
+#netlifyStatusBadge.loading {
+    background:
+        #eef2ff;
+
+    color:
+        #4338ca;
+}
+
+
+/* =========================================
+   NETLIFY CONNECT AREA
+========================================= */
+
+#netlifyConnectContainer {
+    position: relative;
+
+    width: 100% !important;
+
+    min-width: 0;
+
+    margin-top: 18px !important;
+
+    padding: 16px !important;
+
+    box-sizing: border-box;
+
+    border-radius: 15px;
+
+    background:
+        rgba(248, 250, 252, .95);
+
+    border:
+        1px solid
+        rgba(226, 232, 240, .85);
 
     z-index: 3;
 }
 
-.netlify-connect-btn {
-    transition:
-        all .25s ease;
+
+/* =========================================
+   NETLIFY TEAMS AREA
+========================================= */
+
+#netlifyTeamsContainer {
+    position: relative;
+
+    width: 100% !important;
+
+    min-width: 0;
+
+    margin-top: 18px !important;
+
+    padding: 16px !important;
+
+    box-sizing: border-box;
+
+    border-radius: 15px;
+
+    background:
+        rgba(248, 250, 252, .95);
+
+    border:
+        1px solid
+        rgba(226, 232, 240, .85);
+
+    z-index: 3;
 }
 
-.netlify-connect-btn:hover {
+
+/* =========================================
+   NETLIFY SELECT
+========================================= */
+
+#netlifyTeamSelect {
+    display: block;
+
+    width: 100% !important;
+
+    min-width: 0;
+
+    min-height: 48px;
+
+    margin: 0;
+
+    padding:
+        0 14px;
+
+    box-sizing: border-box;
+
+    border:
+        1px solid #e2e8f0;
+
+    border-radius: 12px;
+
+    outline: none;
+
+    background:
+        #ffffff;
+
+    color:
+        #334155;
+
+    font-family: inherit;
+
+    font-size: 12px;
+
+    cursor: pointer;
+
+    appearance: auto;
+
+    transition:
+        border-color .2s ease,
+        box-shadow .2s ease;
+}
+
+#netlifyTeamSelect:focus {
+    border-color:
+        #6366f1;
+
+    box-shadow:
+        0 0 0 4px
+        rgba(99, 102, 241, .10);
+}
+
+
+/* =========================================
+   NETLIFY CONNECT BUTTON
+========================================= */
+
+#connectNetlifyBtn {
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    width: 100% !important;
+
+    min-height: 48px;
+
+    margin: 0;
+
+    padding:
+        0 18px;
+
+    border: 0;
+
+    border-radius: 13px;
+
+    outline: none;
+
+    background:
+        linear-gradient(
+            135deg,
+            #4f46e5,
+            #7c3aed
+        );
+
+    color: #ffffff;
+
+    font-family: inherit;
+
+    font-size: 13px;
+
+    font-weight: 900;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 9px 24px
+        rgba(79, 70, 229, .20);
+
+    transition:
+        transform .2s ease,
+        box-shadow .2s ease,
+        opacity .2s ease;
+}
+
+#connectNetlifyBtn:hover {
     transform:
         translateY(-1px);
 
     box-shadow:
-        0 8px 20px
-        rgba(15, 23, 42, .15);
+        0 13px 30px
+        rgba(79, 70, 229, .27);
 }
+
+#connectNetlifyBtn:active {
+    transform:
+        translateY(0);
+}
+
+
+/* =========================================
+   NETLIFY HIDDEN STATES
+========================================= */
+
+#netlifyStatusContainer .hidden,
+#netlifyStatusContainer .is-hidden,
+#netlifyConnectContainer.hidden,
+#netlifyTeamsContainer.hidden {
+    display: none !important;
+}
+
 
 /* =========================================
    OLD NETLIFY COMPATIBILITY
@@ -1625,6 +1990,7 @@ button:disabled {
         modalIn
         .3s ease;
 }
+
 
 /* =========================================
    DEPLOYMENT OVERLAY
@@ -1986,6 +2352,7 @@ button:disabled {
         rgba(255, 255, 255, .07);
 }
 
+
 /* =========================================
    SSL MODAL
 ========================================= */
@@ -2037,6 +2404,7 @@ button:disabled {
         rgba(15, 23, 42, .30);
 }
 
+
 /* =========================================
    PREVIEW
 ========================================= */
@@ -2061,6 +2429,7 @@ button:disabled {
     background: white;
 }
 
+
 /* =========================================
    FEATURE CARD
 ========================================= */
@@ -2083,6 +2452,7 @@ button:disabled {
     border-color:
         #c4b5fd;
 }
+
 
 /* =========================================
    RESPONSIVE
@@ -2107,6 +2477,7 @@ button:disabled {
         min-height: auto;
     }
 }
+
 
 @media (max-width: 700px) {
 
@@ -2187,7 +2558,53 @@ button:disabled {
 
         padding: 21px;
     }
+
+
+    /* =====================================
+       NETLIFY MOBILE
+    ===================================== */
+
+    #netlifyStatusContainer {
+        width: 100% !important;
+
+        min-height: 185px;
+
+        padding: 18px !important;
+
+        border-radius: 18px;
+    }
+
+    #netlifyStatusTitle {
+        font-size: 16px;
+
+        margin-bottom: 6px !important;
+    }
+
+    #netlifyStatusDescription {
+        font-size: 11px;
+
+        line-height: 1.8;
+    }
+
+    #netlifyConnectContainer,
+    #netlifyTeamsContainer {
+        width: 100% !important;
+
+        margin-top: 14px !important;
+
+        padding: 13px !important;
+
+        border-radius: 14px;
+    }
+
+    #netlifyTeamSelect,
+    #connectNetlifyBtn {
+        width: 100% !important;
+
+        min-height: 46px;
+    }
 }
+
 
 @media (max-width: 450px) {
 
@@ -2237,13 +2654,25 @@ button:disabled {
 
     .netlify-status {
         align-items: flex-start;
+
         flex-direction: column;
     }
 
     .status-badge {
         align-self: flex-start;
     }
+
+    #netlifyStatusContainer {
+        min-height: 180px;
+
+        padding: 16px !important;
+    }
+
+    #netlifyStatusBadge {
+        margin-top: 10px;
+    }
 }
+
 
 /* =========================================
    REDUCED MOTION
@@ -2268,4 +2697,4 @@ button:disabled {
         scroll-behavior:
             auto !important;
     }
-           }
+   }
