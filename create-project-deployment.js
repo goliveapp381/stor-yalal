@@ -7,205 +7,494 @@
 ====================================================
 
  مسؤول عن:
- - Create Confirmation
- - Real API Deployment
- - Deployment Animation
- - Result
- - Copy URL
- - SSL Information
+
+ - استقبال طلب إنشاء المشروع
+ - Deployment الحقيقي عبر API
+ - مراحل الإنشاء
+ - Progress
+ - نجاح إنشاء الموقع
+ - الانتقال إلى صفحة المشاريع
+
+ مهم:
+ SSL لا يتم انتظاره هنا.
+
+ بمجرد نجاح إنشاء / نشر الموقع في Netlify:
+ → يتم إنهاء العملية
+ → تغلق نافذة التجهيز
+ → ينتقل المستخدم إلى صفحة المشاريع
+
+ SSL يتم التحقق منه لاحقاً من صفحة المشاريع.
 ====================================================
 */
-
-let deployStageTimer = null;
-let deployStageIndex = 1;
-
-
-/* ==================================================
-   ELEMENTS
-================================================== */
-
-const deploymentButton =
-    document.getElementById('createProjectBtn');
-
-const deploymentResultContainer =
-    document.getElementById('createResult');
-
-const deploymentConfirmButton =
-    document.getElementById('confirmCreateBtn');
-
-const deploymentCreateModal =
-    document.getElementById('createModal');
-
-const deploymentSiteNameInput =
-    document.getElementById('siteName');
-
-const deploymentProjectTypeSelect =
-    document.getElementById('projectTypeSelect');
-
-const deploymentOverlay =
-    document.getElementById('deploymentOverlay');
-
-const deploymentStageText =
-    document.getElementById('deploymentMessage');
-
-const deploymentTitle =
-    document.getElementById('deploymentTitle');
 
 
 /* ==================================================
    STATE
 ================================================== */
 
+let deployStageTimer = null;
+
+let deployStageIndex = 0;
+
+let deploymentRunning = false;
+
 let publishedSiteUrl = null;
+
 let createdSiteId = null;
 
 
 /* ==================================================
-   SSL MODAL
+   ELEMENTS
 ================================================== */
 
-function openSslInfoModal() {
+const deploymentResultContainer =
+    document.getElementById(
+        'createResult'
+    );
 
-    const modal =
-        document.getElementById('sslPreparationModal');
+const deploymentOverlay =
+    document.getElementById(
+        'deploymentOverlay'
+    );
 
-    if (!modal) {
+const deploymentTitle =
+    document.getElementById(
+        'deploymentTitle'
+    );
+
+const deploymentMessage =
+    document.getElementById(
+        'deploymentMessage'
+    );
+
+const deploymentProgress =
+    document.getElementById(
+        'deploymentProgress'
+    );
+
+
+/* ==================================================
+   DEPLOYMENT STAGES
+================================================== */
+
+const DEPLOY_STAGES = [
+
+    {
+        id: 'create-project',
+        title: 'إنشاء المشروع',
+        message: 'جاري إنشاء المشروع وتجهيز بياناته...'
+    },
+
+    {
+        id: 'prepare-template',
+        title: 'تجهيز ملفات القالب',
+        message: 'جاري تجهيز ملفات القالب والصفحات...'
+    },
+
+    {
+        id: 'configure-site',
+        title: 'إعداد الموقع',
+        message: 'جاري تطبيق إعدادات المشروع والقالب...'
+    },
+
+    {
+        id: 'connect-settings',
+        title: 'ربط الإعدادات',
+        message: 'جاري ربط إعدادات المشروع والاستضافة...'
+    },
+
+    {
+        id: 'publish-netlify',
+        title: 'نشر الموقع',
+        message: 'جاري إنشاء ونشر الموقع على Netlify...'
+    },
+
+    {
+        id: 'complete',
+        title: 'إتمام',
+        message: 'تم إنشاء الموقع بنجاح.'
+    }
+
+];
+
+
+/* ==================================================
+   CREATE STAGES UI
+================================================== */
+
+function createDeploymentStages() {
+
+    if (!deploymentOverlay) {
         return;
     }
 
-    modal.classList.add('active');
 
-    modal.setAttribute(
-        'aria-hidden',
-        'false'
-    );
-}
+    const card =
+        deploymentOverlay.querySelector(
+            '.deployment-card'
+        );
 
 
-function closeSslInfoModal() {
-
-    const modal =
-        document.getElementById('sslPreparationModal');
-
-    if (!modal) {
+    if (!card) {
         return;
     }
 
-    modal.classList.remove('active');
 
-    modal.setAttribute(
-        'aria-hidden',
-        'true'
-    );
+    let stages =
+        card.querySelector(
+            '.deployment-stages'
+        );
+
+
+    if (stages) {
+        return;
+    }
+
+
+    stages =
+        document.createElement(
+            'div'
+        );
+
+
+    stages.className =
+        'deployment-stages';
+
+
+    stages.innerHTML =
+        DEPLOY_STAGES
+            .map(
+                function (stage, index) {
+
+                    return `
+                        <div
+                            class="deployment-stage"
+                            data-stage-index="${index}"
+                        >
+
+                            <div
+                                class="deployment-stage-icon"
+                            >
+                                <span class="stage-number">
+                                    ${index + 1}
+                                </span>
+
+                                <span class="stage-check">
+                                    ✓
+                                </span>
+                            </div>
+
+                            <div
+                                class="deployment-stage-content"
+                            >
+
+                                <strong>
+                                    ${escapeDeploymentHtml(
+                                        stage.title
+                                    )}
+                                </strong>
+
+                                <span>
+                                    ${escapeDeploymentHtml(
+                                        stage.message
+                                    )}
+                                </span>
+
+                            </div>
+
+                        </div>
+                    `;
+
+                }
+            )
+            .join('');
+
+
+    const progressContainer =
+        deploymentProgress
+            ?.parentElement;
+
+
+    if (progressContainer) {
+
+        card.insertBefore(
+            stages,
+            progressContainer
+        );
+
+    } else {
+
+        card.appendChild(
+            stages
+        );
+
+    }
+
 }
 
 
 /* ==================================================
-   RESET DEPLOY STAGES
+   UPDATE STAGE UI
 ================================================== */
 
-function resetDeployStages() {
+function updateDeploymentStage(
+    index,
+    state = 'active'
+) {
 
-    deployStageIndex = 1;
+    const stages =
+        deploymentOverlay?.querySelectorAll(
+            '.deployment-stage'
+        );
 
-    if (deploymentStageText) {
-        deploymentStageText.textContent =
-            'تجهيز المشروع...';
+
+    if (!stages) {
+        return;
     }
+
+
+    stages.forEach(
+        function (stage, stageIndex) {
+
+            stage.classList.remove(
+                'active',
+                'completed',
+                'pending'
+            );
+
+
+            if (
+                stageIndex < index
+            ) {
+
+                stage.classList.add(
+                    'completed'
+                );
+
+            } else if (
+                stageIndex === index
+            ) {
+
+                stage.classList.add(
+                    state
+                );
+
+            } else {
+
+                stage.classList.add(
+                    'pending'
+                );
+
+            }
+
+        }
+    );
+
+
+    const stage =
+        DEPLOY_STAGES[index];
+
+
+    if (!stage) {
+        return;
+    }
+
 
     if (deploymentTitle) {
+
         deploymentTitle.textContent =
-            'جاري إنشاء المشروع...';
+            stage.title;
+
     }
+
+
+    if (deploymentMessage) {
+
+        deploymentMessage.textContent =
+            stage.message;
+
+    }
+
+
+    updateDeploymentProgress(
+        index
+    );
+
 }
 
 
 /* ==================================================
-   ACTIVATE DEPLOY STAGE
+   PROGRESS
 ================================================== */
 
-function activateDeployStage(index) {
+function updateDeploymentProgress(
+    index
+) {
 
-    const messages = {
-
-        1: 'تجهيز المشروع...',
-
-        2: 'تطبيق القالب والملفات...',
-
-        3: 'نشر الموقع...',
-
-        4: 'إعداد النطاق...',
-
-        5: 'التحقق من الحماية SSL...',
-
-        6: 'إنهاء النشر...'
-
-    };
-
-    deployStageIndex = index;
-
-    if (deploymentStageText) {
-
-        deploymentStageText.textContent =
-            messages[index] ||
-            'جاري معالجة الموقع...';
+    if (!deploymentProgress) {
+        return;
     }
+
+
+    const total =
+        DEPLOY_STAGES.length;
+
+
+    const percentage =
+        Math.max(
+            5,
+            Math.min(
+                100,
+                Math.round(
+                    (
+                        index /
+                        (total - 1)
+                    ) *
+                    100
+                )
+            )
+        );
+
+
+    deploymentProgress.style.width =
+        `${percentage}%`;
+
 }
 
 
 /* ==================================================
-   START DEPLOY ANIMATION
+   RESET
 ================================================== */
 
-function startDeployAnimation(siteName) {
+function resetDeployment() {
 
-    resetDeployStages();
+    if (deployStageTimer) {
+
+        clearInterval(
+            deployStageTimer
+        );
+
+        deployStageTimer =
+            null;
+
+    }
+
+
+    deployStageIndex =
+        0;
+
+
+    deploymentRunning =
+        false;
+
+
+    publishedSiteUrl =
+        null;
+
+
+    createdSiteId =
+        null;
+
+
+    createDeploymentStages();
+
+
+    const stages =
+        deploymentOverlay?.querySelectorAll(
+            '.deployment-stage'
+        );
+
+
+    if (stages) {
+
+        stages.forEach(
+            function (stage) {
+
+                stage.classList.remove(
+                    'active',
+                    'completed',
+                    'pending'
+                );
+
+                stage.classList.add(
+                    'pending'
+                );
+
+            }
+        );
+
+    }
+
+
+    updateDeploymentStage(
+        0,
+        'active'
+    );
+
+}
+
+
+/* ==================================================
+   OPEN DEPLOYMENT
+================================================== */
+
+function openDeploymentOverlay() {
+
+    resetDeployment();
+
 
     if (deploymentOverlay) {
 
         deploymentOverlay.classList.add(
             'active'
         );
-    }
 
-    if (deployStageTimer) {
-
-        clearInterval(
-            deployStageTimer
+        deploymentOverlay.setAttribute(
+            'aria-hidden',
+            'false'
         );
+
     }
 
-    deployStageTimer = setInterval(
-        function () {
-
-            if (deployStageIndex >= 5) {
-
-                clearInterval(
-                    deployStageTimer
-                );
-
-                deployStageTimer = null;
-
-                return;
-            }
-
-            deployStageIndex++;
-
-            activateDeployStage(
-                deployStageIndex
-            );
-
-        },
-        3000
-    );
 }
 
 
 /* ==================================================
-   STOP DEPLOY ANIMATION
+   CLOSE DEPLOYMENT
 ================================================== */
 
-function stopDeployAnimation(success = true) {
+function closeDeploymentOverlay() {
+
+    if (deploymentOverlay) {
+
+        deploymentOverlay.classList.remove(
+            'active'
+        );
+
+        deploymentOverlay.setAttribute(
+            'aria-hidden',
+            'true'
+        );
+
+    }
+
+}
+
+
+/* ==================================================
+   START STAGE SIMULATION
+==================================================
+
+ ملاحظة:
+
+ هاد timer غير كيعطي animation للواجهة.
+
+ ما كيقرر والو على نجاح Netlify.
+
+ النجاح الحقيقي كيجي من API.
+================================================== */
+
+function startDeploymentStages() {
 
     if (deployStageTimer) {
 
@@ -213,404 +502,460 @@ function stopDeployAnimation(success = true) {
             deployStageTimer
         );
 
-        deployStageTimer = null;
     }
 
-    if (success) {
 
-        activateDeployStage(6);
+    deployStageIndex =
+        0;
 
-        if (deploymentStageText) {
 
-            deploymentStageText.textContent =
-                'تم إنشاء موقعك بنجاح! 🎉';
-        }
+    updateDeploymentStage(
+        0,
+        'active'
+    );
 
-        setTimeout(
+
+    deployStageTimer =
+        setInterval(
             function () {
 
-                if (deploymentOverlay) {
+                if (
+                    !deploymentRunning
+                ) {
 
-                    deploymentOverlay.classList.remove(
-                        'active'
-                    );
+                    return;
+
                 }
 
+
+                /*
+                ما ندخلوش لمرحلة النجاح
+                حتى يرجع API.
+                */
+
+                if (
+                    deployStageIndex >= 4
+                ) {
+
+                    clearInterval(
+                        deployStageTimer
+                    );
+
+                    deployStageTimer =
+                        null;
+
+                    return;
+
+                }
+
+
+                /*
+                قبل Netlify:
+                1 → 2 → 3 → 4 → 5
+                */
+
+                deployStageIndex++;
+
+
+                updateDeploymentStage(
+                    deployStageIndex,
+                    'active'
+                );
+
             },
-            700
+            2200
         );
 
-    } else {
-
-        if (deploymentStageText) {
-
-            deploymentStageText.textContent =
-                'تعذر إكمال العملية.';
-        }
-
-        if (deploymentOverlay) {
-
-            deploymentOverlay.classList.remove(
-                'active'
-            );
-        }
-    }
 }
 
 
 /* ==================================================
-   DEPLOY BUTTON
+   COMPLETE DEPLOYMENT
 ================================================== */
 
-async function handleDeployButton() {
+function completeDeployment() {
 
-    const siteName =
-        deploymentSiteNameInput
-            ? deploymentSiteNameInput.value.trim()
-            : '';
+    if (deployStageTimer) {
 
-    if (!siteName) {
-
-        if (typeof showStatus === 'function') {
-
-            showStatus(
-                'يرجى إدخال اسم الموقع أولاً.',
-                'error'
-            );
-        }
-
-        if (deploymentSiteNameInput) {
-            deploymentSiteNameInput.focus();
-        }
-
-        return;
-    }
-
-
-    if (!/^[a-zA-Z0-9_-]+$/.test(siteName)) {
-
-        if (typeof showStatus === 'function') {
-
-            showStatus(
-                'اسم الموقع يجب أن يحتوي على حروف إنجليزية أو أرقام أو شرطة أو شرطة سفلية فقط.',
-                'error'
-            );
-        }
-
-        if (deploymentSiteNameInput) {
-            deploymentSiteNameInput.focus();
-        }
-
-        return;
-    }
-
-
-    const currentToken =
-        localStorage.getItem('token');
-
-    if (!currentToken) {
-
-        localStorage.removeItem('user');
-        localStorage.removeItem('token');
-
-        alert(
-            'جلسة الدخول غير موجودة. المرجو تسجيل الدخول مجدداً.'
+        clearInterval(
+            deployStageTimer
         );
 
-        window.location.replace(
-            'login.html'
+        deployStageTimer =
+            null;
+
+    }
+
+
+    /*
+    جميع المراحل السابقة completed
+    */
+
+    const stages =
+        deploymentOverlay?.querySelectorAll(
+            '.deployment-stage'
         );
 
-        return;
+
+    if (stages) {
+
+        stages.forEach(
+            function (stage) {
+
+                stage.classList.remove(
+                    'active',
+                    'pending'
+                );
+
+                stage.classList.add(
+                    'completed'
+                );
+
+            }
+        );
+
     }
 
 
-    if (
-        typeof window.TemplateCraftAPI === 'undefined' ||
-        typeof window.TemplateCraftAPI.deploy !== 'function'
-    ) {
+    /*
+    آخر مرحلة = إتمام
+    */
 
-        if (typeof showStatus === 'function') {
+    deployStageIndex =
+        DEPLOY_STAGES.length - 1;
 
-            showStatus(
-                'ملف client-api.js غير متصل أو لم يتم تحميله.',
-                'error'
-            );
-        }
 
-        return;
+    if (deploymentTitle) {
+
+        deploymentTitle.textContent =
+            'تم إنشاء الموقع بنجاح 🎉';
+
     }
 
 
-    const netlifyState =
-        typeof refreshNetlifyState === 'function'
-            ? await refreshNetlifyState()
-            : null;
+    if (deploymentMessage) {
 
+        deploymentMessage.textContent =
+            'تم إنشاء ونشر موقعك بنجاح على Netlify.';
 
-    if (
-        typeof netlifyReady === 'function' &&
-        !netlifyReady(netlifyState)
-    ) {
-
-        if (typeof showStatus === 'function') {
-
-            showStatus(
-                typeof getNetlifyReadinessMessage === 'function'
-                    ? getNetlifyReadinessMessage(netlifyState)
-                    : 'خاصك تربط Netlify أولاً.',
-                'error'
-            );
-        }
-
-        return;
     }
 
 
-    await openCreateModal();
+    if (deploymentProgress) {
+
+        deploymentProgress.style.width =
+            '100%';
+
+    }
+
 }
 
 
 /* ==================================================
-   CONFIRM CREATE
+   FAILED DEPLOYMENT
 ================================================== */
 
-async function handleConfirmCreate() {
+function failDeployment(
+    message
+) {
 
-    if (
-        deploymentConfirmButton &&
-        deploymentConfirmButton.disabled
-    ) {
-        return;
+    if (deployStageTimer) {
+
+        clearInterval(
+            deployStageTimer
+        );
+
+        deployStageTimer =
+            null;
+
     }
 
 
+    deploymentRunning =
+        false;
+
+
+    if (deploymentTitle) {
+
+        deploymentTitle.textContent =
+            'تعذر إنشاء الموقع';
+
+    }
+
+
+    if (deploymentMessage) {
+
+        deploymentMessage.textContent =
+            message ||
+            'حدث خطأ أثناء إنشاء الموقع.';
+
+    }
+
+
+    /*
+    بعد شوية نسدو نافذة التجهيز
+    */
+
+    setTimeout(
+        function () {
+
+            closeDeploymentOverlay();
+
+        },
+        1400
+    );
+
+}
+
+
+/* ==================================================
+   GET SITE DATA
+================================================== */
+
+function getDeploymentSiteData(
+    result
+) {
+
+    const site =
+        result?.site ||
+        result?.data ||
+        result?.project ||
+        result ||
+        {};
+
+
+    return {
+
+        siteId:
+            site.siteId ||
+            site._id ||
+            site.id ||
+            result?.siteId ||
+            result?.id ||
+            null,
+
+        url:
+            site.url ||
+            site.liveUrl ||
+            site.siteUrl ||
+            site.deployUrl ||
+            result?.url ||
+            result?.liveUrl ||
+            result?.siteUrl ||
+            null,
+
+        netlifySiteId:
+            site.netlifySiteId ||
+            result?.netlifySiteId ||
+            null,
+
+        name:
+            site.siteName ||
+            site.name ||
+            result?.siteName ||
+            null
+
+    };
+
+}
+
+
+/* ==================================================
+   HANDLE CREATE EVENT
+================================================== */
+
+async function handleCreateProject(
+    event
+) {
+
+    if (
+        deploymentRunning
+    ) {
+
+        return;
+
+    }
+
+
+    const detail =
+        event?.detail ||
+        {};
+
+
     const siteName =
-        deploymentSiteNameInput
-            ? deploymentSiteNameInput.value.trim()
-            : '';
+        String(
+            detail.siteName ||
+            ''
+        ).trim();
+
+
+    const templateId =
+        detail.templateId ||
+        detail.template?.id ||
+        null;
 
 
     const projectType =
-        deploymentProjectTypeSelect
-            ? deploymentProjectTypeSelect.value
-            : '';
-
-
-    const selectedTemplate =
-        typeof window.getSelectedTemplate === 'function'
-            ? window.getSelectedTemplate()
-            : null;
-
-
-    const selectedTemplateId =
-        selectedTemplate
-            ? selectedTemplate.id
-            : (
-                typeof window.getSelectedTemplateId === 'function'
-                    ? window.getSelectedTemplateId()
-                    : null
-            );
+        detail.projectType ||
+        detail.template?.projectType ||
+        detail.template?.category ||
+        '';
 
 
     if (!siteName) {
 
-        closeCreateModal();
-
-        if (typeof showStatus === 'function') {
-
-            showStatus(
-                'يرجى إدخال اسم الموقع أولاً.',
-                'error'
-            );
-        }
+        alert(
+            'اسم المشروع غير موجود.'
+        );
 
         return;
+
     }
 
 
-    if (!/^[a-zA-Z0-9_-]+$/.test(siteName)) {
+    if (!templateId) {
 
-        closeCreateModal();
-
-        if (typeof showStatus === 'function') {
-
-            showStatus(
-                'اسم الموقع يجب أن يحتوي على حروف إنجليزية أو أرقام أو شرطة أو شرطة سفلية فقط.',
-                'error'
-            );
-        }
+        alert(
+            'القالب غير محدد.'
+        );
 
         return;
+
     }
 
 
-    if (!selectedTemplateId) {
-
-        closeCreateModal();
-
-        if (typeof showStatus === 'function') {
-
-            showStatus(
-                'يرجى اختيار قالب أولاً.',
-                'error'
-            );
-        }
-
-        return;
-    }
+    const token =
+        localStorage.getItem(
+            'token'
+        );
 
 
-    const currentToken =
-        localStorage.getItem('token');
+    if (!token) {
 
+        localStorage.removeItem(
+            'user'
+        );
 
-    if (!currentToken) {
+        localStorage.removeItem(
+            'token'
+        );
 
-        closeCreateModal();
-
-        localStorage.removeItem('user');
-        localStorage.removeItem('token');
 
         alert(
             'انتهت جلسة الدخول. المرجو تسجيل الدخول مجدداً.'
         );
 
+
         window.location.replace(
             'login.html'
         );
 
         return;
+
     }
 
 
     if (
-        typeof window.TemplateCraftAPI === 'undefined' ||
-        typeof window.TemplateCraftAPI.deploy !== 'function'
+        typeof window.TemplateCraftAPI ===
+        'undefined' ||
+        typeof window.TemplateCraftAPI.deploy !==
+        'function'
     ) {
 
-        closeCreateModal();
-
-        if (typeof showStatus === 'function') {
-
-            showStatus(
-                'ملف client-api.js غير متصل أو لم يتم تحميله.',
-                'error'
-            );
-        }
+        alert(
+            'ملف client-api.js غير متصل أو API النشر غير متوفر.'
+        );
 
         return;
+
     }
 
 
-    if (deploymentConfirmButton) {
+    deploymentRunning =
+        true;
 
-        deploymentConfirmButton.disabled =
-            true;
 
-        deploymentConfirmButton.textContent =
-            '⏳ التحقق من Netlify...';
+    /*
+    --------------------------------------------------
+    افتح نافذة التجهيز
+    --------------------------------------------------
+    */
+
+    openDeploymentOverlay();
+
+
+    /*
+    --------------------------------------------------
+    تأكد أن modal التأكيد تسد
+    --------------------------------------------------
+    */
+
+    const createModal =
+        document.getElementById(
+            'createModal'
+        );
+
+
+    if (createModal) {
+
+        createModal.classList.remove(
+            'show',
+            'active'
+        );
+
     }
+
+
+    /*
+    --------------------------------------------------
+    أخفي النتيجة القديمة
+    --------------------------------------------------
+    */
+
+    if (deploymentResultContainer) {
+
+        deploymentResultContainer.classList.add(
+            'hidden'
+        );
+
+    }
+
+
+    /*
+    --------------------------------------------------
+    Animation
+    --------------------------------------------------
+    */
+
+    startDeploymentStages();
 
 
     try {
 
-        const netlifyState =
-            typeof refreshNetlifyState === 'function'
-                ? await refreshNetlifyState()
-                : null;
-
-
-        if (
-            typeof netlifyReady === 'function' &&
-            !netlifyReady(netlifyState)
-        ) {
-
-            if (
-                typeof showNetlifyConfirmationWarning ===
-                'function'
-            ) {
-
-                showNetlifyConfirmationWarning(
-                    typeof getNetlifyReadinessMessage === 'function'
-                        ? getNetlifyReadinessMessage(netlifyState)
-                        : 'خاصك تختار Netlify Team أولاً.'
-                );
+        console.log(
+            '[TemplateCraft] Starting deployment:',
+            {
+                siteName,
+                templateId,
+                projectType
             }
-
-
-            if (typeof showStatus === 'function') {
-
-                showStatus(
-                    typeof getNetlifyReadinessMessage === 'function'
-                        ? getNetlifyReadinessMessage(netlifyState)
-                        : 'خاصك تختار Netlify Team أولاً.',
-                    'error'
-                );
-            }
-
-
-            return;
-        }
-
-
-        if (
-            typeof updateNetlifyConfirmationUI ===
-            'function'
-        ) {
-
-            updateNetlifyConfirmationUI(
-                netlifyState
-            );
-        }
-
-
-        closeCreateModal();
-
-
-        if (deploymentResultContainer) {
-
-            deploymentResultContainer.classList.add(
-                'hidden'
-            );
-        }
-
-
-        publishedSiteUrl = null;
-        createdSiteId = null;
-
-
-        if (deploymentButton) {
-
-            deploymentButton.disabled =
-                true;
-
-            deploymentButton.textContent =
-                '⏳ جاري إنشاء الموقع...';
-        }
-
-
-        if (typeof showStatus === 'function') {
-
-            showStatus(
-                'جاري إنشاء الموقع وإرساله إلى Netlify، المرجو الانتظار...',
-                'loading'
-            );
-        }
-
-
-        startDeployAnimation(
-            siteName
         );
 
+
+        /*
+        ------------------------------------------------
+        API DEPLOY
+        ------------------------------------------------
+        */
 
         const result =
             await window.TemplateCraftAPI.deploy({
 
-                siteName: siteName,
+                siteName:
+                    siteName,
 
                 templateId:
-                    selectedTemplateId,
+                    templateId,
 
                 variables: {
 
@@ -622,9 +967,21 @@ async function handleConfirmCreate() {
             });
 
 
+        console.log(
+            '[TemplateCraft] Deployment result:',
+            result
+        );
+
+
+        /*
+        ------------------------------------------------
+        تحقق من النتيجة
+        ------------------------------------------------
+        */
+
         if (
             !result ||
-            !result.success
+            result.success !== true
         ) {
 
             const message =
@@ -632,6 +989,10 @@ async function handleConfirmCreate() {
                 result?.message ||
                 'تعذر إنشاء أو نشر الموقع.';
 
+
+            /*
+            Authentication
+            */
 
             if (
                 result?.status === 401 ||
@@ -641,29 +1002,54 @@ async function handleConfirmCreate() {
                 )
             ) {
 
-                stopDeployAnimation(false);
-
-                localStorage.removeItem('token');
-                localStorage.removeItem('user');
-
-                alert(
-                    'انتهت جلسة الدخول. المرجو تسجيل الدخول مجدداً.'
+                failDeployment(
+                    'انتهت جلسة الدخول.'
                 );
 
-                window.location.replace(
-                    'login.html'
+
+                localStorage.removeItem(
+                    'token'
                 );
+
+                localStorage.removeItem(
+                    'user'
+                );
+
+
+                setTimeout(
+                    function () {
+
+                        window.location.replace(
+                            'login.html'
+                        );
+
+                    },
+                    1000
+                );
+
 
                 return;
+
             }
 
 
-            throw new Error(message);
+            throw new Error(
+                message
+            );
+
         }
 
 
+        /*
+        ------------------------------------------------
+        الموقع تم إنشاؤه بنجاح
+        ------------------------------------------------
+        */
+
         const siteData =
-            getSiteData(result);
+            getDeploymentSiteData(
+                result
+            );
 
 
         createdSiteId =
@@ -671,238 +1057,199 @@ async function handleConfirmCreate() {
 
 
         publishedSiteUrl =
-            siteData.url ||
-            siteData.liveUrl ||
-            siteData.siteUrl ||
-            null;
+            siteData.url;
 
 
-        stopDeployAnimation(true);
+        /*
+        ------------------------------------------------
+        مهم جداً:
+
+        ما نسناوش SSL.
+
+        نجاح Netlify = نجاح الإنشاء.
+        ------------------------------------------------
+        */
+
+        completeDeployment();
 
 
-        showDeployResult(
-            siteData
+        /*
+        ------------------------------------------------
+        نعطي الواجهة لحظة قصيرة باش تبين ✓
+        ------------------------------------------------
+        */
+
+        await new Promise(
+            function (resolve) {
+
+                setTimeout(
+                    resolve,
+                    850
+                );
+
+            }
         );
 
 
-        setTimeout(
-            function () {
+        /*
+        ------------------------------------------------
+        CLOSE
+        ------------------------------------------------
+        */
 
-                openSslInfoModal();
+        closeDeploymentOverlay();
 
-            },
-            900
+
+        /*
+        ------------------------------------------------
+        انتقال إلى صفحة المشاريع
+        ------------------------------------------------
+        */
+
+        window.location.replace(
+            'profile.html'
         );
 
 
     } catch (error) {
 
         console.error(
-            'Project publishing error:',
+            '[TemplateCraft] Project deployment error:',
             error
         );
 
 
-        stopDeployAnimation(false);
-
-
-        if (typeof showStatus === 'function') {
-
-            showStatus(
-                error.message ||
-                'حدث خطأ أثناء إنشاء الموقع. حاول مرة أخرى.',
-                'error'
-            );
-        }
+        failDeployment(
+            error?.message ||
+            'حدث خطأ أثناء إنشاء الموقع.'
+        );
 
 
     } finally {
 
-        if (deploymentButton) {
+        deploymentRunning =
+            false;
 
-            deploymentButton.disabled =
-                false;
-
-            deploymentButton.textContent =
-                '🚀 إنشاء المشروع ونشره';
-        }
-
-
-        if (deploymentConfirmButton) {
-
-            deploymentConfirmButton.disabled =
-                false;
-
-            deploymentConfirmButton.textContent =
-                'تأكيد الإنشاء';
-        }
     }
+
 }
 
 
 /* ==================================================
-   COPY LINK
+   SAFE HTML
 ================================================== */
 
-async function handleCopyLink() {
+function escapeDeploymentHtml(
+    value
+) {
 
-    if (!publishedSiteUrl) {
-
-        if (typeof showStatus === 'function') {
-
-            showStatus(
-                'الرابط غير جاهز للنسخ بعد.',
-                'error'
-            );
-        }
-
-        return;
-    }
-
-
-    try {
-
-        if (
-            navigator.clipboard &&
-            window.isSecureContext
-        ) {
-
-            await navigator.clipboard.writeText(
-                publishedSiteUrl
-            );
-
-        } else {
-
-            const textArea =
-                document.createElement('textarea');
-
-            textArea.value =
-                publishedSiteUrl;
-
-            textArea.style.position =
-                'fixed';
-
-            textArea.style.opacity =
-                '0';
-
-            document.body.appendChild(
-                textArea
-            );
-
-            textArea.select();
-
-            const copied =
-                document.execCommand('copy');
-
-            textArea.remove();
-
-            if (!copied) {
-                throw new Error('Copy failed');
-            }
-        }
-
-
-        const button =
-            document.getElementById('copyLinkBtn');
-
-        if (button) {
-
-            button.textContent =
-                '✅ تم نسخ الرابط';
-
-            setTimeout(
-                function () {
-
-                    button.textContent =
-                        '📋 نسخ الرابط';
-
-                },
-                2000
-            );
-        }
-
-
-    } catch (error) {
-
-        if (typeof showStatus === 'function') {
-
-            showStatus(
-                'تعذر نسخ الرابط تلقائياً.',
-                'error'
-            );
-        }
-    }
-}
-
-
-/* ==================================================
-   SSL EVENTS
-================================================== */
-
-function initializeSslModal() {
-
-    const modal =
-        document.getElementById(
-            'sslPreparationModal'
+    return String(
+        value ?? ''
+    )
+        .replace(
+            /&/g,
+            '&amp;'
+        )
+        .replace(
+            /</g,
+            '&lt;'
+        )
+        .replace(
+            />/g,
+            '&gt;'
+        )
+        .replace(
+            /"/g,
+            '&quot;'
+        )
+        .replace(
+            /'/g,
+            '&#039;'
         );
 
-    if (!modal) {
-        return;
-    }
-
-
-    modal.addEventListener(
-        'click',
-        function (event) {
-
-            if (
-                event.target === modal
-            ) {
-
-                closeSslInfoModal();
-            }
-        }
-    );
 }
 
 
 /* ==================================================
-   DEPLOYMENT EVENTS
+   INITIALIZE
 ================================================== */
 
 function initializeDeploymentSystem() {
 
-    if (deploymentButton) {
+    /*
+    --------------------------------------------------
+    مهم:
 
-        deploymentButton.addEventListener(
-            'click',
-            handleDeployButton
-        );
+    ما نربطوش createProjectBtn
+    وما نربطوش confirmCreateBtn.
+
+    create-project.js هو المسؤول عليهم.
+
+    هنا نستقبل فقط الحدث:
+    templatecraft:create-project
+    --------------------------------------------------
+    */
+
+    createDeploymentStages();
+
+
+    /*
+    منع التسجيل المكرر
+    */
+
+    if (
+        window.__templateCraftDeploymentInitialized
+    ) {
+
+        return;
+
     }
 
 
-    if (deploymentConfirmButton) {
-
-        deploymentConfirmButton.addEventListener(
-            'click',
-            handleConfirmCreate
-        );
-    }
+    window.__templateCraftDeploymentInitialized =
+        true;
 
 
-    initializeSslModal();
+    window.addEventListener(
+        'templatecraft:create-project',
+        handleCreateProject
+    );
+
+
+    console.log(
+        '[TemplateCraft] Deployment system initialized'
+    );
+
 }
 
 
 /* ==================================================
-   PUBLIC
+   PUBLIC API
 ================================================== */
 
 window.initializeDeploymentSystem =
     initializeDeploymentSystem;
 
-window.openSslInfoModal =
-    openSslInfoModal;
 
-window.closeSslInfoModal =
-    closeSslInfoModal;
+window.openDeploymentOverlay =
+    openDeploymentOverlay;
+
+
+window.closeDeploymentOverlay =
+    closeDeploymentOverlay;
+
+
+window.getCreatedSiteId =
+    function () {
+
+        return createdSiteId;
+
+    };
+
+
+window.getPublishedSiteUrl =
+    function () {
+
+        return publishedSiteUrl;
+
+    };
