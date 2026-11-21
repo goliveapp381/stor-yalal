@@ -2,6 +2,7 @@
 <html lang="ar" dir="rtl">
 
 <head>
+
     <meta charset="UTF-8">
 
     <meta
@@ -16,6 +17,11 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap"
         rel="stylesheet"
+    >
+
+    <link
+        rel="stylesheet"
+        href="./create-project.css"
     >
 
     <style>
@@ -33,6 +39,7 @@
 
         body {
             font-family: "Cairo", sans-serif;
+
             background:
                 radial-gradient(
                     circle at top right,
@@ -45,6 +52,7 @@
                     transparent 30%
                 ),
                 #f8fafc;
+
             color: #0f172a;
         }
 
@@ -56,15 +64,15 @@
         }
 
         /* =====================================================
-           MODAL SYSTEM
-           يستخدم فقط createModal
+           MODAL
         ===================================================== */
 
         .modal {
             display: none;
         }
 
-        .modal.show {
+        .modal.show,
+        .modal.active {
             display: flex;
         }
 
@@ -77,7 +85,11 @@
         }
 
         .container-main {
-            width: min(1400px, calc(100% - 32px));
+            width: min(
+                1400px,
+                calc(100% - 32px)
+            );
+
             margin: 0 auto;
         }
 
@@ -89,23 +101,37 @@
             position: sticky;
             top: 0;
             z-index: 100;
+
             backdrop-filter: blur(18px);
-            background: rgba(255, 255, 255, 0.88);
-            border-bottom: 1px solid #e2e8f0;
+            -webkit-backdrop-filter: blur(18px);
+
+            background: rgba(
+                255,
+                255,
+                255,
+                0.88
+            );
+
+            border-bottom:
+                1px solid #e2e8f0;
         }
 
         .page-header-inner {
             min-height: 74px;
+
             display: flex;
             align-items: center;
             justify-content: space-between;
+
             gap: 20px;
         }
 
         .brand {
             display: flex;
             align-items: center;
+
             gap: 12px;
+
             text-decoration: none;
             color: #0f172a;
         }
@@ -113,13 +139,18 @@
         .brand-logo {
             width: 44px;
             height: 44px;
+
             border-radius: 14px;
+
             display: flex;
             align-items: center;
             justify-content: center;
+
             color: white;
+
             font-size: 21px;
             font-weight: 900;
+
             background:
                 linear-gradient(
                     135deg,
@@ -127,18 +158,27 @@
                     #7c3aed,
                     #2563eb
                 );
+
             box-shadow:
-                0 10px 30px rgba(79, 70, 229, 0.25);
+                0 10px 30px
+                rgba(
+                    79,
+                    70,
+                    229,
+                    0.25
+                );
         }
 
         .brand-text strong {
             display: block;
+
             font-size: 18px;
             font-weight: 900;
         }
 
         .brand-text span {
             display: block;
+
             font-size: 11px;
             color: #64748b;
             font-weight: 600;
@@ -149,19 +189,26 @@
         ===================================================== */
 
         .hero {
-            padding: 46px 0 28px;
+            padding: 74px 0 34px;
         }
 
         .hero-content {
             display: grid;
-            grid-template-columns: 1.4fr 0.6fr;
+
+            grid-template-columns:
+                1.4fr
+                0.6fr;
+
             gap: 24px;
+
             align-items: stretch;
         }
 
         .hero-card {
             border-radius: 28px;
-            padding: 34px;
+
+            padding: 42px 38px;
+
             background:
                 linear-gradient(
                     135deg,
@@ -169,31 +216,62 @@
                     #1e1b4b,
                     #312e81
                 );
+
             color: white;
+
             position: relative;
             overflow: hidden;
+
             box-shadow:
-                0 25px 70px rgba(15, 23, 42, 0.20);
+                0 25px 70px
+                rgba(
+                    15,
+                    23,
+                    42,
+                    0.20
+                );
         }
 
         .hero-card::before {
             content: "";
+
             position: absolute;
+
             width: 300px;
             height: 300px;
+
             border-radius: 50%;
-            background: rgba(255, 255, 255, 0.07);
+
+            background:
+                rgba(
+                    255,
+                    255,
+                    255,
+                    0.07
+                );
+
             top: -120px;
             right: -100px;
         }
 
         .hero-card::after {
             content: "";
+
             position: absolute;
+
             width: 220px;
             height: 220px;
+
             border-radius: 50%;
-            background: rgba(99, 102, 241, 0.16);
+
+            background:
+                rgba(
+                    99,
+                    102,
+                    241,
+                    0.16
+                );
+
             bottom: -120px;
             left: -70px;
         }
@@ -205,51 +283,106 @@
 
         .hero-badge {
             display: inline-flex;
+
             align-items: center;
             gap: 8px;
+
             padding: 7px 12px;
+
             border-radius: 999px;
-            background: rgba(255,255,255,0.10);
-            border: 1px solid rgba(255,255,255,0.12);
+
+            background:
+                rgba(
+                    255,
+                    255,
+                    255,
+                    0.10
+                );
+
+            border:
+                1px solid
+                rgba(
+                    255,
+                    255,
+                    255,
+                    0.12
+                );
+
             font-size: 12px;
             font-weight: 800;
-            margin-bottom: 18px;
+
+            margin-bottom: 22px;
         }
 
         .hero-title {
-            font-size: clamp(28px, 4vw, 46px);
+            font-size:
+                clamp(
+                    28px,
+                    4vw,
+                    46px
+                );
+
             line-height: 1.15;
+
             font-weight: 900;
-            margin: 0 0 14px;
+
+            margin:
+                0 0 14px;
         }
 
         .hero-description {
             margin: 0;
-            color: rgba(255,255,255,0.75);
+
+            color:
+                rgba(
+                    255,
+                    255,
+                    255,
+                    0.75
+                );
+
             max-width: 760px;
+
             line-height: 1.9;
+
             font-size: 14px;
         }
 
         .hero-side {
             border-radius: 28px;
+
             background: white;
-            border: 1px solid #e2e8f0;
+
+            border:
+                1px solid
+                #e2e8f0;
+
             padding: 26px;
+
             box-shadow:
-                0 15px 45px rgba(15, 23, 42, 0.07);
+                0 15px 45px
+                rgba(
+                    15,
+                    23,
+                    42,
+                    0.07
+                );
         }
 
         .hero-side-title {
             font-size: 15px;
             font-weight: 900;
+
             margin-bottom: 18px;
         }
 
         .hero-step {
             display: flex;
+
             gap: 12px;
+
             align-items: flex-start;
+
             margin-bottom: 15px;
         }
 
@@ -258,66 +391,103 @@
         }
 
         .hero-step-number {
-            flex: 0 0 30px;
+            flex:
+                0 0 30px;
+
             width: 30px;
             height: 30px;
+
             border-radius: 10px;
+
             display: flex;
             align-items: center;
             justify-content: center;
+
             background: #eef2ff;
             color: #4f46e5;
+
             font-size: 12px;
             font-weight: 900;
         }
 
         .hero-step-text strong {
             display: block;
+
             font-size: 13px;
+
             margin-bottom: 2px;
         }
 
         .hero-step-text span {
             display: block;
+
             font-size: 11px;
+
             color: #64748b;
+
             line-height: 1.6;
         }
 
         /* =====================================================
-           FORM CARD
+           SECTION
         ===================================================== */
 
         .section-card {
             background: white;
-            border: 1px solid #e2e8f0;
+
+            border:
+                1px solid
+                #e2e8f0;
+
             border-radius: 26px;
+
             padding: 26px;
+
             margin-bottom: 24px;
+
             box-shadow:
-                0 15px 50px rgba(15, 23, 42, 0.05);
+                0 15px 50px
+                rgba(
+                    15,
+                    23,
+                    42,
+                    0.05
+                );
         }
 
         .section-header {
             display: flex;
+
             align-items: flex-start;
+
             justify-content: space-between;
+
             gap: 20px;
+
             margin-bottom: 22px;
         }
 
         .section-title {
             margin: 0;
+
             font-size: 19px;
             font-weight: 900;
         }
 
         .section-description {
-            margin: 5px 0 0;
+            margin:
+                5px 0 0;
+
             font-size: 12px;
+
             color: #64748b;
+
             line-height: 1.7;
         }
+
+        /* =====================================================
+           FORM
+        ===================================================== */
 
         .field {
             margin-bottom: 20px;
@@ -329,32 +499,52 @@
 
         .field-label {
             display: block;
+
             margin-bottom: 8px;
+
             font-size: 13px;
             font-weight: 800;
+
             color: #334155;
         }
 
         .field-input,
         .field-select {
             width: 100%;
+
             min-height: 50px;
-            border: 1px solid #cbd5e1;
+
+            border:
+                1px solid
+                #cbd5e1;
+
             border-radius: 14px;
+
             background: #fff;
+
             padding: 0 15px;
+
             outline: none;
+
             transition:
                 border-color .2s ease,
                 box-shadow .2s ease;
+
             font-size: 13px;
         }
 
         .field-input:focus,
         .field-select:focus {
             border-color: #6366f1;
+
             box-shadow:
-                0 0 0 4px rgba(99, 102, 241, 0.10);
+                0 0 0 4px
+                rgba(
+                    99,
+                    102,
+                    241,
+                    0.10
+                );
         }
 
         /* =====================================================
@@ -363,11 +553,19 @@
 
         .selected-template-bar {
             margin-top: 16px;
+
             padding: 13px 16px;
+
             border-radius: 14px;
+
             background: #f8fafc;
-            border: 1px dashed #cbd5e1;
+
+            border:
+                1px dashed
+                #cbd5e1;
+
             color: #64748b;
+
             font-size: 12px;
             font-weight: 700;
         }
@@ -382,254 +580,630 @@
 
         .templates-grid {
             display: grid;
+
             grid-template-columns:
-                repeat(3, minmax(0, 1fr));
+                repeat(
+                    3,
+                    minmax(0, 1fr)
+                );
+
             gap: 22px;
         }
 
+        /* =====================================================
+           TEMPLATE CARD
+           الصورة هي الخلفية كاملة
+        ===================================================== */
+
         .template-card {
             position: relative;
+
+            height: 430px;
+
             overflow: hidden;
-            background: white;
-            border: 1px solid #e2e8f0;
-            border-radius: 22px;
+
+            border:
+                1px solid
+                rgba(
+                    255,
+                    255,
+                    255,
+                    0.22
+                );
+
+            border-radius: 24px;
+
+            background:
+                #0f172a;
+
             box-shadow:
-                0 12px 35px rgba(15, 23, 42, 0.06);
+                0 18px 45px
+                rgba(
+                    15,
+                    23,
+                    42,
+                    0.12
+                );
+
+            isolation: isolate;
+
+            cursor: pointer;
+
             transition:
-                transform .25s ease,
-                box-shadow .25s ease,
-                border-color .25s ease;
+                transform .3s ease,
+                box-shadow .3s ease,
+                border-color .3s ease;
         }
 
         .template-card:hover {
-            transform: translateY(-5px);
-            border-color: #a5b4fc;
+            transform:
+                translateY(-6px);
+
             box-shadow:
-                0 25px 55px rgba(79, 70, 229, 0.12);
+                0 28px 65px
+                rgba(
+                    15,
+                    23,
+                    42,
+                    0.18
+                );
         }
 
         .template-card.is-selected {
-            border-color: #6366f1;
+            border-color:
+                #6366f1;
+
             box-shadow:
-                0 20px 55px rgba(79, 70, 229, 0.18);
+                0 0 0 2px
+                rgba(
+                    99,
+                    102,
+                    241,
+                    0.25
+                ),
+                0 28px 70px
+                rgba(
+                    79,
+                    70,
+                    229,
+                    0.20
+                );
         }
 
+        /* =====================================================
+           IMAGE
+        ===================================================== */
+
         .template-image-wrapper {
-            position: relative;
-            height: 225px;
+            position: absolute;
+
+            inset: 0;
+
+            width: 100%;
+            height: 100%;
+
             overflow: hidden;
-            background: #f1f5f9;
+
+            background:
+                #0f172a;
+
+            z-index: 0;
         }
 
         .template-image {
             width: 100%;
             height: 100%;
+
             display: block;
+
             object-fit: cover;
-            transition: transform .45s ease;
+
+            transition:
+                transform .7s ease,
+                filter .5s ease;
         }
 
-        .template-card:hover .template-image {
-            transform: scale(1.045);
+        .template-card:hover
+        .template-image {
+            transform:
+                scale(1.045);
+
+            filter:
+                brightness(.88);
         }
+
+        /* =====================================================
+           IMAGE OVERLAY
+        ===================================================== */
 
         .template-image-overlay {
             position: absolute;
+
             inset: 0;
+
+            z-index: 1;
+
             pointer-events: none;
+
             background:
                 linear-gradient(
-                    to top,
-                    rgba(15, 23, 42, 0.40),
-                    transparent 45%
+                    to bottom,
+                    rgba(15,23,42,.05) 0%,
+                    rgba(15,23,42,.08) 25%,
+                    rgba(15,23,42,.18) 45%,
+                    rgba(15,23,42,.72) 72%,
+                    rgba(15,23,42,.96) 100%
                 );
         }
 
+        /* =====================================================
+           BADGE
+        ===================================================== */
+
         .template-badge {
             position: absolute;
-            top: 12px;
-            right: 12px;
-            z-index: 2;
-            padding: 6px 10px;
+
+            top: 14px;
+            right: 14px;
+
+            z-index: 5;
+
+            padding:
+                7px 11px;
+
             border-radius: 999px;
-            background: rgba(15, 23, 42, 0.82);
+
+            background:
+                rgba(
+                    15,
+                    23,
+                    42,
+                    0.68
+                );
+
+            border:
+                1px solid
+                rgba(
+                    255,
+                    255,
+                    255,
+                    0.18
+                );
+
             color: white;
+
             font-size: 10px;
-            font-weight: 800;
-            backdrop-filter: blur(10px);
+            font-weight: 900;
+
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
         }
 
         .template-selected-badge {
             position: absolute;
-            left: 12px;
-            top: 12px;
-            z-index: 3;
-            padding: 7px 11px;
+
+            top: 14px;
+            left: 14px;
+
+            z-index: 6;
+
+            padding:
+                7px 11px;
+
             border-radius: 999px;
-            background: #10b981;
+
+            background:
+                rgba(
+                    16,
+                    185,
+                    129,
+                    0.90
+                );
+
+            border:
+                1px solid
+                rgba(
+                    255,
+                    255,
+                    255,
+                    0.25
+                );
+
             color: white;
+
             font-size: 10px;
             font-weight: 900;
-            box-shadow:
-                0 8px 20px rgba(16, 185, 129, 0.25);
+
+            backdrop-filter: blur(10px);
         }
 
+        /* =====================================================
+           CARD BODY
+           شفاف / glass
+        ===================================================== */
+
         .template-card-body {
-            padding: 18px;
+            position: absolute;
+
+            left: 0;
+            right: 0;
+            bottom: 0;
+
+            z-index: 4;
+
+            padding:
+                22px 20px 20px;
+
+            background:
+                linear-gradient(
+                    to bottom,
+                    rgba(
+                        15,
+                        23,
+                        42,
+                        0
+                    ),
+                    rgba(
+                        15,
+                        23,
+                        42,
+                        0.30
+                    ) 15%,
+                    rgba(
+                        15,
+                        23,
+                        42,
+                        0.72
+                    ) 50%,
+                    rgba(
+                        15,
+                        23,
+                        42,
+                        0.84
+                    )
+                );
+
+            backdrop-filter:
+                blur(4px);
+
+            -webkit-backdrop-filter:
+                blur(4px);
         }
 
         .template-title {
-            margin: 0 0 6px;
-            font-size: 17px;
+            margin:
+                0 0 5px;
+
+            color: white;
+
+            font-size: 18px;
+
+            line-height: 1.35;
+
             font-weight: 900;
-            color: #0f172a;
+
+            text-shadow:
+                0 2px 12px
+                rgba(
+                    0,
+                    0,
+                    0,
+                    .35
+                );
         }
 
         .template-description {
-            margin: 0 0 13px;
-            color: #64748b;
+            margin:
+                0 0 12px;
+
+            color:
+                rgba(
+                    255,
+                    255,
+                    255,
+                    .82
+                );
+
             font-size: 11px;
-            line-height: 1.8;
-            min-height: 40px;
+
+            line-height: 1.7;
+
+            display:
+                -webkit-box;
+
+            -webkit-line-clamp: 2;
+
+            -webkit-box-orient: vertical;
+
+            overflow: hidden;
         }
 
         .template-features {
             display: flex;
+
             flex-wrap: wrap;
-            gap: 7px;
-            margin-bottom: 17px;
+
+            gap: 6px;
+
+            margin-bottom: 15px;
         }
 
         .template-feature {
-            padding: 5px 8px;
+            padding:
+                5px 8px;
+
             border-radius: 8px;
-            background: #f1f5f9;
-            color: #475569;
+
+            background:
+                rgba(
+                    255,
+                    255,
+                    255,
+                    0.12
+                );
+
+            border:
+                1px solid
+                rgba(
+                    255,
+                    255,
+                    255,
+                    0.12
+                );
+
+            color:
+                rgba(
+                    255,
+                    255,
+                    255,
+                    .92
+                );
+
             font-size: 9px;
             font-weight: 800;
+
+            backdrop-filter:
+                blur(8px);
         }
+
+        /* =====================================================
+           ACTIONS
+        ===================================================== */
 
         .template-actions {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+
+            grid-template-columns:
+                1fr 1fr;
+
             gap: 9px;
         }
 
         .template-preview-btn,
         .template-select-btn {
             min-height: 43px;
+
             border-radius: 12px;
+
             font-size: 11px;
             font-weight: 900;
+
             cursor: pointer;
+
             transition:
                 transform .2s ease,
                 box-shadow .2s ease,
                 background .2s ease;
+
             text-decoration: none;
+
             display: flex;
+
             align-items: center;
             justify-content: center;
         }
 
         .template-preview-btn {
-            border: 1px solid #cbd5e1;
-            background: white;
-            color: #334155;
+            border:
+                1px solid
+                rgba(
+                    255,
+                    255,
+                    255,
+                    .28
+                );
+
+            background:
+                rgba(
+                    255,
+                    255,
+                    255,
+                    .12
+                );
+
+            color: white;
+
+            backdrop-filter:
+                blur(12px);
+
+            -webkit-backdrop-filter:
+                blur(12px);
         }
 
         .template-preview-btn:hover {
-            transform: translateY(-1px);
-            background: #f8fafc;
+            transform:
+                translateY(-2px);
+
+            background:
+                rgba(
+                    255,
+                    255,
+                    255,
+                    .20
+                );
+
             box-shadow:
-                0 8px 20px rgba(15, 23, 42, 0.08);
+                0 10px 25px
+                rgba(
+                    0,
+                    0,
+                    0,
+                    .18
+                );
         }
 
         .template-select-btn {
             border: 0;
+
             color: white;
+
             background:
                 linear-gradient(
                     135deg,
                     #4f46e5,
                     #7c3aed
                 );
+
             box-shadow:
-                0 10px 25px rgba(79, 70, 229, 0.18);
+                0 10px 25px
+                rgba(
+                    79,
+                    70,
+                    229,
+                    .25
+                );
         }
 
         .template-select-btn:hover {
-            transform: translateY(-1px);
+            transform:
+                translateY(-2px);
+
             box-shadow:
-                0 14px 30px rgba(79, 70, 229, 0.25);
+                0 14px 30px
+                rgba(
+                    79,
+                    70,
+                    229,
+                    .35
+                );
         }
 
         /* =====================================================
-           LOADING / EMPTY / ERROR
+           LOADING
         ===================================================== */
 
         .state-message {
-            padding: 40px 20px;
+            padding:
+                40px 20px;
+
             text-align: center;
-            border: 1px dashed #cbd5e1;
+
+            border:
+                1px dashed
+                #cbd5e1;
+
             border-radius: 18px;
+
             color: #64748b;
+
             font-size: 13px;
-            background: #f8fafc;
+
+            background:
+                #f8fafc;
         }
 
         .state-message.error {
             color: #b91c1c;
-            border-color: #fecaca;
-            background: #fef2f2;
+
+            border-color:
+                #fecaca;
+
+            background:
+                #fef2f2;
         }
 
         .hidden {
-            display: none !important;
+            display:
+                none !important;
         }
 
         /* =====================================================
-           NETLIFY / DEPLOYMENT
+           NETLIFY
         ===================================================== */
 
         .netlify-box {
             padding: 18px;
+
             border-radius: 18px;
-            border: 1px solid #e2e8f0;
-            background: #f8fafc;
+
+            border:
+                1px solid
+                #e2e8f0;
+
+            background:
+                #f8fafc;
         }
 
         .netlify-status {
             display: flex;
+
             align-items: center;
-            justify-content: space-between;
+
+            justify-content:
+                space-between;
+
             gap: 15px;
+
             flex-wrap: wrap;
         }
 
         .status-badge {
             display: inline-flex;
+
             align-items: center;
+
             gap: 7px;
-            padding: 7px 11px;
+
+            padding:
+                7px 11px;
+
             border-radius: 999px;
+
             font-size: 11px;
+
             font-weight: 800;
         }
 
         .status-badge.success {
-            background: #dcfce7;
-            color: #166534;
+            background:
+                #dcfce7;
+
+            color:
+                #166534;
         }
 
         .status-badge.warning {
-            background: #fef3c7;
-            color: #92400e;
+            background:
+                #fef3c7;
+
+            color:
+                #92400e;
         }
 
         .status-badge.info {
-            background: #dbeafe;
-            color: #1d4ed8;
+            background:
+                #dbeafe;
+
+            color:
+                #1d4ed8;
+        }
+
+        .status-badge.error {
+            background:
+                #fee2e2;
+
+            color:
+                #b91c1c;
         }
 
         /* =====================================================
@@ -638,21 +1212,37 @@
 
         .primary-button {
             width: 100%;
+
             min-height: 54px;
+
             border: 0;
+
             border-radius: 15px;
+
             background:
                 linear-gradient(
                     135deg,
                     #4f46e5,
                     #7c3aed
                 );
+
             color: white;
+
             font-weight: 900;
+
             font-size: 14px;
+
             cursor: pointer;
+
             box-shadow:
-                0 15px 35px rgba(79, 70, 229, 0.22);
+                0 15px 35px
+                rgba(
+                    79,
+                    70,
+                    229,
+                    .22
+                );
+
             transition:
                 transform .2s ease,
                 box-shadow .2s ease,
@@ -660,66 +1250,126 @@
         }
 
         .primary-button:hover:not(:disabled) {
-            transform: translateY(-2px);
+            transform:
+                translateY(-2px);
+
             box-shadow:
-                0 20px 45px rgba(79, 70, 229, 0.28);
+                0 20px 45px
+                rgba(
+                    79,
+                    70,
+                    229,
+                    .28
+                );
         }
 
         .primary-button:disabled {
             opacity: .55;
-            cursor: not-allowed;
+
+            cursor:
+                not-allowed;
         }
 
         .secondary-button {
             min-height: 44px;
-            padding: 0 16px;
+
+            padding:
+                0 16px;
+
             border-radius: 12px;
-            border: 1px solid #cbd5e1;
+
+            border:
+                1px solid
+                #cbd5e1;
+
             background: white;
+
             color: #334155;
+
             font-weight: 800;
+
             cursor: pointer;
         }
 
         /* =====================================================
            CREATE MODAL
-           مهم: هذا باقي لأنه ديال تأكيد الإنشاء
         ===================================================== */
 
         .create-modal-backdrop {
             position: fixed;
+
             inset: 0;
+
             z-index: 500;
+
             align-items: center;
             justify-content: center;
+
             padding: 20px;
-            background: rgba(15, 23, 42, 0.62);
-            backdrop-filter: blur(8px);
+
+            background:
+                rgba(
+                    15,
+                    23,
+                    42,
+                    .62
+                );
+
+            backdrop-filter:
+                blur(8px);
         }
 
         .create-modal-card {
-            width: min(560px, 100%);
+            width:
+                min(
+                    560px,
+                    100%
+                );
+
             border-radius: 24px;
+
             background: white;
+
             padding: 25px;
+
             box-shadow:
-                0 30px 90px rgba(15, 23, 42, 0.25);
+                0 30px 90px
+                rgba(
+                    15,
+                    23,
+                    42,
+                    .25
+                );
         }
 
         /* =====================================================
-           DEPLOYMENT OVERLAY
+           DEPLOYMENT
         ===================================================== */
 
         .deployment-overlay {
             position: fixed;
+
             inset: 0;
+
             z-index: 800;
+
             display: none;
+
             align-items: center;
             justify-content: center;
+
             padding: 20px;
-            background: rgba(15, 23, 42, 0.72);
-            backdrop-filter: blur(10px);
+
+            background:
+                rgba(
+                    15,
+                    23,
+                    42,
+                    .72
+                );
+
+            backdrop-filter:
+                blur(10px);
         }
 
         .deployment-overlay.show {
@@ -727,29 +1377,58 @@
         }
 
         .deployment-card {
-            width: min(560px, 100%);
+            width:
+                min(
+                    560px,
+                    100%
+                );
+
             border-radius: 26px;
+
             background: white;
+
             padding: 28px;
+
             text-align: center;
+
             box-shadow:
-                0 30px 100px rgba(15, 23, 42, 0.30);
+                0 30px 100px
+                rgba(
+                    15,
+                    23,
+                    42,
+                    .30
+                );
         }
 
         /* =====================================================
-           SSL MODAL
+           SSL
         ===================================================== */
 
         .ssl-modal {
             position: fixed;
+
             inset: 0;
+
             z-index: 900;
+
             display: none;
+
             align-items: center;
             justify-content: center;
+
             padding: 20px;
-            background: rgba(15, 23, 42, 0.70);
-            backdrop-filter: blur(10px);
+
+            background:
+                rgba(
+                    15,
+                    23,
+                    42,
+                    .70
+                );
+
+            backdrop-filter:
+                blur(10px);
         }
 
         .ssl-modal.show {
@@ -757,12 +1436,26 @@
         }
 
         .ssl-card {
-            width: min(560px, 100%);
+            width:
+                min(
+                    560px,
+                    100%
+                );
+
             border-radius: 26px;
+
             background: white;
+
             padding: 28px;
+
             box-shadow:
-                0 30px 100px rgba(15, 23, 42, 0.30);
+                0 30px 100px
+                rgba(
+                    15,
+                    23,
+                    42,
+                    .30
+                );
         }
 
         /* =====================================================
@@ -773,61 +1466,101 @@
 
             .templates-grid {
                 grid-template-columns:
-                    repeat(2, minmax(0, 1fr));
+                    repeat(
+                        2,
+                        minmax(0, 1fr)
+                    );
             }
 
             .hero-content {
-                grid-template-columns: 1fr;
+                grid-template-columns:
+                    1fr;
             }
+
         }
 
         @media (max-width: 700px) {
 
             .container-main {
-                width: min(100% - 20px, 1400px);
+                width:
+                    min(
+                        100% - 20px,
+                        1400px
+                    );
             }
 
             .hero {
-                padding-top: 25px;
+                padding-top:
+                    48px;
             }
 
             .hero-card,
             .hero-side,
             .section-card {
-                border-radius: 20px;
+                border-radius:
+                    20px;
             }
 
             .hero-card {
-                padding: 24px;
+                padding:
+                    28px 24px;
             }
 
             .section-card {
-                padding: 18px;
+                padding:
+                    18px;
             }
 
             .templates-grid {
-                grid-template-columns: 1fr;
+                grid-template-columns:
+                    1fr;
             }
 
-            .template-image-wrapper {
-                height: 210px;
+            .template-card {
+                height:
+                    420px;
             }
 
             .template-actions {
-                grid-template-columns: 1fr;
+                grid-template-columns:
+                    1fr 1fr;
             }
 
             .page-header-inner {
-                min-height: 64px;
+                min-height:
+                    64px;
             }
+
+        }
+
+        @media (max-width: 450px) {
+
+            .template-card {
+                height:
+                    410px;
+            }
+
+            .template-actions {
+                grid-template-columns:
+                    1fr 1fr;
+            }
+
+            .template-card-body {
+                padding:
+                    20px 16px 16px;
+            }
+
         }
 
     </style>
+
 </head>
+
 
 <body>
 
 <div class="page-shell">
+
 
     <!-- =====================================================
          HEADER
@@ -1101,7 +1834,7 @@
 
 
         <!-- =================================================
-             USER / NETLIFY SECTION
+             NETLIFY
         ================================================== -->
 
         <section class="section-card">
@@ -1216,7 +1949,7 @@
 
 
         <!-- =================================================
-             CREATE PROJECT
+             CREATE
         ================================================== -->
 
         <section class="section-card">
@@ -1245,8 +1978,7 @@
 
 
 <!-- =========================================================
-     CREATE CONFIRMATION MODAL
-     هذا المودال باقي لأنه خاص بتأكيد إنشاء المشروع
+     CREATE MODAL
 ========================================================= -->
 
 <div
@@ -1427,7 +2159,7 @@
 
 
 <!-- =========================================================
-     SSL PREPARATION MODAL
+     SSL
 ========================================================= -->
 
 <div
@@ -1475,7 +2207,7 @@
 
 
 <!-- =========================================================
-     REQUIRED SCRIPTS
+     SCRIPTS
 ========================================================= -->
 
 <script src="./client-api.js"></script>
@@ -1492,7 +2224,7 @@
 
 
 <!-- =========================================================
-     CATEGORY + TEMPLATE UI CONTROLLER
+     CATEGORY + TEMPLATE CONTROLLER
 ========================================================= -->
 
 <script>
@@ -1501,21 +2233,12 @@
 
     'use strict';
 
-
-    /* =====================================================
-       API
-    ===================================================== */
-
     const API_BASE =
         String(
             window.TEMPLATECRAFT_API_BASE_URL ||
             'https://templatecraft-backend.onrender.com'
         ).replace(/\/+$/, '');
 
-
-    /* =====================================================
-       DOM
-    ===================================================== */
 
     const select =
         document.getElementById(
@@ -1543,18 +2266,10 @@
         );
 
 
-    /* =====================================================
-       STATE
-    ===================================================== */
-
     let allTemplates = [];
 
     let selectedTemplate = null;
 
-
-    /* =====================================================
-       HELPERS
-    ===================================================== */
 
     function cleanUrl(value) {
 
@@ -1599,10 +2314,6 @@
     }
 
 
-    /* =====================================================
-       TEMPLATE ASSET URL
-    ===================================================== */
-
     function getTemplateAssetUrl(
         template,
         assetPath
@@ -1612,38 +2323,28 @@
             return '';
         }
 
-
         const value =
             cleanUrl(assetPath);
-
 
         if (!value) {
             return '';
         }
 
-
         if (isAbsoluteUrl(value)) {
             return value;
         }
 
-
-        if (
-            value.startsWith('data:')
-        ) {
+        if (value.startsWith('data:')) {
             return value;
         }
-
 
         if (
             value.startsWith(
                 '/api/templates/'
             )
         ) {
-
             return API_BASE + value;
-
         }
-
 
         const projectType =
             cleanUrl(
@@ -1651,29 +2352,23 @@
                 template.category
             );
 
-
         const templateId =
             cleanUrl(
                 template.id ||
                 template.templateId
             );
 
-
         if (
             !projectType ||
             !templateId
         ) {
-
             return '';
-
         }
-
 
         const normalized =
             value
                 .replace(/^\.?\//, '')
                 .replace(/^\/+/, '');
-
 
         return (
             API_BASE +
@@ -1688,16 +2383,11 @@
     }
 
 
-    /* =====================================================
-       PREVIEW URL
-    ===================================================== */
-
     function getPreviewUrl(template) {
 
         if (!template) {
             return '';
         }
-
 
         if (
             template.previewUrl &&
@@ -1705,11 +2395,8 @@
                 template.previewUrl
             )
         ) {
-
             return template.previewUrl;
-
         }
-
 
         const projectType =
             cleanUrl(
@@ -1717,23 +2404,18 @@
                 template.category
             );
 
-
         const templateId =
             cleanUrl(
                 template.id ||
                 template.templateId
             );
 
-
         if (
             !projectType ||
             !templateId
         ) {
-
             return '';
-
         }
-
 
         return (
             API_BASE +
@@ -1747,16 +2429,11 @@
     }
 
 
-    /* =====================================================
-       TEMPLATE IMAGE
-    ===================================================== */
-
     function getTemplateImage(template) {
 
         if (!template) {
             return '';
         }
-
 
         const candidates = [
 
@@ -1774,7 +2451,6 @@
 
         ];
 
-
         for (
             const candidate of candidates
         ) {
@@ -1782,29 +2458,21 @@
             const value =
                 cleanUrl(candidate);
 
-
             if (!value) {
                 continue;
             }
 
-
             if (
                 isAbsoluteUrl(value)
             ) {
-
                 return value;
-
             }
-
 
             if (
                 value.startsWith('data:')
             ) {
-
                 return value;
-
             }
-
 
             return getTemplateAssetUrl(
                 template,
@@ -1813,15 +2481,10 @@
 
         }
 
-
         return '';
 
     }
 
-
-    /* =====================================================
-       NORMALIZE TEMPLATE
-    ===================================================== */
 
     function normalizeTemplate(
         template
@@ -1831,13 +2494,11 @@
             return null;
         }
 
-
         const projectType =
             cleanUrl(
                 template.projectType ||
                 template.category
             );
-
 
         const id =
             cleanUrl(
@@ -1845,11 +2506,9 @@
                 template.templateId
             );
 
-
         if (!id) {
             return null;
         }
-
 
         return {
 
@@ -1897,10 +2556,6 @@
     }
 
 
-    /* =====================================================
-       NORMALIZE CATEGORY
-    ===================================================== */
-
     function normalizeCategory(
         category
     ) {
@@ -1924,7 +2579,6 @@
 
         }
 
-
         if (
             category &&
             typeof category ===
@@ -1939,7 +2593,6 @@
                     category.name
                 );
 
-
             const label =
                 cleanUrl(
                     category.label ||
@@ -1948,11 +2601,9 @@
                     value
                 );
 
-
             if (!value) {
                 return null;
             }
-
 
             return {
                 value,
@@ -1961,15 +2612,10 @@
 
         }
 
-
         return null;
 
     }
 
-
-    /* =====================================================
-       LOAD CATEGORIES
-    ===================================================== */
 
     async function loadCategories() {
 
@@ -1977,14 +2623,12 @@
             return;
         }
 
-
         try {
 
             select.innerHTML =
                 '<option value="">جاري تحميل الفئات...</option>';
 
             select.disabled = true;
-
 
             const response =
                 await fetch(
@@ -2001,7 +2645,6 @@
                     }
                 );
 
-
             if (!response.ok) {
 
                 throw new Error(
@@ -2011,13 +2654,10 @@
 
             }
 
-
             const data =
                 await response.json();
 
-
             let rawCategories = [];
-
 
             if (
                 Array.isArray(
@@ -2032,10 +2672,10 @@
                 Array.isArray(data)
             ) {
 
-                rawCategories = data;
+                rawCategories =
+                    data;
 
             }
-
 
             const categories =
                 rawCategories
@@ -2044,9 +2684,7 @@
                     )
                     .filter(Boolean);
 
-
             select.innerHTML = '';
-
 
             if (
                 categories.length === 0
@@ -2061,7 +2699,6 @@
 
             }
 
-
             const defaultOption =
                 document.createElement(
                     'option'
@@ -2075,7 +2712,6 @@
             select.appendChild(
                 defaultOption
             );
-
 
             categories.forEach(
                 category => {
@@ -2098,18 +2734,16 @@
                 }
             );
 
-
             select.disabled = false;
-
 
             const ecommerce =
                 categories.find(
                     item =>
                         item.value
                             .toLowerCase()
-                            === 'ecommerce'
+                            ===
+                        'ecommerce'
                 );
-
 
             if (ecommerce) {
 
@@ -2123,7 +2757,6 @@
 
             }
 
-
             select.dispatchEvent(
                 new Event('change')
             );
@@ -2135,12 +2768,10 @@
                 error
             );
 
-
             select.innerHTML =
                 '<option value="">تعذر تحميل الفئات</option>';
 
             select.disabled = true;
-
 
             if (errorMessage) {
 
@@ -2158,10 +2789,6 @@
     }
 
 
-    /* =====================================================
-       LOAD TEMPLATES
-    ===================================================== */
-
     async function loadTemplates(
         projectType
     ) {
@@ -2170,10 +2797,8 @@
             return;
         }
 
-
         const type =
             cleanUrl(projectType);
-
 
         if (!type) {
 
@@ -2187,7 +2812,6 @@
 
         }
 
-
         try {
 
             loadingMessage?.classList.remove(
@@ -2198,15 +2822,12 @@
                 'hidden'
             );
 
-
             grid.innerHTML = '';
-
 
             const url =
                 API_BASE +
                 '/api/templates?projectType=' +
                 encodeURIComponent(type);
-
 
             const response =
                 await fetch(
@@ -2222,7 +2843,6 @@
                     }
                 );
 
-
             if (!response.ok) {
 
                 throw new Error(
@@ -2232,13 +2852,10 @@
 
             }
 
-
             const data =
                 await response.json();
 
-
             let templates = [];
-
 
             if (
                 Array.isArray(
@@ -2253,10 +2870,10 @@
                 Array.isArray(data)
             ) {
 
-                templates = data;
+                templates =
+                    data;
 
             }
-
 
             allTemplates =
                 templates
@@ -2273,11 +2890,9 @@
                             type.toLowerCase()
                     );
 
-
             loadingMessage?.classList.add(
                 'hidden'
             );
-
 
             if (
                 allTemplates.length === 0
@@ -2294,9 +2909,7 @@
                 `;
 
                 return;
-
             }
-
 
             renderTemplates();
 
@@ -2307,19 +2920,15 @@
                 error
             );
 
-
             allTemplates = [];
-
 
             loadingMessage?.classList.add(
                 'hidden'
             );
 
-
             errorMessage?.classList.remove(
                 'hidden'
             );
-
 
             if (errorMessage) {
 
@@ -2333,10 +2942,6 @@
     }
 
 
-    /* =====================================================
-       CREATE TEMPLATE CARD
-    ===================================================== */
-
     function createTemplateCard(
         template
     ) {
@@ -2344,12 +2949,10 @@
         const image =
             getTemplateImage(template);
 
-
         const isSelected =
             selectedTemplate &&
             selectedTemplate.id ===
             template.id;
-
 
         const features =
             Array.isArray(
@@ -2357,7 +2960,6 @@
             )
                 ? template.features
                 : [];
-
 
         const featureHtml =
             features
@@ -2374,7 +2976,6 @@
                 )
                 .join('');
 
-
         const imageHtml =
             image
                 ? `
@@ -2385,8 +2986,15 @@
                         loading="lazy"
                         onerror="
                             this.style.display='none';
-                            this.nextElementSibling
-                                .classList.remove('hidden');
+                            const fallback =
+                                this.parentElement
+                                .querySelector(
+                                    '.template-image-fallback'
+                                );
+
+                            if (fallback) {
+                                fallback.classList.remove('hidden');
+                            }
                         "
                     >
 
@@ -2401,10 +3009,10 @@
                             background:
                                 linear-gradient(
                                     135deg,
-                                    #e2e8f0,
-                                    #f8fafc
+                                    #1e293b,
+                                    #334155
                                 );
-                            color:#64748b;
+                            color:white;
                             font-size:13px;
                             font-weight:800;
                         "
@@ -2414,6 +3022,7 @@
                 `
                 : `
                     <div
+                        class="template-image-fallback"
                         style="
                             position:absolute;
                             inset:0;
@@ -2423,10 +3032,10 @@
                             background:
                                 linear-gradient(
                                     135deg,
-                                    #e2e8f0,
-                                    #f8fafc
+                                    #1e293b,
+                                    #334155
                                 );
-                            color:#64748b;
+                            color:white;
                             font-size:13px;
                             font-weight:800;
                         "
@@ -2456,7 +3065,6 @@
                         class="template-image-overlay"
                     ></div>
 
-
                     <div
                         class="template-badge"
                     >
@@ -2466,7 +3074,6 @@
                             'Template'
                         )}
                     </div>
-
 
                     ${
                         isSelected
@@ -2522,13 +3129,6 @@
                         class="template-actions"
                     >
 
-                        <!--
-                            مهم:
-                            Preview ما بقاش button ديال modal.
-                            دابا كيفتح الـtemplate الحقيقي
-                            فـtab جديد عادي.
-                        -->
-
                         <button
                             type="button"
                             class="template-preview-btn"
@@ -2563,16 +3163,11 @@
     }
 
 
-    /* =====================================================
-       RENDER TEMPLATES
-    ===================================================== */
-
     function renderTemplates() {
 
         if (!grid) {
             return;
         }
-
 
         grid.innerHTML =
             allTemplates
@@ -2583,11 +3178,6 @@
 
     }
 
-
-    /* =====================================================
-       OPEN REAL PREVIEW PAGE
-       ما كاينش modal هنا
-    ===================================================== */
 
     function openPreviewById(
         templateId
@@ -2600,46 +3190,16 @@
                     String(templateId)
             );
 
-
         if (!template) {
-
-            console.error(
-                '[TemplateCraft] Template not found:',
-                templateId
-            );
-
             return;
-
         }
-
 
         const previewUrl =
             getPreviewUrl(template);
 
-
         if (!previewUrl) {
-
-            console.error(
-                '[TemplateCraft] Preview URL missing:',
-                template
-            );
-
             return;
-
         }
-
-
-        /*
-         * مهم:
-         *
-         * هذا ماشي Modal.
-         *
-         * كيفتح الـpreview الحقيقي
-         * فـbrowser tab جديد.
-         *
-         * الصفحة ديال create-project
-         * كتبقى محلولة.
-         */
 
         window.open(
             previewUrl,
@@ -2649,10 +3209,6 @@
 
     }
 
-
-    /* =====================================================
-       SELECT TEMPLATE
-    ===================================================== */
 
     function selectTemplateById(
         templateId
@@ -2665,15 +3221,12 @@
                     String(templateId)
             );
 
-
         if (!template) {
             return;
         }
 
-
         selectedTemplate =
             template;
-
 
         if (selectedLabel) {
 
@@ -2687,9 +3240,7 @@
 
         }
 
-
         renderTemplates();
-
 
         window.dispatchEvent(
             new CustomEvent(
@@ -2714,10 +3265,6 @@
     }
 
 
-    /* =====================================================
-       GRID EVENTS
-    ===================================================== */
-
     if (grid) {
 
         grid.addEventListener(
@@ -2729,28 +3276,19 @@
                         '[data-action]'
                     );
 
-
                 if (!actionElement) {
                     return;
                 }
 
-
                 const action =
                     actionElement.dataset.action;
-
 
                 const templateId =
                     actionElement.dataset.templateId;
 
-
                 if (!templateId) {
                     return;
                 }
-
-
-                /* =========================================
-                   PREVIEW
-                   ========================================= */
 
                 if (
                     action ===
@@ -2758,7 +3296,6 @@
                 ) {
 
                     event.preventDefault();
-
                     event.stopPropagation();
 
                     openPreviewById(
@@ -2766,13 +3303,7 @@
                     );
 
                     return;
-
                 }
-
-
-                /* =========================================
-                   SELECT
-                   ========================================= */
 
                 if (
                     action ===
@@ -2780,7 +3311,6 @@
                 ) {
 
                     event.preventDefault();
-
                     event.stopPropagation();
 
                     selectTemplateById(
@@ -2795,10 +3325,6 @@
     }
 
 
-    /* =====================================================
-       CATEGORY CHANGE
-    ===================================================== */
-
     if (select) {
 
         select.addEventListener(
@@ -2808,10 +3334,8 @@
                 const projectType =
                     select.value;
 
-
                 selectedTemplate =
                     null;
-
 
                 if (selectedLabel) {
 
@@ -2819,7 +3343,6 @@
                         'لم يتم اختيار أي قالب بعد.';
 
                 }
-
 
                 loadTemplates(
                     projectType
@@ -2831,92 +3354,73 @@
     }
 
 
-    /* =====================================================
-       PUBLIC API
-    ===================================================== */
-
     window.TemplateCraftCreatePage = {
 
-        getTemplates:
-            function () {
+        getTemplates() {
 
-                return [
-                    ...allTemplates
-                ];
+            return [
+                ...allTemplates
+            ];
 
-            },
+        },
 
+        getSelectedTemplate() {
 
-        getSelectedTemplate:
-            function () {
+            return selectedTemplate;
 
-                return selectedTemplate;
+        },
 
-            },
+        selectTemplate(
+            templateId
+        ) {
 
-
-        selectTemplate:
-            function (
+            selectTemplateById(
                 templateId
-            ) {
+            );
 
-                selectTemplateById(
-                    templateId
-                );
+        },
 
-            },
+        getPreviewUrl(
+            template
+        ) {
 
-
-        getPreviewUrl:
-            function (
+            return getPreviewUrl(
                 template
-            ) {
+            );
 
-                return getPreviewUrl(
-                    template
-                );
+        },
 
-            },
+        getTemplateAssetUrl(
+            template,
+            assetPath
+        ) {
 
-
-        getTemplateAssetUrl:
-            function (
+            return getTemplateAssetUrl(
                 template,
                 assetPath
-            ) {
+            );
 
-                return getTemplateAssetUrl(
-                    template,
-                    assetPath
-                );
+        },
 
-            },
+        openPreview(
+            templateId
+        ) {
 
-
-        openPreview:
-            function (
+            openPreviewById(
                 templateId
-            ) {
+            );
 
-                openPreviewById(
-                    templateId
-                );
-
-            }
+        }
 
     };
 
 
-    /* =====================================================
-       INIT
-    ===================================================== */
-
     loadCategories();
-
 
 })();
 
 </script>
 
 </body>
+
     </html>
