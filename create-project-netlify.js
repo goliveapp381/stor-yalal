@@ -3,48 +3,74 @@
  TEMPLATECRAFT PRO - NETLIFY FRONTEND
  File: create-project-netlify.js
 
- Features:
- - Netlify OAuth Popup
- - Secure OAuth postMessage validation
- - Netlify connection status
- - Automatic Team selection when ONE Team exists
- - Team picker when MULTIPLE Teams exist
- - Detect deleted / unavailable Team
- - Keep OAuth connection when Team is deleted
- - Display selected Team name
- - Disconnect Netlify
- - TemplateCraftNetlify public interface
-
- Compatible with client-api.js
+ مسؤول عن:
+ - Netlify OAuth
+ - Netlify connection
+ - Netlify status
+ - Team detection
+ - Automatic single Team selection
+ - Multiple Team picker
+ - Deleted Team handling
+ - Disconnect
+ - Public Netlify API
 ==================================================
 */
 
 (function () {
+
     'use strict';
 
-    // ============================================
-    // 1. CONFIGURATION
-    // ============================================
 
-    const API = window.TemplateCraftAPI;
+    // =================================================
+    // 1. CONFIGURATION
+    // =================================================
+
+    const API =
+        window.TemplateCraftAPI || null;
+
 
     const BACKEND_URL =
         window.TEMPLATECRAFT_API_BASE_URL ||
         'https://templatecraft-backend.onrender.com';
 
-    const BACKEND_ORIGIN =
-        new URL(BACKEND_URL).origin;
+
+    let BACKEND_ORIGIN = '';
+
+    try {
+
+        BACKEND_ORIGIN =
+            new URL(
+                BACKEND_URL
+            ).origin;
+
+    } catch (error) {
+
+        console.error(
+            'Invalid BACKEND_URL:',
+            error
+        );
+    }
+
 
     const POPUP_NAME =
         'TemplateCraftNetlifyOAuth';
 
-    const POPUP_WIDTH = 600;
-    const POPUP_HEIGHT = 750;
+
+    const POPUP_WIDTH =
+        600;
 
 
-    // ============================================
+    const POPUP_HEIGHT =
+        750;
+
+
+    const API_TIMEOUT =
+        20000;
+
+
+    // =================================================
     // 2. STATE
-    // ============================================
+    // =================================================
 
     let netlifyState = {
 
@@ -65,25 +91,34 @@
         availableTeams: [],
 
         message: ''
+
     };
 
 
-    let oauthPopup = null;
-
-    let oauthCheckInterval = null;
-
-    let refreshPromise = null;
-
-    let oauthCompleted = false;
+    let oauthPopup =
+        null;
 
 
-    // ============================================
+    let oauthCheckInterval =
+        null;
+
+
+    let refreshPromise =
+        null;
+
+
+    let oauthCompleted =
+        false;
+
+
+    // =================================================
     // 3. DOM HELPERS
-    // ============================================
+    // =================================================
 
     function getElement(id) {
 
         return document.getElementById(id);
+
     }
 
 
@@ -92,9 +127,18 @@
         const element =
             getElement(id);
 
-        if (element) {
-            element.classList.remove('hidden');
+        if (!element) {
+            return;
         }
+
+        element.classList.remove(
+            'hidden'
+        );
+
+        element.classList.remove(
+            'is-hidden'
+        );
+
     }
 
 
@@ -103,23 +147,44 @@
         const element =
             getElement(id);
 
-        if (element) {
-            element.classList.add('hidden');
+        if (!element) {
+            return;
         }
+
+        element.classList.add(
+            'hidden'
+        );
+
+        element.classList.add(
+            'is-hidden'
+        );
+
     }
 
 
-    function setText(id, value) {
+    function setText(
+        id,
+        value
+    ) {
 
         const element =
             getElement(id);
 
-        if (element) {
-            element.textContent =
-                value || '';
+        if (!element) {
+            return;
         }
+
+        element.textContent =
+            value == null
+                ? ''
+                : String(value);
+
     }
 
+
+    // =================================================
+    // 4. MESSAGE
+    // =================================================
 
     function setMessage(
         message,
@@ -130,527 +195,81 @@
         netlifyState.message =
             message || '';
 
+
         const element =
             getElement(
                 'netlifyConnectionMessage'
             );
 
-        if (!element) return;
+
+        if (!element) {
+            return;
+        }
+
 
         element.textContent =
             message || '';
 
+
+        showElement(
+            'netlifyConnectionMessage'
+        );
+
+
         element.classList.remove(
-            'hidden'
-        );
-
-        element.classList.toggle(
             'text-red-600',
-            Boolean(isError)
-        );
-
-        element.classList.toggle(
             'text-yellow-600',
-            Boolean(
-                !isError &&
-                isWarning
-            )
+            'text-green-600'
         );
 
-        element.classList.toggle(
-            'text-green-600',
-            Boolean(
-                !isError &&
-                !isWarning
-            )
-        );
+
+        if (isError) {
+
+            element.classList.add(
+                'text-red-600'
+            );
+
+        } else if (isWarning) {
+
+            element.classList.add(
+                'text-yellow-600'
+            );
+
+        } else {
+
+            element.classList.add(
+                'text-green-600'
+            );
+        }
+
     }
 
 
     function clearMessage() {
 
-        netlifyState.message = '';
+        netlifyState.message =
+            '';
+
 
         hideElement(
             'netlifyConnectionMessage'
         );
+
     }
 
 
-    // ============================================
-    // 4. DYNAMIC TEAM PICKER
-    // ============================================
-
-    function ensureTeamPicker() {
-
-        let picker =
-            getElement(
-                'netlifyTeamPicker'
-            );
-
-        if (picker) {
-            return picker;
-        }
-
-
-        const connectedInfo =
-            getElement(
-                'netlifyConnectedInfo'
-            );
-
-
-        const mainTeamName =
-            getElement(
-                'netlifyMainTeamName'
-            );
-
-
-        const fallbackParent =
-            mainTeamName?.parentElement ||
-            getElement(
-                'netlifyConnectionMessage'
-            )?.parentElement ||
-            getElement(
-                'connectNetlifyBtn'
-            )?.parentElement;
-
-
-        const parent =
-            connectedInfo ||
-            fallbackParent;
-
-
-        if (!parent) {
-            return null;
-        }
-
-
-        picker =
-            document.createElement(
-                'div'
-            );
-
-
-        picker.id =
-            'netlifyTeamPicker';
-
-        picker.dir =
-            'rtl';
-
-        picker.className =
-            'hidden mt-4 p-4 rounded-xl border border-yellow-300 bg-yellow-50';
-
-
-        // ----------------------------------------
-        // Title
-        // ----------------------------------------
-
-        const title =
-            document.createElement(
-                'div'
-            );
-
-        title.className =
-            'font-semibold text-gray-800 mb-2';
-
-        title.textContent =
-            'اختار Team للنشر';
-
-
-        // ----------------------------------------
-        // Description
-        // ----------------------------------------
-
-        const description =
-            document.createElement(
-                'div'
-            );
-
-        description.className =
-            'text-sm text-gray-600 mb-3';
-
-        description.textContent =
-            'اختار Team اللي بغيتي TemplateCraft يستعملها لإنشاء المشاريع الجديدة.';
-
-
-        // ----------------------------------------
-        // Select
-        // ----------------------------------------
-
-        const select =
-            document.createElement(
-                'select'
-            );
-
-        select.id =
-            'netlifyTeamSelect';
-
-        select.className =
-            'w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500';
-
-
-        // ----------------------------------------
-        // Default option
-        // ----------------------------------------
-
-        const defaultOption =
-            document.createElement(
-                'option'
-            );
-
-        defaultOption.value =
-            '';
-
-        defaultOption.textContent =
-            'اختار Team...';
-
-        defaultOption.disabled =
-            true;
-
-        defaultOption.selected =
-            true;
-
-        select.appendChild(
-            defaultOption
-        );
-
-
-        // ----------------------------------------
-        // Button
-        // ----------------------------------------
-
-        const button =
-            document.createElement(
-                'button'
-            );
-
-        button.id =
-            'selectNetlifyTeamBtn';
-
-        button.type =
-            'button';
-
-        button.className =
-            'mt-3 w-full rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-50';
-
-        button.textContent =
-            'اختيار Team';
-
-
-        // ----------------------------------------
-        // Picker message
-        // ----------------------------------------
-
-        const pickerMessage =
-            document.createElement(
-                'div'
-            );
-
-        pickerMessage.id =
-            'netlifyTeamPickerMessage';
-
-        pickerMessage.className =
-            'hidden mt-2 text-sm';
-
-
-        // ----------------------------------------
-        // Build
-        // ----------------------------------------
-
-        picker.appendChild(
-            title
-        );
-
-        picker.appendChild(
-            description
-        );
-
-        picker.appendChild(
-            select
-        );
-
-        picker.appendChild(
-            button
-        );
-
-        picker.appendChild(
-            pickerMessage
-        );
-
-
-        parent.appendChild(
-            picker
-        );
-
-
-        // ----------------------------------------
-        // Events
-        // ----------------------------------------
-
-        select.addEventListener(
-            'change',
-            function () {
-
-                button.disabled =
-                    !Boolean(
-                        select.value
-                    );
-            }
-        );
-
-
-        button.addEventListener(
-            'click',
-            async function () {
-
-                const slug =
-                    String(
-                        select.value ||
-                        ''
-                    ).trim();
-
-
-                if (!slug) {
-
-                    showTeamPickerMessage(
-                        'اختار Team أولاً.',
-                        true
-                    );
-
-                    return;
-                }
-
-
-                await selectTeam(
-                    slug
-                );
-            }
-        );
-
-
-        return picker;
-    }
-
-
-    function showTeamPickerMessage(
-        message,
-        isError = false
-    ) {
-
-        const element =
-            getElement(
-                'netlifyTeamPickerMessage'
-            );
-
-        if (!element) {
-            return;
-        }
-
-
-        element.textContent =
-            message || '';
-
-        element.classList.remove(
-            'hidden'
-        );
-
-        element.classList.toggle(
-            'text-red-600',
-            Boolean(isError)
-        );
-
-        element.classList.toggle(
-            'text-green-600',
-            !isError
-        );
-    }
-
-
-    function clearTeamPickerMessage() {
-
-        const element =
-            getElement(
-                'netlifyTeamPickerMessage'
-            );
-
-        if (!element) {
-            return;
-        }
-
-        element.textContent =
-            '';
-
-        element.classList.add(
-            'hidden'
-        );
-    }
-
-
-    function renderTeamPicker() {
-
-        const picker =
-            ensureTeamPicker();
-
-        if (!picker) {
-            return;
-        }
-
-
-        const select =
-            getElement(
-                'netlifyTeamSelect'
-            );
-
-        const button =
-            getElement(
-                'selectNetlifyTeamBtn'
-            );
-
-
-        if (!select || !button) {
-            return;
-        }
-
-
-        const teams =
-            Array.isArray(
-                netlifyState.availableTeams
-            )
-                ? netlifyState.availableTeams
-                : [];
-
-
-        const shouldShow =
-            netlifyState.connected === true &&
-            netlifyState.teamSelected !== true &&
-            teams.length > 0;
-
-
-        if (!shouldShow) {
-
-            picker.classList.add(
-                'hidden'
-            );
-
-            return;
-        }
-
-
-        picker.classList.remove(
-            'hidden'
-        );
-
-
-        // Rebuild options.
-        while (
-            select.options.length > 1
-        ) {
-
-            select.remove(
-                select.options.length - 1
-            );
-        }
-
-
-        teams.forEach(
-            function (team) {
-
-                if (!team?.slug) {
-                    return;
-                }
-
-
-                const option =
-                    document.createElement(
-                        'option'
-                    );
-
-
-                option.value =
-                    String(
-                        team.slug
-                    );
-
-
-                const name =
-                    String(
-                        team.name ||
-                        team.slug
-                    );
-
-
-                const slug =
-                    String(
-                        team.slug
-                    );
-
-
-                option.textContent =
-                    name === slug
-                        ? name
-                        : `${name} — ${slug}`;
-
-
-                select.appendChild(
-                    option
-                );
-            }
-        );
-
-
-        select.value =
-            netlifyState.teamSlug &&
-            teams.some(
-                team =>
-                    String(
-                        team.slug || ''
-                    ) ===
-                    String(
-                        netlifyState.teamSlug
-                    )
-            )
-                ? netlifyState.teamSlug
-                : '';
-
-
-        button.disabled =
-            !Boolean(
-                select.value
-            );
-
-
-        clearTeamPickerMessage();
-
-
-        if (
-            netlifyState.teamDeleted
-        ) {
-
-            showTeamPickerMessage(
-                teams.length === 1
-                    ? 'Team القديمة تحيدات. كاينة Team جديدة متاحة.'
-                    : 'Team القديمة تحيدات. اختار Team جديدة.',
-                false
-            );
-        }
-    }
-
-
-    // ============================================
-    // 5. AUTHENTICATION
-    // ============================================
+    // =================================================
+    // 5. AUTH
+    // =================================================
 
     function getToken() {
 
         return (
-            localStorage.getItem(
-                'token'
-            ) ||
-            localStorage.getItem(
-                'authToken'
-            ) ||
+            localStorage.getItem('token') ||
+            localStorage.getItem('authToken') ||
             ''
         );
+
     }
 
 
@@ -659,7 +278,14 @@
         const token =
             getToken();
 
-        let user = null;
+
+        if (!token) {
+            return false;
+        }
+
+
+        let user =
+            null;
 
 
         try {
@@ -671,26 +297,27 @@
                     ) || 'null'
                 );
 
-        } catch (_) {
+        } catch (error) {
 
-            user = null;
+            user =
+                null;
         }
 
 
         return Boolean(
-            token &&
             user &&
             (
                 user.id ||
                 user._id
             )
         );
+
     }
 
 
-    // ============================================
-    // 6. API RESPONSE VALIDATION
-    // ============================================
+    // =================================================
+    // 6. API
+    // =================================================
 
     function validateResponse(
         response,
@@ -721,6 +348,63 @@
 
 
         return response;
+
+    }
+
+
+    async function fetchWithTimeout(
+        url,
+        options = {}
+    ) {
+
+        const controller =
+            new AbortController();
+
+
+        const timeout =
+            window.setTimeout(
+                function () {
+
+                    controller.abort();
+
+                },
+                API_TIMEOUT
+            );
+
+
+        try {
+
+            return await fetch(
+                url,
+                {
+                    ...options,
+                    signal:
+                        controller.signal
+                }
+            );
+
+        } catch (error) {
+
+            if (
+                error &&
+                error.name === 'AbortError'
+            ) {
+
+                throw new Error(
+                    'انتهت مهلة الاتصال بالخادم. حاول مرة أخرى.'
+                );
+            }
+
+
+            throw error;
+
+        } finally {
+
+            window.clearTimeout(
+                timeout
+            );
+        }
+
     }
 
 
@@ -730,18 +414,15 @@
         options = {}
     ) {
 
-        if (!API) {
-
-            throw new Error(
-                'ملف client-api.js غير محمّل.'
-            );
-        }
-
-
         let response;
 
 
+        // ---------------------------------------------
+        // Use client-api.js when available
+        // ---------------------------------------------
+
         if (
+            API &&
             typeof API[methodName] ===
             'function'
         ) {
@@ -751,110 +432,906 @@
                     ...(options.args || [])
                 );
 
-        } else {
 
-            const token =
-                getToken();
+            return validateResponse(
+                response,
+                'وقع خطأ في الاتصال بالخادم.'
+            );
+        }
 
 
-            if (!token) {
+        // ---------------------------------------------
+        // Fallback fetch
+        // ---------------------------------------------
 
-                throw new Error(
-                    'خاصك تسجل الدخول أولاً.'
+        const token =
+            getToken();
+
+
+        if (!token) {
+
+            throw new Error(
+                'خاصك تسجل الدخول أولاً.'
+            );
+        }
+
+
+        const fetchOptions = {
+
+            method:
+                options.method ||
+                'GET',
+
+            headers: {
+
+                'Accept':
+                    'application/json',
+
+                'Authorization':
+                    `Bearer ${token}`
+
+            }
+
+        };
+
+
+        if (
+            options.body !==
+            undefined
+        ) {
+
+            fetchOptions.headers[
+                'Content-Type'
+            ] =
+                'application/json';
+
+
+            fetchOptions.body =
+                JSON.stringify(
+                    options.body
                 );
-            }
+        }
 
 
-            const fetchOptions = {
-
-                method:
-                    options.method ||
-                    'GET',
-
-                headers: {
-
-                    'Accept':
-                        'application/json',
-
-                    'Authorization':
-                        `Bearer ${token}`
-                }
-            };
+        const responseObject =
+            await fetchWithTimeout(
+                `${BACKEND_URL}${fallbackPath}`,
+                fetchOptions
+            );
 
 
-            if (
-                options.body !==
-                undefined
-            ) {
-
-                fetchOptions.headers[
-                    'Content-Type'
-                ] =
-                    'application/json';
+        let data =
+            null;
 
 
-                fetchOptions.body =
-                    JSON.stringify(
-                        options.body
-                    );
-            }
+        try {
+
+            data =
+                await responseObject.json();
+
+        } catch (error) {
+
+            data =
+                {};
+        }
 
 
-            const fetchResponse =
-                await fetch(
-                    `${BACKEND_URL}${fallbackPath}`,
-                    fetchOptions
-                );
+        if (
+            !responseObject.ok
+        ) {
 
+            data.success =
+                false;
 
-            try {
-
-                response =
-                    await fetchResponse.json();
-
-            } catch (_) {
-
-                response = {};
-            }
-
-
-            if (
-                !fetchResponse.ok
-            ) {
-
-                response.success =
-                    false;
-
-                response.status =
-                    fetchResponse.status;
-            }
+            data.status =
+                responseObject.status;
         }
 
 
         return validateResponse(
-            response,
+            data,
             'وقع خطأ في الاتصال بالخادم.'
         );
+
     }
 
 
-    // ============================================
-    // 7. RENDER NETLIFY STATE
-    // ============================================
+    // =================================================
+    // 7. TEAM HELPERS
+    // =================================================
+
+    function clearTeamSelection(
+        deleted = false
+    ) {
+
+        netlifyState.teamSelected =
+            false;
+
+
+        netlifyState.teamName =
+            '';
+
+
+        netlifyState.teamSlug =
+            '';
+
+
+        netlifyState.teamId =
+            '';
+
+
+        netlifyState.teamDeleted =
+            Boolean(deleted);
+
+    }
+
+
+    function applySelectedTeam(
+        team
+    ) {
+
+        if (
+            !team ||
+            !team.slug
+        ) {
+
+            return false;
+        }
+
+
+        netlifyState.teamSelected =
+            true;
+
+
+        netlifyState.teamDeleted =
+            false;
+
+
+        netlifyState.teamName =
+            team.name ||
+            team.slug ||
+            'Netlify Team';
+
+
+        netlifyState.teamSlug =
+            String(
+                team.slug
+            );
+
+
+        netlifyState.teamId =
+            team.id ||
+            '';
+
+
+        return true;
+
+    }
+
+
+    function clearConnectionState() {
+
+        netlifyState.connected =
+            false;
+
+
+        netlifyState.teamSelected =
+            false;
+
+
+        netlifyState.teamDeleted =
+            false;
+
+
+        netlifyState.teamName =
+            '';
+
+
+        netlifyState.teamSlug =
+            '';
+
+
+        netlifyState.teamId =
+            '';
+
+
+        netlifyState.availableTeams =
+            [];
+
+    }
+
+
+    // =================================================
+    // 8. TEAM PICKER
+    // =================================================
+
+    function ensureTeamPicker() {
+
+        let picker =
+            getElement(
+                'netlifyTeamPicker'
+            );
+
+
+        if (picker) {
+            return picker;
+        }
+
+
+        const parent =
+            getElement(
+                'netlifyConnectedInfo'
+            ) ||
+            getElement(
+                'netlifyTeamsContainer'
+            );
+
+
+        if (!parent) {
+
+            console.warn(
+                'Netlify Team picker parent not found.'
+            );
+
+            return null;
+        }
+
+
+        picker =
+            document.createElement(
+                'div'
+            );
+
+
+        picker.id =
+            'netlifyTeamPicker';
+
+
+        picker.dir =
+            'rtl';
+
+
+        picker.className =
+            'netlify-team-picker is-hidden';
+
+
+        const title =
+            document.createElement(
+                'div'
+            );
+
+
+        title.className =
+            'netlify-team-picker-title';
+
+
+        title.textContent =
+            'اختار Team للنشر';
+
+
+        const description =
+            document.createElement(
+                'div'
+            );
+
+
+        description.className =
+            'netlify-team-picker-description';
+
+
+        description.textContent =
+            'اختار Team اللي بغيتي TemplateCraft يستعملها لإنشاء المشاريع الجديدة.';
+
+
+        const select =
+            document.createElement(
+                'select'
+            );
+
+
+        select.id =
+            'netlifyTeamSelect';
+
+
+        select.className =
+            'netlify-team-select';
+
+
+        const defaultOption =
+            document.createElement(
+                'option'
+            );
+
+
+        defaultOption.value =
+            '';
+
+
+        defaultOption.textContent =
+            'اختار Team...';
+
+
+        defaultOption.disabled =
+            true;
+
+
+        defaultOption.selected =
+            true;
+
+
+        select.appendChild(
+            defaultOption
+        );
+
+
+        const button =
+            document.createElement(
+                'button'
+            );
+
+
+        button.id =
+            'selectNetlifyTeamBtn';
+
+
+        button.type =
+            'button';
+
+
+        button.className =
+            'netlify-team-select-button';
+
+
+        button.textContent =
+            'اختيار Team';
+
+
+        const message =
+            document.createElement(
+                'div'
+            );
+
+
+        message.id =
+            'netlifyTeamPickerMessage';
+
+
+        message.className =
+            'netlify-team-picker-message is-hidden';
+
+
+        picker.appendChild(
+            title
+        );
+
+
+        picker.appendChild(
+            description
+        );
+
+
+        picker.appendChild(
+            select
+        );
+
+
+        picker.appendChild(
+            button
+        );
+
+
+        picker.appendChild(
+            message
+        );
+
+
+        parent.appendChild(
+            picker
+        );
+
+
+        select.addEventListener(
+            'change',
+            function () {
+
+                button.disabled =
+                    !select.value;
+
+            }
+        );
+
+
+        button.addEventListener(
+            'click',
+            async function () {
+
+                if (!select.value) {
+
+                    showTeamPickerMessage(
+                        'اختار Team أولاً.',
+                        true
+                    );
+
+                    return;
+                }
+
+
+                await selectTeam(
+                    select.value
+                );
+
+            }
+        );
+
+
+        return picker;
+
+    }
+
+
+    function showTeamPickerMessage(
+        message,
+        error = false
+    ) {
+
+        const element =
+            getElement(
+                'netlifyTeamPickerMessage'
+            );
+
+
+        if (!element) {
+            return;
+        }
+
+
+        element.textContent =
+            message || '';
+
+
+        showElement(
+            'netlifyTeamPickerMessage'
+        );
+
+
+        element.classList.remove(
+            'text-red-600',
+            'text-green-600'
+        );
+
+
+        element.classList.add(
+            error
+                ? 'text-red-600'
+                : 'text-green-600'
+        );
+
+    }
+
+
+    function clearTeamPickerMessage() {
+
+        hideElement(
+            'netlifyTeamPickerMessage'
+        );
+
+    }
+
+
+    function renderTeamPicker() {
+
+        const picker =
+            ensureTeamPicker();
+
+
+        if (!picker) {
+            return;
+        }
+
+
+        const select =
+            getElement(
+                'netlifyTeamSelect'
+            );
+
+
+        const button =
+            getElement(
+                'selectNetlifyTeamBtn'
+            );
+
+
+        if (
+            !select ||
+            !button
+        ) {
+
+            return;
+        }
+
+
+        const teams =
+            Array.isArray(
+                netlifyState.availableTeams
+            )
+                ? netlifyState.availableTeams
+                : [];
+
+
+        const shouldShow =
+            netlifyState.connected === true &&
+            netlifyState.teamSelected !== true &&
+            teams.length > 0;
+
+
+        if (!shouldShow) {
+
+            hideElement(
+                'netlifyTeamPicker'
+            );
+
+            return;
+        }
+
+
+        showElement(
+            'netlifyTeamPicker'
+        );
+
+
+        while (
+            select.options.length > 1
+        ) {
+
+            select.remove(
+                select.options.length - 1
+            );
+
+        }
+
+
+        teams.forEach(
+            function (team) {
+
+                if (
+                    !team ||
+                    !team.slug
+                ) {
+
+                    return;
+                }
+
+
+                const option =
+                    document.createElement(
+                        'option'
+                    );
+
+
+                option.value =
+                    String(
+                        team.slug
+                    );
+
+
+                const name =
+                    team.name ||
+                    team.slug;
+
+
+                option.textContent =
+                    name === team.slug
+                        ? name
+                        : `${name} — ${team.slug}`;
+
+
+                select.appendChild(
+                    option
+                );
+
+            }
+        );
+
+
+        select.value =
+            '';
+
+
+        button.disabled =
+            true;
+
+
+        clearTeamPickerMessage();
+
+
+        if (
+            netlifyState.teamDeleted
+        ) {
+
+            showTeamPickerMessage(
+                teams.length === 1
+                    ? 'Team القديمة تحيدات. كاينة Team جديدة متاحة.'
+                    : 'Team القديمة تحيدات. اختار Team جديدة.',
+                false
+            );
+
+        }
+
+    }
+
+
+    // =================================================
+    // 9. SELECT TEAM
+    // =================================================
+
+    async function selectTeam(
+        slug
+    ) {
+
+        slug =
+            String(
+                slug || ''
+            ).trim();
+
+
+        if (!slug) {
+
+            return false;
+        }
+
+
+        const button =
+            getElement(
+                'selectNetlifyTeamBtn'
+            );
+
+
+        try {
+
+            // مهم:
+            // هنا ما نبدلوش netlifyState.loading
+            // إلى true لأن refreshStatus يمكن يكون خدام.
+            // فقط زر الاختيار هو اللي يتقفل.
+
+            if (button) {
+
+                button.disabled =
+                    true;
+
+
+                button.textContent =
+                    'جاري اختيار Team...';
+
+            }
+
+
+            clearTeamPickerMessage();
+
+
+            const response =
+                await callAPI(
+                    'selectNetlifyTeam',
+                    '/api/netlify/team',
+                    {
+                        args: [
+                            slug
+                        ],
+
+                        method:
+                            'POST',
+
+                        body: {
+                            accountSlug:
+                                slug
+                        }
+                    }
+                );
+
+
+            const selectedTeam =
+                response.selectedTeam ||
+                response.team ||
+                netlifyState.availableTeams.find(
+                    function (team) {
+
+                        return String(
+                            team?.slug || ''
+                        ) === slug;
+
+                    }
+                );
+
+
+            if (
+                !applySelectedTeam(
+                    selectedTeam
+                )
+            ) {
+
+                throw new Error(
+                    'السيرفر لم يؤكد اختيار Team.'
+                );
+            }
+
+
+            setMessage(
+                'تم اختيار Team بنجاح. Netlify جاهز للنشر.'
+            );
+
+
+            renderNetlifyState();
+
+
+            return true;
+
+        } catch (error) {
+
+            console.error(
+                'Netlify team selection error:',
+                error
+            );
+
+
+            showTeamPickerMessage(
+                error.message ||
+                'تعذر اختيار Team.',
+                true
+            );
+
+
+            setMessage(
+                error.message ||
+                'تعذر اختيار Team.',
+                true
+            );
+
+
+            return false;
+
+        } finally {
+
+            if (button) {
+
+                button.textContent =
+                    'اختيار Team';
+
+            }
+
+        }
+
+    }
+
+
+    // =================================================
+    // 10. AUTO TEAM SELECTION
+    // =================================================
+
+    async function resolveTeam(
+        teams,
+        deletedTeam = false
+    ) {
+
+        teams =
+            Array.isArray(teams)
+                ? teams
+                : [];
+
+
+        netlifyState.availableTeams =
+            teams;
+
+
+        // ---------------------------------------------
+        // No teams
+        // ---------------------------------------------
+
+        if (
+            teams.length === 0
+        ) {
+
+            clearTeamSelection(
+                deletedTeam
+            );
+
+
+            setMessage(
+                deletedTeam
+                    ? 'Team السابقة تحيدات وما كايناش Team متاحة حالياً.'
+                    : 'ما لقيناش Team متاحة في حساب Netlify.',
+                false,
+                true
+            );
+
+
+            return false;
+        }
+
+
+        // ---------------------------------------------
+        // One team
+        // ---------------------------------------------
+
+        if (
+            teams.length === 1 &&
+            teams[0]?.slug
+        ) {
+
+            const success =
+                await selectTeam(
+                    teams[0].slug
+                );
+
+
+            if (success) {
+
+                return true;
+            }
+
+
+            clearTeamSelection(
+                deletedTeam
+            );
+
+
+            setMessage(
+                'كاينة Team وحدة ولكن الاختيار الأوتوماتيكي فشل. اختارها يدوياً.',
+                false,
+                true
+            );
+
+
+            return false;
+        }
+
+
+        // ---------------------------------------------
+        // Multiple teams
+        // ---------------------------------------------
+
+        clearTeamSelection(
+            deletedTeam
+        );
+
+
+        setMessage(
+            deletedTeam
+                ? 'Team السابقة تحيدات. اختار Team جديدة.'
+                : 'حساب Netlify فيه أكثر من Team. اختار Team للنشر.',
+            false,
+            true
+        );
+
+
+        return false;
+
+    }
+
+
+    // =================================================
+    // 11. RENDER STATE
+    // =================================================
 
     function renderNetlifyState() {
 
-        const {
-            loading,
-            connected,
-            teamSelected,
-            teamName
-        } = netlifyState;
+        const loading =
+            netlifyState.loading;
 
 
-        // ----------------------------------------
-        // Status indicator
-        // ----------------------------------------
+        const connected =
+            netlifyState.connected;
+
+
+        const teamSelected =
+            netlifyState.teamSelected;
+
+
+        const teamName =
+            netlifyState.teamName;
+
+
+        // ---------------------------------------------
+        // Status dot
+        // ---------------------------------------------
 
         const dot =
             getElement(
@@ -900,13 +1377,15 @@
                 dot.classList.add(
                     'bg-gray-400'
                 );
+
             }
+
         }
 
 
-        // ----------------------------------------
+        // ---------------------------------------------
         // Status text
-        // ----------------------------------------
+        // ---------------------------------------------
 
         if (loading) {
 
@@ -950,18 +1429,20 @@
                 'netlifyStatusText',
                 'Netlify غير متصل'
             );
+
         }
 
 
-        // ----------------------------------------
-        // Connected information
-        // ----------------------------------------
+        // ---------------------------------------------
+        // Connected area
+        // ---------------------------------------------
 
         if (connected) {
 
             showElement(
                 'netlifyConnectedInfo'
             );
+
 
             hideElement(
                 'netlifyNotConnectedInfo'
@@ -983,6 +1464,7 @@
                 'netlifyConnectedInfo'
             );
 
+
             showElement(
                 'netlifyNotConnectedInfo'
             );
@@ -992,19 +1474,20 @@
                 'netlifyMainTeamName',
                 ''
             );
+
         }
 
 
-        // ----------------------------------------
+        // ---------------------------------------------
         // Team picker
-        // ----------------------------------------
+        // ---------------------------------------------
 
         renderTeamPicker();
 
 
-        // ----------------------------------------
+        // ---------------------------------------------
         // Connect button
-        // ----------------------------------------
+        // ---------------------------------------------
 
         const connectButton =
             getElement(
@@ -1028,6 +1511,7 @@
                 'cursor-not-allowed',
                 loading
             );
+
         }
 
 
@@ -1041,17 +1525,9 @@
         );
 
 
-        // ----------------------------------------
-        // Confirmation modal
-        // ----------------------------------------
-
-        setText(
-            'confirmNetlifyTeamName',
-            teamSelected
-                ? teamName
-                : 'غير محدد'
-        );
-
+        // ---------------------------------------------
+        // Confirmation UI
+        // ---------------------------------------------
 
         if (
             connected &&
@@ -1062,8 +1538,15 @@
                 'confirmNetlifyTeamBox'
             );
 
+
             hideElement(
                 'confirmNetlifyWarning'
+            );
+
+
+            setText(
+                'confirmNetlifyTeamName',
+                teamName
             );
 
         } else {
@@ -1072,15 +1555,17 @@
                 'confirmNetlifyTeamBox'
             );
 
+
             showElement(
                 'confirmNetlifyWarning'
             );
+
         }
 
 
-        // ----------------------------------------
-        // Notify other frontend scripts
-        // ----------------------------------------
+        // ---------------------------------------------
+        // Notify other scripts
+        // ---------------------------------------------
 
         window.dispatchEvent(
             new CustomEvent(
@@ -1092,463 +1577,19 @@
                 }
             )
         );
+
     }
 
 
-    // ============================================
-    // 8. CLEAR CONNECTION STATE
-    // ============================================
-
-    function clearConnectionState() {
-
-        netlifyState.connected =
-            false;
-
-        netlifyState.teamSelected =
-            false;
-
-        netlifyState.teamDeleted =
-            false;
-
-        netlifyState.teamName =
-            '';
-
-        netlifyState.teamSlug =
-            '';
-
-        netlifyState.teamId =
-            '';
-
-        netlifyState.availableTeams =
-            [];
-    }
-
-
-    // ============================================
-    // 9. CLEAR ONLY TEAM SELECTION
-    // ============================================
-
-    function clearTeamSelection(
-        teamDeleted = false
-    ) {
-
-        netlifyState.teamSelected =
-            false;
-
-        netlifyState.teamName =
-            '';
-
-        netlifyState.teamSlug =
-            '';
-
-        netlifyState.teamId =
-            '';
-
-        netlifyState.teamDeleted =
-            Boolean(
-                teamDeleted
-            );
-    }
-
-
-    // ============================================
-    // 10. READ SELECTED TEAM
-    // ============================================
-
-    function applySelectedTeam(
-        team
-    ) {
-
-        if (
-            !team ||
-            !team.slug
-        ) {
-
-            return false;
-        }
-
-
-        netlifyState.teamSelected =
-            true;
-
-        netlifyState.teamDeleted =
-            false;
-
-        netlifyState.teamName =
-            team.name || '';
-
-        netlifyState.teamSlug =
-            team.slug;
-
-        netlifyState.teamId =
-            team.id || '';
-
-
-        return true;
-    }
-
-
-    // ============================================
-    // 11. SELECT TEAM
-    // ============================================
-
-    async function selectTeam(
-        accountSlug
-    ) {
-
-        const slug =
-            String(
-                accountSlug || ''
-            ).trim();
-
-
-        if (!slug) {
-
-            showTeamPickerMessage(
-                'اختيار Team غير صالح.',
-                true
-            );
-
-            return false;
-        }
-
-
-        if (
-            netlifyState.loading
-        ) {
-
-            return false;
-        }
-
-
-        const button =
-            getElement(
-                'selectNetlifyTeamBtn'
-            );
-
-
-        const pickerMessage =
-            getElement(
-                'netlifyTeamPickerMessage'
-            );
-
-
-        try {
-
-            netlifyState.loading =
-                true;
-
-
-            if (button) {
-
-                button.disabled =
-                    true;
-
-                button.textContent =
-                    'جاري اختيار Team...';
-            }
-
-
-            if (pickerMessage) {
-
-                pickerMessage.classList.add(
-                    'hidden'
-                );
-            }
-
-
-            renderNetlifyState();
-
-
-            const response =
-                await callAPI(
-                    'selectNetlifyTeam',
-                    '/api/netlify/team',
-                    {
-                        args: [
-                            slug
-                        ],
-
-                        method:
-                            'POST',
-
-                        body: {
-                            accountSlug:
-                                slug
-                        }
-                    }
-                );
-
-
-            const selectedTeam =
-                response.selectedTeam ||
-                response.team ||
-                netlifyState.availableTeams.find(
-                    team =>
-                        String(
-                            team?.slug || ''
-                        ) === slug
-                );
-
-
-            if (
-                !applySelectedTeam(
-                    selectedTeam
-                )
-            ) {
-
-                throw new Error(
-                    'السيرفر لم يؤكد اختيار Team.'
-                );
-            }
-
-
-            setMessage(
-                'تم اختيار Team بنجاح. Netlify جاهز للنشر.'
-            );
-
-
-            return true;
-
-        } catch (error) {
-
-            console.error(
-                'Netlify team selection error:',
-                error
-            );
-
-
-            showTeamPickerMessage(
-                error.message ||
-                'تعذر اختيار Team.',
-                true
-            );
-
-
-            setMessage(
-                error.message ||
-                'تعذر اختيار Team.',
-                true
-            );
-
-
-            return false;
-
-        } finally {
-
-            netlifyState.loading =
-                false;
-
-
-            renderNetlifyState();
-
-
-            const currentButton =
-                getElement(
-                    'selectNetlifyTeamBtn'
-                );
-
-
-            if (currentButton) {
-
-                currentButton.textContent =
-                    'اختيار Team';
-
-                currentButton.disabled =
-                    !Boolean(
-                        getElement(
-                            'netlifyTeamSelect'
-                        )?.value
-                    );
-            }
-        }
-    }
-
-
-    // ============================================
-    // 12. AUTO SELECT ONLY ONE TEAM
-    // ============================================
-
-    async function trySelectSingleTeam(
-        existingTeams = null,
-        deletedTeam = false
-    ) {
-
-        let teamsResponse = null;
-
-
-        if (
-            Array.isArray(
-                existingTeams
-            )
-        ) {
-
-            teamsResponse = {
-
-                teams:
-                    existingTeams,
-
-                selectedTeam:
-                    null
-            };
-
-        } else {
-
-            teamsResponse =
-                await callAPI(
-                    'getNetlifyTeams',
-                    '/api/netlify/teams'
-                );
-        }
-
-
-        const teams =
-            Array.isArray(
-                teamsResponse?.teams
-            )
-                ? teamsResponse.teams
-                : [];
-
-
-        netlifyState.availableTeams =
-            teams;
-
-
-        // ----------------------------------------
-        // Backend already has a selected Team
-        // ----------------------------------------
-
-        if (
-            teamsResponse?.selectedTeam &&
-            teamsResponse.selectedTeam.slug
-        ) {
-
-            const applied =
-                applySelectedTeam(
-                    teamsResponse.selectedTeam
-                );
-
-
-            if (applied) {
-
-                netlifyState.teamDeleted =
-                    false;
-
-                return true;
-            }
-        }
-
-
-        // ----------------------------------------
-        // Exactly one Team
-        // ----------------------------------------
-
-        if (
-            teams.length === 1 &&
-            teams[0]?.slug
-        ) {
-
-            const onlyTeam =
-                teams[0];
-
-
-            try {
-
-                const selected =
-                    await selectTeam(
-                        onlyTeam.slug
-                    );
-
-
-                if (selected) {
-
-                    return true;
-                }
-
-            } catch (error) {
-
-                console.error(
-                    'Automatic Team selection failed:',
-                    error
-                );
-            }
-
-
-            // If automatic selection failed,
-            // keep the Team available in picker.
-            clearTeamSelection(
-                deletedTeam
-            );
-
-
-            setMessage(
-                deletedTeam
-                    ? 'Team القديمة تحيدات. اختار Team الجديدة.'
-                    : 'كاينة Team وحدة ولكن الاختيار الأوتوماتيكي فشل. اختارها يدوياً.',
-                false,
-                true
-            );
-
-
-            return false;
-        }
-
-
-        // ----------------------------------------
-        // Multiple Teams
-        // ----------------------------------------
-
-        if (
-            teams.length > 1
-        ) {
-
-            clearTeamSelection(
-                deletedTeam
-            );
-
-
-            setMessage(
-                deletedTeam
-                    ? 'Team السابقة تحيدات. اختار Team جديدة من اللائحة.'
-                    : 'حساب Netlify فيه أكثر من Team. اختار Team للنشر من اللائحة.',
-                false,
-                true
-            );
-
-
-            return false;
-        }
-
-
-        // ----------------------------------------
-        // Zero Teams
-        // ----------------------------------------
-
-        clearTeamSelection(
-            deletedTeam
-        );
-
-
-        setMessage(
-            deletedTeam
-                ? 'Team السابقة تحيدات وما كايناش Team متاحة حالياً. أنشئ Team في Netlify ثم دير تحديث.'
-                : 'ما لقيناش Team متاح في حساب Netlify. أنشئ Team في Netlify ثم دير تحديث.',
-            false,
-            true
-        );
-
-
-        return false;
-    }
-
-
-    // ============================================
-    // 13. REFRESH NETLIFY STATUS
-    // ============================================
+    // =================================================
+    // 12. REFRESH STATUS
+    // =================================================
 
     async function refreshStatus() {
 
+        // منع refresh متكرر
         if (refreshPromise) {
+
             return refreshPromise;
         }
 
@@ -1587,19 +1628,16 @@
 
                     const netlify =
                         response.netlify ||
+                        response.data ||
                         {};
 
 
-                    // --------------------------------
+                    // ---------------------------------
                     // Connection
-                    // --------------------------------
-
-                    netlifyState.connected =
-                        netlify.connected === true;
-
+                    // ---------------------------------
 
                     if (
-                        !netlifyState.connected
+                        netlify.connected !== true
                     ) {
 
                         clearConnectionState();
@@ -1611,66 +1649,87 @@
                     }
 
 
-                    // --------------------------------
-                    // Available Teams
-                    // --------------------------------
+                    netlifyState.connected =
+                        true;
+
+
+                    // ---------------------------------
+                    // Teams
+                    // ---------------------------------
 
                     netlifyState.availableTeams =
                         Array.isArray(
                             netlify.availableTeams
                         )
                             ? netlify.availableTeams
-                            : [];
+                            : Array.isArray(
+                                netlify.teams
+                            )
+                                ? netlify.teams
+                                : [];
 
 
-                    // --------------------------------
-                    // Deleted Team flag
-                    // --------------------------------
+                    // ---------------------------------
+                    // Deleted Team
+                    // ---------------------------------
 
                     netlifyState.teamDeleted =
                         netlify.teamDeleted === true;
 
 
-                    // --------------------------------
-                    // Selected Team
-                    // --------------------------------
+                    // ---------------------------------
+                    // Existing selected Team
+                    // ---------------------------------
 
-                    netlifyState.teamSelected =
-                        netlify.teamSelected === true;
-
-
-                    netlifyState.teamName =
-                        netlify.teamName ||
-                        netlify.accountName ||
-                        netlify.selectedTeam?.name ||
-                        '';
+                    const selectedTeam =
+                        netlify.selectedTeam ||
+                        null;
 
 
-                    netlifyState.teamSlug =
+                    const selectedSlug =
                         netlify.teamSlug ||
                         netlify.accountSlug ||
-                        netlify.selectedTeam?.slug ||
+                        selectedTeam?.slug ||
                         '';
 
 
-                    netlifyState.teamId =
+                    const selectedName =
+                        netlify.teamName ||
+                        netlify.accountName ||
+                        selectedTeam?.name ||
+                        '';
+
+
+                    const selectedId =
                         netlify.teamId ||
                         netlify.accountId ||
-                        netlify.selectedTeam?.id ||
+                        selectedTeam?.id ||
                         '';
 
 
-                    // --------------------------------
-                    // Valid selected Team
-                    // --------------------------------
-
                     if (
-                        netlifyState.teamSelected &&
-                        netlifyState.teamSlug
+                        selectedSlug &&
+                        !netlifyState.teamDeleted
                     ) {
 
-                        netlifyState.teamDeleted =
-                            false;
+                        netlifyState.teamSelected =
+                            true;
+
+
+                        netlifyState.teamSlug =
+                            String(
+                                selectedSlug
+                            );
+
+
+                        netlifyState.teamName =
+                            selectedName ||
+                            selectedSlug;
+
+
+                        netlifyState.teamId =
+                            selectedId ||
+                            '';
 
 
                         clearMessage();
@@ -1682,20 +1741,20 @@
                     }
 
 
-                    // --------------------------------
+                    // ---------------------------------
                     // No valid selected Team
-                    // --------------------------------
+                    // ---------------------------------
 
                     clearTeamSelection(
                         netlifyState.teamDeleted
                     );
 
 
-                    // --------------------------------
-                    // Use Teams returned by /status
-                    // --------------------------------
+                    // ---------------------------------
+                    // Resolve available Team
+                    // ---------------------------------
 
-                    await trySelectSingleTeam(
+                    await resolveTeam(
                         netlifyState.availableTeams,
                         netlifyState.teamDeleted
                     );
@@ -1740,20 +1799,30 @@
 
                     refreshPromise =
                         null;
+
                 }
 
             })();
 
 
         return refreshPromise;
+
     }
 
 
-    // ============================================
-    // 14. CONNECT NETLIFY
-    // ============================================
+    // =================================================
+    // 13. CONNECT NETLIFY
+    // =================================================
 
     async function connectNetlify() {
+
+        if (
+            netlifyState.loading
+        ) {
+
+            return;
+        }
+
 
         clearMessage();
 
@@ -1767,20 +1836,14 @@
                 true
             );
 
-            return;
-        }
-
-
-        if (
-            netlifyState.loading
-        ) {
 
             return;
         }
 
 
-        // Open popup immediately inside the click event.
-        // This helps prevent browser popup blocking.
+        // ---------------------------------------------
+        // Open popup immediately
+        // ---------------------------------------------
 
         const left =
             Math.max(
@@ -1820,7 +1883,7 @@
         if (!oauthPopup) {
 
             setMessage(
-                'المتصفح منع النافذة المنبثقة. سمح بفتح Popups لهذا الموقع وحاول مرة أخرى.',
+                'المتصفح منع النافذة المنبثقة. سمح بـ Popups لهذا الموقع وحاول مرة أخرى.',
                 true
             );
 
@@ -1867,7 +1930,6 @@
             }
 
 
-            // Verify that the authorization URL is HTTPS.
             const authUrl =
                 new URL(
                     authorizationUrl
@@ -1927,13 +1989,15 @@
 
 
             renderNetlifyState();
+
         }
+
     }
 
 
-    // ============================================
-    // 15. POPUP WATCHER
-    // ============================================
+    // =================================================
+    // 14. POPUP WATCHER
+    // =================================================
 
     function startPopupWatcher() {
 
@@ -1956,9 +2020,6 @@
                             null;
 
 
-                        // OAuth callback may already have sent
-                        // its message. Do not refresh twice.
-
                         if (
                             oauthCompleted
                         ) {
@@ -1968,18 +2029,20 @@
 
 
                         window.setTimeout(
-                            async function () {
+                            function () {
 
-                                await refreshStatus();
+                                refreshStatus();
 
                             },
                             1000
                         );
+
                     }
 
                 },
                 700
             );
+
     }
 
 
@@ -1997,19 +2060,20 @@
             oauthCheckInterval =
                 null;
         }
+
     }
 
 
-    // ============================================
-    // 16. RECEIVE OAUTH CALLBACK MESSAGE
-    // ============================================
+    // =================================================
+    // 15. OAUTH MESSAGE
+    // =================================================
 
     window.addEventListener(
         'message',
         async function (event) {
 
-            // Only accept messages from our backend.
             if (
+                !BACKEND_ORIGIN ||
                 event.origin !==
                 BACKEND_ORIGIN
             ) {
@@ -2086,7 +2150,6 @@
                     'تم ربط Netlify بنجاح.'
                 );
 
-
             } else if (
                 netlifyState.connected &&
                 netlifyState.availableTeams.length > 1
@@ -2098,7 +2161,6 @@
                     true
                 );
 
-
             } else if (
                 netlifyState.connected
             ) {
@@ -2109,21 +2171,22 @@
                     true
                 );
 
-
             } else {
 
                 setMessage(
                     'وصلت نتيجة OAuth، ولكن السيرفر لم يؤكد الاتصال.',
                     true
                 );
+
             }
+
         }
     );
 
 
-    // ============================================
-    // 17. DISCONNECT NETLIFY
-    // ============================================
+    // =================================================
+    // 16. DISCONNECT
+    // =================================================
 
     async function disconnectNetlify() {
 
@@ -2149,14 +2212,14 @@
         clearMessage();
 
 
+        netlifyState.loading =
+            true;
+
+
+        renderNetlifyState();
+
+
         try {
-
-            netlifyState.loading =
-                true;
-
-
-            renderNetlifyState();
-
 
             await callAPI(
                 'disconnectNetlify',
@@ -2198,13 +2261,15 @@
 
 
             renderNetlifyState();
+
         }
+
     }
 
 
-    // ============================================
-    // 18. PUBLIC INTERFACE
-    // ============================================
+    // =================================================
+    // 17. PUBLIC API
+    // =================================================
 
     window.TemplateCraftNetlify = {
 
@@ -2223,6 +2288,7 @@
                 return {
                     ...netlifyState
                 };
+
             },
 
         isReady:
@@ -2235,14 +2301,15 @@
                         netlifyState.teamSlug
                     )
                 );
+
             }
 
     };
 
 
-    // ============================================
-    // 19. BUTTON EVENTS
-    // ============================================
+    // =================================================
+    // 18. BUTTONS
+    // =================================================
 
     function initializeButtons() {
 
@@ -2265,6 +2332,7 @@
                 'click',
                 connectNetlify
             );
+
         }
 
 
@@ -2287,19 +2355,23 @@
                 'click',
                 disconnectNetlify
             );
+
         }
+
     }
 
 
-    // ============================================
-    // 20. INITIALIZATION
-    // ============================================
+    // =================================================
+    // 19. INITIALIZATION
+    // =================================================
 
     async function initialize() {
 
         initializeButtons();
 
+
         await refreshStatus();
+
     }
 
 
@@ -2310,12 +2382,16 @@
 
         document.addEventListener(
             'DOMContentLoaded',
-            initialize
+            initialize,
+            {
+                once: true
+            }
         );
 
     } else {
 
         initialize();
+
     }
 
 })();
