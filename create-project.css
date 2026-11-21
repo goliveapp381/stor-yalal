@@ -1,7 +1,7 @@
 /* =========================================
    TEMPLATECRAFT PRO
    CREATE PROJECT
-   PREMIUM FULL IMAGE TEMPLATE CARDS
+   PREMIUM FULL IMAGE / FULL WEBSITE CARDS
 ========================================= */
 
 * {
@@ -603,8 +603,7 @@ button {
 
 
 /* =========================================
-   IMPORTANT
-   FULL PREVIEW AREA
+   FULL PREVIEW CONTAINER
 ========================================= */
 
 .template-card-preview {
@@ -614,6 +613,9 @@ button {
 
     width: 100%;
     height: 100%;
+
+    min-width: 100%;
+    min-height: 100%;
 
     overflow: hidden;
 
@@ -625,28 +627,35 @@ button {
 
 
 /* =========================================
-   TEMPLATE THUMBNAIL
+   REAL IMAGE
 ========================================= */
 
 .template-thumbnail {
-    position: absolute;
+    position: absolute !important;
 
-    inset: 0;
+    top: 0 !important;
+    left: 0 !important;
 
     width: 100% !important;
     height: 100% !important;
 
-    min-width: 100%;
-    min-height: 100%;
+    min-width: 100% !important;
+    min-height: 100% !important;
 
-    display: block;
+    max-width: none !important;
+    max-height: none !important;
 
-    border: 0;
+    display: block !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    border: 0 !important;
 
     object-fit: cover !important;
 
     object-position:
-        center center;
+        center center !important;
 
     background:
         #0f172a;
@@ -672,11 +681,58 @@ button {
 
 
 /* =========================================
-   IF PREVIEW IS IFRAME
+   IMPORTANT:
+   LIVE WEBSITE INSIDE CARD
 ========================================= */
 
-.template-card-preview iframe {
+.template-card-preview > iframe {
     position: absolute !important;
+
+    top: 0 !important;
+    left: 0 !important;
+
+    display: block !important;
+
+    width: 100% !important;
+    height: 100% !important;
+
+    min-width: 100% !important;
+    min-height: 100% !important;
+
+    max-width: none !important;
+    max-height: none !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    border: 0 !important;
+    outline: 0 !important;
+
+    background:
+        #ffffff !important;
+
+    overflow: hidden !important;
+
+    transform:
+        scale(1) !important;
+
+    transform-origin:
+        center center !important;
+
+    pointer-events: none;
+
+    z-index: 1;
+}
+
+
+/* =========================================
+   FALLBACK PREVIEW
+========================================= */
+
+.template-fallback-preview {
+    position: absolute !important;
+
+    inset: 0 !important;
 
     top: 0 !important;
     left: 0 !important;
@@ -695,115 +751,32 @@ button {
 
     border: 0 !important;
 
-    display: block !important;
+    display: block;
 
-    background: white;
+    background:
+        #ffffff;
+
+    overflow: hidden !important;
 
     transform:
         none !important;
 
     transform-origin:
-        center center;
+        center center !important;
 
-    pointer-events: none;
-
-    overflow: hidden;
+    z-index: 1;
 }
 
 
 /* =========================================
-   FALLBACK PREVIEW
+   FORCE IFRAME CONTENT VIEWPORT
 ========================================= */
 
-.template-fallback-preview {
-    position: absolute;
-
-    inset: 0;
-
-    width: 100%;
-    height: 100%;
-
-    border: 0;
-
-    background:
-        linear-gradient(
-            135deg,
-            #0f172a,
-            #1e293b,
-            #312e81
-        );
-
-    overflow: hidden;
-}
-
-.template-fallback-preview iframe {
-    position: absolute;
-
-    inset: 0;
-
-    width: 100% !important;
-    height: 100% !important;
-
-    border: 0;
-
-    display: block;
-
-    background: white;
-
-    pointer-events: none;
-}
-
-
-/* =========================================
-   PREVIEW IMAGE
-========================================= */
-
-.template-card-preview img {
-    position: absolute;
-
-    inset: 0;
-
-    width: 100% !important;
-    height: 100% !important;
-
-    display: block;
-
-    object-fit: cover !important;
-
-    object-position:
-        center center;
-}
-
-
-/* =========================================
-   GRADIENT OVERLAY
-========================================= */
-
-.template-card-gradient {
-    position: absolute;
-
-    inset: 0;
-
-    z-index: 2;
-
-    pointer-events: none;
-
-    background:
-        linear-gradient(
-            to bottom,
-
-            rgba(15, 23, 42, .00) 0%,
-
-            rgba(15, 23, 42, .02) 25%,
-
-            rgba(15, 23, 42, .08) 42%,
-
-            rgba(15, 23, 42, .32) 58%,
-
-            rgba(15, 23, 42, .72) 76%,
-
-            rgba(15, 23, 42, .94) 100%
-        );
+.template-card-preview iframe[src] {
+    contain:
+        layout
+        paint
+        size;
 }
 
 
@@ -843,18 +816,55 @@ button {
 
 
 /* =========================================
+   GRADIENT OVER WEBSITE
+========================================= */
+
+.template-card-gradient {
+    position: absolute;
+
+    inset: 0;
+
+    z-index: 2;
+
+    pointer-events: none;
+
+    background:
+        linear-gradient(
+            to bottom,
+
+            rgba(15, 23, 42, .00) 0%,
+
+            rgba(15, 23, 42, .01) 22%,
+
+            rgba(15, 23, 42, .04) 40%,
+
+            rgba(15, 23, 42, .22) 58%,
+
+            rgba(15, 23, 42, .70) 77%,
+
+            rgba(15, 23, 42, .95) 100%
+        );
+}
+
+
+/* =========================================
    CATEGORY
 ========================================= */
 
 .template-category {
+    position: absolute;
+
+    top: 15px;
+    right: 15px;
+
+    z-index: 20;
+
     display: inline-flex;
 
     align-items: center;
 
     padding:
         6px 10px;
-
-    margin-bottom: 8px;
 
     border:
         1px solid
@@ -888,7 +898,7 @@ button {
     top: 14px;
     left: 14px;
 
-    z-index: 20;
+    z-index: 30;
 
     padding:
         7px 11px;
@@ -921,7 +931,6 @@ button {
 
 /* =========================================
    CARD BODY
-   GLASS OVER IMAGE
 ========================================= */
 
 .template-card-body {
@@ -933,7 +942,7 @@ button {
 
     width: 100%;
 
-    z-index: 10;
+    z-index: 40;
 
     padding:
         24px 20px 20px;
@@ -944,13 +953,13 @@ button {
 
             rgba(15, 23, 42, 0) 0%,
 
-            rgba(15, 23, 42, .18) 8%,
+            rgba(15, 23, 42, .15) 10%,
 
-            rgba(15, 23, 42, .48) 28%,
+            rgba(15, 23, 42, .48) 30%,
 
-            rgba(15, 23, 42, .72) 55%,
+            rgba(15, 23, 42, .74) 58%,
 
-            rgba(15, 23, 42, .86) 100%
+            rgba(15, 23, 42, .90) 100%
         );
 
     backdrop-filter:
@@ -968,7 +977,7 @@ button {
 .template-card-info {
     position: relative;
 
-    z-index: 11;
+    z-index: 41;
 }
 
 .template-name {
@@ -1017,7 +1026,7 @@ button {
 .template-card-actions {
     position: relative;
 
-    z-index: 20;
+    z-index: 50;
 
     display: grid;
 
@@ -1683,20 +1692,50 @@ button:disabled {
     }
 
     .template-card-preview {
+        position: absolute;
+
+        inset: 0;
+
         width: 100%;
         height: 100%;
+
+        min-width: 100%;
+        min-height: 100%;
     }
 
     .template-thumbnail {
+        position: absolute !important;
+
+        inset: 0 !important;
+
         width: 100% !important;
         height: 100% !important;
+
+        min-width: 100% !important;
+        min-height: 100% !important;
 
         object-fit: cover !important;
     }
 
-    .template-card-preview iframe {
+    .template-card-preview > iframe,
+    .template-fallback-preview {
+        position: absolute !important;
+
+        inset: 0 !important;
+
         width: 100% !important;
         height: 100% !important;
+
+        min-width: 100% !important;
+        min-height: 100% !important;
+
+        max-width: none !important;
+        max-height: none !important;
+
+        margin: 0 !important;
+        padding: 0 !important;
+
+        border: 0 !important;
     }
 
     .template-card-body {
@@ -1748,10 +1787,14 @@ button:disabled {
 
         width: 100%;
         height: 100%;
+
+        min-width: 100%;
+        min-height: 100%;
     }
 
     .template-thumbnail,
-    .template-card-preview iframe {
+    .template-card-preview > iframe,
+    .template-fallback-preview {
         position: absolute !important;
 
         inset: 0 !important;
@@ -1764,6 +1807,11 @@ button:disabled {
 
         max-width: none !important;
         max-height: none !important;
+
+        margin: 0 !important;
+        padding: 0 !important;
+
+        border: 0 !important;
     }
 
     .template-card-body {
