@@ -5,30 +5,28 @@
 ====================================================
 
  مسؤول عن:
- - Netlify status UI
- - Connected / disconnected state
- - Selected Team display
- - Team warning
- - Team deleted messages
- - Available Teams messages
+ - واجهة حالة Netlify
+ - حالة الاتصال
+ - الفريق المحدد
+ - تحذيرات الفريق
+ - عرض الفرق المتاحة
+ - مزامنة حالة Netlify
 
- create-project-netlify.js يبقى مسؤول عن:
+ ملاحظة:
+ create-project-netlify.js مسؤول عن:
  - OAuth
- - Connection
- - Team picker
- - Team selection
- - Netlify state
-
+ - الاتصال
+ - اختيار الفريق
+ - حالة Netlify
 ====================================================
 */
-
 
 'use strict';
 
 
-// ================================================
-// 1. ELEMENTS
-// ================================================
+/* =================================================
+   1. ELEMENTS
+================================================= */
 
 const netlifyUi = {
 
@@ -75,9 +73,9 @@ const netlifyUi = {
 };
 
 
-// ================================================
-// 2. HELPERS
-// ================================================
+/* =================================================
+   2. HELPERS
+================================================= */
 
 function netlifyUiSetVisible(
     element,
@@ -85,11 +83,8 @@ function netlifyUiSetVisible(
 ) {
 
     if (!element) {
-
         return;
-
     }
-
 
     element.classList.toggle(
         'hidden',
@@ -100,7 +95,6 @@ function netlifyUiSetVisible(
         'is-hidden',
         !visible
     );
-
 
     element.style.display =
         visible ? '' : 'none';
@@ -114,11 +108,8 @@ function netlifyUiSetText(
 ) {
 
     if (!element) {
-
         return;
-
     }
-
 
     element.textContent =
         value || '';
@@ -130,14 +121,19 @@ function netlifyUiNormalizeState(
     state
 ) {
 
-    return state || {};
+    return (
+        state &&
+        typeof state === 'object'
+    )
+        ? state
+        : {};
 
 }
 
 
-// ================================================
-// 3. UPDATE MAIN NETLIFY UI
-// ================================================
+/* =================================================
+   3. UPDATE MAIN NETLIFY UI
+================================================= */
 
 function updateNetlifyConfirmationUI(
     state
@@ -160,7 +156,23 @@ function updateNetlifyConfirmationUI(
     const teamName =
         state.teamName ||
         state.teamSlug ||
-        'Netlify Team';
+        '';
+
+
+    const teams =
+        Array.isArray(
+            state.availableTeams
+        )
+            ? state.availableTeams
+            : [];
+
+
+    const teamSelected =
+        Boolean(
+            state.teamSelected === true ||
+            state.teamId ||
+            state.teamSlug
+        );
 
 
     const message =
@@ -168,38 +180,34 @@ function updateNetlifyConfirmationUI(
         '';
 
 
-    // --------------------------------------------
-    // Container
-    // --------------------------------------------
-
     netlifyUiSetVisible(
         netlifyUi.container,
         true
     );
 
 
-    // --------------------------------------------
-    // Loading
-    // --------------------------------------------
+    /* =============================================
+       CHECKING
+    ============================================= */
 
     if (loading) {
 
         netlifyUiSetText(
             netlifyUi.title,
-            'جاري التحقق من Netlify...'
+            'جاري التحقق من اتصال Netlify...'
         );
 
 
         netlifyUiSetText(
             netlifyUi.description,
-            'يرجى الانتظار قليلاً حتى يتم التحقق من اتصال Netlify.'
+            'يرجى الانتظار حتى يتم التحقق من الحساب والفريق المحدد.'
         );
 
 
         if (netlifyUi.badge) {
 
             netlifyUi.badge.textContent =
-                'جاري التحقق';
+                'جارٍ التحقق';
 
             netlifyUi.badge.className =
                 'netlify-status-badge loading';
@@ -224,41 +232,31 @@ function updateNetlifyConfirmationUI(
     }
 
 
-    // --------------------------------------------
-    // CONNECTED
-    // --------------------------------------------
+    /* =============================================
+       CONNECTED + TEAM READY
+    ============================================= */
 
-    if (connected) {
+    if (
+        connected &&
+        teamSelected
+    ) {
 
         netlifyUiSetText(
             netlifyUi.title,
-            'Netlify متصل'
+            'Netlify متصل وجاهز للنشر'
         );
 
 
-        if (teamName) {
-
-            netlifyUiSetText(
-                netlifyUi.description,
-                'تم الاتصال بحساب Netlify بنجاح. الفريق المحدد: ' +
-                teamName
-            );
-
-        } else {
-
-            netlifyUiSetText(
-                netlifyUi.description,
-                message ||
-                'تم الاتصال بحساب Netlify بنجاح.'
-            );
-
-        }
+        netlifyUiSetText(
+            netlifyUi.description,
+            `تم الاتصال بحساب Netlify بنجاح. الفريق المحدد: ${teamName}.`
+        );
 
 
         if (netlifyUi.badge) {
 
             netlifyUi.badge.textContent =
-                'متصل';
+                'جاهز';
 
             netlifyUi.badge.className =
                 'netlify-status-badge connected';
@@ -272,50 +270,11 @@ function updateNetlifyConfirmationUI(
         );
 
 
-        // إذا كان هناك أكثر من فريق
-        // يبقى اختيار الفريق ظاهراً.
+        netlifyUiSetVisible(
+            netlifyUi.teamsContainer,
+            teams.length > 1
+        );
 
-        const teams =
-            Array.isArray(
-                state.availableTeams
-            )
-                ? state.availableTeams
-                : [];
-
-
-        const hasMultipleTeams =
-            teams.length > 1;
-
-
-        const hasSelectedTeam =
-            Boolean(
-                state.teamId ||
-                state.teamSlug ||
-                state.teamSelected
-            );
-
-
-        if (
-            hasMultipleTeams &&
-            !hasSelectedTeam
-        ) {
-
-            netlifyUiSetVisible(
-                netlifyUi.teamsContainer,
-                true
-            );
-
-        } else {
-
-            netlifyUiSetVisible(
-                netlifyUi.teamsContainer,
-                hasMultipleTeams
-            );
-
-        }
-
-
-        // تحديث select إذا كان موجوداً
 
         if (
             netlifyUi.teamSelect &&
@@ -335,9 +294,69 @@ function updateNetlifyConfirmationUI(
     }
 
 
-    // --------------------------------------------
-    // DISCONNECTED
-    // --------------------------------------------
+    /* =============================================
+       CONNECTED BUT NO TEAM
+    ============================================= */
+
+    if (connected) {
+
+        netlifyUiSetText(
+            netlifyUi.title,
+            'Netlify متصل'
+        );
+
+
+        netlifyUiSetText(
+            netlifyUi.description,
+            message ||
+            'تم الاتصال بحساب Netlify. يرجى اختيار فريق قبل إنشاء المشروع.'
+        );
+
+
+        if (netlifyUi.badge) {
+
+            netlifyUi.badge.textContent =
+                'اختر الفريق';
+
+            netlifyUi.badge.className =
+                'netlify-status-badge warning';
+
+        }
+
+
+        netlifyUiSetVisible(
+            netlifyUi.connectContainer,
+            false
+        );
+
+
+        netlifyUiSetVisible(
+            netlifyUi.teamsContainer,
+            teams.length > 0
+        );
+
+
+        if (
+            netlifyUi.teamSelect &&
+            teams.length
+        ) {
+
+            renderNetlifyTeams(
+                teams,
+                state
+            );
+
+        }
+
+
+        return;
+
+    }
+
+
+    /* =============================================
+       DISCONNECTED
+    ============================================= */
 
     netlifyUiSetText(
         netlifyUi.title,
@@ -348,7 +367,7 @@ function updateNetlifyConfirmationUI(
     netlifyUiSetText(
         netlifyUi.description,
         message ||
-        'قم بربط حساب Netlify حتى تتمكن من نشر مشروعك.'
+        'يرجى ربط حساب Netlify حتى تتمكن من إنشاء ونشر المشروع.'
     );
 
 
@@ -377,9 +396,9 @@ function updateNetlifyConfirmationUI(
 }
 
 
-// ================================================
-// 4. RENDER TEAMS
-// ================================================
+/* =================================================
+   4. RENDER TEAMS
+================================================= */
 
 function renderNetlifyTeams(
     teams,
@@ -387,34 +406,32 @@ function renderNetlifyTeams(
 ) {
 
     if (!netlifyUi.teamSelect) {
-
         return;
-
     }
 
 
     if (!Array.isArray(teams)) {
-
         teams = [];
-
     }
 
 
-    const currentSlug =
-        state &&
-        (
-            state.teamSlug ||
-            state.teamId
-        );
+    state =
+        state || {};
+
+
+    const currentValue =
+        state.teamSlug ||
+        state.teamId ||
+        '';
 
 
     netlifyUi.teamSelect.innerHTML =
         '';
 
 
-    // --------------------------------------------
-    // No teams
-    // --------------------------------------------
+    /* =============================================
+       NO TEAMS
+    ============================================= */
 
     if (!teams.length) {
 
@@ -423,11 +440,10 @@ function renderNetlifyTeams(
                 'option'
             );
 
-        option.value =
-            '';
+        option.value = '';
 
         option.textContent =
-            'لا توجد فرق Netlify متاحة';
+            'لا توجد فرق متاحة في حساب Netlify';
 
         netlifyUi.teamSelect.appendChild(
             option
@@ -445,9 +461,9 @@ function renderNetlifyTeams(
         false;
 
 
-    // --------------------------------------------
-    // Placeholder
-    // --------------------------------------------
+    /* =============================================
+       PLACEHOLDER
+    ============================================= */
 
     if (teams.length > 1) {
 
@@ -456,17 +472,13 @@ function renderNetlifyTeams(
                 'option'
             );
 
-        placeholder.value =
-            '';
+        placeholder.value = '';
 
         placeholder.textContent =
             'اختر فريق Netlify';
 
-        placeholder.disabled =
-            false;
-
         placeholder.selected =
-            !currentSlug;
+            !currentValue;
 
         netlifyUi.teamSelect.appendChild(
             placeholder
@@ -475,24 +487,16 @@ function renderNetlifyTeams(
     }
 
 
-    // --------------------------------------------
-    // Teams
-    // --------------------------------------------
+    /* =============================================
+       TEAMS
+    ============================================= */
 
     teams.forEach(
         function (team) {
 
             if (!team) {
-
                 return;
-
             }
-
-
-            const option =
-                document.createElement(
-                    'option'
-                );
 
 
             const value =
@@ -502,11 +506,22 @@ function renderNetlifyTeams(
                 '';
 
 
+            if (!value) {
+                return;
+            }
+
+
             const name =
                 team.name ||
                 team.slug ||
                 team.account_name ||
-                'Netlify Team';
+                'فريق Netlify';
+
+
+            const option =
+                document.createElement(
+                    'option'
+                );
 
 
             option.value =
@@ -518,9 +533,9 @@ function renderNetlifyTeams(
 
 
             if (
-                currentSlug &&
+                currentValue &&
                 String(value) ===
-                String(currentSlug)
+                String(currentValue)
             ) {
 
                 option.selected =
@@ -539,9 +554,9 @@ function renderNetlifyTeams(
 }
 
 
-// ================================================
-// 5. WARNING
-// ================================================
+/* =================================================
+   5. WARNING
+================================================= */
 
 function showNetlifyConfirmationWarning(
     message
@@ -555,7 +570,7 @@ function showNetlifyConfirmationWarning(
 
     netlifyUiSetText(
         netlifyUi.title,
-        'تنبيه Netlify'
+        'إعداد Netlify مطلوب'
     );
 
 
@@ -569,7 +584,7 @@ function showNetlifyConfirmationWarning(
     if (netlifyUi.badge) {
 
         netlifyUi.badge.textContent =
-            'تنبيه';
+            'إجراء مطلوب';
 
         netlifyUi.badge.className =
             'netlify-status-badge warning';
@@ -591,9 +606,9 @@ function showNetlifyConfirmationWarning(
 }
 
 
-// ================================================
-// 6. HIDE WARNING
-// ================================================
+/* =================================================
+   6. HIDE WARNING
+================================================= */
 
 function hideNetlifyConfirmationWarning() {
 
@@ -601,7 +616,13 @@ function hideNetlifyConfirmationWarning() {
         typeof getNetlifyState ===
         'function'
             ? getNetlifyState()
-            : null;
+            : (
+                window.TemplateCraftNetlify &&
+                typeof window.TemplateCraftNetlify.getState ===
+                'function'
+                    ? window.TemplateCraftNetlify.getState()
+                    : null
+            );
 
 
     if (state) {
@@ -625,9 +646,9 @@ function hideNetlifyConfirmationWarning() {
 }
 
 
-// ================================================
-// 7. SYNC UI
-// ================================================
+/* =================================================
+   7. SYNC UI
+================================================= */
 
 function syncNetlifyConfirmationUI(
     state
@@ -639,48 +660,6 @@ function syncNetlifyConfirmationUI(
         );
 
 
-    // إذا كانت الدالة موجودة
-    // نستعملها لمعرفة هل Netlify جاهز.
-
-    if (
-        typeof netlifyReady ===
-        'function'
-    ) {
-
-        if (
-            netlifyReady(
-                state
-            )
-        ) {
-
-            updateNetlifyConfirmationUI(
-                state
-            );
-
-            return;
-
-        }
-
-
-        if (
-            typeof getNetlifyReadinessMessage ===
-            'function'
-        ) {
-
-            showNetlifyConfirmationWarning(
-                getNetlifyReadinessMessage(
-                    state
-                )
-            );
-
-            return;
-
-        }
-
-    }
-
-
-    // fallback
     updateNetlifyConfirmationUI(
         state
     );
@@ -688,58 +667,89 @@ function syncNetlifyConfirmationUI(
 }
 
 
-// ================================================
-// 8. REFRESH UI
-// ================================================
+/* =================================================
+   8. REFRESH UI
+================================================= */
 
 async function refreshNetlifyConfirmationUI() {
 
     if (
-        typeof refreshNetlifyState !==
+        window.TemplateCraftNetlify &&
+        typeof window.TemplateCraftNetlify.refreshStatus ===
         'function'
     ) {
 
-        return null;
+        try {
+
+            const state =
+                await window.TemplateCraftNetlify.refreshStatus();
+
+
+            syncNetlifyConfirmationUI(
+                state
+            );
+
+
+            return state;
+
+        } catch (error) {
+
+            console.error(
+                '[TemplateCraft] Netlify UI refresh error:',
+                error
+            );
+
+
+            showNetlifyConfirmationWarning(
+                'تعذر التحقق من حالة Netlify. يرجى المحاولة مرة أخرى.'
+            );
+
+
+            return null;
+
+        }
 
     }
 
 
-    try {
+    if (
+        typeof refreshNetlifyState ===
+        'function'
+    ) {
 
-        const state =
-            await refreshNetlifyState();
+        try {
 
-
-        syncNetlifyConfirmationUI(
-            state
-        );
-
-
-        return state;
-
-    } catch (error) {
-
-        console.error(
-            'Netlify UI refresh error:',
-            error
-        );
+            const state =
+                await refreshNetlifyState();
 
 
-        showNetlifyConfirmationWarning(
-            'تعذر التحقق من حالة Netlify. حاول مرة أخرى.'
-        );
+            syncNetlifyConfirmationUI(
+                state
+            );
 
 
-        return null;
+            return state;
+
+        } catch (error) {
+
+            console.error(
+                '[TemplateCraft] Netlify state refresh error:',
+                error
+            );
+
+        }
 
     }
+
+
+    return null;
 
 }
 
 
-// ================================================
-// 9. TEAM SELECT CHANGE
-// ================================================
+/* =================================================
+   9. TEAM SELECT CHANGE
+================================================= */
 
 if (netlifyUi.teamSelect) {
 
@@ -752,37 +762,7 @@ if (netlifyUi.teamSelect) {
 
 
             if (!value) {
-
                 return;
-
-            }
-
-
-            // create-project-netlify.js
-            // مسؤول عن عملية اختيار الفريق.
-
-            if (
-                typeof selectTeam ===
-                'function'
-            ) {
-
-                try {
-
-                    await selectTeam(
-                        value
-                    );
-
-                } catch (error) {
-
-                    console.error(
-                        'Netlify team selection error:',
-                        error
-                    );
-
-                }
-
-                return;
-
             }
 
 
@@ -792,20 +772,23 @@ if (netlifyUi.teamSelect) {
                 'function'
             ) {
 
-                try {
+                await window.TemplateCraftNetlify.selectTeam(
+                    value
+                );
 
-                    await window.TemplateCraftNetlify.selectTeam(
-                        value
-                    );
+                return;
 
-                } catch (error) {
+            }
 
-                    console.error(
-                        'Netlify team selection error:',
-                        error
-                    );
 
-                }
+            if (
+                typeof selectTeam ===
+                'function'
+            ) {
+
+                await selectTeam(
+                    value
+                );
 
             }
 
@@ -815,32 +798,51 @@ if (netlifyUi.teamSelect) {
 }
 
 
-// ================================================
-// 10. NETLIFY STATE EVENTS
-// ================================================
+/* =================================================
+   10. STATE EVENTS
+=================================================
 
-window.addEventListener(
-    'netlify:state',
-    function (event) {
+ ندعمو الحدثين:
 
-        if (
-            event &&
+ templatecraft:netlify-state
+ netlify:state
+
+ حتى ما يكون حتى تعارض بين الملفات.
+================================================= */
+
+function handleNetlifyStateEvent(
+    event
+) {
+
+    if (
+        event &&
+        event.detail
+    ) {
+
+        syncNetlifyConfirmationUI(
             event.detail
-        ) {
-
-            syncNetlifyConfirmationUI(
-                event.detail
-            );
-
-        }
+        );
 
     }
+
+}
+
+
+window.addEventListener(
+    'templatecraft:netlify-state',
+    handleNetlifyStateEvent
 );
 
 
-// ================================================
-// 11. PUBLIC API
-// ================================================
+window.addEventListener(
+    'netlify:state',
+    handleNetlifyStateEvent
+);
+
+
+/* =================================================
+   11. PUBLIC API
+================================================= */
 
 window.updateNetlifyConfirmationUI =
     updateNetlifyConfirmationUI;
@@ -866,26 +868,46 @@ window.renderNetlifyTeams =
     renderNetlifyTeams;
 
 
-// ================================================
-// 12. INITIAL UI
-// ================================================
+/* =================================================
+   12. INITIAL
+================================================= */
 
-document.addEventListener(
-    'DOMContentLoaded',
-    function () {
+function initializeNetlifyUI() {
 
-        // لا نبقى في "جاري التحقق"
-        // إذا لم تكن هناك حالة بعد.
+    const existingState =
+        window.TemplateCraftNetlify &&
+        typeof window.TemplateCraftNetlify.getState ===
+        'function'
+            ? window.TemplateCraftNetlify.getState()
+            : null;
 
-        if (
-            netlifyUi.title &&
-            !netlifyUi.title.textContent.trim()
-        ) {
 
-            netlifyUi.title.textContent =
-                'Netlify';
+    if (existingState) {
 
-        }
+        syncNetlifyConfirmationUI(
+            existingState
+        );
 
     }
-);
+
+}
+
+
+if (
+    document.readyState ===
+    'loading'
+) {
+
+    document.addEventListener(
+        'DOMContentLoaded',
+        initializeNetlifyUI,
+        {
+            once: true
+        }
+    );
+
+} else {
+
+    initializeNetlifyUI();
+
+}
