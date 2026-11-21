@@ -10,7 +10,9 @@
         content="width=device-width, initial-scale=1.0"
     >
 
-    <title>إنشاء مشروع جديد | TemplateCraft Pro</title>
+    <title>
+        إنشاء مشروع جديد | TemplateCraft Pro
+    </title>
 
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -23,1536 +25,6 @@
         rel="stylesheet"
         href="./create-project.css"
     >
-
-    <style>
-
-        * {
-            box-sizing: border-box;
-        }
-
-        html,
-        body {
-            margin: 0;
-            padding: 0;
-            min-height: 100%;
-        }
-
-        body {
-            font-family: "Cairo", sans-serif;
-
-            background:
-                radial-gradient(
-                    circle at top right,
-                    rgba(99, 102, 241, 0.10),
-                    transparent 30%
-                ),
-                radial-gradient(
-                    circle at bottom left,
-                    rgba(16, 185, 129, 0.08),
-                    transparent 30%
-                ),
-                #f8fafc;
-
-            color: #0f172a;
-        }
-
-        button,
-        input,
-        select,
-        textarea {
-            font-family: inherit;
-        }
-
-        /* =====================================================
-           MODAL
-        ===================================================== */
-
-        .modal {
-            display: none;
-        }
-
-        .modal.show,
-        .modal.active {
-            display: flex;
-        }
-
-        /* =====================================================
-           PAGE
-        ===================================================== */
-
-        .page-shell {
-            min-height: 100vh;
-        }
-
-        .container-main {
-            width: min(
-                1400px,
-                calc(100% - 32px)
-            );
-
-            margin: 0 auto;
-        }
-
-        /* =====================================================
-           HEADER
-        ===================================================== */
-
-        .page-header {
-            position: sticky;
-            top: 0;
-            z-index: 100;
-
-            backdrop-filter: blur(18px);
-            -webkit-backdrop-filter: blur(18px);
-
-            background: rgba(
-                255,
-                255,
-                255,
-                0.88
-            );
-
-            border-bottom:
-                1px solid #e2e8f0;
-        }
-
-        .page-header-inner {
-            min-height: 74px;
-
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-
-            gap: 20px;
-        }
-
-        .brand {
-            display: flex;
-            align-items: center;
-
-            gap: 12px;
-
-            text-decoration: none;
-            color: #0f172a;
-        }
-
-        .brand-logo {
-            width: 44px;
-            height: 44px;
-
-            border-radius: 14px;
-
-            display: flex;
-            align-items: center;
-            justify-content: center;
-
-            color: white;
-
-            font-size: 21px;
-            font-weight: 900;
-
-            background:
-                linear-gradient(
-                    135deg,
-                    #4f46e5,
-                    #7c3aed,
-                    #2563eb
-                );
-
-            box-shadow:
-                0 10px 30px
-                rgba(
-                    79,
-                    70,
-                    229,
-                    0.25
-                );
-        }
-
-        .brand-text strong {
-            display: block;
-
-            font-size: 18px;
-            font-weight: 900;
-        }
-
-        .brand-text span {
-            display: block;
-
-            font-size: 11px;
-            color: #64748b;
-            font-weight: 600;
-        }
-
-        /* =====================================================
-           HERO
-        ===================================================== */
-
-        .hero {
-            padding: 74px 0 34px;
-        }
-
-        .hero-content {
-            display: grid;
-
-            grid-template-columns:
-                1.4fr
-                0.6fr;
-
-            gap: 24px;
-
-            align-items: stretch;
-        }
-
-        .hero-card {
-            border-radius: 28px;
-
-            padding: 42px 38px;
-
-            background:
-                linear-gradient(
-                    135deg,
-                    #111827,
-                    #1e1b4b,
-                    #312e81
-                );
-
-            color: white;
-
-            position: relative;
-            overflow: hidden;
-
-            box-shadow:
-                0 25px 70px
-                rgba(
-                    15,
-                    23,
-                    42,
-                    0.20
-                );
-        }
-
-        .hero-card::before {
-            content: "";
-
-            position: absolute;
-
-            width: 300px;
-            height: 300px;
-
-            border-radius: 50%;
-
-            background:
-                rgba(
-                    255,
-                    255,
-                    255,
-                    0.07
-                );
-
-            top: -120px;
-            right: -100px;
-        }
-
-        .hero-card::after {
-            content: "";
-
-            position: absolute;
-
-            width: 220px;
-            height: 220px;
-
-            border-radius: 50%;
-
-            background:
-                rgba(
-                    99,
-                    102,
-                    241,
-                    0.16
-                );
-
-            bottom: -120px;
-            left: -70px;
-        }
-
-        .hero-card > * {
-            position: relative;
-            z-index: 2;
-        }
-
-        .hero-badge {
-            display: inline-flex;
-
-            align-items: center;
-            gap: 8px;
-
-            padding: 7px 12px;
-
-            border-radius: 999px;
-
-            background:
-                rgba(
-                    255,
-                    255,
-                    255,
-                    0.10
-                );
-
-            border:
-                1px solid
-                rgba(
-                    255,
-                    255,
-                    255,
-                    0.12
-                );
-
-            font-size: 12px;
-            font-weight: 800;
-
-            margin-bottom: 22px;
-        }
-
-        .hero-title {
-            font-size:
-                clamp(
-                    28px,
-                    4vw,
-                    46px
-                );
-
-            line-height: 1.15;
-
-            font-weight: 900;
-
-            margin:
-                0 0 14px;
-        }
-
-        .hero-description {
-            margin: 0;
-
-            color:
-                rgba(
-                    255,
-                    255,
-                    255,
-                    0.75
-                );
-
-            max-width: 760px;
-
-            line-height: 1.9;
-
-            font-size: 14px;
-        }
-
-        .hero-side {
-            border-radius: 28px;
-
-            background: white;
-
-            border:
-                1px solid
-                #e2e8f0;
-
-            padding: 26px;
-
-            box-shadow:
-                0 15px 45px
-                rgba(
-                    15,
-                    23,
-                    42,
-                    0.07
-                );
-        }
-
-        .hero-side-title {
-            font-size: 15px;
-            font-weight: 900;
-
-            margin-bottom: 18px;
-        }
-
-        .hero-step {
-            display: flex;
-
-            gap: 12px;
-
-            align-items: flex-start;
-
-            margin-bottom: 15px;
-        }
-
-        .hero-step:last-child {
-            margin-bottom: 0;
-        }
-
-        .hero-step-number {
-            flex:
-                0 0 30px;
-
-            width: 30px;
-            height: 30px;
-
-            border-radius: 10px;
-
-            display: flex;
-            align-items: center;
-            justify-content: center;
-
-            background: #eef2ff;
-            color: #4f46e5;
-
-            font-size: 12px;
-            font-weight: 900;
-        }
-
-        .hero-step-text strong {
-            display: block;
-
-            font-size: 13px;
-
-            margin-bottom: 2px;
-        }
-
-        .hero-step-text span {
-            display: block;
-
-            font-size: 11px;
-
-            color: #64748b;
-
-            line-height: 1.6;
-        }
-
-        /* =====================================================
-           SECTION
-        ===================================================== */
-
-        .section-card {
-            background: white;
-
-            border:
-                1px solid
-                #e2e8f0;
-
-            border-radius: 26px;
-
-            padding: 26px;
-
-            margin-bottom: 24px;
-
-            box-shadow:
-                0 15px 50px
-                rgba(
-                    15,
-                    23,
-                    42,
-                    0.05
-                );
-        }
-
-        .section-header {
-            display: flex;
-
-            align-items: flex-start;
-
-            justify-content: space-between;
-
-            gap: 20px;
-
-            margin-bottom: 22px;
-        }
-
-        .section-title {
-            margin: 0;
-
-            font-size: 19px;
-            font-weight: 900;
-        }
-
-        .section-description {
-            margin:
-                5px 0 0;
-
-            font-size: 12px;
-
-            color: #64748b;
-
-            line-height: 1.7;
-        }
-
-        /* =====================================================
-           FORM
-        ===================================================== */
-
-        .field {
-            margin-bottom: 20px;
-        }
-
-        .field:last-child {
-            margin-bottom: 0;
-        }
-
-        .field-label {
-            display: block;
-
-            margin-bottom: 8px;
-
-            font-size: 13px;
-            font-weight: 800;
-
-            color: #334155;
-        }
-
-        .field-input,
-        .field-select {
-            width: 100%;
-
-            min-height: 50px;
-
-            border:
-                1px solid
-                #cbd5e1;
-
-            border-radius: 14px;
-
-            background: #fff;
-
-            padding: 0 15px;
-
-            outline: none;
-
-            transition:
-                border-color .2s ease,
-                box-shadow .2s ease;
-
-            font-size: 13px;
-        }
-
-        .field-input:focus,
-        .field-select:focus {
-            border-color: #6366f1;
-
-            box-shadow:
-                0 0 0 4px
-                rgba(
-                    99,
-                    102,
-                    241,
-                    0.10
-                );
-        }
-
-        /* =====================================================
-           SELECTED TEMPLATE
-        ===================================================== */
-
-        .selected-template-bar {
-            margin-top: 16px;
-
-            padding: 13px 16px;
-
-            border-radius: 14px;
-
-            background: #f8fafc;
-
-            border:
-                1px dashed
-                #cbd5e1;
-
-            color: #64748b;
-
-            font-size: 12px;
-            font-weight: 700;
-        }
-
-        .selected-template-bar strong {
-            color: #4f46e5;
-        }
-
-        /* =====================================================
-           TEMPLATE GRID
-        ===================================================== */
-
-        .templates-grid {
-            display: grid;
-
-            grid-template-columns:
-                repeat(
-                    3,
-                    minmax(0, 1fr)
-                );
-
-            gap: 22px;
-        }
-
-        /* =====================================================
-           TEMPLATE CARD
-           الصورة هي الخلفية كاملة
-        ===================================================== */
-
-        .template-card {
-            position: relative;
-
-            height: 430px;
-
-            overflow: hidden;
-
-            border:
-                1px solid
-                rgba(
-                    255,
-                    255,
-                    255,
-                    0.22
-                );
-
-            border-radius: 24px;
-
-            background:
-                #0f172a;
-
-            box-shadow:
-                0 18px 45px
-                rgba(
-                    15,
-                    23,
-                    42,
-                    0.12
-                );
-
-            isolation: isolate;
-
-            cursor: pointer;
-
-            transition:
-                transform .3s ease,
-                box-shadow .3s ease,
-                border-color .3s ease;
-        }
-
-        .template-card:hover {
-            transform:
-                translateY(-6px);
-
-            box-shadow:
-                0 28px 65px
-                rgba(
-                    15,
-                    23,
-                    42,
-                    0.18
-                );
-        }
-
-        .template-card.is-selected {
-            border-color:
-                #6366f1;
-
-            box-shadow:
-                0 0 0 2px
-                rgba(
-                    99,
-                    102,
-                    241,
-                    0.25
-                ),
-                0 28px 70px
-                rgba(
-                    79,
-                    70,
-                    229,
-                    0.20
-                );
-        }
-
-        /* =====================================================
-           IMAGE
-        ===================================================== */
-
-        .template-image-wrapper {
-            position: absolute;
-
-            inset: 0;
-
-            width: 100%;
-            height: 100%;
-
-            overflow: hidden;
-
-            background:
-                #0f172a;
-
-            z-index: 0;
-        }
-
-        .template-image {
-            width: 100%;
-            height: 100%;
-
-            display: block;
-
-            object-fit: cover;
-
-            transition:
-                transform .7s ease,
-                filter .5s ease;
-        }
-
-        .template-card:hover
-        .template-image {
-            transform:
-                scale(1.045);
-
-            filter:
-                brightness(.88);
-        }
-
-        /* =====================================================
-           IMAGE OVERLAY
-        ===================================================== */
-
-        .template-image-overlay {
-            position: absolute;
-
-            inset: 0;
-
-            z-index: 1;
-
-            pointer-events: none;
-
-            background:
-                linear-gradient(
-                    to bottom,
-                    rgba(15,23,42,.05) 0%,
-                    rgba(15,23,42,.08) 25%,
-                    rgba(15,23,42,.18) 45%,
-                    rgba(15,23,42,.72) 72%,
-                    rgba(15,23,42,.96) 100%
-                );
-        }
-
-        /* =====================================================
-           BADGE
-        ===================================================== */
-
-        .template-badge {
-            position: absolute;
-
-            top: 14px;
-            right: 14px;
-
-            z-index: 5;
-
-            padding:
-                7px 11px;
-
-            border-radius: 999px;
-
-            background:
-                rgba(
-                    15,
-                    23,
-                    42,
-                    0.68
-                );
-
-            border:
-                1px solid
-                rgba(
-                    255,
-                    255,
-                    255,
-                    0.18
-                );
-
-            color: white;
-
-            font-size: 10px;
-            font-weight: 900;
-
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-        }
-
-        .template-selected-badge {
-            position: absolute;
-
-            top: 14px;
-            left: 14px;
-
-            z-index: 6;
-
-            padding:
-                7px 11px;
-
-            border-radius: 999px;
-
-            background:
-                rgba(
-                    16,
-                    185,
-                    129,
-                    0.90
-                );
-
-            border:
-                1px solid
-                rgba(
-                    255,
-                    255,
-                    255,
-                    0.25
-                );
-
-            color: white;
-
-            font-size: 10px;
-            font-weight: 900;
-
-            backdrop-filter: blur(10px);
-        }
-
-        /* =====================================================
-           CARD BODY
-           شفاف / glass
-        ===================================================== */
-
-        .template-card-body {
-            position: absolute;
-
-            left: 0;
-            right: 0;
-            bottom: 0;
-
-            z-index: 4;
-
-            padding:
-                22px 20px 20px;
-
-            background:
-                linear-gradient(
-                    to bottom,
-                    rgba(
-                        15,
-                        23,
-                        42,
-                        0
-                    ),
-                    rgba(
-                        15,
-                        23,
-                        42,
-                        0.30
-                    ) 15%,
-                    rgba(
-                        15,
-                        23,
-                        42,
-                        0.72
-                    ) 50%,
-                    rgba(
-                        15,
-                        23,
-                        42,
-                        0.84
-                    )
-                );
-
-            backdrop-filter:
-                blur(4px);
-
-            -webkit-backdrop-filter:
-                blur(4px);
-        }
-
-        .template-title {
-            margin:
-                0 0 5px;
-
-            color: white;
-
-            font-size: 18px;
-
-            line-height: 1.35;
-
-            font-weight: 900;
-
-            text-shadow:
-                0 2px 12px
-                rgba(
-                    0,
-                    0,
-                    0,
-                    .35
-                );
-        }
-
-        .template-description {
-            margin:
-                0 0 12px;
-
-            color:
-                rgba(
-                    255,
-                    255,
-                    255,
-                    .82
-                );
-
-            font-size: 11px;
-
-            line-height: 1.7;
-
-            display:
-                -webkit-box;
-
-            -webkit-line-clamp: 2;
-
-            -webkit-box-orient: vertical;
-
-            overflow: hidden;
-        }
-
-        .template-features {
-            display: flex;
-
-            flex-wrap: wrap;
-
-            gap: 6px;
-
-            margin-bottom: 15px;
-        }
-
-        .template-feature {
-            padding:
-                5px 8px;
-
-            border-radius: 8px;
-
-            background:
-                rgba(
-                    255,
-                    255,
-                    255,
-                    0.12
-                );
-
-            border:
-                1px solid
-                rgba(
-                    255,
-                    255,
-                    255,
-                    0.12
-                );
-
-            color:
-                rgba(
-                    255,
-                    255,
-                    255,
-                    .92
-                );
-
-            font-size: 9px;
-            font-weight: 800;
-
-            backdrop-filter:
-                blur(8px);
-        }
-
-        /* =====================================================
-           ACTIONS
-        ===================================================== */
-
-        .template-actions {
-            display: grid;
-
-            grid-template-columns:
-                1fr 1fr;
-
-            gap: 9px;
-        }
-
-        .template-preview-btn,
-        .template-select-btn {
-            min-height: 43px;
-
-            border-radius: 12px;
-
-            font-size: 11px;
-            font-weight: 900;
-
-            cursor: pointer;
-
-            transition:
-                transform .2s ease,
-                box-shadow .2s ease,
-                background .2s ease;
-
-            text-decoration: none;
-
-            display: flex;
-
-            align-items: center;
-            justify-content: center;
-        }
-
-        .template-preview-btn {
-            border:
-                1px solid
-                rgba(
-                    255,
-                    255,
-                    255,
-                    .28
-                );
-
-            background:
-                rgba(
-                    255,
-                    255,
-                    255,
-                    .12
-                );
-
-            color: white;
-
-            backdrop-filter:
-                blur(12px);
-
-            -webkit-backdrop-filter:
-                blur(12px);
-        }
-
-        .template-preview-btn:hover {
-            transform:
-                translateY(-2px);
-
-            background:
-                rgba(
-                    255,
-                    255,
-                    255,
-                    .20
-                );
-
-            box-shadow:
-                0 10px 25px
-                rgba(
-                    0,
-                    0,
-                    0,
-                    .18
-                );
-        }
-
-        .template-select-btn {
-            border: 0;
-
-            color: white;
-
-            background:
-                linear-gradient(
-                    135deg,
-                    #4f46e5,
-                    #7c3aed
-                );
-
-            box-shadow:
-                0 10px 25px
-                rgba(
-                    79,
-                    70,
-                    229,
-                    .25
-                );
-        }
-
-        .template-select-btn:hover {
-            transform:
-                translateY(-2px);
-
-            box-shadow:
-                0 14px 30px
-                rgba(
-                    79,
-                    70,
-                    229,
-                    .35
-                );
-        }
-
-        /* =====================================================
-           LOADING
-        ===================================================== */
-
-        .state-message {
-            padding:
-                40px 20px;
-
-            text-align: center;
-
-            border:
-                1px dashed
-                #cbd5e1;
-
-            border-radius: 18px;
-
-            color: #64748b;
-
-            font-size: 13px;
-
-            background:
-                #f8fafc;
-        }
-
-        .state-message.error {
-            color: #b91c1c;
-
-            border-color:
-                #fecaca;
-
-            background:
-                #fef2f2;
-        }
-
-        .hidden {
-            display:
-                none !important;
-        }
-
-        /* =====================================================
-           NETLIFY
-        ===================================================== */
-
-        .netlify-box {
-            padding: 18px;
-
-            border-radius: 18px;
-
-            border:
-                1px solid
-                #e2e8f0;
-
-            background:
-                #f8fafc;
-        }
-
-        .netlify-status {
-            display: flex;
-
-            align-items: center;
-
-            justify-content:
-                space-between;
-
-            gap: 15px;
-
-            flex-wrap: wrap;
-        }
-
-        .status-badge {
-            display: inline-flex;
-
-            align-items: center;
-
-            gap: 7px;
-
-            padding:
-                7px 11px;
-
-            border-radius: 999px;
-
-            font-size: 11px;
-
-            font-weight: 800;
-        }
-
-        .status-badge.success {
-            background:
-                #dcfce7;
-
-            color:
-                #166534;
-        }
-
-        .status-badge.warning {
-            background:
-                #fef3c7;
-
-            color:
-                #92400e;
-        }
-
-        .status-badge.info {
-            background:
-                #dbeafe;
-
-            color:
-                #1d4ed8;
-        }
-
-        .status-badge.error {
-            background:
-                #fee2e2;
-
-            color:
-                #b91c1c;
-        }
-
-        /* =====================================================
-           BUTTONS
-        ===================================================== */
-
-        .primary-button {
-            width: 100%;
-
-            min-height: 54px;
-
-            border: 0;
-
-            border-radius: 15px;
-
-            background:
-                linear-gradient(
-                    135deg,
-                    #4f46e5,
-                    #7c3aed
-                );
-
-            color: white;
-
-            font-weight: 900;
-
-            font-size: 14px;
-
-            cursor: pointer;
-
-            box-shadow:
-                0 15px 35px
-                rgba(
-                    79,
-                    70,
-                    229,
-                    .22
-                );
-
-            transition:
-                transform .2s ease,
-                box-shadow .2s ease,
-                opacity .2s ease;
-        }
-
-        .primary-button:hover:not(:disabled) {
-            transform:
-                translateY(-2px);
-
-            box-shadow:
-                0 20px 45px
-                rgba(
-                    79,
-                    70,
-                    229,
-                    .28
-                );
-        }
-
-        .primary-button:disabled {
-            opacity: .55;
-
-            cursor:
-                not-allowed;
-        }
-
-        .secondary-button {
-            min-height: 44px;
-
-            padding:
-                0 16px;
-
-            border-radius: 12px;
-
-            border:
-                1px solid
-                #cbd5e1;
-
-            background: white;
-
-            color: #334155;
-
-            font-weight: 800;
-
-            cursor: pointer;
-        }
-
-        /* =====================================================
-           CREATE MODAL
-        ===================================================== */
-
-        .create-modal-backdrop {
-            position: fixed;
-
-            inset: 0;
-
-            z-index: 500;
-
-            align-items: center;
-            justify-content: center;
-
-            padding: 20px;
-
-            background:
-                rgba(
-                    15,
-                    23,
-                    42,
-                    .62
-                );
-
-            backdrop-filter:
-                blur(8px);
-        }
-
-        .create-modal-card {
-            width:
-                min(
-                    560px,
-                    100%
-                );
-
-            border-radius: 24px;
-
-            background: white;
-
-            padding: 25px;
-
-            box-shadow:
-                0 30px 90px
-                rgba(
-                    15,
-                    23,
-                    42,
-                    .25
-                );
-        }
-
-        /* =====================================================
-           DEPLOYMENT
-        ===================================================== */
-
-        .deployment-overlay {
-            position: fixed;
-
-            inset: 0;
-
-            z-index: 800;
-
-            display: none;
-
-            align-items: center;
-            justify-content: center;
-
-            padding: 20px;
-
-            background:
-                rgba(
-                    15,
-                    23,
-                    42,
-                    .72
-                );
-
-            backdrop-filter:
-                blur(10px);
-        }
-
-        .deployment-overlay.show {
-            display: flex;
-        }
-
-        .deployment-card {
-            width:
-                min(
-                    560px,
-                    100%
-                );
-
-            border-radius: 26px;
-
-            background: white;
-
-            padding: 28px;
-
-            text-align: center;
-
-            box-shadow:
-                0 30px 100px
-                rgba(
-                    15,
-                    23,
-                    42,
-                    .30
-                );
-        }
-
-        /* =====================================================
-           SSL
-        ===================================================== */
-
-        .ssl-modal {
-            position: fixed;
-
-            inset: 0;
-
-            z-index: 900;
-
-            display: none;
-
-            align-items: center;
-            justify-content: center;
-
-            padding: 20px;
-
-            background:
-                rgba(
-                    15,
-                    23,
-                    42,
-                    .70
-                );
-
-            backdrop-filter:
-                blur(10px);
-        }
-
-        .ssl-modal.show {
-            display: flex;
-        }
-
-        .ssl-card {
-            width:
-                min(
-                    560px,
-                    100%
-                );
-
-            border-radius: 26px;
-
-            background: white;
-
-            padding: 28px;
-
-            box-shadow:
-                0 30px 100px
-                rgba(
-                    15,
-                    23,
-                    42,
-                    .30
-                );
-        }
-
-        /* =====================================================
-           RESPONSIVE
-        ===================================================== */
-
-        @media (max-width: 1100px) {
-
-            .templates-grid {
-                grid-template-columns:
-                    repeat(
-                        2,
-                        minmax(0, 1fr)
-                    );
-            }
-
-            .hero-content {
-                grid-template-columns:
-                    1fr;
-            }
-
-        }
-
-        @media (max-width: 700px) {
-
-            .container-main {
-                width:
-                    min(
-                        100% - 20px,
-                        1400px
-                    );
-            }
-
-            .hero {
-                padding-top:
-                    48px;
-            }
-
-            .hero-card,
-            .hero-side,
-            .section-card {
-                border-radius:
-                    20px;
-            }
-
-            .hero-card {
-                padding:
-                    28px 24px;
-            }
-
-            .section-card {
-                padding:
-                    18px;
-            }
-
-            .templates-grid {
-                grid-template-columns:
-                    1fr;
-            }
-
-            .template-card {
-                height:
-                    420px;
-            }
-
-            .template-actions {
-                grid-template-columns:
-                    1fr 1fr;
-            }
-
-            .page-header-inner {
-                min-height:
-                    64px;
-            }
-
-        }
-
-        @media (max-width: 450px) {
-
-            .template-card {
-                height:
-                    410px;
-            }
-
-            .template-actions {
-                grid-template-columns:
-                    1fr 1fr;
-            }
-
-            .template-card-body {
-                padding:
-                    20px 16px 16px;
-            }
-
-        }
-
-    </style>
 
 </head>
 
@@ -1613,6 +85,7 @@
 
             <div class="hero-content">
 
+
                 <div class="hero-card">
 
                     <div class="hero-badge">
@@ -1626,8 +99,8 @@
 
                     <p class="hero-description">
                         اختار من القوالب الجاهزة، شوف المعاينة
-                        الحقيقية ديال الموقع فصفحة مستقلة،
-                        ومن بعد اختار القالب باش تبني المشروع ديالك.
+                        الحقيقية ديال الموقع، ومن بعد اختار
+                        القالب باش تبني المشروع ديالك.
                     </p>
 
                 </div>
@@ -1638,6 +111,7 @@
                     <div class="hero-side-title">
                         كيفاش تخدم؟
                     </div>
+
 
                     <div class="hero-step">
 
@@ -1673,7 +147,7 @@
                             </strong>
 
                             <span>
-                                تقدر تشوف المعاينة الحقيقية فتبويب جديد.
+                                شوف المعاينة الحقيقية واختار القالب المناسب.
                             </span>
 
                         </div>
@@ -1867,22 +341,12 @@
 
                         <strong
                             id="netlifyStatusTitle"
-                            style="
-                                display:block;
-                                font-size:14px;
-                                margin-bottom:4px;
-                            "
                         >
                             Netlify
                         </strong>
 
                         <span
                             id="netlifyStatusDescription"
-                            style="
-                                display:block;
-                                color:#64748b;
-                                font-size:11px;
-                            "
                         >
                             جاري التحقق من الاتصال...
                         </span>
@@ -1900,6 +364,8 @@
                 </div>
 
 
+                <!-- CONNECT -->
+
                 <div
                     id="netlifyConnectContainer"
                     class="hidden"
@@ -1909,13 +375,15 @@
                     <button
                         id="connectNetlifyBtn"
                         type="button"
-                        class="secondary-button"
+                        class="secondary-button netlify-connect-btn"
                     >
                         🔗 ربط Netlify
                     </button>
 
                 </div>
 
+
+                <!-- TEAMS -->
 
                 <div
                     id="netlifyTeamsContainer"
@@ -1987,6 +455,7 @@
 >
 
     <div class="create-modal-card">
+
 
         <div
             style="
@@ -2103,6 +572,7 @@
             🚀
         </div>
 
+
         <h3
             id="deploymentTitle"
             style="
@@ -2113,6 +583,7 @@
         >
             جاري إنشاء المشروع...
         </h3>
+
 
         <p
             id="deploymentMessage"
@@ -2125,6 +596,7 @@
         >
             المرجو الانتظار، لا تغلق الصفحة.
         </p>
+
 
         <div
             style="
@@ -2159,7 +631,7 @@
 
 
 <!-- =========================================================
-     SSL
+     SSL MODAL
 ========================================================= -->
 
 <div
@@ -2178,6 +650,7 @@
             🔐
         </div>
 
+
         <h3
             id="sslPreparationTitle"
             style="
@@ -2188,6 +661,7 @@
         >
             جاري تجهيز SSL
         </h3>
+
 
         <p
             id="sslPreparationMessage"
@@ -2224,7 +698,7 @@
 
 
 <!-- =========================================================
-     CATEGORY + TEMPLATE CONTROLLER
+     TEMPLATE SYSTEM COMPATIBILITY
 ========================================================= -->
 
 <script>
@@ -2233,553 +707,172 @@
 
     'use strict';
 
-    const API_BASE =
-        String(
-            window.TEMPLATECRAFT_API_BASE_URL ||
-            'https://templatecraft-backend.onrender.com'
-        ).replace(/\/+$/, '');
 
+    function createCompatibilityLayer() {
 
-    const select =
-        document.getElementById(
-            'projectTypeSelect'
-        );
-
-    const grid =
-        document.getElementById(
-            'templatesGrid'
-        );
-
-    const selectedLabel =
-        document.getElementById(
-            'selectedLabel'
-        );
-
-    const loadingMessage =
-        document.getElementById(
-            'categoryLoadingMessage'
-        );
-
-    const errorMessage =
-        document.getElementById(
-            'categoryErrorMessage'
-        );
-
-
-    let allTemplates = [];
-
-    let selectedTemplate = null;
-
-
-    function cleanUrl(value) {
-
-        return String(value || '')
-            .trim()
-            .replace(/^["']|["']$/g, '');
-
-    }
-
-
-    function isAbsoluteUrl(value) {
-
-        return /^https?:\/\//i.test(
-            String(value || '')
-        );
-
-    }
-
-
-    function encodePath(pathValue) {
-
-        return String(pathValue || '')
-            .split('/')
-            .map(
-                part =>
-                    encodeURIComponent(part)
-            )
-            .join('/');
-
-    }
-
-
-    function escapeHtml(value) {
-
-        return String(value ?? '')
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;')
-            .replace(/'/g, '&#039;');
-
-    }
-
-
-    function getTemplateAssetUrl(
-        template,
-        assetPath
-    ) {
-
-        if (!template || !assetPath) {
-            return '';
-        }
-
-        const value =
-            cleanUrl(assetPath);
-
-        if (!value) {
-            return '';
-        }
-
-        if (isAbsoluteUrl(value)) {
-            return value;
-        }
-
-        if (value.startsWith('data:')) {
-            return value;
-        }
+        /*
+         * create-project-templates.js
+         * exposes the original global functions.
+         *
+         * create-project.js
+         * expects TemplateCraftCreatePage.
+         *
+         * This adapter keeps both systems compatible.
+         */
 
         if (
-            value.startsWith(
-                '/api/templates/'
-            )
+            window.TemplateCraftCreatePage
         ) {
-            return API_BASE + value;
+            return;
         }
 
-        const projectType =
-            cleanUrl(
-                template.projectType ||
-                template.category
-            );
 
-        const templateId =
-            cleanUrl(
-                template.id ||
-                template.templateId
-            );
+        window.TemplateCraftCreatePage = {
 
-        if (
-            !projectType ||
-            !templateId
-        ) {
-            return '';
-        }
+            getTemplates() {
 
-        const normalized =
-            value
-                .replace(/^\.?\//, '')
-                .replace(/^\/+/, '');
+                if (
+                    typeof window.getTemplateCraftTemplates ===
+                    'function'
+                ) {
 
-        return (
-            API_BASE +
-            '/api/templates/' +
-            encodeURIComponent(projectType) +
-            '/' +
-            encodeURIComponent(templateId) +
-            '/' +
-            encodePath(normalized)
-        );
+                    return window.getTemplateCraftTemplates();
 
-    }
+                }
+
+                return [];
+
+            },
 
 
-    function getPreviewUrl(template) {
+            getSelectedTemplate() {
 
-        if (!template) {
-            return '';
-        }
+                if (
+                    typeof window.getSelectedTemplate ===
+                    'function'
+                ) {
 
-        if (
-            template.previewUrl &&
-            isAbsoluteUrl(
-                template.previewUrl
-            )
-        ) {
-            return template.previewUrl;
-        }
+                    return window.getSelectedTemplate();
 
-        const projectType =
-            cleanUrl(
-                template.projectType ||
-                template.category
-            );
+                }
 
-        const templateId =
-            cleanUrl(
-                template.id ||
-                template.templateId
-            );
+                return null;
 
-        if (
-            !projectType ||
-            !templateId
-        ) {
-            return '';
-        }
-
-        return (
-            API_BASE +
-            '/api/templates/' +
-            encodeURIComponent(projectType) +
-            '/' +
-            encodeURIComponent(templateId) +
-            '/preview'
-        );
-
-    }
+            },
 
 
-    function getTemplateImage(template) {
-
-        if (!template) {
-            return '';
-        }
-
-        const candidates = [
-
-            template.thumbnail,
-
-            template.image,
-
-            template.cover,
-
-            template.previewImage,
-
-            template.preview,
-
-            'assets/images/cover.jpg'
-
-        ];
-
-        for (
-            const candidate of candidates
-        ) {
-
-            const value =
-                cleanUrl(candidate);
-
-            if (!value) {
-                continue;
-            }
-
-            if (
-                isAbsoluteUrl(value)
+            selectTemplate(
+                templateId
             ) {
-                return value;
-            }
 
-            if (
-                value.startsWith('data:')
+                if (
+                    typeof window.selectTemplate ===
+                    'function'
+                ) {
+
+                    return window.selectTemplate(
+                        templateId
+                    );
+
+                }
+
+                return null;
+
+            },
+
+
+            getPreviewUrl(
+                template
             ) {
-                return value;
-            }
 
-            return getTemplateAssetUrl(
+                if (
+                    typeof window.getTemplatePreviewUrl ===
+                    'function'
+                ) {
+
+                    return window.getTemplatePreviewUrl(
+                        template
+                    );
+
+                }
+
+                return '';
+
+            },
+
+
+            getTemplateAssetUrl(
                 template,
-                value
-            );
+                assetPath
+            ) {
 
-        }
+                if (
+                    typeof window.getTemplateAssetUrl ===
+                    'function'
+                ) {
 
-        return '';
+                    return window.getTemplateAssetUrl(
+                        template,
+                        assetPath
+                    );
 
-    }
+                }
+
+                return '';
+
+            },
 
 
-    function normalizeTemplate(
-        template
-    ) {
+            openPreview(
+                templateId
+            ) {
 
-        if (!template) {
-            return null;
-        }
+                if (
+                    typeof window.openTemplatePreview ===
+                    'function'
+                ) {
 
-        const projectType =
-            cleanUrl(
-                template.projectType ||
-                template.category
-            );
+                    return window.openTemplatePreview(
+                        templateId
+                    );
 
-        const id =
-            cleanUrl(
-                template.id ||
-                template.templateId
-            );
+                }
 
-        if (!id) {
-            return null;
-        }
+                return null;
 
-        return {
-
-            ...template,
-
-            id,
-
-            projectType,
-
-            category:
-                cleanUrl(
-                    template.category ||
-                    projectType
-                ),
-
-            name:
-                cleanUrl(
-                    template.name ||
-                    template.title ||
-                    id
-                ),
-
-            description:
-                cleanUrl(
-                    template.description ||
-                    'قالب جاهز للاستخدام والتخصيص.'
-                ),
-
-            thumbnail:
-                cleanUrl(
-                    template.thumbnail ||
-                    template.image ||
-                    ''
-                ),
-
-            features:
-                Array.isArray(
-                    template.features
-                )
-                    ? template.features
-                    : []
+            }
 
         };
 
     }
 
 
-    function normalizeCategory(
-        category
-    ) {
+    /*
+     * create-project-templates.js
+     * has initializeTemplateSystem().
+     *
+     * Start it after all DOM is ready.
+     */
+
+    function initialize() {
+
+        createCompatibilityLayer();
+
 
         if (
-            typeof category ===
-            'string'
+            typeof window.initializeTemplateSystem ===
+            'function'
         ) {
 
-            const value =
-                cleanUrl(category);
+            try {
 
-            if (!value) {
-                return null;
-            }
+                window.initializeTemplateSystem();
 
-            return {
-                value,
-                label: value
-            };
+            } catch (error) {
 
-        }
-
-        if (
-            category &&
-            typeof category ===
-            'object'
-        ) {
-
-            const value =
-                cleanUrl(
-                    category.value ||
-                    category.id ||
-                    category.slug ||
-                    category.name
-                );
-
-            const label =
-                cleanUrl(
-                    category.label ||
-                    category.name ||
-                    category.title ||
-                    value
-                );
-
-            if (!value) {
-                return null;
-            }
-
-            return {
-                value,
-                label
-            };
-
-        }
-
-        return null;
-
-    }
-
-
-    async function loadCategories() {
-
-        if (!select) {
-            return;
-        }
-
-        try {
-
-            select.innerHTML =
-                '<option value="">جاري تحميل الفئات...</option>';
-
-            select.disabled = true;
-
-            const response =
-                await fetch(
-                    API_BASE +
-                    '/api/templates/categories',
-                    {
-                        method: 'GET',
-                        headers: {
-                            Accept:
-                                'application/json'
-                        },
-                        credentials:
-                            'include'
-                    }
-                );
-
-            if (!response.ok) {
-
-                throw new Error(
-                    'HTTP ' +
-                    response.status
-                );
-
-            }
-
-            const data =
-                await response.json();
-
-            let rawCategories = [];
-
-            if (
-                Array.isArray(
-                    data.categories
-                )
-            ) {
-
-                rawCategories =
-                    data.categories;
-
-            } else if (
-                Array.isArray(data)
-            ) {
-
-                rawCategories =
-                    data;
-
-            }
-
-            const categories =
-                rawCategories
-                    .map(
-                        normalizeCategory
-                    )
-                    .filter(Boolean);
-
-            select.innerHTML = '';
-
-            if (
-                categories.length === 0
-            ) {
-
-                select.innerHTML =
-                    '<option value="">لا توجد فئات متاحة</option>';
-
-                select.disabled = true;
-
-                return;
-
-            }
-
-            const defaultOption =
-                document.createElement(
-                    'option'
-                );
-
-            defaultOption.value = '';
-
-            defaultOption.textContent =
-                'اختار نوع المشروع';
-
-            select.appendChild(
-                defaultOption
-            );
-
-            categories.forEach(
-                category => {
-
-                    const option =
-                        document.createElement(
-                            'option'
-                        );
-
-                    option.value =
-                        category.value;
-
-                    option.textContent =
-                        category.label;
-
-                    select.appendChild(
-                        option
-                    );
-
-                }
-            );
-
-            select.disabled = false;
-
-            const ecommerce =
-                categories.find(
-                    item =>
-                        item.value
-                            .toLowerCase()
-                            ===
-                        'ecommerce'
-                );
-
-            if (ecommerce) {
-
-                select.value =
-                    ecommerce.value;
-
-            } else {
-
-                select.value =
-                    categories[0].value;
-
-            }
-
-            select.dispatchEvent(
-                new Event('change')
-            );
-
-        } catch (error) {
-
-            console.error(
-                '[TemplateCraft] Failed to load categories:',
-                error
-            );
-
-            select.innerHTML =
-                '<option value="">تعذر تحميل الفئات</option>';
-
-            select.disabled = true;
-
-            if (errorMessage) {
-
-                errorMessage.textContent =
-                    'تعذر تحميل فئات القوالب. المرجو التأكد من اتصال الـBackend.';
-
-                errorMessage.classList.remove(
-                    'hidden'
+                console.error(
+                    '[TemplateCraft] Template system initialization failed:',
+                    error
                 );
 
             }
@@ -2789,638 +882,30 @@
     }
 
 
-    async function loadTemplates(
-        projectType
+    if (
+        document.readyState ===
+        'loading'
     ) {
 
-        if (!grid) {
-            return;
-        }
-
-        const type =
-            cleanUrl(projectType);
-
-        if (!type) {
-
-            grid.innerHTML = '';
-
-            loadingMessage?.classList.add(
-                'hidden'
-            );
-
-            return;
-
-        }
-
-        try {
-
-            loadingMessage?.classList.remove(
-                'hidden'
-            );
-
-            errorMessage?.classList.add(
-                'hidden'
-            );
-
-            grid.innerHTML = '';
-
-            const url =
-                API_BASE +
-                '/api/templates?projectType=' +
-                encodeURIComponent(type);
-
-            const response =
-                await fetch(
-                    url,
-                    {
-                        method: 'GET',
-                        headers: {
-                            Accept:
-                                'application/json'
-                        },
-                        credentials:
-                            'include'
-                    }
-                );
-
-            if (!response.ok) {
-
-                throw new Error(
-                    'HTTP ' +
-                    response.status
-                );
-
-            }
-
-            const data =
-                await response.json();
-
-            let templates = [];
-
-            if (
-                Array.isArray(
-                    data.templates
-                )
-            ) {
-
-                templates =
-                    data.templates;
-
-            } else if (
-                Array.isArray(data)
-            ) {
-
-                templates =
-                    data;
-
-            }
-
-            allTemplates =
-                templates
-                    .map(
-                        normalizeTemplate
-                    )
-                    .filter(Boolean)
-                    .filter(
-                        template =>
-                            cleanUrl(
-                                template.projectType
-                            ).toLowerCase()
-                            ===
-                            type.toLowerCase()
-                    );
-
-            loadingMessage?.classList.add(
-                'hidden'
-            );
-
-            if (
-                allTemplates.length === 0
-            ) {
-
-                grid.innerHTML = `
-                    <div
-                        class="state-message"
-                        style="grid-column:1/-1;"
-                    >
-                        لا توجد قوالب متاحة حالياً
-                        داخل هذه الفئة.
-                    </div>
-                `;
-
-                return;
-            }
-
-            renderTemplates();
-
-        } catch (error) {
-
-            console.error(
-                '[TemplateCraft] Failed to load templates:',
-                error
-            );
-
-            allTemplates = [];
-
-            loadingMessage?.classList.add(
-                'hidden'
-            );
-
-            errorMessage?.classList.remove(
-                'hidden'
-            );
-
-            if (errorMessage) {
-
-                errorMessage.textContent =
-                    'تعذر تحميل القوالب. المرجو المحاولة مرة أخرى.';
-
-            }
-
-        }
-
-    }
-
-
-    function createTemplateCard(
-        template
-    ) {
-
-        const image =
-            getTemplateImage(template);
-
-        const isSelected =
-            selectedTemplate &&
-            selectedTemplate.id ===
-            template.id;
-
-        const features =
-            Array.isArray(
-                template.features
-            )
-                ? template.features
-                : [];
-
-        const featureHtml =
-            features
-                .slice(0, 5)
-                .map(
-                    feature =>
-                        `
-                        <span
-                            class="template-feature"
-                        >
-                            ${escapeHtml(feature)}
-                        </span>
-                        `
-                )
-                .join('');
-
-        const imageHtml =
-            image
-                ? `
-                    <img
-                        class="template-image"
-                        src="${escapeHtml(image)}"
-                        alt="${escapeHtml(template.name)}"
-                        loading="lazy"
-                        onerror="
-                            this.style.display='none';
-                            const fallback =
-                                this.parentElement
-                                .querySelector(
-                                    '.template-image-fallback'
-                                );
-
-                            if (fallback) {
-                                fallback.classList.remove('hidden');
-                            }
-                        "
-                    >
-
-                    <div
-                        class="template-image-fallback hidden"
-                        style="
-                            position:absolute;
-                            inset:0;
-                            display:flex;
-                            align-items:center;
-                            justify-content:center;
-                            background:
-                                linear-gradient(
-                                    135deg,
-                                    #1e293b,
-                                    #334155
-                                );
-                            color:white;
-                            font-size:13px;
-                            font-weight:800;
-                        "
-                    >
-                        ${escapeHtml(template.name)}
-                    </div>
-                `
-                : `
-                    <div
-                        class="template-image-fallback"
-                        style="
-                            position:absolute;
-                            inset:0;
-                            display:flex;
-                            align-items:center;
-                            justify-content:center;
-                            background:
-                                linear-gradient(
-                                    135deg,
-                                    #1e293b,
-                                    #334155
-                                );
-                            color:white;
-                            font-size:13px;
-                            font-weight:800;
-                        "
-                    >
-                        ${escapeHtml(template.name)}
-                    </div>
-                `;
-
-
-        return `
-
-            <article
-                class="
-                    template-card
-                    ${isSelected ? 'is-selected' : ''}
-                "
-                data-template-id="${escapeHtml(template.id)}"
-            >
-
-                <div
-                    class="template-image-wrapper"
-                >
-
-                    ${imageHtml}
-
-                    <div
-                        class="template-image-overlay"
-                    ></div>
-
-                    <div
-                        class="template-badge"
-                    >
-                        ${escapeHtml(
-                            template.category ||
-                            template.projectType ||
-                            'Template'
-                        )}
-                    </div>
-
-                    ${
-                        isSelected
-                            ? `
-                                <div
-                                    class="template-selected-badge"
-                                >
-                                    ✓ مختار
-                                </div>
-                            `
-                            : ''
-                    }
-
-                </div>
-
-
-                <div
-                    class="template-card-body"
-                >
-
-                    <h3
-                        class="template-title"
-                    >
-                        ${escapeHtml(
-                            template.name
-                        )}
-                    </h3>
-
-
-                    <p
-                        class="template-description"
-                    >
-                        ${escapeHtml(
-                            template.description
-                        )}
-                    </p>
-
-
-                    ${
-                        featureHtml
-                            ? `
-                                <div
-                                    class="template-features"
-                                >
-                                    ${featureHtml}
-                                </div>
-                            `
-                            : ''
-                    }
-
-
-                    <div
-                        class="template-actions"
-                    >
-
-                        <button
-                            type="button"
-                            class="template-preview-btn"
-                            data-action="preview"
-                            data-template-id="${escapeHtml(template.id)}"
-                        >
-                            👁️ معاينة
-                        </button>
-
-
-                        <button
-                            type="button"
-                            class="template-select-btn"
-                            data-action="select"
-                            data-template-id="${escapeHtml(template.id)}"
-                        >
-                            ${
-                                isSelected
-                                    ? '✓ القالب مختار'
-                                    : 'اختيار القالب'
-                            }
-                        </button>
-
-                    </div>
-
-                </div>
-
-            </article>
-
-        `;
-
-    }
-
-
-    function renderTemplates() {
-
-        if (!grid) {
-            return;
-        }
-
-        grid.innerHTML =
-            allTemplates
-                .map(
-                    createTemplateCard
-                )
-                .join('');
-
-    }
-
-
-    function openPreviewById(
-        templateId
-    ) {
-
-        const template =
-            allTemplates.find(
-                item =>
-                    item.id ===
-                    String(templateId)
-            );
-
-        if (!template) {
-            return;
-        }
-
-        const previewUrl =
-            getPreviewUrl(template);
-
-        if (!previewUrl) {
-            return;
-        }
-
-        window.open(
-            previewUrl,
-            '_blank',
-            'noopener,noreferrer'
-        );
-
-    }
-
-
-    function selectTemplateById(
-        templateId
-    ) {
-
-        const template =
-            allTemplates.find(
-                item =>
-                    item.id ===
-                    String(templateId)
-            );
-
-        if (!template) {
-            return;
-        }
-
-        selectedTemplate =
-            template;
-
-        if (selectedLabel) {
-
-            selectedLabel.innerHTML =
-                `
-                القالب المختار:
-                <strong>
-                    ${escapeHtml(template.name)}
-                </strong>
-                `;
-
-        }
-
-        renderTemplates();
-
-        window.dispatchEvent(
-            new CustomEvent(
-                'template:selected',
-                {
-                    detail: {
-                        templateId:
-                            template.id,
-
-                        projectType:
-                            template.projectType ||
-                            select?.value ||
-                            '',
-
-                        template:
-                            template
-                    }
-                }
-            )
-        );
-
-    }
-
-
-    if (grid) {
-
-        grid.addEventListener(
-            'click',
-            function (event) {
-
-                const actionElement =
-                    event.target.closest(
-                        '[data-action]'
-                    );
-
-                if (!actionElement) {
-                    return;
-                }
-
-                const action =
-                    actionElement.dataset.action;
-
-                const templateId =
-                    actionElement.dataset.templateId;
-
-                if (!templateId) {
-                    return;
-                }
-
-                if (
-                    action ===
-                    'preview'
-                ) {
-
-                    event.preventDefault();
-                    event.stopPropagation();
-
-                    openPreviewById(
-                        templateId
-                    );
-
-                    return;
-                }
-
-                if (
-                    action ===
-                    'select'
-                ) {
-
-                    event.preventDefault();
-                    event.stopPropagation();
-
-                    selectTemplateById(
-                        templateId
-                    );
-
-                }
-
+        document.addEventListener(
+            'DOMContentLoaded',
+            initialize,
+            {
+                once: true
             }
         );
 
-    }
+    } else {
 
-
-    if (select) {
-
-        select.addEventListener(
-            'change',
-            function () {
-
-                const projectType =
-                    select.value;
-
-                selectedTemplate =
-                    null;
-
-                if (selectedLabel) {
-
-                    selectedLabel.textContent =
-                        'لم يتم اختيار أي قالب بعد.';
-
-                }
-
-                loadTemplates(
-                    projectType
-                );
-
-            }
-        );
+        initialize();
 
     }
-
-
-    window.TemplateCraftCreatePage = {
-
-        getTemplates() {
-
-            return [
-                ...allTemplates
-            ];
-
-        },
-
-        getSelectedTemplate() {
-
-            return selectedTemplate;
-
-        },
-
-        selectTemplate(
-            templateId
-        ) {
-
-            selectTemplateById(
-                templateId
-            );
-
-        },
-
-        getPreviewUrl(
-            template
-        ) {
-
-            return getPreviewUrl(
-                template
-            );
-
-        },
-
-        getTemplateAssetUrl(
-            template,
-            assetPath
-        ) {
-
-            return getTemplateAssetUrl(
-                template,
-                assetPath
-            );
-
-        },
-
-        openPreview(
-            templateId
-        ) {
-
-            openPreviewById(
-                templateId
-            );
-
-        }
-
-    };
-
-
-    loadCategories();
 
 })();
 
 </script>
 
+
 </body>
 
-    </html>
+</html>
