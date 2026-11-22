@@ -1,24 +1,7 @@
 /* =========================================================
    TEMPLATECRAFT PRO
    CONFIRM MODAL GALAXY
-   FINAL OVERRIDE EDITION
-   ---------------------------------------------------------
-   PURPOSE:
-   - Override create-project-fixes.css
-   - Balanced premium confirmation modal
-   - Desktop 2-column visual structure
-   - 3 summary cards
-   - Domain + Netlify side by side
-   - Features 4 × 2
-   - SSL + Final message side by side
-   - Premium category dropdown
-   - Deployment 3 × 2
-   - NO LOGIC CHANGES
-========================================================= */
-
-
-/* =========================================================
-   01 — VARIABLES
+   FINAL CLEAN EDITION
 ========================================================= */
 
 :root {
@@ -32,14 +15,10 @@
     --cm-purple: #8b5cf6;
     --cm-cyan: #06b6d4;
     --cm-green: #10b981;
-    --cm-red: #ef4444;
 
     --cm-text: #f8fafc;
     --cm-text-2: #cbd5e1;
     --cm-muted: #94a3b8;
-
-    --cm-border: rgba(148, 163, 184, 0.16);
-    --cm-border-blue: rgba(96, 165, 250, 0.28);
 
     --cm-gradient:
         linear-gradient(
@@ -52,7 +31,7 @@
 
 
 /* =========================================================
-   02 — CONFIRM MODAL BACKDROP
+   01 — BACKDROP
 ========================================================= */
 
 .create-modal-backdrop,
@@ -71,44 +50,43 @@
     padding: 24px !important;
 
     overflow-y: auto !important;
-    overflow-x: hidden !important;
 
     background:
         radial-gradient(
             circle at 18% 12%,
-            rgba(59, 130, 246, 0.16),
+            rgba(59,130,246,.16),
             transparent 28%
         ),
         radial-gradient(
             circle at 82% 18%,
-            rgba(124, 58, 237, 0.15),
+            rgba(124,58,237,.15),
             transparent 30%
         ),
         radial-gradient(
             circle at 50% 100%,
-            rgba(6, 182, 212, 0.08),
+            rgba(6,182,212,.08),
             transparent 35%
         ),
-        rgba(2, 5, 16, 0.94) !important;
+        rgba(2,5,16,.94) !important;
 
-    backdrop-filter: blur(24px) saturate(135%) !important;
-    -webkit-backdrop-filter: blur(24px) saturate(135%) !important;
+    backdrop-filter:
+        blur(24px) saturate(135%) !important;
+
+    -webkit-backdrop-filter:
+        blur(24px) saturate(135%) !important;
 }
 
 
-.create-modal-backdrop.show,
 .create-modal-backdrop.active,
-.modal.create-modal-backdrop.show,
-.modal.create-modal-backdrop.active {
+.create-modal-backdrop.show,
+.modal.create-modal-backdrop.active,
+.modal.create-modal-backdrop.show {
     display: flex !important;
 }
 
 
 /* =========================================================
-   03 — MAIN MODAL
-   IMPORTANT:
-   create-project-fixes.css has width 720px !important.
-   Therefore we MUST override with !important.
+   02 — MODAL
 ========================================================= */
 
 .create-modal-card {
@@ -125,6 +103,7 @@
     padding: 28px !important;
 
     overflow-x: hidden !important;
+
     overflow-y: auto !important;
 
     border-radius: 30px !important;
@@ -136,12 +115,12 @@
     background:
         radial-gradient(
             circle at 92% 4%,
-            rgba(59, 130, 246, 0.17),
+            rgba(59,130,246,.17),
             transparent 25%
         ),
         radial-gradient(
             circle at 4% 96%,
-            rgba(139, 92, 246, 0.13),
+            rgba(139,92,246,.13),
             transparent 28%
         ),
         linear-gradient(
@@ -151,19 +130,16 @@
             #050918 100%
         ) !important;
 
-    border: 1px solid rgba(148, 163, 184, 0.22) !important;
+    border:
+        1px solid rgba(148,163,184,.22) !important;
 
     box-shadow:
-        0 45px 120px rgba(0, 0, 0, 0.78),
-        0 0 80px rgba(59, 130, 246, 0.08) !important;
+        0 45px 120px rgba(0,0,0,.78),
+        0 0 80px rgba(59,130,246,.08) !important;
 
     isolation: isolate !important;
 }
 
-
-/* =========================================================
-   04 — MODAL BORDER GLOW
-========================================================= */
 
 .create-modal-card::before {
     content: "";
@@ -179,29 +155,32 @@
     background:
         linear-gradient(
             125deg,
-            rgba(59, 130, 246, 0.25),
+            rgba(59,130,246,.25),
             transparent 25%,
             transparent 70%,
-            rgba(139, 92, 246, 0.22)
+            rgba(139,92,246,.22)
         );
 
-    opacity: 0.9;
+    opacity: .9;
 
     z-index: -1;
 }
 
 
 /* =========================================================
-   05 — TOP HEADER
+   03 — HEADER
 ========================================================= */
 
+.create-modal-header,
 .create-modal-card > div:first-child {
     position: relative !important;
+
+    width: 100% !important;
 
     display: grid !important;
 
     grid-template-columns:
-        minmax(0, 1fr)
+        minmax(0,1fr)
         auto !important;
 
     align-items: center !important;
@@ -213,14 +192,12 @@
     padding-bottom: 19px !important;
 
     border-bottom:
-        1px solid rgba(148, 163, 184, 0.13) !important;
+        1px solid rgba(148,163,184,.13) !important;
 }
 
 
-.create-modal-card > div:first-child > div:first-child {
+.create-modal-heading {
     min-width: 0 !important;
-
-    flex: none !important;
 
     text-align: right !important;
 }
@@ -243,7 +220,7 @@
     margin: 6px 0 0 !important;
 
     color:
-        rgba(203, 213, 225, 0.66) !important;
+        rgba(203,213,225,.66) !important;
 
     font-size: 11.5px !important;
 
@@ -252,14 +229,17 @@
 
 
 /* =========================================================
-   06 — CLOSE BUTTON
+   04 — CLOSE
 ========================================================= */
 
-#createModal #closeCreateModalBtn {
+#createModal #closeCreateModalBtn,
+.create-modal-close {
     width: 44px !important;
+
     min-width: 44px !important;
 
     height: 44px !important;
+
     min-height: 44px !important;
 
     padding: 0 !important;
@@ -267,6 +247,7 @@
     display: flex !important;
 
     align-items: center !important;
+
     justify-content: center !important;
 
     border-radius: 13px !important;
@@ -274,10 +255,10 @@
     color: #cbd5e1 !important;
 
     background:
-        rgba(30, 41, 59, 0.72) !important;
+        rgba(30,41,59,.72) !important;
 
     border:
-        1px solid rgba(148, 163, 184, 0.20) !important;
+        1px solid rgba(148,163,184,.20) !important;
 
     font-size: 15px !important;
 
@@ -288,21 +269,22 @@
 }
 
 
-#createModal #closeCreateModalBtn:hover {
+#createModal #closeCreateModalBtn:hover,
+.create-modal-close:hover {
     transform: translateY(-2px) !important;
 
     color: #ffffff !important;
 
     background:
-        rgba(239, 68, 68, 0.14) !important;
+        rgba(239,68,68,.14) !important;
 
     border-color:
-        rgba(248, 113, 113, 0.38) !important;
+        rgba(248,113,113,.38) !important;
 }
 
 
 /* =========================================================
-   07 — CONTENT CONTAINER
+   05 — CONTENT
 ========================================================= */
 
 #createModalContent {
@@ -316,16 +298,12 @@
 
     border: 0 !important;
 
-    border-radius: 0 !important;
-
     background: transparent !important;
 }
 
 
 /* =========================================================
-   08 — PREMIUM WRAPPER
-   IMPORTANT:
-   We use GRID instead of single vertical flex.
+   06 — PREMIUM WRAPPER
 ========================================================= */
 
 .create-premium-wrapper {
@@ -334,7 +312,7 @@
     display: grid !important;
 
     grid-template-columns:
-        repeat(2, minmax(0, 1fr)) !important;
+        repeat(2,minmax(0,1fr)) !important;
 
     gap: 14px !important;
 
@@ -343,8 +321,7 @@
 
 
 /* =========================================================
-   09 — PREMIUM HEADER
-   FULL WIDTH
+   07 — PREMIUM HEADER
 ========================================================= */
 
 .create-premium-header {
@@ -352,13 +329,11 @@
 
     width: 100% !important;
 
-    min-width: 0 !important;
-
     display: grid !important;
 
     grid-template-columns:
         72px
-        minmax(0, 1fr) !important;
+        minmax(0,1fr) !important;
 
     align-items: center !important;
 
@@ -371,22 +346,24 @@
     background:
         linear-gradient(
             135deg,
-            rgba(37, 99, 235, 0.17),
-            rgba(79, 70, 229, 0.09)
+            rgba(37,99,235,.17),
+            rgba(79,70,229,.09)
         ) !important;
 
     border:
-        1px solid rgba(96, 165, 250, 0.21) !important;
+        1px solid rgba(96,165,250,.21) !important;
 }
 
 
 .create-premium-header-icon {
     width: 72px !important;
+
     height: 72px !important;
 
     display: flex !important;
 
     align-items: center !important;
+
     justify-content: center !important;
 
     border-radius: 20px !important;
@@ -396,15 +373,15 @@
     background:
         radial-gradient(
             circle,
-            rgba(59, 130, 246, 0.28),
-            rgba(59, 130, 246, 0.07)
+            rgba(59,130,246,.28),
+            rgba(59,130,246,.07)
         ) !important;
 
     border:
-        1px solid rgba(96, 165, 250, 0.25) !important;
+        1px solid rgba(96,165,250,.25) !important;
 
     box-shadow:
-        0 0 30px rgba(59, 130, 246, 0.15) !important;
+        0 0 30px rgba(59,130,246,.15) !important;
 }
 
 
@@ -447,7 +424,7 @@
     margin: 0 !important;
 
     color:
-        rgba(203, 213, 225, 0.66) !important;
+        rgba(203,213,225,.66) !important;
 
     font-size: 10px !important;
 
@@ -456,8 +433,7 @@
 
 
 /* =========================================================
-   10 — SUMMARY
-   FULL WIDTH
+   08 — SUMMARY
 ========================================================= */
 
 .create-premium-summary {
@@ -465,17 +441,15 @@
 
     width: 100% !important;
 
-    min-width: 0 !important;
-
     padding: 15px !important;
 
     border-radius: 18px !important;
 
     background:
-        rgba(15, 23, 42, 0.54) !important;
+        rgba(15,23,42,.54) !important;
 
     border:
-        1px solid rgba(148, 163, 184, 0.14) !important;
+        1px solid rgba(148,163,184,.14) !important;
 }
 
 
@@ -490,23 +464,20 @@
 }
 
 
-/* IMPORTANT:
-   Override the 2-column !important from fixes.css.
-*/
-
 .create-modal-card .create-premium-summary-grid {
     width: 100% !important;
 
     display: grid !important;
 
     grid-template-columns:
-        repeat(3, minmax(0, 1fr)) !important;
+        repeat(3,minmax(0,1fr)) !important;
 
     gap: 10px !important;
 }
 
 
-.create-modal-card .create-premium-summary-item:first-child {
+.create-modal-card
+.create-premium-summary-item:first-child {
     grid-column: auto !important;
 }
 
@@ -531,12 +502,12 @@
     background:
         linear-gradient(
             145deg,
-            rgba(30, 41, 59, 0.78),
-            rgba(15, 23, 42, 0.62)
+            rgba(30,41,59,.78),
+            rgba(15,23,42,.62)
         ) !important;
 
     border:
-        1px solid rgba(148, 163, 184, 0.13) !important;
+        1px solid rgba(148,163,184,.13) !important;
 }
 
 
@@ -550,8 +521,6 @@
 
 
 .create-premium-summary-item strong {
-    min-width: 0 !important;
-
     color: #ffffff !important;
 
     font-size: 11px !important;
@@ -565,8 +534,7 @@
 
 
 /* =========================================================
-   11 — DOMAIN
-   LEFT COLUMN
+   09 — DOMAIN
 ========================================================= */
 
 .create-premium-domain {
@@ -593,12 +561,12 @@
     background:
         linear-gradient(
             135deg,
-            rgba(6, 182, 212, 0.10),
-            rgba(37, 99, 235, 0.09)
+            rgba(6,182,212,.10),
+            rgba(37,99,235,.09)
         ) !important;
 
     border:
-        1px solid rgba(34, 211, 238, 0.18) !important;
+        1px solid rgba(34,211,238,.18) !important;
 }
 
 
@@ -627,10 +595,10 @@
     border-radius: 12px !important;
 
     background:
-        rgba(6, 182, 212, 0.13) !important;
+        rgba(6,182,212,.13) !important;
 
     border:
-        1px solid rgba(34, 211, 238, 0.20) !important;
+        1px solid rgba(34,211,238,.20) !important;
 
     font-size: 19px !important;
 }
@@ -651,21 +619,15 @@
     color: #94a3b8 !important;
 
     font-size: 8px !important;
-
-    font-weight: 700 !important;
 }
 
 
 .create-premium-domain-left strong {
-    min-width: 0 !important;
-
     color: #67e8f9 !important;
 
     font-size: 11.5px !important;
 
     line-height: 1.45 !important;
-
-    font-weight: 900 !important;
 
     overflow-wrap: anywhere !important;
 }
@@ -673,7 +635,7 @@
 
 .create-premium-domain-left small {
     color:
-        rgba(203, 213, 225, 0.48) !important;
+        rgba(203,213,225,.48) !important;
 
     font-size: 7.5px !important;
 }
@@ -689,10 +651,10 @@
     color: #6ee7b7 !important;
 
     background:
-        rgba(16, 185, 129, 0.12) !important;
+        rgba(16,185,129,.12) !important;
 
     border:
-        1px solid rgba(16, 185, 129, 0.24) !important;
+        1px solid rgba(16,185,129,.24) !important;
 
     font-size: 8px !important;
 
@@ -701,8 +663,7 @@
 
 
 /* =========================================================
-   12 — NETLIFY
-   RIGHT COLUMN
+   10 — NETLIFY
 ========================================================= */
 
 .create-premium-netlify {
@@ -718,7 +679,7 @@
 
     grid-template-columns:
         42px
-        minmax(0, 1fr)
+        minmax(0,1fr)
         auto !important;
 
     align-items: center !important;
@@ -730,56 +691,49 @@
     border-radius: 17px !important;
 
     background:
-        rgba(15, 23, 42, 0.70) !important;
+        rgba(15,23,42,.70) !important;
 
     border:
-        1px solid rgba(148, 163, 184, 0.14) !important;
+        1px solid rgba(148,163,184,.14) !important;
 }
 
 
 .create-premium-netlify.ready {
     border-color:
-        rgba(16, 185, 129, 0.25) !important;
+        rgba(16,185,129,.25) !important;
 
     background:
         linear-gradient(
             135deg,
-            rgba(16, 185, 129, 0.10),
-            rgba(15, 23, 42, 0.76)
+            rgba(16,185,129,.10),
+            rgba(15,23,42,.76)
         ) !important;
 }
 
 
 .create-premium-netlify.not-ready {
     border-color:
-        rgba(245, 158, 11, 0.25) !important;
-
-    background:
-        linear-gradient(
-            135deg,
-            rgba(245, 158, 11, 0.08),
-            rgba(15, 23, 42, 0.76)
-        ) !important;
+        rgba(245,158,11,.25) !important;
 }
 
 
 .create-premium-netlify-icon {
     width: 42px !important;
+
     height: 42px !important;
 
     display: flex !important;
 
     align-items: center !important;
+
     justify-content: center !important;
 
     border-radius: 12px !important;
 
     background:
-        rgba(16, 185, 129, 0.12) !important;
+        rgba(16,185,129,.12) !important;
 
     font-size: 17px !important;
-
-    font-weight: 900 !important;
 }
 
 
@@ -798,8 +752,6 @@
     color: #ffffff !important;
 
     font-size: 10px !important;
-
-    font-weight: 900 !important;
 }
 
 
@@ -813,8 +765,6 @@
 
 
 .create-premium-netlify-status {
-    flex: 0 0 auto !important;
-
     padding: 6px 9px !important;
 
     border-radius: 999px !important;
@@ -822,10 +772,10 @@
     color: #6ee7b7 !important;
 
     background:
-        rgba(16, 185, 129, 0.12) !important;
+        rgba(16,185,129,.12) !important;
 
     border:
-        1px solid rgba(16, 185, 129, 0.22) !important;
+        1px solid rgba(16,185,129,.22) !important;
 
     font-size: 7px !important;
 
@@ -834,8 +784,7 @@
 
 
 /* =========================================================
-   13 — SECTION TITLE
-   FULL WIDTH
+   11 — SECTION TITLE
 ========================================================= */
 
 .create-premium-section-title {
@@ -848,8 +797,6 @@
     align-items: center !important;
 
     gap: 10px !important;
-
-    padding: 2px 2px !important;
 
     color: #ffffff !important;
 }
@@ -869,10 +816,10 @@
     border-radius: 11px !important;
 
     background:
-        rgba(139, 92, 246, 0.12) !important;
+        rgba(139,92,246,.12) !important;
 
     border:
-        1px solid rgba(139, 92, 246, 0.22) !important;
+        1px solid rgba(139,92,246,.22) !important;
 }
 
 
@@ -891,8 +838,6 @@
     color: #ffffff !important;
 
     font-size: 11px !important;
-
-    font-weight: 900 !important;
 }
 
 
@@ -904,8 +849,7 @@
 
 
 /* =========================================================
-   14 — FEATURES
-   4 × 2 DESKTOP
+   12 — FEATURES
 ========================================================= */
 
 .create-modal-card .create-premium-features {
@@ -916,7 +860,7 @@
     display: grid !important;
 
     grid-template-columns:
-        repeat(4, minmax(0, 1fr)) !important;
+        repeat(4,minmax(0,1fr)) !important;
 
     gap: 10px !important;
 }
@@ -940,17 +884,16 @@
     background:
         linear-gradient(
             145deg,
-            rgba(15, 23, 42, 0.92),
-            rgba(10, 16, 36, 0.78)
+            rgba(15,23,42,.92),
+            rgba(10,16,36,.78)
         ) !important;
 
     border:
-        1px solid rgba(148, 163, 184, 0.14) !important;
+        1px solid rgba(148,163,184,.14) !important;
 
     transition:
         transform .2s ease,
         border-color .2s ease,
-        background .2s ease,
         box-shadow .2s ease !important;
 }
 
@@ -959,17 +902,10 @@
     transform: translateY(-2px) !important;
 
     border-color:
-        rgba(96, 165, 250, 0.34) !important;
-
-    background:
-        linear-gradient(
-            145deg,
-            rgba(30, 41, 59, 0.94),
-            rgba(15, 23, 42, 0.84)
-        ) !important;
+        rgba(96,165,250,.34) !important;
 
     box-shadow:
-        0 12px 28px rgba(0, 0, 0, 0.24) !important;
+        0 12px 28px rgba(0,0,0,.24) !important;
 }
 
 
@@ -989,12 +925,12 @@
     background:
         linear-gradient(
             145deg,
-            rgba(59, 130, 246, 0.18),
-            rgba(139, 92, 246, 0.12)
+            rgba(59,130,246,.18),
+            rgba(139,92,246,.12)
         ) !important;
 
     border:
-        1px solid rgba(96, 165, 250, 0.18) !important;
+        1px solid rgba(96,165,250,.18) !important;
 
     font-size: 16px !important;
 }
@@ -1011,32 +947,27 @@
 }
 
 
-.create-modal-card .create-premium-feature-content strong {
+.create-premium-feature-content strong {
     color: #f8fafc !important;
 
     font-size: 9.5px !important;
 
     line-height: 1.4 !important;
-
-    font-weight: 900 !important;
 }
 
 
-.create-modal-card .create-premium-feature-content span {
+.create-premium-feature-content span {
     color:
-        rgba(203, 213, 225, 0.54) !important;
+        rgba(203,213,225,.54) !important;
 
     font-size: 7.5px !important;
 
     line-height: 1.55 !important;
-
-    overflow-wrap: anywhere !important;
 }
 
 
 /* =========================================================
-   15 — SSL INFO
-   LEFT COLUMN
+   13 — SSL + FINAL
 ========================================================= */
 
 .create-premium-info {
@@ -1050,7 +981,7 @@
 
     grid-template-columns:
         40px
-        minmax(0, 1fr) !important;
+        minmax(0,1fr) !important;
 
     align-items: center !important;
 
@@ -1061,65 +992,12 @@
     border-radius: 15px !important;
 
     background:
-        rgba(59, 130, 246, 0.07) !important;
+        rgba(59,130,246,.07) !important;
 
     border:
-        1px solid rgba(96, 165, 250, 0.14) !important;
+        1px solid rgba(96,165,250,.14) !important;
 }
 
-
-.create-premium-info-icon {
-    width: 40px !important;
-    height: 40px !important;
-
-    display: flex !important;
-
-    align-items: center !important;
-    justify-content: center !important;
-
-    border-radius: 11px !important;
-
-    background:
-        rgba(59, 130, 246, 0.12) !important;
-
-    font-size: 16px !important;
-}
-
-
-.create-premium-info > div:last-child {
-    min-width: 0 !important;
-
-    display: flex !important;
-
-    flex-direction: column !important;
-
-    gap: 3px !important;
-}
-
-
-.create-premium-info strong {
-    color: #dbeafe !important;
-
-    font-size: 9px !important;
-
-    font-weight: 900 !important;
-}
-
-
-.create-premium-info span {
-    color:
-        rgba(203, 213, 225, 0.54) !important;
-
-    font-size: 7.5px !important;
-
-    line-height: 1.65 !important;
-}
-
-
-/* =========================================================
-   16 — FINAL MESSAGE
-   RIGHT COLUMN
-========================================================= */
 
 .create-premium-final {
     grid-column: 2 !important;
@@ -1132,7 +1010,7 @@
 
     grid-template-columns:
         40px
-        minmax(0, 1fr) !important;
+        minmax(0,1fr) !important;
 
     align-items: center !important;
 
@@ -1145,33 +1023,46 @@
     background:
         linear-gradient(
             135deg,
-            rgba(139, 92, 246, 0.12),
-            rgba(59, 130, 246, 0.08)
+            rgba(139,92,246,.12),
+            rgba(59,130,246,.08)
         ) !important;
 
     border:
-        1px solid rgba(139, 92, 246, 0.20) !important;
+        1px solid rgba(139,92,246,.20) !important;
 }
 
 
+.create-premium-info-icon,
 .create-premium-final-icon {
     width: 40px !important;
+
     height: 40px !important;
 
     display: flex !important;
 
     align-items: center !important;
+
     justify-content: center !important;
 
     border-radius: 11px !important;
 
-    background:
-        rgba(139, 92, 246, 0.13) !important;
-
-    font-size: 17px !important;
+    font-size: 16px !important;
 }
 
 
+.create-premium-info-icon {
+    background:
+        rgba(59,130,246,.12) !important;
+}
+
+
+.create-premium-final-icon {
+    background:
+        rgba(139,92,246,.13) !important;
+}
+
+
+.create-premium-info > div:last-child,
 .create-premium-final > div:last-child {
     min-width: 0 !important;
 
@@ -1183,6 +1074,7 @@
 }
 
 
+.create-premium-info strong,
 .create-premium-final strong {
     color: #ffffff !important;
 
@@ -1192,9 +1084,10 @@
 }
 
 
+.create-premium-info span,
 .create-premium-final span {
     color:
-        rgba(203, 213, 225, 0.54) !important;
+        rgba(203,213,225,.54) !important;
 
     font-size: 7.5px !important;
 
@@ -1203,10 +1096,10 @@
 
 
 /* =========================================================
-   17 — MODAL BUTTONS
-   FULL WIDTH
+   14 — BUTTONS
 ========================================================= */
 
+.create-modal-actions,
 #createModal .create-modal-card > div:last-child {
     grid-column: 1 / -1 !important;
 
@@ -1215,7 +1108,7 @@
     display: grid !important;
 
     grid-template-columns:
-        repeat(2, minmax(0, 1fr)) !important;
+        repeat(2,minmax(0,1fr)) !important;
 
     gap: 12px !important;
 
@@ -1224,15 +1117,13 @@
     padding-top: 18px !important;
 
     border-top:
-        1px solid rgba(148, 163, 184, 0.12) !important;
+        1px solid rgba(148,163,184,.12) !important;
 }
 
 
 #createModal #cancelCreateBtn,
 #createModal #confirmCreateBtn {
     width: 100% !important;
-
-    min-width: 0 !important;
 
     min-height: 50px !important;
 
@@ -1247,16 +1138,13 @@
 #createModal #confirmCreateBtn {
     color: #ffffff !important;
 
-    background: var(--cm-gradient) !important;
+    background:
+        var(--cm-gradient) !important;
 
     border: 0 !important;
 
     box-shadow:
-        0 12px 30px rgba(37, 99, 235, 0.28) !important;
-
-    transition:
-        transform .2s ease,
-        box-shadow .2s ease !important;
+        0 12px 30px rgba(37,99,235,.28) !important;
 }
 
 
@@ -1264,12 +1152,12 @@
     transform: translateY(-2px) !important;
 
     box-shadow:
-        0 18px 38px rgba(37, 99, 235, 0.38) !important;
+        0 18px 38px rgba(37,99,235,.38) !important;
 }
 
 
 #createModal #confirmCreateBtn:disabled {
-    opacity: 0.55 !important;
+    opacity: .55 !important;
 
     cursor: not-allowed !important;
 
@@ -1281,581 +1169,21 @@
     color: #e2e8f0 !important;
 
     background:
-        rgba(30, 41, 59, 0.78) !important;
+        rgba(30,41,59,.78) !important;
 
     border:
-        1px solid rgba(148, 163, 184, 0.20) !important;
-
-    transition:
-        transform .2s ease,
-        background .2s ease !important;
-}
-
-
-#createModal #cancelCreateBtn:hover {
-    transform: translateY(-2px) !important;
-
-    background:
-        rgba(51, 65, 85, 0.88) !important;
-
-    border-color:
-        rgba(96, 165, 250, 0.30) !important;
+        1px solid rgba(148,163,184,.20) !important;
 }
 
 
 /* =========================================================
-   18 — CUSTOM CATEGORY SELECT
-========================================================= */
-
-.tc-custom-select {
-    position: relative !important;
-
-    width: 100% !important;
-
-    margin-top: 0 !important;
-
-    direction: rtl !important;
-
-    z-index: 5000 !important;
-}
-
-
-.tc-select-trigger {
-    position: relative !important;
-
-    width: 100% !important;
-
-    min-height: 52px !important;
-
-    padding: 0 16px !important;
-
-    display: flex !important;
-
-    align-items: center !important;
-
-    justify-content: space-between !important;
-
-    gap: 12px !important;
-
-    border-radius: 15px !important;
-
-    border:
-        1px solid rgba(96, 165, 250, 0.32) !important;
-
-    background:
-        linear-gradient(
-            135deg,
-            rgba(15, 23, 55, 0.98),
-            rgba(8, 14, 35, 0.98)
-        ) !important;
-
-    color: #ffffff !important;
-
-    font-family: "Cairo", sans-serif !important;
-
-    font-size: 12px !important;
-
-    font-weight: 800 !important;
-
-    cursor: pointer !important;
-
-    outline: none !important;
-
-    box-shadow:
-        0 10px 28px rgba(0, 0, 0, 0.22),
-        inset 0 1px 0 rgba(255, 255, 255, 0.04) !important;
-
-    transition:
-        border-color .2s ease,
-        background .2s ease,
-        box-shadow .2s ease !important;
-}
-
-
-.tc-select-trigger:hover {
-    border-color:
-        rgba(96, 165, 250, 0.60) !important;
-
-    background:
-        linear-gradient(
-            135deg,
-            rgba(18, 29, 66, 1),
-            rgba(9, 16, 40, 1)
-        ) !important;
-}
-
-
-.tc-custom-select.open .tc-select-trigger {
-    border-color:
-        rgba(99, 102, 241, 0.75) !important;
-
-    box-shadow:
-        0 0 0 3px rgba(99, 102, 241, 0.12),
-        0 14px 35px rgba(0, 0, 0, 0.30) !important;
-}
-
-
-.tc-select-trigger-left {
-    min-width: 0 !important;
-
-    flex: 1 1 auto !important;
-
-    display: flex !important;
-
-    align-items: center !important;
-
-    gap: 10px !important;
-}
-
-
-.tc-select-dot {
-    flex: 0 0 auto !important;
-
-    width: 8px !important;
-    height: 8px !important;
-
-    border-radius: 50% !important;
-
-    background: #60a5fa !important;
-
-    box-shadow:
-        0 0 12px rgba(96, 165, 250, 0.85) !important;
-}
-
-
-.tc-select-label {
-    min-width: 0 !important;
-
-    display: block !important;
-
-    color: #f8fafc !important;
-
-    font-size: 12px !important;
-
-    font-weight: 800 !important;
-
-    overflow: hidden !important;
-
-    text-overflow: ellipsis !important;
-
-    white-space: nowrap !important;
-}
-
-
-.tc-select-arrow {
-    flex: 0 0 auto !important;
-
-    width: 28px !important;
-
-    height: 28px !important;
-
-    display: flex !important;
-
-    align-items: center !important;
-    justify-content: center !important;
-
-    border-radius: 9px !important;
-
-    color: #bfdbfe !important;
-
-    background:
-        rgba(59, 130, 246, 0.12) !important;
-
-    font-size: 10px !important;
-
-    transition:
-        transform .2s ease,
-        background .2s ease !important;
-}
-
-
-.tc-custom-select.open .tc-select-arrow {
-    transform: rotate(180deg) !important;
-
-    background:
-        rgba(99, 102, 241, 0.20) !important;
-}
-
-
-/* =========================================================
-   19 — CATEGORY MENU
-========================================================= */
-
-.tc-select-menu {
-    position: absolute !important;
-
-    top: calc(100% + 8px) !important;
-
-    right: 0 !important;
-    left: 0 !important;
-
-    width: 100% !important;
-
-    max-height: 280px !important;
-
-    margin: 0 !important;
-
-    padding: 8px !important;
-
-    display: none !important;
-
-    flex-direction: column !important;
-
-    gap: 6px !important;
-
-    overflow-x: hidden !important;
-    overflow-y: auto !important;
-
-    direction: rtl !important;
-
-    border-radius: 17px !important;
-
-    border:
-        1px solid rgba(96, 165, 250, 0.35) !important;
-
-    background:
-        linear-gradient(
-            160deg,
-            rgba(8, 14, 34, 0.99),
-            rgba(5, 9, 25, 0.99)
-        ) !important;
-
-    box-shadow:
-        0 24px 60px rgba(0, 0, 0, 0.60),
-        0 0 35px rgba(59, 130, 246, 0.10) !important;
-
-    backdrop-filter: blur(20px) !important;
-    -webkit-backdrop-filter: blur(20px) !important;
-
-    z-index: 99999 !important;
-}
-
-
-.tc-custom-select.open .tc-select-menu {
-    display: flex !important;
-}
-
-
-/* =========================================================
-   20 — CATEGORY OPTION BOXES
-========================================================= */
-
-.tc-select-option {
-    position: relative !important;
-
-    width: 100% !important;
-
-    min-height: 44px !important;
-
-    flex: 0 0 auto !important;
-
-    display: grid !important;
-
-    grid-template-columns:
-        minmax(0, 1fr)
-        24px !important;
-
-    align-items: center !important;
-
-    gap: 8px !important;
-
-    padding: 8px 11px !important;
-
-    border-radius: 11px !important;
-
-    border:
-        1px solid rgba(148, 163, 184, 0.10) !important;
-
-    background:
-        rgba(15, 23, 42, 0.90) !important;
-
-    color: #dbeafe !important;
-
-    font-family: "Cairo", sans-serif !important;
-
-    font-size: 11px !important;
-
-    font-weight: 700 !important;
-
-    line-height: 1.4 !important;
-
-    text-align: right !important;
-
-    direction: rtl !important;
-
-    white-space: nowrap !important;
-
-    overflow: hidden !important;
-
-    cursor: pointer !important;
-
-    transition:
-        background .18s ease,
-        border-color .18s ease,
-        transform .18s ease !important;
-}
-
-
-.tc-select-option > span:first-child {
-    min-width: 0 !important;
-
-    overflow: hidden !important;
-
-    text-overflow: ellipsis !important;
-
-    white-space: nowrap !important;
-
-    text-align: right !important;
-}
-
-
-.tc-select-option > span:last-child {
-    width: 24px !important;
-    height: 24px !important;
-
-    display: flex !important;
-
-    align-items: center !important;
-    justify-content: center !important;
-
-    border-radius: 7px !important;
-
-    color: #93c5fd !important;
-
-    font-size: 12px !important;
-
-    font-weight: 900 !important;
-}
-
-
-.tc-select-option:hover {
-    transform: translateX(-2px) !important;
-
-    color: #ffffff !important;
-
-    background:
-        linear-gradient(
-            135deg,
-            rgba(37, 99, 235, 0.32),
-            rgba(79, 70, 229, 0.28)
-        ) !important;
-
-    border-color:
-        rgba(96, 165, 250, 0.35) !important;
-}
-
-
-.tc-select-option.active {
-    color: #ffffff !important;
-
-    background:
-        linear-gradient(
-            135deg,
-            rgba(37, 99, 235, 0.78),
-            rgba(79, 70, 229, 0.78)
-        ) !important;
-
-    border-color:
-        rgba(129, 140, 248, 0.55) !important;
-
-    box-shadow:
-        0 7px 18px rgba(37, 99, 235, 0.18) !important;
-}
-
-
-.tc-select-option.active > span:last-child {
-    color: #ffffff !important;
-}
-
-
-/* =========================================================
-   21 — CATEGORY SCROLLBAR
-========================================================= */
-
-.tc-select-menu::-webkit-scrollbar {
-    width: 5px !important;
-}
-
-
-.tc-select-menu::-webkit-scrollbar-track {
-    background: transparent !important;
-}
-
-
-.tc-select-menu::-webkit-scrollbar-thumb {
-    background:
-        rgba(96, 165, 250, 0.35) !important;
-
-    border-radius: 999px !important;
-}
-
-
-/* =========================================================
-   22 — CATEGORY OVERFLOW FIX
-========================================================= */
-
-.section-card {
-    overflow: visible !important;
-}
-
-
-.section-card:has(.tc-custom-select) {
-    overflow: visible !important;
-}
-
-
-/* =========================================================
-   23 — DEPLOYMENT WINDOW
-========================================================= */
-
-.deployment-card {
-    width: min(900px, 94vw) !important;
-
-    max-width: 900px !important;
-
-    padding: 38px 34px 30px !important;
-
-    border-radius: 30px !important;
-
-    background:
-        radial-gradient(
-            circle at 85% 10%,
-            rgba(59, 130, 246, 0.13),
-            transparent 28%
-        ),
-        radial-gradient(
-            circle at 15% 90%,
-            rgba(139, 92, 246, 0.10),
-            transparent 28%
-        ),
-        linear-gradient(
-            155deg,
-            #0b1229,
-            #070b1a
-        ) !important;
-
-    border-color:
-        rgba(148, 163, 184, 0.20) !important;
-}
-
-
-/* =========================================================
-   24 — DEPLOYMENT STAGES
-   3 × 2
-========================================================= */
-
-.deployment-stages {
-    width: 100% !important;
-
-    max-width: 760px !important;
-
-    margin: 24px auto 0 !important;
-
-    display: grid !important;
-
-    grid-template-columns:
-        repeat(3, minmax(0, 1fr)) !important;
-
-    gap: 12px !important;
-}
-
-
-.deployment-stage {
-    min-width: 0 !important;
-
-    min-height: 92px !important;
-
-    padding: 13px !important;
-
-    display: grid !important;
-
-    grid-template-columns:
-        34px
-        minmax(0, 1fr) !important;
-
-    align-items: center !important;
-
-    gap: 10px !important;
-
-    border-radius: 16px !important;
-}
-
-
-.deployment-stage-icon {
-    width: 34px !important;
-    height: 34px !important;
-
-    border-radius: 11px !important;
-}
-
-
-.deployment-stage-content {
-    min-width: 0 !important;
-
-    display: flex !important;
-
-    flex-direction: column !important;
-
-    gap: 3px !important;
-}
-
-
-.stage-title,
-.stage-message {
-    overflow-wrap: anywhere !important;
-}
-
-
-/* =========================================================
-   25 — DEPLOYMENT SUCCESS
-========================================================= */
-
-.deployment-card.deployment-success {
-    border-color:
-        rgba(16, 185, 129, 0.34) !important;
-
-    box-shadow:
-        0 35px 100px rgba(0, 0, 0, 0.68),
-        0 0 45px rgba(16, 185, 129, 0.10) !important;
-}
-
-
-/* =========================================================
-   26 — DEPLOYMENT ERROR
-========================================================= */
-
-.deployment-card.deployment-error {
-    border-color:
-        rgba(239, 68, 68, 0.34) !important;
-
-    box-shadow:
-        0 35px 100px rgba(0, 0, 0, 0.68),
-        0 0 45px rgba(239, 68, 68, 0.08) !important;
-}
-
-
-/* =========================================================
-   27 — FOCUS
-========================================================= */
-
-.tc-select-trigger:focus-visible,
-.tc-select-option:focus-visible,
-#createModal button:focus-visible {
-    outline:
-        2px solid rgba(96, 165, 250, 0.75) !important;
-
-    outline-offset: 2px !important;
-}
-
-
-/* =========================================================
-   28 — TABLET
+   15 — TABLET
 ========================================================= */
 
 @media (max-width: 900px) {
 
     .create-modal-card {
-        width: min(820px, 96vw) !important;
+        width: min(820px,96vw) !important;
 
         max-width: 820px !important;
 
@@ -1865,25 +1193,19 @@
 
     .create-modal-card .create-premium-features {
         grid-template-columns:
-            repeat(2, minmax(0, 1fr)) !important;
+            repeat(2,minmax(0,1fr)) !important;
     }
 
 
     .create-modal-card .create-premium-summary-grid {
         grid-template-columns:
-            repeat(3, minmax(0, 1fr)) !important;
-    }
-
-
-    .deployment-stages {
-        grid-template-columns:
-            repeat(2, minmax(0, 1fr)) !important;
+            repeat(3,minmax(0,1fr)) !important;
     }
 }
 
 
 /* =========================================================
-   29 — MOBILE
+   16 — MOBILE
 ========================================================= */
 
 @media (max-width: 620px) {
@@ -1903,19 +1225,14 @@
 
         max-height: calc(100vh - 20px) !important;
 
-        margin: auto 0 !important;
-
         padding: 17px !important;
 
         border-radius: 23px !important;
     }
 
 
+    .create-modal-header,
     .create-modal-card > div:first-child {
-        grid-template-columns:
-            minmax(0, 1fr)
-            auto !important;
-
         gap: 10px !important;
 
         margin-bottom: 16px !important;
@@ -1934,8 +1251,6 @@
     }
 
 
-    /* Main modal becomes one column */
-
     .create-premium-wrapper {
         grid-template-columns: 1fr !important;
 
@@ -1948,11 +1263,7 @@
     .create-premium-section-title,
     .create-premium-features,
     .create-premium-info,
-    .create-premium-final {
-        grid-column: 1 !important;
-    }
-
-
+    .create-premium-final,
     .create-premium-domain,
     .create-premium-netlify {
         grid-column: 1 !important;
@@ -1962,7 +1273,7 @@
     .create-premium-header {
         grid-template-columns:
             52px
-            minmax(0, 1fr) !important;
+            minmax(0,1fr) !important;
 
         gap: 11px !important;
 
@@ -1972,6 +1283,7 @@
 
     .create-premium-header-icon {
         width: 52px !important;
+
         height: 52px !important;
 
         border-radius: 15px !important;
@@ -1991,8 +1303,7 @@
 
 
     .create-modal-card .create-premium-summary-grid {
-        grid-template-columns:
-            1fr !important;
+        grid-template-columns: 1fr !important;
 
         gap: 7px !important;
     }
@@ -2017,9 +1328,9 @@
     }
 
 
-    .create-premium-features {
+    .create-modal-card .create-premium-features {
         grid-template-columns:
-            repeat(2, minmax(0, 1fr)) !important;
+            repeat(2,minmax(0,1fr)) !important;
 
         gap: 7px !important;
     }
@@ -2029,16 +1340,13 @@
         min-height: 82px !important;
 
         padding: 9px !important;
-
-        gap: 7px !important;
     }
 
 
     .create-premium-feature-icon {
         width: 32px !important;
-        height: 32px !important;
 
-        border-radius: 9px !important;
+        height: 32px !important;
 
         font-size: 14px !important;
     }
@@ -2057,15 +1365,9 @@
     .create-premium-netlify {
         grid-template-columns:
             40px
-            minmax(0, 1fr) !important;
+            minmax(0,1fr) !important;
 
         min-height: 80px !important;
-    }
-
-
-    .create-premium-netlify-icon {
-        width: 40px !important;
-        height: 40px !important;
     }
 
 
@@ -2080,59 +1382,37 @@
     .create-premium-final {
         grid-template-columns:
             38px
-            minmax(0, 1fr) !important;
+            minmax(0,1fr) !important;
     }
 
 
     .create-premium-info-icon,
     .create-premium-final-icon {
         width: 38px !important;
+
         height: 38px !important;
     }
 
 
+    .create-modal-actions,
     #createModal .create-modal-card > div:last-child {
-        grid-template-columns:
-            1fr !important;
+        grid-template-columns: 1fr !important;
 
         gap: 8px !important;
-
-        margin-top: 4px !important;
-    }
-
-
-    /* Deployment */
-
-    .deployment-card {
-        width: 100% !important;
-
-        max-width: 100% !important;
-
-        padding: 25px 15px 20px !important;
-
-        border-radius: 23px !important;
-    }
-
-
-    .deployment-stages {
-        grid-template-columns:
-            1fr !important;
-
-        gap: 8px !important;
-    }
-
-
-    .deployment-stage {
-        min-height: 72px !important;
     }
 }
 
 
 /* =========================================================
-   30 — SMALL PHONES
+   17 — SMALL PHONES
 ========================================================= */
 
 @media (max-width: 390px) {
+
+    .create-modal-card {
+        padding: 13px !important;
+    }
+
 
     .create-premium-header {
         grid-template-columns: 1fr !important;
@@ -2151,65 +1431,19 @@
     }
 
 
-    .create-premium-features {
-        grid-template-columns:
-            1fr !important;
-    }
-
-
-    .create-premium-domain-left {
-        align-items: flex-start !important;
-    }
-
-
-    .create-modal-card {
-        padding: 13px !important;
+    .create-modal-card .create-premium-features {
+        grid-template-columns: 1fr !important;
     }
 }
 
 
 /* =========================================================
-   31 — VERY SMALL
-========================================================= */
-
-@media (max-width: 350px) {
-
-    .create-modal-card {
-        padding: 11px !important;
-
-        border-radius: 19px !important;
-    }
-
-
-    .create-premium-wrapper {
-        gap: 8px !important;
-    }
-
-
-    .create-premium-feature {
-        min-height: 76px !important;
-    }
-
-
-    .create-premium-feature-icon {
-        width: 29px !important;
-        height: 29px !important;
-
-        font-size: 13px !important;
-    }
-}
-
-
-/* =========================================================
-   32 — REDUCED MOTION
+   18 — REDUCED MOTION
 ========================================================= */
 
 @media (prefers-reduced-motion: reduce) {
 
     .create-modal-card *,
-    .tc-select-trigger,
-    .tc-select-option,
-    .create-premium-feature,
     #createModal button {
         transition: none !important;
     }
