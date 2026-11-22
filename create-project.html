@@ -215,10 +215,6 @@
             </div>
 
 
-            <!-- =================================================
-                 PROJECT NAME
-            ================================================== -->
-
             <div class="field">
 
                 <label
@@ -240,89 +236,28 @@
             </div>
 
 
-            <!-- =================================================
-                 PROJECT TYPE
-            ================================================== -->
+            <div class="field">
 
-            <div class="field project-type-field">
+                <label
+                    class="field-label"
+                    for="projectTypeSelect"
+                >
+                    نوع المشروع
+                </label>
 
-                <div class="project-type-picker">
+                <select
+                    id="projectTypeSelect"
+                    class="field-select"
+                >
 
-                    <div class="project-type-picker-header">
+                    <option value="">
+                        جارٍ تحميل الفئات...
+                    </option>
 
-                        <div class="project-type-picker-heading">
-
-                            <div class="project-type-picker-icon">
-                                ✦
-                            </div>
-
-                            <div>
-
-                                <label
-                                    class="field-label project-type-picker-title"
-                                    for="projectTypeSelect"
-                                >
-                                    نوع المشروع
-                                </label>
-
-                                <small class="project-type-picker-subtitle">
-                                    اختار الفئة المناسبة لموقعك
-                                </small>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-
-                    <!--
-                    =================================================
-                    VISUAL CATEGORY BOXES
-
-                    create-project-templates.js
-                    يقوم بتعبئتها تلقائياً.
-                    =================================================
-                    -->
-
-                    <div
-                        id="projectTypeOptions"
-                        class="project-type-options"
-                        aria-label="فئات المشاريع"
-                    ></div>
-
-
-                    <!--
-                    =================================================
-                    REAL SELECT
-
-                    يبقى موجوداً كمصدر داخلي للـ Logic القديم.
-                    مخفي بدون JavaScript.
-                    =================================================
-                    -->
-
-                    <select
-                        id="projectTypeSelect"
-                        name="projectType"
-                        class="project-type-native-select"
-                        aria-hidden="true"
-                        tabindex="-1"
-                    >
-
-                        <option value="">
-                            جارٍ تحميل الفئات...
-                        </option>
-
-                    </select>
-
-                </div>
+                </select>
 
             </div>
 
-
-            <!-- =================================================
-                 SELECTED TEMPLATE
-            ================================================== -->
 
             <div
                 id="selectedLabel"
@@ -443,7 +378,8 @@
 
                 <div
                     id="netlifyConnectContainer"
-                    class="hidden netlify-connect-container"
+                    class="hidden"
+                    style="margin-top:16px;"
                 >
 
                     <button
@@ -461,7 +397,8 @@
 
                 <div
                     id="netlifyTeamsContainer"
-                    class="hidden netlify-teams-container"
+                    class="hidden"
+                    style="margin-top:18px;"
                 >
 
                     <label
@@ -506,7 +443,8 @@
 
             <div
                 id="createResult"
-                class="hidden create-result"
+                class="hidden"
+                style="margin-top:18px;"
             ></div>
 
         </section>
@@ -529,29 +467,37 @@
     <div class="create-modal-card">
 
 
-        <!-- =================================================
-             MODAL HEADER
-        ================================================== -->
+        <div
+            style="
+                display:flex;
+                align-items:flex-start;
+                justify-content:space-between;
+                gap:15px;
+                margin-bottom:20px;
+            "
+        >
 
-        <div class="create-modal-header">
+            <div style="flex:1; text-align:center;">
 
-            <div class="create-modal-heading">
+                <h3
+                    style="
+                        margin:0;
+                        font-size:20px;
+                        font-weight:900;
+                    "
+                >
+                    تأكيد إنشاء المشروع
+                </h3>
 
-                <div class="create-modal-icon">
-                    🚀
-                </div>
-
-                <div>
-
-                    <h3>
-                        تأكيد إنشاء المشروع
-                    </h3>
-
-                    <p>
-                        يرجى مراجعة معلومات المشروع قبل بدء عملية الإنشاء.
-                    </p>
-
-                </div>
+                <p
+                    style="
+                        margin:6px 0 0;
+                        color:#cbd5e1;
+                        font-size:12px;
+                    "
+                >
+                    يرجى مراجعة معلومات المشروع قبل بدء عملية الإنشاء.
+                </p>
 
             </div>
 
@@ -559,7 +505,11 @@
             <button
                 id="closeCreateModalBtn"
                 type="button"
-                class="secondary-button create-modal-close"
+                class="secondary-button"
+                style="
+                    min-width:42px;
+                    padding:0;
+                "
                 aria-label="إغلاق"
             >
                 ✕
@@ -568,21 +518,25 @@
         </div>
 
 
-        <!-- =================================================
-             MODAL CONTENT
-        ================================================== -->
-
         <div
             id="createModalContent"
-            class="create-modal-content"
+            style="
+                border:1px solid rgba(148,163,184,0.2);
+                border-radius:16px;
+                padding:16px;
+                background:rgba(15,23,42,0.55);
+            "
         ></div>
 
 
-        <!-- =================================================
-             MODAL ACTIONS
-        ================================================== -->
-
-        <div class="create-modal-actions">
+        <div
+            style="
+                display:grid;
+                grid-template-columns:1fr 1fr;
+                gap:10px;
+                margin-top:20px;
+            "
+        >
 
             <button
                 id="cancelCreateBtn"
@@ -597,6 +551,7 @@
                 id="confirmCreateBtn"
                 type="button"
                 class="primary-button"
+                style="width:auto;"
             >
                 تأكيد الإنشاء
             </button>
@@ -675,13 +630,28 @@
              PROGRESS
         ================================================== -->
 
-        <div class="deployment-progress-wrap">
+        <div
+            class="deployment-progress-wrap"
+        >
 
-            <div class="deployment-progress-track">
+            <div
+                style="
+                    height:8px;
+                    border-radius:999px;
+                    background:rgba(255,255,255,.07);
+                    overflow:hidden;
+                    position:relative;
+                "
+            >
 
                 <div
                     id="deploymentProgress"
-                    class="deployment-progress-bar"
+                    style="
+                        width:5%;
+                        height:100%;
+                        border-radius:999px;
+                        transition:width .7s cubic-bezier(.2,.8,.2,1);
+                    "
                 ></div>
 
             </div>
@@ -716,7 +686,10 @@
     <div class="ssl-card">
 
         <div
-            class="ssl-icon"
+            style="
+                font-size:40px;
+                margin-bottom:12px;
+            "
             aria-hidden="true"
         >
             🔐
@@ -725,6 +698,11 @@
 
         <h3
             id="sslPreparationTitle"
+            style="
+                margin:0 0 8px;
+                font-size:20px;
+                font-weight:900;
+            "
         >
             جارٍ تجهيز SSL
         </h3>
@@ -732,6 +710,12 @@
 
         <p
             id="sslPreparationMessage"
+            style="
+                margin:0;
+                color:#64748b;
+                font-size:12px;
+                line-height:1.8;
+            "
         >
             جارٍ تجهيز الاتصال الآمن للموقع.
         </p>
@@ -963,6 +947,162 @@
         initialize();
 
     }
+
+})();
+
+</script>
+
+
+<!-- =========================================================
+     CUSTOM DARK CATEGORY DROPDOWN SYNC
+========================================================= -->
+
+<script>
+
+(function () {
+
+    'use strict';
+
+
+    const select =
+        document.getElementById('projectTypeSelect');
+
+
+    if (!select) {
+        return;
+    }
+
+
+    select.style.display = 'none';
+
+
+    const wrapper =
+        document.createElement('div');
+
+    wrapper.className =
+        'tc-custom-select';
+
+
+    const trigger =
+        document.createElement('button');
+
+    trigger.type = 'button';
+
+    trigger.className =
+        'tc-select-trigger';
+
+    trigger.innerHTML = `
+        <span class="tc-select-trigger-left">
+            <span class="tc-select-dot"></span>
+            <span class="tc-select-label">جارٍ تحميل الفئات...</span>
+        </span>
+        <span class="tc-select-arrow">▼</span>
+    `;
+
+
+    const menu =
+        document.createElement('div');
+
+    menu.className =
+        'tc-select-menu';
+
+
+    wrapper.appendChild(trigger);
+
+    wrapper.appendChild(menu);
+
+    select.parentNode.insertBefore(
+        wrapper,
+        select.nextSibling
+    );
+
+
+    const labelEl =
+        trigger.querySelector('.tc-select-label');
+
+
+    function syncOptions() {
+
+        menu.innerHTML = '';
+
+        const options =
+            Array.from(select.options);
+
+        const selectedOption =
+            options[select.selectedIndex] || options[0];
+
+
+        if (selectedOption && labelEl) {
+
+            labelEl.textContent =
+                selectedOption.textContent.trim();
+        }
+
+
+        options.forEach((opt) => {
+
+            const btn =
+                document.createElement('button');
+
+            const isActive =
+                opt.value === select.value;
+
+            btn.type = 'button';
+
+            btn.className =
+                'tc-select-option' + (isActive ? ' active' : '');
+
+            btn.innerHTML = `
+                <span>${opt.textContent.trim()}</span>
+                <span>${isActive ? '✓' : ''}</span>
+            `;
+
+            btn.addEventListener('click', () => {
+
+                select.value = opt.value;
+
+                select.dispatchEvent(
+                    new Event('change', { bubbles: true })
+                );
+
+                wrapper.classList.remove('open');
+
+                syncOptions();
+            });
+
+            menu.appendChild(btn);
+        });
+    }
+
+
+    trigger.addEventListener('click', (e) => {
+
+        e.stopPropagation();
+
+        wrapper.classList.toggle('open');
+    });
+
+
+    document.addEventListener('click', (e) => {
+
+        if (!wrapper.contains(e.target)) {
+
+            wrapper.classList.remove('open');
+        }
+    });
+
+
+    const observer =
+        new MutationObserver(syncOptions);
+
+    observer.observe(select, {
+        childList: true,
+        subtree: true
+    });
+
+    select.addEventListener('change', syncOptions);
+
+    syncOptions();
 
 })();
 
