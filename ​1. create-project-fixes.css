@@ -1,1 +1,139 @@
+/* =========================================================
+   CREATE PROJECT FIXES — SELECT & TEMPLATE CARD (FILE 2 OF 3)
+========================================================= */
+
+.field-select,
+select.field-select,
+#projectType,
+#projectTypeSelect,
+[id*="type"] select,
+select[class*="type"] {
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    color: #f8fafc !important;
+    background-color: #0d132b !important;
+    border-color: rgba(139, 92, 246, 0.35) !important;
+    color-scheme: dark;
+    padding-left: 48px;
+    background-image:
+        linear-gradient(45deg, transparent 50%, rgba(255,255,255,.75) 50%),
+        linear-gradient(135deg, rgba(255,255,255,.75) 50%, transparent 50%);
+    background-position: calc(100% - 22px) 23px, calc(100% - 16px) 23px;
+    background-size: 6px 6px, 6px 6px;
+    background-repeat: no-repeat;
+}
+
+.field-select:focus,
+select.field-select:focus,
+#projectType:focus,
+#projectTypeSelect:focus {
+    background-color: #111836 !important;
+}
+
+.field-select option,
+select.field-select option,
+#projectType option,
+#projectTypeSelect option {
+    color: #f8fafc !important;
+    background: #0b1024 !important;
+    font-weight: 600;
+}
+
+.templates-grid .template-card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.templates-grid .template-card-preview {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+.templates-grid .template-thumbnail,
+.templates-grid .template-fallback-preview {
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    height: auto;
+    object-fit: contain;
+    background: #090e22;
+    display: block;
+}
+
+.templates-grid .template-fallback-preview.is-hidden,
+.templates-grid .template-thumbnail.is-hidden {
+    display: none;
+}
+
+.templates-grid .template-card-body {
+    position: relative;
+    z-index: 4;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    flex: 1 1 auto;
+    gap: 10px;
+    padding: 17px;
+}
+
+.templates-grid .template-card-actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    margin-top: auto;
+    padding-top: 14px;
+    width: 100%;
+}
+
+.templates-grid .template-card-actions button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 40px;
+    padding: 0 12px;
+    border-radius: 12px;
+    border: 0;
+    font-size: 10px;
+    font-weight: 900;
+    white-space: nowrap;
+    width: 100%;
+    transition: transform .2s ease, box-shadow .2s ease, background .2s ease;
+}
+
+.templates-grid .template-card-actions button:hover {
+    transform: translateY(-2px);
+}
+
+.templates-grid .preview-template-btn {
+    color: rgba(226, 232, 240, 0.88);
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+}
+
+.templates-grid .preview-template-btn:hover {
+    background: rgba(255, 255, 255, 0.13);
+}
+
+.templates-grid .select-template-btn {
+    color: #fff;
+    background: var(--tc-gradient-purple);
+    box-shadow: 0 8px 24px rgba(124, 58, 237, 0.25);
+}
+
+.templates-grid .select-template-btn:hover {
+    box-shadow: 0 12px 32px rgba(124, 58, 237, 0.38);
+}
+
+@media (max-width: 430px) {
+    .templates-grid .template-card-actions {
+        grid-template-columns: 1fr;
+    }
+}
 
