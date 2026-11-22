@@ -1,19 +1,8 @@
-/* =========================================================
-   ROOT FIXES — CATEGORY SELECT & COMPACT CONFIRM MODAL
-========================================================= */
-
-/* إخفاء select الأصلي تماماً */
 select#projectTypeSelect,
 #projectTypeSelect.field-select {
     display: none !important;
-    visibility: hidden !important;
-    height: 0 !important;
-    width: 0 !important;
-    opacity: 0 !important;
-    pointer-events: none !important;
 }
 
-/* القائمة الاحترافية للفئات */
 .tc-custom-select {
     position: relative !important;
     width: 100% !important;
@@ -35,41 +24,6 @@ select#projectTypeSelect,
     align-items: center !important;
     justify-content: space-between !important;
     gap: 10px !important;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.30) !important;
-}
-
-.tc-select-trigger-left {
-    display: inline-flex !important;
-    align-items: center !important;
-    gap: 8px !important;
-    min-width: 0 !important;
-}
-
-.tc-select-dot {
-    width: 8px !important;
-    height: 8px !important;
-    flex: 0 0 auto !important;
-    border-radius: 50% !important;
-    background: #38bdf8 !important;
-    box-shadow: 0 0 10px #38bdf8 !important;
-}
-
-.tc-select-label {
-    white-space: nowrap !important;
-    overflow: hidden !important;
-    text-overflow: ellipsis !important;
-    color: #f8fafc !important;
-}
-
-.tc-select-arrow {
-    flex: 0 0 auto !important;
-    font-size: 10px !important;
-    color: #93c5fd !important;
-    transition: transform 0.2s ease !important;
-}
-
-.tc-custom-select.open .tc-select-arrow {
-    transform: rotate(180deg) !important;
 }
 
 .tc-select-menu {
@@ -82,7 +36,6 @@ select#projectTypeSelect,
     border-radius: 15px !important;
     background: #080e22 !important;
     border: 1px solid rgba(96, 165, 250, 0.40) !important;
-    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.75) !important;
     flex-direction: column !important;
     gap: 6px !important;
     max-height: 230px !important;
@@ -108,17 +61,14 @@ select#projectTypeSelect,
     display: flex !important;
     align-items: center !important;
     justify-content: space-between !important;
-    gap: 8px !important;
 }
 
 .tc-select-option:hover,
 .tc-select-option.active {
     background: linear-gradient(135deg, #2563eb, #4f46e5) !important;
     color: #ffffff !important;
-    border-color: rgba(147, 197, 253, 0.50) !important;
 }
 
-/* نافذة تأكيد إنشاء المشروع */
 .create-modal-backdrop {
     z-index: 7000 !important;
     padding: 12px !important;
@@ -131,7 +81,6 @@ select#projectTypeSelect,
     width: min(720px, 93vw) !important;
     max-width: 720px !important;
     max-height: 84vh !important;
-    height: auto !important;
     margin: auto !important;
     padding: 18px 14px !important;
     border-radius: 22px !important;
@@ -141,81 +90,9 @@ select#projectTypeSelect,
     text-align: center !important;
     background: linear-gradient(160deg, #060b1d 0%, #0b122b 58%, #050918 100%) !important;
     border: 1px solid rgba(96, 165, 250, 0.28) !important;
-    box-shadow: 0 28px 80px rgba(0, 0, 0, 0.80) !important;
 }
 
-.create-modal-card > div:first-child {
-    position: relative !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    text-align: center !important;
-    margin-bottom: 10px !important;
-    padding: 0 32px !important;
-}
-
-.create-modal-card > div:first-child h3 {
-    font-size: 15px !important;
-    margin: 0 !important;
-    text-align: center !important;
-}
-
-.create-modal-card > div:first-child p {
-    font-size: 10px !important;
-    margin: 3px 0 0 !important;
-    text-align: center !important;
-}
-
-#closeCreateModalBtn {
-    position: absolute !important;
-    top: 0 !important;
-    left: 0 !important;
-    min-width: 30px !important;
-    min-height: 30px !important;
-    height: 30px !important;
-    padding: 0 !important;
-    border-radius: 9px !important;
-    font-size: 11px !important;
-}
-
-.create-modal-card #createModalContent {
-    background: transparent !important;
-    border: 0 !important;
-    padding: 0 !important;
-    max-height: none !important;
-    overflow: visible !important;
-    text-align: center !important;
-}
-
-.create-modal-card .create-premium-header,
-.create-modal-card .create-premium-summary,
-.create-modal-card .create-premium-domain,
-.create-modal-card .create-premium-netlify,
-.create-modal-card .create-premium-info,
-.create-modal-card .create-premium-final {
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    justify-content: center !important;
-    text-align: center !important;
-    gap: 4px !important;
-    margin: 8px 0 !important;
-    padding: 10px 12px !important;
-    border-radius: 14px !important;
-    background: rgba(11, 17, 38, 0.85) !important;
-    border: 1px solid rgba(148, 163, 184, 0.16) !important;
-}
-
-.create-modal-card .create-premium-header h4,
-.create-modal-card .create-premium-header p,
-.create-modal-card .create-premium-section-title,
-.create-modal-card .create-premium-section-title strong,
-.create-modal-card .create-premium-section-title span {
-    text-align: center !important;
-    margin-left: auto !important;
-    margin-right: auto !important;
-}
-
+.create-modal-card .create-premium-features,
 .create-modal-card .create-premium-summary-grid {
     display: grid !important;
     grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
@@ -223,35 +100,11 @@ select#projectTypeSelect,
     width: 100% !important;
 }
 
-.create-modal-card .create-premium-summary-item {
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    justify-content: center !important;
-    text-align: center !important;
-    padding: 8px !important;
-    border-radius: 11px !important;
-    background: rgba(30, 41, 59, 0.60) !important;
-    border: 1px solid rgba(148, 163, 184, 0.15) !important;
-}
-
 .create-modal-card .create-premium-summary-item:first-child {
     grid-column: 1 / -1 !important;
 }
 
-/* فرض عمودين (جوج ميزات في السطر) في جميع الشاشات بما فيها الهاتف */
-.create-modal-card .create-premium-features,
-div.create-premium-features {
-    display: grid !important;
-    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-    gap: 8px !important;
-    width: 100% !important;
-    max-height: none !important;
-    overflow: visible !important;
-}
-
-.create-modal-card .create-premium-feature,
-div.create-premium-feature {
+.create-modal-card .create-premium-feature {
     display: flex !important;
     flex-direction: column !important;
     align-items: center !important;
@@ -265,46 +118,13 @@ div.create-premium-feature {
     min-width: 0 !important;
 }
 
-.create-modal-card .create-premium-feature-icon {
-    width: 26px !important;
-    height: 26px !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    border-radius: 8px !important;
-    background: rgba(37, 99, 235, 0.20) !important;
-    font-size: 12px !important;
-}
-
-.create-modal-card .create-premium-feature-content {
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    text-align: center !important;
-    gap: 2px !important;
-    width: 100% !important;
-}
-
 .create-modal-card .create-premium-feature-content strong {
     font-size: 10px !important;
     font-weight: 800 !important;
     color: #ffffff !important;
-    line-height: 1.3 !important;
 }
 
 .create-modal-card .create-premium-feature-content span {
     font-size: 8.5px !important;
-    line-height: 1.4 !important;
     color: #cbd5e1 !important;
-}
-
-.create-modal-card > div:last-child {
-    margin-top: 10px !important;
-    gap: 8px !important;
-}
-
-.create-modal-card > div:last-child button {
-    min-height: 38px !important;
-    font-size: 10.5px !important;
-    border-radius: 11px !important;
 }
