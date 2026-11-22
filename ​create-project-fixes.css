@@ -1,29 +1,81 @@
 /* =========================================================
    TEMPLATECRAFT PRO
    CREATE PROJECT FIXES
-   FINAL CLEAN EDITION
+   FINAL COMPLETE + MOBILE OVERFLOW FIX
    ---------------------------------------------------------
    - Visual project category boxes
+   - Premium galaxy UI
+   - Mobile 2-column categories
    - Mobile 2-column templates
+   - Desktop 4-column categories
+   - Desktop 3-column templates
    - No old custom dropdown
+   - Native select hidden
+   - Premium wide confirmation modal
+   - RTL mobile overflow fixed
+   - Responsive
    - No logic changes
    - Compatible with create-project.html
+   - Compatible with create-project.js
    - Compatible with create-project-templates.js
 ========================================================= */
 
 
 /* =========================================================
-   01 — GLOBAL SECTION OVERFLOW
+   01 — GLOBAL / OVERFLOW
 ========================================================= */
+
+html,
+body {
+    width: 100% !important;
+    max-width: 100% !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    overflow-x: hidden !important;
+
+    box-sizing: border-box !important;
+}
+
+html {
+    overflow-x: hidden !important;
+}
+
+body {
+    min-width: 0 !important;
+
+    position: relative !important;
+
+    box-sizing: border-box !important;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box !important;
+}
+
+img,
+iframe,
+video {
+    max-width: 100% !important;
+}
 
 .section-card {
     overflow: visible !important;
+
+    max-width: 100% !important;
+
+    min-width: 0 !important;
 }
 
 
 /* =========================================================
-   02 — NATIVE CATEGORY SELECT
-   Hidden internal source of truth
+   02 — HIDDEN NATIVE CATEGORY SELECT
+   ---------------------------------------------------------
+   JS still uses the real select as the source of truth.
+   User only sees the visual category cards.
 ========================================================= */
 
 select#projectTypeSelect,
@@ -41,130 +93,186 @@ select#projectTypeSelect,
     min-width: 1px !important;
     min-height: 1px !important;
 
+    max-width: 1px !important;
+    max-height: 1px !important;
+
     opacity: 0 !important;
 
     pointer-events: none !important;
 
     overflow: hidden !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    border: 0 !important;
 }
 
 
 /* =========================================================
-   03 — PROJECT TYPE PICKER
+   03 — PROJECT TYPE FIELD
 ========================================================= */
 
 .project-type-field {
-    position: relative !important;
-
     width: 100% !important;
+    max-width: 100% !important;
+
+    min-width: 0 !important;
+
+    position: relative !important;
 
     z-index: 20 !important;
 }
 
-
 .project-type-picker {
+    width: 100% !important;
+    max-width: 100% !important;
+
+    min-width: 0 !important;
+
     position: relative !important;
 
-    width: 100% !important;
+    padding: 18px !important;
 
-    direction: rtl !important;
+    border-radius: 24px !important;
+
+    background:
+        radial-gradient(
+            circle at 15% 15%,
+            rgba(124, 58, 237, 0.14),
+            transparent 35%
+        ),
+        radial-gradient(
+            circle at 85% 80%,
+            rgba(79, 70, 229, 0.12),
+            transparent 38%
+        ),
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,0.045),
+            rgba(255,255,255,0.018)
+        ) !important;
+
+    border:
+        1px solid rgba(255,255,255,0.09) !important;
+
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.06),
+        0 18px 50px rgba(0,0,0,0.18) !important;
+
+    backdrop-filter: blur(18px) !important;
+
+    -webkit-backdrop-filter: blur(18px) !important;
+
+    overflow: visible !important;
 }
 
 
 /* =========================================================
-   04 — PICKER HEADER
+   04 — CATEGORY PICKER HEADER
 ========================================================= */
 
 .project-type-picker-header {
     width: 100% !important;
+    max-width: 100% !important;
 
-    margin-bottom: 13px !important;
-}
-
-
-.project-type-picker-heading {
     display: flex !important;
 
     align-items: center !important;
 
-    gap: 11px !important;
+    justify-content: space-between !important;
+
+    margin-bottom: 15px !important;
 
     min-width: 0 !important;
 }
 
+.project-type-picker-heading {
+    min-width: 0 !important;
 
-.project-type-picker-icon {
-    flex: 0 0 auto !important;
-
-    width: 40px !important;
-    height: 40px !important;
+    max-width: 100% !important;
 
     display: flex !important;
 
     align-items: center !important;
+
+    gap: 12px !important;
+}
+
+.project-type-picker-icon {
+    width: 42px !important;
+    height: 42px !important;
+
+    min-width: 42px !important;
+
+    flex: 0 0 42px !important;
+
+    display: flex !important;
+
+    align-items: center !important;
+
     justify-content: center !important;
 
-    border-radius: 12px !important;
+    border-radius: 14px !important;
 
-    color: #bfdbfe !important;
+    font-size: 20px !important;
 
     background:
         linear-gradient(
-            145deg,
-            rgba(37, 99, 235, 0.22),
-            rgba(124, 58, 237, 0.18)
+            135deg,
+            rgba(124,58,237,0.30),
+            rgba(79,70,229,0.20)
         ) !important;
 
     border:
-        1px solid rgba(96, 165, 250, 0.25) !important;
+        1px solid rgba(167,139,250,0.22) !important;
 
     box-shadow:
-        0 0 22px rgba(59, 130, 246, 0.10) !important;
-
-    font-size: 18px !important;
+        0 8px 25px rgba(124,58,237,0.16),
+        inset 0 1px 0 rgba(255,255,255,0.08) !important;
 }
-
-
-.project-type-picker-heading > div:last-child {
-    min-width: 0 !important;
-
-    display: flex !important;
-
-    flex-direction: column !important;
-
-    gap: 2px !important;
-}
-
 
 .project-type-picker-title {
+    display: block !important;
+
     margin: 0 !important;
 
-    color: #f8fafc !important;
+    color: #ffffff !important;
 
-    font-size: 13px !important;
+    font-size: 17px !important;
+
+    font-weight: 800 !important;
+
+    line-height: 1.4 !important;
+
+    max-width: 100% !important;
+}
+
+.project-type-picker-subtitle {
+    display: block !important;
+
+    margin-top: 3px !important;
+
+    color: rgba(255,255,255,0.50) !important;
+
+    font-size: 12px !important;
 
     line-height: 1.5 !important;
 
-    font-weight: 900 !important;
-}
-
-
-.project-type-picker-subtitle {
-    color:
-        rgba(203, 213, 225, 0.58) !important;
-
-    font-size: 9px !important;
-
-    line-height: 1.6 !important;
+    max-width: 100% !important;
 }
 
 
 /* =========================================================
-   05 — VISUAL CATEGORY GRID
+   05 — CATEGORY GRID
 ========================================================= */
 
 .project-type-options {
     width: 100% !important;
+
+    max-width: 100% !important;
+
+    min-width: 0 !important;
 
     display: grid !important;
 
@@ -174,6 +282,8 @@ select#projectTypeSelect,
     gap: 10px !important;
 
     align-items: stretch !important;
+
+    overflow: visible !important;
 }
 
 
@@ -186,57 +296,53 @@ select#projectTypeSelect,
 
     width: 100% !important;
 
+    max-width: 100% !important;
+
     min-width: 0 !important;
 
-    min-height: 76px !important;
+    min-height: 78px !important;
 
-    padding: 11px !important;
-
-    display: grid !important;
-
-    grid-template-columns:
-        38px
-        minmax(0, 1fr)
-        20px !important;
+    display: flex !important;
 
     align-items: center !important;
 
-    gap: 9px !important;
+    gap: 10px !important;
 
-    direction: rtl !important;
+    padding: 12px !important;
 
-    text-align: right !important;
+    border-radius: 17px !important;
 
-    border-radius: 16px !important;
-
-    color: #e2e8f0 !important;
+    border:
+        1px solid rgba(255,255,255,0.08) !important;
 
     background:
         linear-gradient(
             145deg,
-            rgba(15, 23, 42, 0.92),
-            rgba(8, 14, 34, 0.88)
+            rgba(255,255,255,0.045),
+            rgba(255,255,255,0.018)
         ) !important;
 
-    border:
-        1px solid rgba(148, 163, 184, 0.15) !important;
-
-    box-shadow:
-        0 10px 25px rgba(0, 0, 0, 0.16) !important;
+    color:
+        rgba(255,255,255,0.82) !important;
 
     cursor: pointer !important;
 
-    outline: none !important;
+    text-align: right !important;
+
+    transition:
+        transform 0.22s ease,
+        border-color 0.22s ease,
+        background 0.22s ease,
+        box-shadow 0.22s ease !important;
 
     overflow: hidden !important;
 
-    transition:
-        transform .22s ease,
-        border-color .22s ease,
-        background .22s ease,
-        box-shadow .22s ease !important;
-}
+    appearance: none !important;
 
+    -webkit-appearance: none !important;
+
+    font-family: inherit !important;
+}
 
 .project-type-option::before {
     content: "" !important;
@@ -245,42 +351,48 @@ select#projectTypeSelect,
 
     inset: 0 !important;
 
-    pointer-events: none !important;
-
     background:
         radial-gradient(
-            circle at 85% 15%,
-            rgba(59, 130, 246, 0.10),
-            transparent 40%
+            circle at 10% 20%,
+            rgba(124,58,237,0.15),
+            transparent 45%
         ) !important;
 
     opacity: 0 !important;
 
-    transition: opacity .22s ease !important;
+    transition:
+        opacity 0.22s ease !important;
+
+    pointer-events: none !important;
 }
 
-
 .project-type-option:hover {
-    transform: translateY(-3px) !important;
+    transform: translateY(-2px) !important;
 
     border-color:
-        rgba(96, 165, 250, 0.38) !important;
+        rgba(139,92,246,0.35) !important;
 
     background:
         linear-gradient(
             145deg,
-            rgba(23, 37, 74, 0.96),
-            rgba(12, 20, 47, 0.94)
+            rgba(124,58,237,0.10),
+            rgba(255,255,255,0.025)
         ) !important;
 
     box-shadow:
-        0 15px 32px rgba(0, 0, 0, 0.25),
-        0 0 25px rgba(59, 130, 246, 0.08) !important;
+        0 12px 30px rgba(0,0,0,0.18),
+        0 0 25px rgba(124,58,237,0.08) !important;
 }
-
 
 .project-type-option:hover::before {
     opacity: 1 !important;
+}
+
+.project-type-option:focus-visible {
+    outline:
+        2px solid rgba(167,139,250,0.65) !important;
+
+    outline-offset: 2px !important;
 }
 
 
@@ -293,34 +405,35 @@ select#projectTypeSelect,
 
     z-index: 2 !important;
 
-    width: 38px !important;
-    height: 38px !important;
+    width: 42px !important;
+    height: 42px !important;
 
-    flex: 0 0 auto !important;
+    min-width: 42px !important;
+
+    flex: 0 0 42px !important;
 
     display: flex !important;
 
     align-items: center !important;
+
     justify-content: center !important;
 
-    border-radius: 11px !important;
-
-    color: #bfdbfe !important;
+    border-radius: 13px !important;
 
     background:
-        linear-gradient(
-            145deg,
-            rgba(37, 99, 235, 0.20),
-            rgba(124, 58, 237, 0.18)
-        ) !important;
+        rgba(124,58,237,0.09) !important;
 
     border:
-        1px solid rgba(96, 165, 250, 0.18) !important;
+        1px solid rgba(139,92,246,0.13) !important;
 
-    font-size: 17px !important;
+    font-size: 19px !important;
 
-    box-shadow:
-        inset 0 1px 0 rgba(255,255,255,.05) !important;
+    color: #c4b5fd !important;
+
+    transition:
+        transform 0.22s ease,
+        background 0.22s ease,
+        border-color 0.22s ease !important;
 }
 
 
@@ -335,55 +448,68 @@ select#projectTypeSelect,
 
     min-width: 0 !important;
 
+    max-width: 100% !important;
+
+    flex: 1 1 auto !important;
+
     display: flex !important;
 
     flex-direction: column !important;
 
-    gap: 2px !important;
+    align-items: flex-start !important;
+
+    justify-content: center !important;
+
+    gap: 3px !important;
 
     overflow: hidden !important;
 }
-
 
 .project-type-option-content strong {
-    min-width: 0 !important;
+    width: 100% !important;
 
-    color: #f8fafc !important;
+    max-width: 100% !important;
 
-    font-size: 10.5px !important;
+    display: block !important;
 
-    line-height: 1.45 !important;
+    color: #ffffff !important;
 
-    font-weight: 900 !important;
+    font-size: 13px !important;
+
+    font-weight: 800 !important;
+
+    line-height: 1.35 !important;
+
+    white-space: nowrap !important;
 
     overflow: hidden !important;
 
     text-overflow: ellipsis !important;
-
-    white-space: nowrap !important;
 }
 
-
 .project-type-option-content small {
-    min-width: 0 !important;
+    width: 100% !important;
 
-    color:
-        rgba(203, 213, 225, 0.48) !important;
+    max-width: 100% !important;
 
-    font-size: 7.5px !important;
+    display: block !important;
 
-    line-height: 1.45 !important;
+    color: rgba(255,255,255,0.42) !important;
+
+    font-size: 10px !important;
+
+    line-height: 1.35 !important;
+
+    white-space: nowrap !important;
 
     overflow: hidden !important;
 
     text-overflow: ellipsis !important;
-
-    white-space: nowrap !important;
 }
 
 
 /* =========================================================
-   09 — CHECK
+   09 — CATEGORY CHECK
 ========================================================= */
 
 .project-type-option-check {
@@ -391,27 +517,35 @@ select#projectTypeSelect,
 
     z-index: 2 !important;
 
-    width: 20px !important;
-    height: 20px !important;
+    width: 22px !important;
+    height: 22px !important;
+
+    min-width: 22px !important;
+
+    flex: 0 0 22px !important;
 
     display: flex !important;
 
     align-items: center !important;
+
     justify-content: center !important;
 
-    border-radius: 7px !important;
+    border-radius: 50% !important;
+
+    background:
+        rgba(255,255,255,0.04) !important;
+
+    border:
+        1px solid rgba(255,255,255,0.08) !important;
 
     color: transparent !important;
 
-    background:
-        rgba(148, 163, 184, 0.07) !important;
-
-    border:
-        1px solid rgba(148, 163, 184, 0.10) !important;
-
-    font-size: 9px !important;
+    font-size: 11px !important;
 
     font-weight: 900 !important;
+
+    transition:
+        all 0.22s ease !important;
 }
 
 
@@ -421,24 +555,22 @@ select#projectTypeSelect,
 
 .project-type-option.active,
 .project-type-option[aria-pressed="true"] {
-    color: #ffffff !important;
-
     border-color:
-        rgba(96, 165, 250, 0.58) !important;
+        rgba(139,92,246,0.65) !important;
 
     background:
         linear-gradient(
-            135deg,
-            rgba(37, 99, 235, 0.28),
-            rgba(79, 70, 229, 0.24),
-            rgba(124, 58, 237, 0.20)
+            145deg,
+            rgba(124,58,237,0.22),
+            rgba(79,70,229,0.10)
         ) !important;
 
     box-shadow:
-        0 12px 30px rgba(37, 99, 235, 0.16),
-        inset 0 1px 0 rgba(255,255,255,.06) !important;
-}
+        0 12px 32px rgba(124,58,237,0.16),
+        0 0 0 1px rgba(139,92,246,0.10) inset !important;
 
+    transform: translateY(-1px) !important;
+}
 
 .project-type-option.active::before,
 .project-type-option[aria-pressed="true"]::before {
@@ -446,45 +578,44 @@ select#projectTypeSelect,
 }
 
 
-.project-type-option.active
-.project-type-option-icon,
-.project-type-option[aria-pressed="true"]
-.project-type-option-icon {
-    color: #ffffff !important;
+/* IMPORTANT — CORRECT DESCENDANT SELECTOR */
 
-    background:
-        linear-gradient(
-            145deg,
-            rgba(59, 130, 246, 0.38),
-            rgba(124, 58, 237, 0.32)
-        ) !important;
-
-    border-color:
-        rgba(147, 197, 253, 0.38) !important;
-
-    box-shadow:
-        0 0 20px rgba(59, 130, 246, 0.16) !important;
-}
-
-
-.project-type-option.active
-.project-type-option-check,
-.project-type-option[aria-pressed="true"]
-.project-type-option-check {
-    color: #ffffff !important;
-
+.project-type-option.active .project-type-option-icon,
+.project-type-option[aria-pressed="true"] .project-type-option-icon {
     background:
         linear-gradient(
             135deg,
-            #2563eb,
+            rgba(124,58,237,0.40),
+            rgba(79,70,229,0.25)
+        ) !important;
+
+    border-color:
+        rgba(167,139,250,0.38) !important;
+
+    color: #ffffff !important;
+
+    box-shadow:
+        0 8px 22px rgba(124,58,237,0.20) !important;
+
+    transform: scale(1.04) !important;
+}
+
+.project-type-option.active .project-type-option-check,
+.project-type-option[aria-pressed="true"] .project-type-option-check {
+    background:
+        linear-gradient(
+            135deg,
+            #8b5cf6,
             #6366f1
         ) !important;
 
     border-color:
-        rgba(147, 197, 253, 0.35) !important;
+        rgba(255,255,255,0.20) !important;
+
+    color: #ffffff !important;
 
     box-shadow:
-        0 0 15px rgba(59, 130, 246, 0.25) !important;
+        0 5px 15px rgba(124,58,237,0.25) !important;
 }
 
 
@@ -493,11 +624,13 @@ select#projectTypeSelect,
 ========================================================= */
 
 .project-type-empty {
-    grid-column: 1 / -1 !important;
-
     width: 100% !important;
 
-    min-height: 100px !important;
+    max-width: 100% !important;
+
+    grid-column: 1 / -1 !important;
+
+    min-height: 120px !important;
 
     display: flex !important;
 
@@ -505,44 +638,33 @@ select#projectTypeSelect,
 
     justify-content: center !important;
 
-    gap: 10px !important;
+    flex-direction: column !important;
 
-    padding: 20px !important;
+    gap: 8px !important;
 
-    border-radius: 16px !important;
-
-    background:
-        rgba(15, 23, 42, 0.65) !important;
+    border-radius: 18px !important;
 
     border:
-        1px dashed rgba(148, 163, 184, 0.20) !important;
-
-    color: #94a3b8 !important;
-}
-
-
-.project-type-empty-icon {
-    width: 34px !important;
-    height: 34px !important;
-
-    display: flex !important;
-
-    align-items: center !important;
-    justify-content: center !important;
-
-    border-radius: 10px !important;
+        1px dashed rgba(255,255,255,0.10) !important;
 
     background:
-        rgba(59, 130, 246, 0.10) !important;
-
-    color: #60a5fa !important;
+        rgba(255,255,255,0.018) !important;
 }
 
+.project-type-empty-icon {
+    font-size: 25px !important;
+
+    color: #a78bfa !important;
+
+    opacity: 0.75 !important;
+}
 
 .project-type-empty-text {
-    font-size: 10px !important;
+    color: rgba(255,255,255,0.48) !important;
 
-    font-weight: 800 !important;
+    font-size: 12px !important;
+
+    text-align: center !important;
 }
 
 
@@ -553,6 +675,10 @@ select#projectTypeSelect,
 .templates-grid {
     width: 100% !important;
 
+    max-width: 100% !important;
+
+    min-width: 0 !important;
+
     display: grid !important;
 
     grid-template-columns:
@@ -561,6 +687,8 @@ select#projectTypeSelect,
     gap: 18px !important;
 
     align-items: stretch !important;
+
+    overflow: visible !important;
 }
 
 
@@ -568,14 +696,14 @@ select#projectTypeSelect,
    13 — TEMPLATE CARD
 ========================================================= */
 
-.templates-grid .template-card {
+.template-card {
     width: 100% !important;
+
+    max-width: 100% !important;
 
     min-width: 0 !important;
 
-    min-height: 330px !important;
-
-    height: 100% !important;
+    position: relative !important;
 
     display: flex !important;
 
@@ -583,7 +711,36 @@ select#projectTypeSelect,
 
     overflow: hidden !important;
 
-    border-radius: 20px !important;
+    border-radius: 22px !important;
+
+    border:
+        1px solid rgba(255,255,255,0.08) !important;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,0.045),
+            rgba(255,255,255,0.015)
+        ) !important;
+
+    box-shadow:
+        0 16px 45px rgba(0,0,0,0.18) !important;
+
+    transition:
+        transform 0.25s ease,
+        border-color 0.25s ease,
+        box-shadow 0.25s ease !important;
+}
+
+.template-card:hover {
+    transform: translateY(-5px) !important;
+
+    border-color:
+        rgba(139,92,246,0.32) !important;
+
+    box-shadow:
+        0 22px 55px rgba(0,0,0,0.25),
+        0 0 35px rgba(124,58,237,0.08) !important;
 }
 
 
@@ -591,25 +748,33 @@ select#projectTypeSelect,
    14 — TEMPLATE PREVIEW
 ========================================================= */
 
-.templates-grid .template-card-preview,
-.templates-grid .template-preview {
+.template-preview {
     position: relative !important;
 
     width: 100% !important;
 
+    max-width: 100% !important;
+
     min-width: 0 !important;
 
-    min-height: 220px !important;
-
-    height: 100% !important;
-
-    display: flex !important;
-
-    flex-direction: column !important;
+    aspect-ratio: 16 / 10 !important;
 
     overflow: hidden !important;
 
-    flex: 1 1 auto !important;
+    background:
+        #080b18 !important;
+}
+
+.template-preview iframe {
+    width: 100% !important;
+
+    max-width: 100% !important;
+
+    height: 100% !important;
+
+    border: 0 !important;
+
+    display: block !important;
 }
 
 
@@ -617,31 +782,25 @@ select#projectTypeSelect,
    15 — TEMPLATE IMAGE
 ========================================================= */
 
-.templates-grid .template-thumbnail,
-.templates-grid .template-image,
-.templates-grid .template-fallback-preview {
+.template-preview img,
+.template-card img {
     width: 100% !important;
 
+    max-width: 100% !important;
+
     height: 100% !important;
-
-    min-height: 220px !important;
-
-    max-width: none !important;
-    max-height: none !important;
 
     display: block !important;
 
     object-fit: cover !important;
 
-    object-position: center top !important;
-
-    background: #090e22 !important;
+    transition:
+        transform 0.35s ease !important;
 }
 
-
-.templates-grid .template-fallback-preview.is-hidden,
-.templates-grid .template-thumbnail.is-hidden {
-    display: none !important;
+.template-card:hover .template-preview img,
+.template-card:hover img {
+    transform: scale(1.025) !important;
 }
 
 
@@ -649,14 +808,10 @@ select#projectTypeSelect,
    16 — TEMPLATE BODY
 ========================================================= */
 
-.templates-grid .template-card-body,
-.templates-grid .template-card-content,
-.templates-grid .template-content {
-    position: relative !important;
-
-    z-index: 5 !important;
-
+.template-card-body {
     width: 100% !important;
+
+    max-width: 100% !important;
 
     min-width: 0 !important;
 
@@ -664,35 +819,35 @@ select#projectTypeSelect,
 
     flex-direction: column !important;
 
-    gap: 8px !important;
+    gap: 10px !important;
 
-    padding: 14px !important;
+    padding: 15px !important;
 
     flex: 1 1 auto !important;
 }
 
-
-.templates-grid .template-card h3,
-.templates-grid .template-name {
-    min-width: 0 !important;
-
+.template-card-title {
     margin: 0 !important;
 
-    font-size: 14px !important;
+    color: #ffffff !important;
 
-    line-height: 1.4 !important;
+    font-size: 15px !important;
+
+    font-weight: 800 !important;
+
+    line-height: 1.45 !important;
 
     overflow-wrap: anywhere !important;
 }
 
-
-.templates-grid .template-card p,
-.templates-grid .template-description {
+.template-card-description {
     margin: 0 !important;
 
-    font-size: 10px !important;
+    color: rgba(255,255,255,0.48) !important;
 
-    line-height: 1.65 !important;
+    font-size: 11px !important;
+
+    line-height: 1.7 !important;
 
     overflow-wrap: anywhere !important;
 }
@@ -702,74 +857,31 @@ select#projectTypeSelect,
    17 — TEMPLATE ACTIONS
 ========================================================= */
 
-.templates-grid .template-card-actions,
-.templates-grid .template-actions {
+.template-card-actions {
     width: 100% !important;
+
+    max-width: 100% !important;
 
     display: grid !important;
 
     grid-template-columns:
         repeat(2, minmax(0, 1fr)) !important;
 
-    gap: 7px !important;
+    gap: 8px !important;
 
     margin-top: auto !important;
-
-    padding-top: 8px !important;
 }
 
-
-.templates-grid .template-card-actions button,
-.templates-grid .template-actions button {
-    width: 100% !important;
-
+.template-card-actions button {
     min-width: 0 !important;
 
-    min-height: 38px !important;
+    min-height: 40px !important;
 
-    padding: 0 7px !important;
+    border-radius: 12px !important;
 
-    display: inline-flex !important;
+    font-size: 12px !important;
 
-    align-items: center !important;
-    justify-content: center !important;
-
-    border-radius: 10px !important;
-
-    font-size: 9.5px !important;
-
-    font-weight: 900 !important;
-
-    white-space: nowrap !important;
-}
-
-
-.templates-grid .preview-template-btn {
-    color: #e2e8f0 !important;
-
-    background:
-        rgba(255, 255, 255, 0.08) !important;
-
-    border:
-        1px solid rgba(255, 255, 255, 0.13) !important;
-}
-
-
-.templates-grid .select-template-btn {
-    color: #ffffff !important;
-
-    background:
-        linear-gradient(
-            135deg,
-            #2563eb,
-            #4f46e5,
-            #7c3aed
-        ) !important;
-
-    border: 0 !important;
-
-    box-shadow:
-        0 8px 20px rgba(79, 70, 229, 0.25) !important;
+    font-weight: 800 !important;
 }
 
 
@@ -781,19 +893,26 @@ select#projectTypeSelect,
 .netlify-teams-container {
     width: 100% !important;
 
+    max-width: 100% !important;
+
+    min-width: 0 !important;
+
+    position: relative !important;
+
+    z-index: 10 !important;
+}
+
+.netlify-connect-container {
     margin-top: 14px !important;
 }
 
-
-.create-result {
-    width: 100% !important;
-
-    margin-top: 14px !important;
+.netlify-teams-container {
+    margin-top: 12px !important;
 }
 
 
 /* =========================================================
-   19 — MODAL BASIC OVERRIDES
+   19 — CREATE MODAL BASIC
 ========================================================= */
 
 .create-modal-backdrop {
@@ -804,13 +923,22 @@ select#projectTypeSelect,
     align-items: center !important;
 
     justify-content: center !important;
+
+    max-width: 100vw !important;
+
+    overflow-x: hidden !important;
 }
 
+.create-modal-backdrop.active {
+    display: flex !important;
+}
 
 .create-modal-card {
     width: min(1080px, 96vw) !important;
 
     max-width: 1080px !important;
+
+    min-width: 0 !important;
 
     max-height: calc(100vh - 42px) !important;
 
@@ -825,11 +953,115 @@ select#projectTypeSelect,
 
 
 /* =========================================================
-   20 — MODAL CONTENT
+   20 — MODAL HEADER
 ========================================================= */
+
+.create-modal-header {
+    width: 100% !important;
+
+    max-width: 100% !important;
+
+    min-width: 0 !important;
+
+    display: flex !important;
+
+    align-items: center !important;
+
+    justify-content: space-between !important;
+
+    gap: 15px !important;
+
+    padding: 22px 24px 16px !important;
+}
+
+.create-modal-heading {
+    display: flex !important;
+
+    align-items: center !important;
+
+    gap: 12px !important;
+
+    min-width: 0 !important;
+
+    max-width: 100% !important;
+}
+
+.create-modal-icon {
+    width: 46px !important;
+    height: 46px !important;
+
+    flex: 0 0 46px !important;
+
+    display: flex !important;
+
+    align-items: center !important;
+
+    justify-content: center !important;
+
+    border-radius: 15px !important;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(124,58,237,0.30),
+            rgba(79,70,229,0.18)
+        ) !important;
+
+    border:
+        1px solid rgba(167,139,250,0.22) !important;
+
+    box-shadow:
+        0 8px 25px rgba(124,58,237,0.15) !important;
+
+    font-size: 21px !important;
+}
+
+.create-modal-close {
+    width: 38px !important;
+    height: 38px !important;
+
+    flex: 0 0 38px !important;
+
+    display: flex !important;
+
+    align-items: center !important;
+
+    justify-content: center !important;
+
+    border-radius: 12px !important;
+
+    cursor: pointer !important;
+}
+
+
+/* =========================================================
+   21 — MODAL CONTENT
+========================================================= */
+
+.create-modal-content {
+    width: 100% !important;
+
+    max-width: 100% !important;
+
+    min-width: 0 !important;
+
+    padding: 0 24px 20px !important;
+
+    margin: 0 !important;
+
+    border: 0 !important;
+
+    background: transparent !important;
+
+    overflow-x: hidden !important;
+}
 
 #createModalContent {
     width: 100% !important;
+
+    max-width: 100% !important;
+
+    min-width: 0 !important;
 
     margin: 0 !important;
 
@@ -838,15 +1070,267 @@ select#projectTypeSelect,
     border: 0 !important;
 
     background: transparent !important;
+
+    overflow-x: hidden !important;
 }
 
 
 /* =========================================================
-   21 — MODAL ACTIONS
+   22 — PREMIUM MODAL WRAPPER
+========================================================= */
+
+.create-premium-wrapper {
+    width: 100% !important;
+
+    max-width: 100% !important;
+
+    min-width: 0 !important;
+
+    display: flex !important;
+
+    flex-direction: column !important;
+
+    gap: 18px !important;
+}
+
+.create-premium-header {
+    width: 100% !important;
+
+    max-width: 100% !important;
+
+    padding: 18px 20px !important;
+
+    border-radius: 20px !important;
+
+    background:
+        radial-gradient(
+            circle at 10% 10%,
+            rgba(124,58,237,0.16),
+            transparent 40%
+        ),
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,0.045),
+            rgba(255,255,255,0.015)
+        ) !important;
+
+    border:
+        1px solid rgba(255,255,255,0.07) !important;
+}
+
+.create-premium-summary {
+    width: 100% !important;
+
+    max-width: 100% !important;
+
+    display: flex !important;
+
+    flex-direction: column !important;
+
+    gap: 10px !important;
+}
+
+.create-premium-summary-grid {
+    width: 100% !important;
+
+    max-width: 100% !important;
+
+    display: grid !important;
+
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr)) !important;
+
+    gap: 12px !important;
+}
+
+.create-premium-summary-item {
+    min-width: 0 !important;
+
+    max-width: 100% !important;
+
+    padding: 15px !important;
+
+    border-radius: 16px !important;
+
+    background:
+        rgba(255,255,255,0.028) !important;
+
+    border:
+        1px solid rgba(255,255,255,0.065) !important;
+
+    overflow: hidden !important;
+}
+
+.create-premium-summary-item:first-child {
+    grid-column: auto !important;
+}
+
+.create-premium-domain {
+    overflow-wrap: anywhere !important;
+
+    word-break: break-word !important;
+}
+
+
+/* =========================================================
+   23 — PREMIUM SECTION TITLE
+========================================================= */
+
+.create-premium-section-title {
+    display: flex !important;
+
+    align-items: center !important;
+
+    gap: 8px !important;
+
+    margin: 0 0 10px !important;
+
+    color: #ffffff !important;
+
+    font-size: 14px !important;
+
+    font-weight: 800 !important;
+}
+
+
+/* =========================================================
+   24 — PREMIUM FEATURES
+========================================================= */
+
+.create-premium-features {
+    width: 100% !important;
+
+    max-width: 100% !important;
+
+    display: grid !important;
+
+    grid-template-columns:
+        repeat(4, minmax(0, 1fr)) !important;
+
+    gap: 10px !important;
+}
+
+.create-premium-feature {
+    min-width: 0 !important;
+
+    min-height: 95px !important;
+
+    display: flex !important;
+
+    flex-direction: column !important;
+
+    align-items: center !important;
+
+    justify-content: center !important;
+
+    gap: 8px !important;
+
+    padding: 14px !important;
+
+    text-align: center !important;
+
+    border-radius: 17px !important;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,0.042),
+            rgba(255,255,255,0.015)
+        ) !important;
+
+    border:
+        1px solid rgba(255,255,255,0.07) !important;
+}
+
+
+/* =========================================================
+   25 — PREMIUM NETLIFY
+========================================================= */
+
+.create-premium-netlify {
+    width: 100% !important;
+
+    max-width: 100% !important;
+
+    min-width: 0 !important;
+
+    display: grid !important;
+
+    grid-template-columns:
+        minmax(0, 1fr)
+        auto !important;
+
+    align-items: center !important;
+
+    gap: 15px !important;
+
+    padding: 17px !important;
+
+    border-radius: 18px !important;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(20,184,166,0.07),
+            rgba(255,255,255,0.025)
+        ) !important;
+
+    border:
+        1px solid rgba(20,184,166,0.13) !important;
+}
+
+
+/* =========================================================
+   26 — PREMIUM INFO
+========================================================= */
+
+.create-premium-info {
+    width: 100% !important;
+
+    max-width: 100% !important;
+
+    padding: 15px 17px !important;
+
+    border-radius: 17px !important;
+
+    background:
+        rgba(59,130,246,0.055) !important;
+
+    border:
+        1px solid rgba(96,165,250,0.10) !important;
+}
+
+.create-premium-final {
+    width: 100% !important;
+
+    max-width: 100% !important;
+
+    padding: 17px !important;
+
+    border-radius: 18px !important;
+
+    text-align: center !important;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(124,58,237,0.11),
+            rgba(79,70,229,0.055)
+        ) !important;
+
+    border:
+        1px solid rgba(139,92,246,0.13) !important;
+}
+
+
+/* =========================================================
+   27 — MODAL ACTIONS
 ========================================================= */
 
 .create-modal-actions {
     width: 100% !important;
+
+    max-width: 100% !important;
 
     display: grid !important;
 
@@ -854,22 +1338,56 @@ select#projectTypeSelect,
         repeat(2, minmax(0, 1fr)) !important;
 
     gap: 12px !important;
+
+    padding: 0 24px 22px !important;
+}
+
+.create-modal-actions button {
+    min-width: 0 !important;
+
+    min-height: 50px !important;
+
+    border-radius: 15px !important;
+
+    font-size: 13px !important;
+
+    font-weight: 800 !important;
 }
 
 
 /* =========================================================
-   22 — DEPLOYMENT
+   28 — CREATE RESULT
 ========================================================= */
 
-.deployment-progress-wrap {
-    width: min(650px, 100%) !important;
+.create-result {
+    width: 100% !important;
 
-    margin: 20px auto 0 !important;
+    max-width: 100% !important;
+
+    min-width: 0 !important;
+
+    margin-top: 18px !important;
+
+    overflow-wrap: anywhere !important;
 }
 
 
+/* =========================================================
+   29 — DEPLOYMENT PROGRESS
+========================================================= */
+
+.deployment-progress-wrap {
+    width: 100% !important;
+
+    max-width: 100% !important;
+
+    margin-top: 18px !important;
+}
+
 .deployment-progress-track {
     width: 100% !important;
+
+    max-width: 100% !important;
 
     height: 8px !important;
 
@@ -878,403 +1396,906 @@ select#projectTypeSelect,
     border-radius: 999px !important;
 
     background:
-        rgba(255,255,255,.08) !important;
+        rgba(255,255,255,0.07) !important;
 }
 
-
-.deployment-progress-bar,
-#deploymentProgress {
+.deployment-progress-bar {
     height: 100% !important;
+
+    width: 0 !important;
+
+    max-width: 100% !important;
 
     border-radius: inherit !important;
 
-    background:
-        linear-gradient(
-            90deg,
-            #2563eb,
-            #6366f1,
-            #8b5cf6
-        ) !important;
-
-    transition: width .6s ease !important;
+    transition:
+        width 0.35s ease !important;
 }
 
 
 /* =========================================================
-   23 — SSL
+   30 — SSL
 ========================================================= */
 
 .ssl-icon {
-    width: 70px !important;
-    height: 70px !important;
-
-    margin: 0 auto 16px !important;
-
     display: flex !important;
 
     align-items: center !important;
+
     justify-content: center !important;
 
-    border-radius: 20px !important;
-
-    background:
-        rgba(59,130,246,.13) !important;
-
-    border:
-        1px solid rgba(96,165,250,.22) !important;
-
-    font-size: 28px !important;
+    margin: 0 auto !important;
 }
 
 
 /* =========================================================
-   24 — TABLET
+   31 — TABLET
 ========================================================= */
 
-@media (max-width: 1100px) {
+@media (max-width: 1050px) {
 
     .project-type-options {
         grid-template-columns:
             repeat(3, minmax(0, 1fr)) !important;
     }
 
-
     .templates-grid {
         grid-template-columns:
             repeat(2, minmax(0, 1fr)) !important;
+    }
 
-        gap: 16px !important;
+    .create-premium-features {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr)) !important;
+    }
+
+    .create-modal-card {
+        width: min(920px, 95vw) !important;
+
+        max-width: 95vw !important;
     }
 }
 
 
 /* =========================================================
-   25 — MOBILE
+   32 — MOBILE
 ========================================================= */
 
 @media (max-width: 720px) {
 
+    html,
+    body {
+        width: 100% !important;
+
+        max-width: 100% !important;
+
+        min-width: 0 !important;
+
+        overflow-x: hidden !important;
+    }
+
+    body {
+        font-size: 14px !important;
+    }
+
+
+    /* -----------------------------------------------------
+       GENERAL MOBILE CONTAINERS
+    ----------------------------------------------------- */
+
+    main,
+    section,
+    .section-card,
+    .project-type-field,
+    .project-type-picker,
+    .templates-grid,
+    .netlify-connect-container,
+    .netlify-teams-container {
+        max-width: 100% !important;
+
+        min-width: 0 !important;
+    }
+
+
+    /* -----------------------------------------------------
+       MOBILE HEADINGS
+    ----------------------------------------------------- */
+
+    h1 {
+        max-width: 100% !important;
+
+        font-size: 28px !important;
+
+        line-height: 1.35 !important;
+
+        overflow-wrap: anywhere !important;
+    }
+
+    h2 {
+        max-width: 100% !important;
+
+        font-size: 23px !important;
+
+        line-height: 1.4 !important;
+
+        overflow-wrap: anywhere !important;
+    }
+
+    h3 {
+        max-width: 100% !important;
+
+        font-size: 18px !important;
+
+        line-height: 1.45 !important;
+
+        overflow-wrap: anywhere !important;
+    }
+
+    p {
+        max-width: 100% !important;
+
+        line-height: 1.8 !important;
+
+        overflow-wrap: anywhere !important;
+    }
+
+
+    /* -----------------------------------------------------
+       SECTION CARD
+    ----------------------------------------------------- */
+
+    .section-card {
+        width: 100% !important;
+
+        max-width: 100% !important;
+
+        min-width: 0 !important;
+
+        margin-left: 0 !important;
+
+        margin-right: 0 !important;
+
+        padding-left: 12px !important;
+
+        padding-right: 12px !important;
+
+        overflow: visible !important;
+    }
+
+
+    /* -----------------------------------------------------
+       INPUTS
+    ----------------------------------------------------- */
+
+    input,
+    textarea,
+    select,
+    .field-input,
+    .field-select {
+        width: 100% !important;
+
+        max-width: 100% !important;
+
+        min-width: 0 !important;
+
+        font-size: 15px !important;
+    }
+
+
+    /* -----------------------------------------------------
+       CATEGORY PICKER
+    ----------------------------------------------------- */
+
+    .project-type-picker {
+        width: 100% !important;
+
+        max-width: 100% !important;
+
+        min-width: 0 !important;
+
+        padding: 13px !important;
+
+        border-radius: 20px !important;
+    }
+
+    .project-type-picker-header {
+        width: 100% !important;
+
+        max-width: 100% !important;
+
+        min-width: 0 !important;
+
+        margin-bottom: 12px !important;
+
+        overflow: hidden !important;
+    }
+
+    .project-type-picker-heading {
+        width: 100% !important;
+
+        max-width: 100% !important;
+
+        min-width: 0 !important;
+
+        overflow: hidden !important;
+    }
+
+    .project-type-picker-icon {
+        width: 38px !important;
+
+        height: 38px !important;
+
+        min-width: 38px !important;
+
+        flex-basis: 38px !important;
+
+        border-radius: 12px !important;
+
+        font-size: 17px !important;
+    }
+
+    .project-type-picker-title {
+        font-size: 15px !important;
+
+        white-space: normal !important;
+    }
+
+    .project-type-picker-subtitle {
+        font-size: 10px !important;
+
+        white-space: normal !important;
+    }
+
+
+    /* =====================================================
+       CATEGORY GRID — FORCE 2 COLUMNS
+    ===================================================== */
+
     .project-type-options {
+        width: 100% !important;
+
+        max-width: 100% !important;
+
+        min-width: 0 !important;
+
+        display: grid !important;
+
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr)) !important;
+
+        gap: 8px !important;
+
+        overflow: visible !important;
+    }
+
+
+    /* -----------------------------------------------------
+       CATEGORY CARD
+    ----------------------------------------------------- */
+
+    .project-type-option {
+        width: 100% !important;
+
+        max-width: 100% !important;
+
+        min-width: 0 !important;
+
+        min-height: 72px !important;
+
+        padding: 9px !important;
+
+        gap: 7px !important;
+
+        border-radius: 15px !important;
+
+        overflow: hidden !important;
+
+        transform: none !important;
+    }
+
+    .project-type-option:hover {
+        transform: none !important;
+    }
+
+
+    /* -----------------------------------------------------
+       CATEGORY ICON
+    ----------------------------------------------------- */
+
+    .project-type-option-icon {
+        width: 35px !important;
+
+        height: 35px !important;
+
+        min-width: 35px !important;
+
+        flex: 0 0 35px !important;
+
+        border-radius: 11px !important;
+
+        font-size: 15px !important;
+    }
+
+
+    /* -----------------------------------------------------
+       CATEGORY CONTENT
+    ----------------------------------------------------- */
+
+    .project-type-option-content {
+        min-width: 0 !important;
+
+        max-width: 100% !important;
+
+        overflow: hidden !important;
+    }
+
+    .project-type-option-content strong {
+        max-width: 100% !important;
+
+        font-size: 11px !important;
+
+        line-height: 1.4 !important;
+
+        white-space: nowrap !important;
+
+        overflow: hidden !important;
+
+        text-overflow: ellipsis !important;
+    }
+
+    .project-type-option-content small {
+        max-width: 100% !important;
+
+        font-size: 9px !important;
+
+        white-space: nowrap !important;
+
+        overflow: hidden !important;
+
+        text-overflow: ellipsis !important;
+    }
+
+
+    /* -----------------------------------------------------
+       CATEGORY CHECK
+    ----------------------------------------------------- */
+
+    .project-type-option-check {
+        width: 19px !important;
+
+        height: 19px !important;
+
+        min-width: 19px !important;
+
+        flex: 0 0 19px !important;
+
+        font-size: 9px !important;
+    }
+
+
+    /* =====================================================
+       TEMPLATES — MOBILE 2 COLUMNS
+    ===================================================== */
+
+    .templates-grid {
+        width: 100% !important;
+
+        max-width: 100% !important;
+
+        min-width: 0 !important;
+
+        display: grid !important;
+
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr)) !important;
+
+        gap: 9px !important;
+    }
+
+    .template-card {
+        width: 100% !important;
+
+        max-width: 100% !important;
+
+        min-width: 0 !important;
+
+        border-radius: 17px !important;
+    }
+
+    .template-card-body {
+        width: 100% !important;
+
+        max-width: 100% !important;
+
+        min-width: 0 !important;
+
+        padding: 10px !important;
+
+        gap: 7px !important;
+    }
+
+    .template-card-title {
+        font-size: 12px !important;
+    }
+
+    .template-card-description {
+        font-size: 9px !important;
+
+        line-height: 1.55 !important;
+    }
+
+    .template-card-actions {
+        width: 100% !important;
+
+        max-width: 100% !important;
+
+        gap: 6px !important;
+    }
+
+    .template-card-actions button {
+        min-width: 0 !important;
+
+        min-height: 35px !important;
+
+        border-radius: 9px !important;
+
+        font-size: 10px !important;
+    }
+
+
+    /* =====================================================
+       MODAL MOBILE
+    ===================================================== */
+
+    .create-modal-backdrop {
+        width: 100vw !important;
+
+        max-width: 100vw !important;
+
+        padding: 8px !important;
+
+        overflow-x: hidden !important;
+    }
+
+    .create-modal-card {
+        width: 96vw !important;
+
+        max-width: 96vw !important;
+
+        min-width: 0 !important;
+
+        max-height: calc(100vh - 16px) !important;
+
+        margin: 0 !important;
+
+        border-radius: 22px !important;
+
+        overflow-x: hidden !important;
+    }
+
+    .create-modal-header {
+        width: 100% !important;
+
+        max-width: 100% !important;
+
+        padding:
+            16px 16px 12px !important;
+    }
+
+    .create-modal-content {
+        width: 100% !important;
+
+        max-width: 100% !important;
+
+        min-width: 0 !important;
+
+        padding:
+            0 16px 16px !important;
+
+        overflow-x: hidden !important;
+    }
+
+    #createModalContent {
+        width: 100% !important;
+
+        max-width: 100% !important;
+
+        min-width: 0 !important;
+
+        padding: 0 !important;
+
+        overflow-x: hidden !important;
+    }
+
+    .create-modal-actions {
+        width: 100% !important;
+
+        max-width: 100% !important;
+
+        grid-template-columns: 1fr !important;
+
+        padding:
+            0 16px 16px !important;
+    }
+
+
+    /* -----------------------------------------------------
+       MODAL SUMMARY
+    ----------------------------------------------------- */
+
+    .create-premium-summary-grid {
+        width: 100% !important;
+
+        max-width: 100% !important;
+
         grid-template-columns:
             repeat(2, minmax(0, 1fr)) !important;
 
         gap: 8px !important;
     }
 
-
-    .project-type-option {
-        min-height: 70px !important;
-
-        grid-template-columns:
-            34px
-            minmax(0, 1fr)
-            18px !important;
-
-        gap: 7px !important;
-
-        padding: 9px !important;
-
-        border-radius: 14px !important;
+    .create-premium-summary-item:first-child {
+        grid-column: 1 / -1 !important;
     }
 
 
-    .project-type-option-icon {
-        width: 34px !important;
-        height: 34px !important;
+    /* -----------------------------------------------------
+       MODAL FEATURES
+    ----------------------------------------------------- */
 
-        border-radius: 10px !important;
-
-        font-size: 15px !important;
-    }
-
-
-    .project-type-option-content strong {
-        font-size: 9px !important;
-    }
-
-
-    .project-type-option-content small {
-        font-size: 7px !important;
-    }
-
-
-    .project-type-option-check {
-        width: 18px !important;
-        height: 18px !important;
-    }
-
-
-    .templates-grid {
-        grid-template-columns:
-            repeat(2, minmax(0, 1fr)) !important;
-
-        gap: 12px !important;
-    }
-
-
-    .templates-grid .template-card {
-        min-height: 285px !important;
-
-        border-radius: 17px !important;
-    }
-
-
-    .templates-grid .template-card-preview,
-    .templates-grid .template-preview {
-        min-height: 190px !important;
-    }
-
-
-    .templates-grid .template-thumbnail,
-    .templates-grid .template-image,
-    .templates-grid .template-fallback-preview {
-        min-height: 190px !important;
-    }
-
-
-    .templates-grid .template-card-body,
-    .templates-grid .template-card-content,
-    .templates-grid .template-content {
-        padding: 11px !important;
-
-        gap: 6px !important;
-    }
-
-
-    .templates-grid .template-card h3,
-    .templates-grid .template-name {
-        font-size: 11.5px !important;
-    }
-
-
-    .templates-grid .template-card p,
-    .templates-grid .template-description {
-        font-size: 8.5px !important;
-    }
-
-
-    .templates-grid .template-card-actions,
-    .templates-grid .template-actions {
-        gap: 5px !important;
-    }
-
-
-    .templates-grid .template-card-actions button,
-    .templates-grid .template-actions button {
-        min-height: 34px !important;
-
-        padding: 0 4px !important;
-
-        font-size: 8px !important;
-
-        border-radius: 8px !important;
-    }
-
-
-    .create-modal-backdrop {
-        padding: 10px !important;
-
-        align-items: flex-start !important;
-    }
-
-
-    .create-modal-card {
+    .create-premium-features {
         width: 100% !important;
 
         max-width: 100% !important;
 
-        max-height: calc(100vh - 20px) !important;
-
-        margin: auto 0 !important;
-    }
-
-
-    .create-modal-actions {
-        grid-template-columns: 1fr !important;
-    }
-}
-
-
-/* =========================================================
-   26 — SMALL MOBILE
-========================================================= */
-
-@media (max-width: 430px) {
-
-    .project-type-options {
-        gap: 7px !important;
-    }
-
-
-    .project-type-option {
-        min-height: 66px !important;
-
-        padding: 8px !important;
-    }
-
-
-    .project-type-option-icon {
-        width: 31px !important;
-        height: 31px !important;
-
-        font-size: 14px !important;
-    }
-
-
-    .project-type-option-content strong {
-        font-size: 8.5px !important;
-    }
-
-
-    .project-type-option-content small {
-        font-size: 6.7px !important;
-    }
-
-
-    .templates-grid {
         grid-template-columns:
             repeat(2, minmax(0, 1fr)) !important;
+
+        gap: 8px !important;
+    }
+
+    .create-premium-feature {
+        min-width: 0 !important;
+
+        min-height: 85px !important;
+
+        padding: 11px !important;
+    }
+
+
+    /* -----------------------------------------------------
+       NETLIFY MODAL
+    ----------------------------------------------------- */
+
+    .create-premium-netlify {
+        width: 100% !important;
+
+        max-width: 100% !important;
+
+        grid-template-columns:
+            1fr !important;
 
         gap: 10px !important;
     }
-
-
-    .templates-grid .template-card {
-        min-height: 255px !important;
-
-        border-radius: 15px !important;
-    }
-
-
-    .templates-grid .template-card-preview,
-    .templates-grid .template-preview,
-    .templates-grid .template-thumbnail,
-    .templates-grid .template-image,
-    .templates-grid .template-fallback-preview {
-        min-height: 165px !important;
-    }
-
-
-    .templates-grid .template-card-body,
-    .templates-grid .template-card-content,
-    .templates-grid .template-content {
-        padding: 9px !important;
-    }
-
-
-    .templates-grid .template-card h3,
-    .templates-grid .template-name {
-        font-size: 10.5px !important;
-    }
-
-
-    .templates-grid .template-card p,
-    .templates-grid .template-description {
-        display: -webkit-box !important;
-
-        -webkit-line-clamp: 2 !important;
-
-        -webkit-box-orient: vertical !important;
-
-        overflow: hidden !important;
-
-        font-size: 8px !important;
-    }
-
-
-    .templates-grid .template-card-actions button,
-    .templates-grid .template-actions button {
-        min-height: 32px !important;
-
-        font-size: 7.5px !important;
-
-        padding: 0 3px !important;
-    }
 }
 
 
 /* =========================================================
-   27 — VERY SMALL
+   33 — SMALL MOBILE
 ========================================================= */
 
-@media (max-width: 350px) {
+@media (max-width: 480px) {
+
+    .section-card {
+        padding-left: 10px !important;
+
+        padding-right: 10px !important;
+    }
+
+    .project-type-picker {
+        padding: 10px !important;
+    }
 
     .project-type-options {
         grid-template-columns:
             repeat(2, minmax(0, 1fr)) !important;
+
+        gap: 7px !important;
+    }
+
+    .project-type-option {
+        min-height: 69px !important;
+
+        padding: 8px !important;
 
         gap: 6px !important;
     }
 
+    .project-type-option-icon {
+        width: 32px !important;
 
-    .project-type-option {
-        min-height: 62px !important;
+        height: 32px !important;
 
-        grid-template-columns:
-            28px
-            minmax(0, 1fr) !important;
+        min-width: 32px !important;
+
+        flex-basis: 32px !important;
+
+        font-size: 14px !important;
     }
 
+    .project-type-option-content strong {
+        font-size: 10px !important;
+    }
+
+    .project-type-option-content small {
+        font-size: 8px !important;
+    }
 
     .project-type-option-check {
         display: none !important;
     }
 
 
-    .project-type-option-icon {
-        width: 28px !important;
-        height: 28px !important;
-
-        font-size: 12px !important;
-    }
-
-
-    .project-type-option-content strong {
-        font-size: 8px !important;
-    }
-
-
-    .project-type-option-content small {
-        font-size: 6px !important;
-    }
-
+    /* Templates */
 
     .templates-grid {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr)) !important;
+
         gap: 8px !important;
     }
 
-
-    .templates-grid .template-card {
-        min-height: 235px !important;
-    }
-
-
-    .templates-grid .template-card-preview,
-    .templates-grid .template-preview,
-    .templates-grid .template-thumbnail,
-    .templates-grid .template-image,
-    .templates-grid .template-fallback-preview {
-        min-height: 150px !important;
-    }
-
-
-    .templates-grid .template-card-body,
-    .templates-grid .template-card-content,
-    .templates-grid .template-content {
+    .template-card-body {
         padding: 8px !important;
+    }
+
+    .template-card-title {
+        font-size: 11px !important;
+    }
+
+    .template-card-description {
+        display: none !important;
+    }
+
+    .template-card-actions {
+        grid-template-columns:
+            1fr !important;
+    }
+
+    .template-card-actions button {
+        min-height: 32px !important;
+
+        font-size: 9px !important;
+    }
+
+
+    /* Modal */
+
+    .create-premium-summary-grid {
+        grid-template-columns:
+            1fr !important;
+    }
+
+    .create-premium-summary-item:first-child {
+        grid-column: auto !important;
+    }
+
+    .create-premium-features {
+        grid-template-columns:
+            1fr 1fr !important;
+    }
+
+    .create-modal-header {
+        padding:
+            14px 13px 10px !important;
+    }
+
+    .create-modal-content {
+        padding:
+            0 13px 13px !important;
+    }
+
+    .create-modal-actions {
+        padding:
+            0 13px 13px !important;
     }
 }
 
 
 /* =========================================================
-   28 — REDUCED MOTION
+   34 — VERY SMALL DEVICES
+========================================================= */
+
+@media (max-width: 360px) {
+
+    .project-type-picker {
+        padding: 9px !important;
+    }
+
+    .project-type-options {
+        gap: 6px !important;
+    }
+
+    .project-type-option {
+        min-height: 65px !important;
+
+        padding: 7px !important;
+
+        gap: 5px !important;
+    }
+
+    .project-type-option-icon {
+        width: 29px !important;
+
+        height: 29px !important;
+
+        min-width: 29px !important;
+
+        flex-basis: 29px !important;
+
+        font-size: 12px !important;
+    }
+
+    .project-type-option-content strong {
+        font-size: 9px !important;
+    }
+
+    .project-type-option-content small {
+        font-size: 7px !important;
+    }
+
+    .templates-grid {
+        gap: 6px !important;
+    }
+
+    .template-card {
+        border-radius: 13px !important;
+    }
+
+    .template-card-body {
+        padding: 7px !important;
+    }
+
+    .template-card-title {
+        font-size: 10px !important;
+    }
+}
+
+
+/* =========================================================
+   35 — REDUCED MOTION
 ========================================================= */
 
 @media (prefers-reduced-motion: reduce) {
 
     .project-type-option,
-    .templates-grid .template-card,
-    .templates-grid .template-card-actions button {
+    .project-type-option-icon,
+    .project-type-option-check,
+    .template-card,
+    .template-preview img,
+    .template-card img,
+    .deployment-progress-bar {
         transition: none !important;
     }
 }
+
+
+/* =========================================================
+   36 — FINAL HARD MOBILE OVERFLOW LOCK
+   ---------------------------------------------------------
+   هذا هو الإصلاح الأساسي للمشكل اللي باين فالصورة.
+========================================================= */
+
+@media (max-width: 720px) {
+
+    html,
+    body {
+        width: 100vw !important;
+
+        max-width: 100vw !important;
+
+        min-width: 0 !important;
+
+        overflow-x: hidden !important;
+    }
+
+    main,
+    section,
+    .page,
+    .app,
+    #app {
+        width: 100% !important;
+
+        max-width: 100% !important;
+
+        min-width: 0 !important;
+
+        overflow-x: hidden !important;
+    }
+
+    .section-card,
+    .field,
+    .form-group,
+    .project-type-field,
+    .project-type-picker,
+    .templates-grid,
+    .netlify-connect-container,
+    .netlify-teams-container,
+    .create-result {
+        width: 100% !important;
+
+        max-width: 100% !important;
+
+        min-width: 0 !important;
+    }
+
+
+    /* Prevent long Arabic / English text from pushing page */
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6,
+    p,
+    span,
+    strong,
+    small,
+    label {
+        max-width: 100% !important;
+
+        overflow-wrap: anywhere !important;
+
+        word-break: normal !important;
+    }
+
+
+    /* Inputs cannot escape viewport */
+
+    input,
+    textarea,
+    select,
+    button {
+        max-width: 100% !important;
+    }
+
+
+    /* Keep visual category cards inside viewport */
+
+    .project-type-options {
+        width: 100% !important;
+
+        max-width: 100% !important;
+
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr)) !important;
+
+        gap: 8px !important;
+    }
+
+
+    /* Keep template cards inside viewport */
+
+    .templates-grid {
+        width: 100% !important;
+
+        max-width: 100% !important;
+
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr)) !important;
+    }
+
+
+    /* Modal can never create horizontal scroll */
+
+    .create-modal-backdrop,
+    .create-modal-card,
+    .create-modal-content,
+    #createModalContent,
+    .create-premium-wrapper {
+        max-width: 100vw !important;
+
+        overflow-x: hidden !important;
+    }
+       }
