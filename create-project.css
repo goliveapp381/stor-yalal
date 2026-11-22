@@ -1,5 +1,5 @@
 /* =========================================================
-   TEMPLATECRAFT PRO — CORE GALAXY UI (FILE 1 OF 3)
+   TEMPLATECRAFT PRO — CORE GALAXY UI (UPDATED)
 ========================================================= */
 
 :root {
@@ -240,17 +240,20 @@ main.container-main { position: relative; padding-top: 34px; padding-bottom: 90p
 .field-label { display: block; margin-bottom: 8px; color: rgba(226,232,240,.82); font-size: 11px; font-weight: 800; }
 
 .field-input, .field-select {
-    width: 100%; min-height: 54px; padding: 0 17px; outline: none; color: #fff; background: rgba(255,255,255,.055);
+    width: 100%; min-height: 54px; padding: 0 17px; outline: none; color: #fff; background-color: #0d132b;
     border: 1px solid rgba(255,255,255,.10); border-radius: 16px; font-size: 12px; font-weight: 600;
+    color-scheme: dark;
     transition: background .25s ease, border-color .25s ease, box-shadow .25s ease, transform .25s ease;
 }
 
 .field-input::placeholder { color: rgba(148,163,184,.58); }
-.field-input:hover, .field-select:hover { background: rgba(255,255,255,.075); border-color: rgba(139,92,246,.30); }
+.field-input:hover, .field-select:hover { background-color: #111836; border-color: rgba(139,92,246,.30); }
 .field-input:focus, .field-select:focus {
-    background: rgba(255,255,255,.09); border-color: rgba(139,92,246,.65);
+    background-color: #131b3d; border-color: rgba(139,92,246,.65);
     box-shadow: 0 0 0 4px rgba(124,58,237,.10), 0 0 30px rgba(124,58,237,.08); transform: translateY(-1px);
 }
+
+.field-select option { color: #f8fafc; background: #0b1024; font-weight: 600; }
 
 .selected-template-bar {
     width: 100%; min-height: 54px; margin-top: 17px; display: flex; align-items: center; padding: 12px 16px;
@@ -260,6 +263,8 @@ main.container-main { position: relative; padding-top: 34px; padding-bottom: 90p
 
 /* Templates Grid & Cards */
 .templates-grid { position: relative; width: 100%; display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 20px; align-items: stretch; }
+.templates-grid:not(:empty) ~ #categoryLoadingMessage,
+.templates-grid:not(:empty) + #categoryLoadingMessage { display: none !important; }
 
 .template-card {
     position: relative; min-width: 0; min-height: 0; display: flex; flex-direction: column; overflow: hidden; border-radius: 24px;
@@ -283,38 +288,60 @@ main.container-main { position: relative; padding-top: 34px; padding-bottom: 90p
     border-color: rgba(139,92,246,.75); box-shadow: 0 0 0 2px rgba(124,58,237,.16), 0 25px 75px rgba(79,70,229,.24), 0 0 50px rgba(124,58,237,.12);
 }
 
-.template-preview {
-    position: relative; width: 100%; aspect-ratio: 16 / 10; overflow: hidden; display: flex; align-items: center; justify-content: center;
-    background: radial-gradient(circle at 50% 20%, rgba(124,58,237,.15), transparent 45%), linear-gradient(145deg, #080d20, #11172f 55%, #070a18);
-    border-bottom: 1px solid rgba(255,255,255,.08);
+.template-preview, .template-card-preview {
+    position: relative; width: 100%; overflow: hidden; display: flex; flex-direction: column; flex: 1 1 auto;
 }
 
-.template-image, .template-card img {
-    display: block; width: 100%; height: 100%; max-width: 100%; max-height: 100%;
+.template-thumbnail, .template-image, .template-card img {
+    display: block; width: 100%; aspect-ratio: 16 / 10; height: auto; max-width: 100%; max-height: 100%;
     object-fit: contain; object-position: center; background: #0b1024; border: 0;
     transition: transform .65s cubic-bezier(.16,1,.3,1), filter .4s ease;
 }
 
 @media (hover: hover) { .template-card:hover img { transform: scale(1.018); filter: saturate(1.06) contrast(1.015); } }
 
-.template-card-content, .template-content {
-    position: relative; z-index: 4; min-width: 0; flex: 1 1 auto; display: flex; flex-direction: column; justify-content: space-between; gap: 10px; padding: 17px;
+.template-card-content, .template-content, .template-card-body {
+    position: relative; z-index: 4; min-width: 0; flex: 1 1 auto; display: flex; flex-direction: column; justify-content: space-between; gap: 12px; padding: 17px;
 }
 
 .template-card h3, .template-name { margin: 0; color: #fff; font-size: 15px; line-height: 1.5; font-weight: 900; overflow-wrap: anywhere; }
 .template-card p, .template-description { margin: 6px 0 0; color: rgba(203,213,225,.62); font-size: 10px; line-height: 1.8; overflow-wrap: anywhere; }
 
-.template-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-top: auto; padding-top: 14px; width: 100%; }
-.template-actions button {
-    display: inline-flex; align-items: center; justify-content: center; min-height: 40px; padding: 0 12px; border-radius: 12px;
-    border: 0; font-size: 10px; font-weight: 900; white-space: nowrap; width: 100%; transition: transform .2s ease, box-shadow .2s ease, background .2s ease;
+.template-actions, .template-card-actions {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 10px !important;
+    margin-top: auto;
+    padding-top: 14px;
+    width: 100%;
 }
-.template-actions button:hover { transform: translateY(-2px); }
 
-.template-preview-btn, .preview-button { color: rgba(226,232,240,.88); background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.12) !important; }
-.template-preview-btn:hover, .preview-button:hover { background: rgba(255,255,255,.13); }
-.template-select-btn, .select-template-button { color: #fff; background: var(--tc-gradient-purple); box-shadow: 0 8px 24px rgba(124,58,237,.25); }
-.template-select-btn:hover, .select-template-button:hover { box-shadow: 0 12px 32px rgba(124,58,237,.38); }
+.template-actions button, .template-card-actions button {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    min-height: 40px;
+    padding: 0 12px;
+    border-radius: 12px;
+    border: 0;
+    font-size: 10px;
+    font-weight: 900;
+    white-space: nowrap;
+    width: 100% !important;
+    transition: transform .2s ease, box-shadow .2s ease, background .2s ease;
+}
+
+.template-actions button:hover, .template-card-actions button:hover { transform: translateY(-2px); }
+
+.template-preview-btn, .preview-button, .preview-template-btn {
+    color: rgba(226,232,240,.88); background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.12) !important;
+}
+.template-preview-btn:hover, .preview-button:hover, .preview-template-btn:hover { background: rgba(255,255,255,.13); }
+
+.template-select-btn, .select-template-button, .select-template-btn {
+    color: #fff; background: var(--tc-gradient-purple); box-shadow: 0 8px 24px rgba(124,58,237,.25);
+}
+.template-select-btn:hover, .select-template-button:hover, .select-template-btn:hover { box-shadow: 0 12px 32px rgba(124,58,237,.38); }
 
 /* State & Netlify & Buttons */
 .state-message {
@@ -373,6 +400,46 @@ main.container-main { position: relative; padding-top: 34px; padding-bottom: 90p
 }
 .modal.show, .modal.active { display: flex; }
 @keyframes modalCardIn { from { opacity: 0; transform: translateY(25px) scale(.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
+
+/* Confirm Modal Galaxy Layout */
+.create-modal-card {
+    position: relative; width: min(920px, 96vw); max-width: 920px; max-height: 92vh; height: auto;
+    padding: 32px 26px; border-radius: 30px; overflow-y: auto; overflow-x: hidden; color: #f8fafc;
+    background:
+        radial-gradient(circle at 18% 15%, rgba(124, 58, 237, 0.24), transparent 36%),
+        radial-gradient(circle at 85% 20%, rgba(6, 182, 212, 0.18), transparent 34%),
+        radial-gradient(circle at 50% 85%, rgba(99, 102, 241, 0.16), transparent 40%),
+        linear-gradient(155deg, #070b1d 0%, #0d1330 55%, #060917 100%);
+    border: 1px solid rgba(167, 139, 250, 0.28);
+    box-shadow: 0 40px 120px rgba(0, 0, 0, 0.75), 0 0 65px rgba(124, 58, 237, 0.20);
+}
+
+.create-modal-card #createModalContent {
+    background: transparent !important; border: 0 !important; padding: 0 !important; max-height: none !important; overflow: visible !important;
+}
+
+.create-modal-card .create-premium-summary-grid,
+.create-modal-card .create-premium-features {
+    display: grid !important; grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: 12px !important;
+}
+
+.create-modal-card .create-premium-summary-item:first-child { grid-column: 1 / -1 !important; }
+
+.create-modal-card .create-premium-feature {
+    display: flex !important; flex-direction: row !important; align-items: center !important; justify-content: flex-start !important;
+    gap: 12px !important; padding: 14px 16px !important; border-radius: 18px !important;
+    background: rgba(15, 23, 42, 0.80) !important; border: 1px solid rgba(148, 163, 184, 0.18) !important;
+}
+
+.create-modal-card .create-premium-feature-icon {
+    flex: 0 0 auto !important; width: 38px !important; height: 38px !important;
+    display: flex !important; align-items: center !important; justify-content: center !important;
+    border-radius: 12px !important; background: rgba(124, 58, 237, 0.18) !important; font-size: 18px !important;
+}
+
+.create-modal-card .create-premium-feature-content {
+    display: flex !important; flex-direction: column !important; gap: 3px !important; min-width: 0 !important; text-align: right !important;
+}
 
 .deployment-overlay {
     position: fixed; inset: 0; z-index: 9000; display: none; align-items: center; justify-content: center; padding: 20px; overflow: hidden;
@@ -444,10 +511,13 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
     .section-card { padding: 20px; border-radius: 22px; }
     .templates-grid { grid-template-columns: 1fr; gap: 16px; }
     .netlify-status { align-items: flex-start; flex-direction: column; }
+    .create-modal-card .create-premium-summary-grid,
+    .create-modal-card .create-premium-features { grid-template-columns: 1fr !important; }
+    .create-modal-card .create-premium-summary-item:first-child { grid-column: auto !important; }
     .deployment-card { width: 100%; padding: 30px 18px 22px; border-radius: 27px; }
     .deployment-stages { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 430px) {
-    .template-actions { grid-template-columns: 1fr; }
+    .template-actions, .template-card-actions { grid-template-columns: 1fr !important; }
 }
