@@ -2,7 +2,7 @@
    TEMPLATECRAFT PRO
    CREATE PROJECT
    ULTRA CINEMATIC GALAXY UI
-   VERSION 6.0
+   VERSION 6.0 — FULL MERGED & FIXED
    VISUAL ONLY — NO LOGIC CHANGES
 ========================================================= */
 
@@ -1258,20 +1258,27 @@ main.container-main {
 
 
 /* =========================================================
-   16 — CUSTOM SELECT
+   16 — CUSTOM SELECT (FIXED DARK DROPDOWN)
 ========================================================= */
 
-.field-select {
+.field-select,
+select.field-select,
+#projectType,
+#projectTypeSelect,
+[id*="type"] select,
+select[class*="type"] {
     cursor: pointer;
 
     appearance: none;
     -webkit-appearance: none;
     -moz-appearance: none;
 
-    padding-left: 48px;
+    color: #f8fafc !important;
+    background-color: #0d132b !important;
+    border-color: rgba(139, 92, 246, 0.35) !important;
+    color-scheme: dark;
 
-    background-color:
-        rgba(255,255,255,.055);
+    padding-left: 48px;
 
     background-image:
         linear-gradient(
@@ -1297,18 +1304,19 @@ main.container-main {
         no-repeat;
 }
 
-.field-select:focus {
-    background-color:
-        rgba(255,255,255,.09);
+.field-select:focus,
+select.field-select:focus,
+#projectType:focus,
+#projectTypeSelect:focus {
+    background-color: #111836 !important;
 }
 
-.field-select option {
-    color:
-        #f8fafc;
-
-    background:
-        #11172f;
-
+.field-select option,
+select.field-select option,
+#projectType option,
+#projectTypeSelect option {
+    color: #f8fafc !important;
+    background: #0b1024 !important;
     font-weight: 600;
 }
 
@@ -1464,7 +1472,8 @@ main.container-main {
     }
 }
 
-.template-card.selected {
+.template-card.selected,
+.template-card.is-selected {
     border-color:
         rgba(139,92,246,.75);
 
@@ -1476,19 +1485,14 @@ main.container-main {
 
 
 /* =========================================================
-   20 — TEMPLATE PREVIEW
-   FIXED:
-   - No cropping
-   - Full image visible
-   - Desktop + mobile friendly
+   20 — TEMPLATE PREVIEW & JS CARD BRIDGE
 ========================================================= */
 
-.template-preview {
+.template-preview,
+.templates-grid .template-card-preview {
     position: relative;
 
     width: 100%;
-
-    aspect-ratio: 16 / 10;
 
     min-height: 0;
 
@@ -1496,8 +1500,11 @@ main.container-main {
 
     display: flex;
 
-    align-items: center;
-    justify-content: center;
+    flex-direction: column;
+
+    flex: 1 1 auto;
+
+    height: 100%;
 
     background:
         radial-gradient(
@@ -1516,13 +1523,18 @@ main.container-main {
         1px solid rgba(255,255,255,.08);
 }
 
-
-/* =========================================================
-   TEMPLATE IMAGE
-========================================================= */
+.template-preview {
+    aspect-ratio: 16 / 10;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    height: auto;
+}
 
 .template-image,
-.template-card img {
+.template-card img,
+.templates-grid .template-thumbnail,
+.templates-grid .template-fallback-preview {
     display: block;
 
     width: 100%;
@@ -1546,19 +1558,20 @@ main.container-main {
         filter .4s ease;
 }
 
+.templates-grid .template-thumbnail,
+.templates-grid .template-fallback-preview {
+    aspect-ratio: 16 / 10;
+    height: auto;
+}
 
-/*
-   الصورة ما تبقاش تكبر وتقطع المحتوى
-*/
+.templates-grid .template-fallback-preview.is-hidden,
+.templates-grid .template-thumbnail.is-hidden {
+    display: none;
+}
 
 .template-card img {
     flex: 0 0 auto;
 }
-
-
-/*
-   تأثير خفيف فقط عند Hover
-*/
 
 @media (hover: hover) {
 
@@ -1578,8 +1591,10 @@ main.container-main {
 ========================================================= */
 
 .template-card-content,
-.template-content {
+.template-content,
+.templates-grid .template-card-body {
     position: relative;
+    z-index: 4;
 
     min-width: 0;
 
@@ -1588,6 +1603,9 @@ main.container-main {
     display: flex;
 
     flex-direction: column;
+    justify-content: space-between;
+
+    gap: 10px;
 
     padding: 17px;
 }
@@ -1627,21 +1645,31 @@ main.container-main {
    22 — TEMPLATE ACTIONS
 ========================================================= */
 
-.template-actions {
+.template-actions,
+.templates-grid .template-card-actions {
     display: grid;
 
     grid-template-columns:
-        1fr 1fr;
+        repeat(2, minmax(0, 1fr));
 
     gap: 8px;
 
     margin-top: auto;
 
     padding-top: 14px;
+
+    width: 100%;
 }
 
-.template-actions button {
+.template-actions button,
+.templates-grid .template-card-actions button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
     min-height: 40px;
+
+    padding: 0 12px;
 
     border-radius: 12px;
 
@@ -1651,37 +1679,45 @@ main.container-main {
 
     font-weight: 900;
 
+    white-space: nowrap;
+
+    width: 100%;
+
     transition:
         transform .2s ease,
         box-shadow .2s ease,
         background .2s ease;
 }
 
-.template-actions button:hover {
+.template-actions button:hover,
+.templates-grid .template-card-actions button:hover {
     transform:
         translateY(-2px);
 }
 
 .template-preview-btn,
-.preview-button {
+.preview-button,
+.templates-grid .preview-template-btn {
     color:
-        rgba(226,232,240,.85);
+        rgba(226,232,240,.88);
 
     background:
-        rgba(255,255,255,.07);
+        rgba(255,255,255,.08);
 
     border:
-        1px solid rgba(255,255,255,.09) !important;
+        1px solid rgba(255,255,255,.12) !important;
 }
 
 .template-preview-btn:hover,
-.preview-button:hover {
+.preview-button:hover,
+.templates-grid .preview-template-btn:hover {
     background:
-        rgba(255,255,255,.12);
+        rgba(255,255,255,.13);
 }
 
 .template-select-btn,
-.select-template-button {
+.select-template-button,
+.templates-grid .select-template-btn {
     color: #fff;
 
     background:
@@ -1692,7 +1728,8 @@ main.container-main {
 }
 
 .template-select-btn:hover,
-.select-template-button:hover {
+.select-template-button:hover,
+.templates-grid .select-template-btn:hover {
     box-shadow:
         0 12px 32px rgba(124,58,237,.38);
 }
@@ -2001,7 +2038,7 @@ main.container-main {
 
 
 /* =========================================================
-   26 — CREATE MODAL
+   26 — CREATE MODAL (WIDE + ANIMATED STARS + FEATURE CARDS)
 ========================================================= */
 
 .modal {
@@ -2055,38 +2092,89 @@ main.container-main {
 .create-modal-card {
     position: relative;
 
-    width:
-        min(560px,100%);
+    width: min(860px, 96vw) !important;
+    max-width: 860px !important;
 
-    max-height: 90vh;
+    max-height: 92vh !important;
 
-    overflow-y: auto;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
 
-    padding: 30px;
+    padding: 34px 30px !important;
 
-    border-radius: 28px;
+    border-radius: 30px !important;
 
     color: #fff;
 
     background:
-        linear-gradient(
-            145deg,
-            #10152e,
-            #111827
-        );
+        radial-gradient(circle at 18% 15%, rgba(124, 58, 237, 0.22), transparent 36%),
+        radial-gradient(circle at 85% 20%, rgba(6, 182, 212, 0.16), transparent 34%),
+        radial-gradient(circle at 50% 85%, rgba(99, 102, 241, 0.14), transparent 40%),
+        linear-gradient(155deg, #070b1d 0%, #0d1330 55%, #060917 100%) !important;
 
     border:
-        1px solid rgba(255,255,255,.11);
+        1px solid rgba(167, 139, 250, 0.25) !important;
 
     box-shadow:
-        0 50px 140px rgba(0,0,0,.55),
-        0 0 60px rgba(124,58,237,.12),
-        inset 0 1px 0 rgba(255,255,255,.07);
+        0 40px 120px rgba(0, 0, 0, 0.72),
+        0 0 60px rgba(124, 58, 237, 0.18),
+        inset 0 1px 0 rgba(255,255,255,.08);
+
+    isolation: isolate !important;
 
     animation:
         modalCardIn
         .45s
         cubic-bezier(.16,1,.3,1);
+}
+
+/* طبقة النجوم المتحركة داخل نافذة التأكيد */
+.create-modal-card::before {
+    content: "" !important;
+    position: fixed !important;
+    inset: 0 !important;
+    z-index: -2 !important;
+    pointer-events: none !important;
+    background-image:
+        radial-gradient(circle, rgba(255, 255, 255, 0.9) 0 1.2px, transparent 1.8px),
+        radial-gradient(circle, rgba(196, 181, 253, 0.75) 0 1px, transparent 1.6px),
+        radial-gradient(circle, rgba(103, 232, 249, 0.7) 0 1.4px, transparent 2px) !important;
+    background-size: 150px 150px, 230px 230px, 310px 310px !important;
+    background-position: 0 0, 45px 80px, 110px 30px !important;
+    animation: confirmStarsDrift 22s linear infinite !important;
+}
+
+/* توهج ونجوم إضافية متحركة */
+.create-modal-card::after {
+    content: "" !important;
+    position: fixed !important;
+    inset: -20% !important;
+    z-index: -1 !important;
+    pointer-events: none !important;
+    background:
+        radial-gradient(circle at 25% 30%, rgba(168, 85, 247, 0.14), transparent 28%),
+        radial-gradient(circle at 78% 65%, rgba(37, 99, 235, 0.14), transparent 30%) !important;
+    animation: confirmStarsTwinkle 6s ease-in-out infinite alternate !important;
+}
+
+@keyframes confirmStarsDrift {
+    from {
+        background-position: 0 0, 45px 80px, 110px 30px;
+    }
+    to {
+        background-position: 150px 150px, -230px 230px, 310px -310px;
+    }
+}
+
+@keyframes confirmStarsTwinkle {
+    0% {
+        opacity: 0.55;
+        transform: scale(1);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1.04);
+    }
 }
 
 @keyframes modalCardIn {
@@ -2106,6 +2194,62 @@ main.container-main {
             translateY(0)
             scale(1);
     }
+}
+
+/* إزالة الخلفية البيضاء وحاوية السكرول الضيقة داخل النافذة */
+.create-modal-card > div,
+.create-modal-card .modal-body,
+.create-modal-card .confirm-content,
+.create-modal-card .confirm-summary,
+.create-modal-card .features-list,
+.create-modal-card .project-features {
+    background: transparent !important;
+    color: #f8fafc !important;
+    max-height: none !important;
+    overflow: visible !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+}
+
+/* جعل كل ميزة داخل كادر مستقل وأنيق */
+.create-modal-card .feature-item,
+.create-modal-card .feature-card,
+.create-modal-card .benefit-item,
+.create-modal-card .benefit-card,
+.create-modal-card .modal-feature,
+.create-modal-card [class*="feature"],
+.create-modal-card [class*="benefit"],
+.create-modal-card li {
+    position: relative !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 6px !important;
+    margin-bottom: 12px !important;
+    padding: 15px 18px !important;
+    border-radius: 18px !important;
+    background: rgba(15, 23, 42, 0.72) !important;
+    border: 1px solid rgba(148, 163, 184, 0.18) !important;
+    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.28) !important;
+    backdrop-filter: blur(10px) !important;
+    transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease !important;
+}
+
+.create-modal-card .feature-item:hover,
+.create-modal-card .feature-card:hover,
+.create-modal-card .benefit-item:hover,
+.create-modal-card .benefit-card:hover,
+.create-modal-card .modal-feature:hover,
+.create-modal-card [class*="feature"]:hover,
+.create-modal-card [class*="benefit"]:hover,
+.create-modal-card li:hover {
+    transform: translateY(-2px) !important;
+    border-color: rgba(167, 139, 250, 0.45) !important;
+    box-shadow: 0 14px 32px rgba(124, 58, 237, 0.18) !important;
+}
+
+.create-modal-card * {
+    max-width: 100%;
 }
 
 
@@ -3266,11 +3410,6 @@ a:focus-visible {
         gap: 16px;
     }
 
-    /*
-       مهم للهاتف:
-       الصورة كاملة، ماشي cropped
-    */
-
     .template-preview {
         aspect-ratio:
             16 / 10;
@@ -3362,6 +3501,12 @@ a:focus-visible {
     .stage-message {
         font-size: 8.5px;
     }
+
+    .create-modal-card {
+        width: 96vw !important;
+        padding: 24px 16px !important;
+        border-radius: 24px !important;
+    }
 }
 
 
@@ -3410,17 +3555,18 @@ a:focus-visible {
             175px;
     }
 
-    .template-actions {
+    .template-actions,
+    .templates-grid .template-card-actions {
         grid-template-columns:
             1fr;
     }
 
     .create-modal-card {
         padding:
-            21px;
+            21px !important;
 
         border-radius:
-            22px;
+            22px !important;
     }
 
     .deployment-overlay {
@@ -3478,7 +3624,8 @@ a:focus-visible {
             13px;
     }
 
-    .template-actions button {
+    .template-actions button,
+    .templates-grid .template-card-actions button {
         min-height:
             38px;
 
@@ -3571,7 +3718,9 @@ a:focus-visible {
 .deployment-card::before,
 .deployment-card::after,
 .deployment-rocket::before,
-.deployment-rocket::after {
+.deployment-rocket::after,
+.create-modal-card::before,
+.create-modal-card::after {
     pointer-events: none;
 }
 
@@ -3588,101 +3737,3 @@ a:focus-visible {
 /* =========================================================
    END — TEMPLATECRAFT PRO CREATE PROJECT
 ========================================================= */
-/* =========================================================
-   FIXES — SELECT DROPDOWN, TEMPLATE CARD & CONFIRM MODAL
-========================================================= */
-
-/* 1. إصلاح قائمة نوع المشروع باش تبقا داكنة ومتناسقة */
-.field-select,
-select.field-select,
-#projectType,
-[id*="type"] select,
-select[class*="type"] {
-    color: #f8fafc !important;
-    background-color: #0d132b !important;
-    border-color: rgba(139, 92, 246, 0.35) !important;
-    color-scheme: dark;
-}
-
-.field-select option,
-select.field-select option {
-    background-color: #0b1024 !important;
-    color: #f8fafc !important;
-}
-
-/* 2. ضمان أخذ كارت القالب والشكل والأزرار تنسيقاً كاملاً ومتناسقاً */
-.template-card {
-    display: flex !important;
-    flex-direction: column !important;
-    justify-content: space-between !important;
-    height: 100%;
-}
-
-.template-preview {
-    width: 100% !important;
-    aspect-ratio: 16 / 10 !important;
-    background: #090e22 !important;
-    overflow: hidden !important;
-}
-
-.template-card img,
-.template-image {
-    width: 100% !important;
-    height: 100% !important;
-    object-fit: contain !important;
-    background: #090e22 !important;
-}
-
-.template-card-content,
-.template-content {
-    display: flex !important;
-    flex-direction: column !important;
-    flex: 1 1 auto !important;
-    gap: 8px;
-}
-
-.template-actions {
-    display: grid !important;
-    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-    gap: 10px !important;
-    margin-top: auto !important;
-    padding-top: 14px !important;
-    width: 100%;
-}
-
-.template-actions button,
-.template-actions a,
-.template-preview-btn,
-.preview-button,
-.template-select-btn,
-.select-template-button {
-    display: inline-flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    min-height: 40px !important;
-    padding: 0 12px !important;
-    border-radius: 12px !important;
-    font-size: 11px !important;
-    font-weight: 800 !important;
-    white-space: nowrap !important;
-    width: 100% !important;
-}
-
-/* 3. إزالة اللون الأبيض داخل نافذة تأكيد إنشاء المشروع */
-.modal .create-modal-card > div:not(:first-child),
-.create-modal-card .modal-body,
-.create-modal-card .confirm-box,
-.create-modal-card .project-summary,
-.create-modal-card pre,
-.create-modal-card textarea,
-.create-modal-card table {
-    background: rgba(255, 255, 255, 0.04) !important;
-    color: #f8fafc !important;
-    border: 1px solid rgba(255, 255, 255, 0.09) !important;
-    border-radius: 18px !important;
-    padding: 16px !important;
-}
-
-.create-modal-card * {
-    max-width: 100%;
-}
