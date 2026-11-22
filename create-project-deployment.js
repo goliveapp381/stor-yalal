@@ -154,6 +154,10 @@ function createDeploymentStages() {
 
     if (!deploymentOverlay) {
 
+        console.warn(
+            '[TemplateCraft] Deployment overlay not found.'
+        );
+
         return;
 
     }
@@ -176,16 +180,18 @@ function createDeploymentStages() {
     }
 
 
+    /*
+    --------------------------------------------------
+    إذا كانت المراحل موجودة مسبقاً
+    لا نعيد إنشاءها.
+    --------------------------------------------------
+    */
+
     let stages =
         card.querySelector(
             '.deployment-stages'
         );
 
-
-    /*
-    إذا كانت المراحل موجودة بالفعل
-    فلا ننشئها مرة أخرى.
-    */
 
     if (stages) {
 
@@ -194,13 +200,24 @@ function createDeploymentStages() {
     }
 
 
+    /*
+    --------------------------------------------------
+    إنشاء حاوية المراحل
+    --------------------------------------------------
+    */
+
     stages =
         document.createElement('div');
-
 
     stages.className =
         'deployment-stages';
 
+
+    /*
+    --------------------------------------------------
+    إنشاء جميع المراحل
+    --------------------------------------------------
+    */
 
     stages.innerHTML =
         DEPLOY_STAGES
@@ -263,29 +280,75 @@ function createDeploymentStages() {
 
 
     /*
-    --------------------------------------------------
-    إدراج المراحل قبل شريط التقدم
-    --------------------------------------------------
+    ==================================================
+    الإصلاح المهم
+    ==================================================
+
+    الخطأ السابق كان يستعمل:
+
+        deploymentProgress.parentElement
+
+    ثم يحاول:
+
+        card.insertBefore(...)
+
+    ولكن parentElement كان العنصر الداخلي
+    وليس ابناً مباشراً لـ card.
+
+    الآن نستعمل:
+
+        .deployment-progress-wrap
+
+    وهو ابن مباشر لـ .deployment-card
+    في HTML الحالي.
+
+    ==================================================
     */
 
-    const progressContainer =
-        deploymentProgress?.parentElement;
-
-
-    if (progressContainer) {
-
-        card.insertBefore(
-            stages,
-            progressContainer
+    const progressWrap =
+        card.querySelector(
+            '.deployment-progress-wrap'
         );
 
+
+    if (progressWrap) {
+
+        /*
+        نضع المراحل بعد شريط التقدم
+        */
+
+        if (progressWrap.nextSibling) {
+
+            card.insertBefore(
+                stages,
+                progressWrap.nextSibling
+            );
+
+        } else {
+
+            card.appendChild(
+                stages
+            );
+
+        }
+
     } else {
+
+        /*
+        إذا لم يوجد شريط التقدم
+        نضيف المراحل في نهاية البطاقة.
+        */
 
         card.appendChild(
             stages
         );
 
     }
+
+
+    console.log(
+        '[TemplateCraft] Deployment stages created successfully.'
+    );
 
 }
 
@@ -471,7 +534,7 @@ function resetDeployment() {
 
 
     /*
-    إنشاء المراحل
+    إنشاء المراحل إذا لم تكن موجودة
     */
 
     createDeploymentStages();
@@ -529,7 +592,7 @@ function resetDeployment() {
 
 
     /*
-    إعادة العنوان والرسالة
+    إعادة العنوان
     */
 
     if (deploymentTitle) {
@@ -539,6 +602,10 @@ function resetDeployment() {
 
     }
 
+
+    /*
+    إعادة الرسالة
+    */
 
     if (deploymentMessage) {
 
@@ -688,7 +755,7 @@ function startDeploymentStages() {
 
 
     /*
-    الانتقال بين المراحل بشكل بصري
+    الانتقال بين المراحل بصرياً
     */
 
     deployStageTimer =
@@ -1011,16 +1078,6 @@ function getDeploymentSiteData(result) {
 
 /* ==================================================
    GET FRONTEND AUTH TOKEN
-==================================================
-
- مهم:
-
- لا نفرض Token معيناً هنا.
-
- client-api.js هو المسؤول الحقيقي
- عن Authorization.
-
- هذا الجزء فقط يتحقق من وجود جلسة.
 ================================================== */
 
 function getFrontendAuthToken() {
@@ -1119,8 +1176,7 @@ async function handleCreateProject(event) {
 
 
     /*
-    لا نعتمد على هذا التوكن لإرسال الطلب.
-    client-api.js هو المسؤول عن Authorization.
+    التحقق من وجود جلسة
     */
 
     const token =
@@ -1198,24 +1254,22 @@ async function handleCreateProject(event) {
 
 
     /*
-    ================================================
     بدء عملية النشر الحقيقية
-    ================================================
     */
 
     deploymentRunning = true;
 
 
-    /* ================================================
-       OPEN DEPLOYMENT OVERLAY
-    ================================================ */
+    /*
+    فتح نافذة النشر
+    */
 
     openDeploymentOverlay();
 
 
-    /* ================================================
-       CLOSE CREATE MODAL
-    ================================================ */
+    /*
+    إغلاق نافذة التأكيد
+    */
 
     const createModal =
         document.getElementById(
@@ -1237,9 +1291,9 @@ async function handleCreateProject(event) {
     }
 
 
-    /* ================================================
-       HIDE OLD RESULT
-    ================================================ */
+    /*
+    إخفاء النتيجة القديمة
+    */
 
     if (deploymentResultContainer) {
 
@@ -1250,9 +1304,9 @@ async function handleCreateProject(event) {
     }
 
 
-    /* ================================================
-       START VISUAL STAGES
-    ================================================ */
+    /*
+    تشغيل مراحل الواجهة
+    */
 
     startDeploymentStages();
 
@@ -1273,14 +1327,6 @@ async function handleCreateProject(event) {
            REAL API REQUEST
 
            POST /api/deploy
-
-           {
-               siteName,
-               templateId,
-               variables: {
-                   projectType
-               }
-           }
         ============================================ */
 
         const result =
@@ -1337,9 +1383,7 @@ async function handleCreateProject(event) {
 
 
             /*
-            --------------------------------------------
             Authentication error
-            --------------------------------------------
             */
 
             if (
@@ -1427,15 +1471,13 @@ async function handleCreateProject(event) {
 
         /*
         =================================================
-        مهم جداً:
-
         لا ننتظر SSL.
 
         نجاح /api/deploy
         =
         تم إنشاء ونشر الموقع بنجاح.
 
-        SSL سيتم التحقق منه لاحقاً
+        SSL يتم التحقق منه لاحقاً
         من صفحة المشاريع.
         =================================================
         */
@@ -1443,9 +1485,9 @@ async function handleCreateProject(event) {
         completeDeployment();
 
 
-        /* ============================================
-           SUCCESS MOMENT
-        ============================================ */
+        /*
+        لحظة النجاح
+        */
 
         await new Promise(
             function (resolve) {
@@ -1459,16 +1501,16 @@ async function handleCreateProject(event) {
         );
 
 
-        /* ============================================
-           CLOSE OVERLAY
-        ============================================ */
+        /*
+        إغلاق نافذة النشر
+        */
 
         closeDeploymentOverlay();
 
 
-        /* ============================================
-           GO TO PROFILE
-        ============================================ */
+        /*
+        الانتقال إلى المشاريع
+        */
 
         window.location.replace(
             'profile.html'
@@ -1505,18 +1547,14 @@ async function handleCreateProject(event) {
 function initializeDeploymentSystem() {
 
     /*
-    --------------------------------------------------
     إنشاء واجهة المراحل
-    --------------------------------------------------
     */
 
     createDeploymentStages();
 
 
     /*
-    --------------------------------------------------
     منع التسجيل المكرر
-    --------------------------------------------------
     */
 
     if (
@@ -1533,9 +1571,7 @@ function initializeDeploymentSystem() {
 
 
     /*
-    --------------------------------------------------
     تسجيل Listener
-    --------------------------------------------------
     */
 
     window.addEventListener(
@@ -1545,9 +1581,7 @@ function initializeDeploymentSystem() {
 
 
     /*
-    --------------------------------------------------
     حفظ حالة التهيئة
-    --------------------------------------------------
     */
 
     window.__templateCraftDeploymentInitialized =
