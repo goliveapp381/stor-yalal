@@ -1,139 +1,1029 @@
 /* =========================================================
-   CREATE PROJECT FIXES — SELECT & TEMPLATE CARD (FILE 2 OF 3)
+   TEMPLATECRAFT PRO
+   CREATE PROJECT FIXES
+   MOBILE 2-COLUMN TEMPLATES
+   PREMIUM CUSTOM CATEGORY SELECT
+   VISUAL ONLY — NO LOGIC CHANGES
 ========================================================= */
 
-.field-select,
-select.field-select,
-#projectType,
-#projectTypeSelect,
-[id*="type"] select,
-select[class*="type"] {
-    cursor: pointer;
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    color: #f8fafc !important;
-    background-color: #0d132b !important;
-    border-color: rgba(139, 92, 246, 0.35) !important;
-    color-scheme: dark;
-    padding-left: 48px;
-    background-image:
-        linear-gradient(45deg, transparent 50%, rgba(255,255,255,.75) 50%),
-        linear-gradient(135deg, rgba(255,255,255,.75) 50%, transparent 50%);
-    background-position: calc(100% - 22px) 23px, calc(100% - 16px) 23px;
-    background-size: 6px 6px, 6px 6px;
-    background-repeat: no-repeat;
+
+/* =========================================================
+   01 — SECTION OVERFLOW
+   يسمح للقائمة المنسدلة بالخروج خارج البطاقة
+========================================================= */
+
+.section-card {
+    overflow: visible !important;
 }
 
-.field-select:focus,
-select.field-select:focus,
-#projectType:focus,
-#projectTypeSelect:focus {
-    background-color: #111836 !important;
+
+/* =========================================================
+   02 — NATIVE CATEGORY SELECT
+   نخليه مخفي لأن custom select هو الذي يظهر
+========================================================= */
+
+select#projectTypeSelect,
+#projectTypeSelect.field-select {
+    display: none !important;
+    visibility: hidden !important;
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
 }
 
-.field-select option,
-select.field-select option,
-#projectType option,
-#projectTypeSelect option {
-    color: #f8fafc !important;
-    background: #0b1024 !important;
-    font-weight: 600;
+
+/* =========================================================
+   03 — CUSTOM CATEGORY SELECT
+========================================================= */
+
+.tc-custom-select {
+    position: relative !important;
+
+    width: 100% !important;
+
+    margin-top: 0 !important;
+
+    direction: rtl !important;
+
+    z-index: 5000 !important;
+
+    isolation: isolate;
 }
+
+
+/* =========================================================
+   04 — SELECT TRIGGER
+========================================================= */
+
+.tc-select-trigger {
+    position: relative !important;
+
+    width: 100% !important;
+    min-height: 52px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+
+    gap: 14px !important;
+
+    padding: 0 16px !important;
+
+    border-radius: 15px !important;
+
+    border: 1px solid rgba(96, 165, 250, 0.32) !important;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(15, 23, 55, 0.98),
+            rgba(8, 14, 35, 0.98)
+        ) !important;
+
+    color: #f8fafc !important;
+
+    font-family: "Cairo", sans-serif !important;
+
+    font-size: 12px !important;
+
+    font-weight: 800 !important;
+
+    line-height: 1 !important;
+
+    text-align: right !important;
+
+    outline: none !important;
+
+    box-shadow:
+        0 10px 28px rgba(0, 0, 0, 0.22),
+        inset 0 1px 0 rgba(255, 255, 255, 0.04) !important;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        background 0.2s ease !important;
+}
+
+
+.tc-select-trigger:hover {
+    border-color: rgba(96, 165, 250, 0.60) !important;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(18, 29, 66, 1),
+            rgba(9, 16, 40, 1)
+        ) !important;
+}
+
+
+.tc-custom-select.open .tc-select-trigger {
+    border-color: rgba(99, 102, 241, 0.75) !important;
+
+    box-shadow:
+        0 0 0 3px rgba(99, 102, 241, 0.12),
+        0 14px 35px rgba(0, 0, 0, 0.30) !important;
+}
+
+
+/* =========================================================
+   05 — LEFT SIDE OF TRIGGER
+========================================================= */
+
+.tc-select-trigger-left {
+    min-width: 0 !important;
+
+    flex: 1 1 auto !important;
+
+    display: flex !important;
+    align-items: center !important;
+
+    gap: 10px !important;
+
+    overflow: hidden !important;
+}
+
+
+.tc-select-label {
+    min-width: 0 !important;
+
+    display: block !important;
+
+    overflow: hidden !important;
+
+    text-overflow: ellipsis !important;
+
+    white-space: nowrap !important;
+
+    color: #f8fafc !important;
+
+    font-size: 12px !important;
+
+    font-weight: 800 !important;
+}
+
+
+.tc-select-dot {
+    flex: 0 0 auto !important;
+
+    width: 8px !important;
+    height: 8px !important;
+
+    border-radius: 50% !important;
+
+    background: #60a5fa !important;
+
+    box-shadow:
+        0 0 12px rgba(96, 165, 250, 0.85) !important;
+}
+
+
+/* =========================================================
+   06 — ARROW
+========================================================= */
+
+.tc-select-arrow {
+    flex: 0 0 auto !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    width: 28px !important;
+    height: 28px !important;
+
+    border-radius: 9px !important;
+
+    color: #bfdbfe !important;
+
+    background: rgba(59, 130, 246, 0.12) !important;
+
+    font-size: 10px !important;
+
+    transition:
+        transform 0.2s ease,
+        background 0.2s ease !important;
+}
+
+
+.tc-custom-select.open .tc-select-arrow {
+    transform: rotate(180deg) !important;
+
+    background: rgba(99, 102, 241, 0.20) !important;
+}
+
+
+/* =========================================================
+   07 — DROPDOWN MENU
+========================================================= */
+
+.tc-select-menu {
+    position: absolute !important;
+
+    top: calc(100% + 8px) !important;
+
+    right: 0 !important;
+    left: 0 !important;
+
+    width: 100% !important;
+
+    max-height: 260px !important;
+
+    margin: 0 !important;
+
+    padding: 8px !important;
+
+    display: none !important;
+
+    flex-direction: column !important;
+
+    gap: 6px !important;
+
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+
+    direction: rtl !important;
+
+    border-radius: 17px !important;
+
+    border: 1px solid rgba(96, 165, 250, 0.35) !important;
+
+    background:
+        linear-gradient(
+            160deg,
+            rgba(8, 14, 34, 0.99),
+            rgba(5, 9, 25, 0.99)
+        ) !important;
+
+    box-shadow:
+        0 24px 60px rgba(0, 0, 0, 0.60),
+        0 0 35px rgba(59, 130, 246, 0.10) !important;
+
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+
+    z-index: 99999 !important;
+
+    isolation: isolate;
+}
+
+
+.tc-custom-select.open .tc-select-menu {
+    display: flex !important;
+}
+
+
+/* =========================================================
+   08 — SCROLLBAR
+========================================================= */
+
+.tc-select-menu::-webkit-scrollbar {
+    width: 5px;
+}
+
+.tc-select-menu::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.tc-select-menu::-webkit-scrollbar-thumb {
+    background: rgba(96, 165, 250, 0.35);
+    border-radius: 999px;
+}
+
+
+/* =========================================================
+   09 — OPTION
+========================================================= */
+
+.tc-select-option {
+    position: relative !important;
+
+    width: 100% !important;
+
+    min-height: 44px !important;
+
+    flex: 0 0 auto !important;
+
+    display: grid !important;
+
+    grid-template-columns: minmax(0, 1fr) 24px !important;
+
+    align-items: center !important;
+
+    gap: 8px !important;
+
+    padding: 8px 11px !important;
+
+    border-radius: 11px !important;
+
+    border: 1px solid rgba(148, 163, 184, 0.10) !important;
+
+    background:
+        rgba(15, 23, 42, 0.90) !important;
+
+    color: #dbeafe !important;
+
+    font-family: "Cairo", sans-serif !important;
+
+    font-size: 11px !important;
+
+    font-weight: 700 !important;
+
+    line-height: 1.4 !important;
+
+    text-align: right !important;
+
+    direction: rtl !important;
+
+    white-space: nowrap !important;
+
+    overflow: hidden !important;
+
+    transition:
+        background 0.18s ease,
+        border-color 0.18s ease,
+        transform 0.18s ease !important;
+}
+
+
+.tc-select-option > span:first-child {
+    min-width: 0 !important;
+
+    overflow: hidden !important;
+
+    text-overflow: ellipsis !important;
+
+    white-space: nowrap !important;
+
+    text-align: right !important;
+}
+
+
+.tc-select-option > span:last-child {
+    width: 24px !important;
+    height: 24px !important;
+
+    display: flex !important;
+
+    align-items: center !important;
+    justify-content: center !important;
+
+    border-radius: 7px !important;
+
+    color: #93c5fd !important;
+
+    font-size: 12px !important;
+
+    font-weight: 900 !important;
+}
+
+
+.tc-select-option:hover {
+    background:
+        linear-gradient(
+            135deg,
+            rgba(37, 99, 235, 0.32),
+            rgba(79, 70, 229, 0.28)
+        ) !important;
+
+    border-color: rgba(96, 165, 250, 0.35) !important;
+
+    transform: translateX(-2px) !important;
+}
+
+
+.tc-select-option.active {
+    color: #ffffff !important;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(37, 99, 235, 0.78),
+            rgba(79, 70, 229, 0.78)
+        ) !important;
+
+    border-color: rgba(129, 140, 248, 0.55) !important;
+
+    box-shadow:
+        0 7px 18px rgba(37, 99, 235, 0.18) !important;
+}
+
+
+.tc-select-option.active > span:last-child {
+    color: #ffffff !important;
+}
+
+
+/* =========================================================
+   10 — TEMPLATE GRID
+   DESKTOP = 3
+   TABLET = 2
+   MOBILE = 2
+========================================================= */
+
+.templates-grid {
+    width: 100% !important;
+
+    display: grid !important;
+
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr)) !important;
+
+    gap: 18px !important;
+
+    align-items: stretch !important;
+}
+
+
+/* =========================================================
+   11 — TEMPLATE CARD
+========================================================= */
 
 .templates-grid .template-card {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
+    width: 100% !important;
+
+    min-width: 0 !important;
+
+    height: 100% !important;
+
+    min-height: 330px !important;
+
+    display: flex !important;
+
+    flex-direction: column !important;
+
+    overflow: hidden !important;
+
+    border-radius: 20px !important;
 }
 
-.templates-grid .template-card-preview {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    flex: 1 1 auto;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
+
+/* =========================================================
+   12 — TEMPLATE PREVIEW
+========================================================= */
+
+.templates-grid .template-card-preview,
+.templates-grid .template-preview {
+    position: relative !important;
+
+    width: 100% !important;
+
+    min-width: 0 !important;
+
+    min-height: 220px !important;
+
+    height: 100% !important;
+
+    display: flex !important;
+
+    flex-direction: column !important;
+
+    overflow: hidden !important;
+
+    flex: 1 1 auto !important;
 }
+
+
+/* =========================================================
+   13 — TEMPLATE IMAGE
+========================================================= */
 
 .templates-grid .template-thumbnail,
+.templates-grid .template-image,
 .templates-grid .template-fallback-preview {
-    width: 100%;
-    aspect-ratio: 16 / 10;
-    height: auto;
-    object-fit: contain;
-    background: #090e22;
-    display: block;
+    width: 100% !important;
+
+    height: 100% !important;
+
+    min-height: 220px !important;
+
+    max-width: none !important;
+    max-height: none !important;
+
+    display: block !important;
+
+    object-fit: cover !important;
+
+    object-position: center top !important;
+
+    background: #090e22 !important;
 }
+
 
 .templates-grid .template-fallback-preview.is-hidden,
 .templates-grid .template-thumbnail.is-hidden {
-    display: none;
+    display: none !important;
 }
 
-.templates-grid .template-card-body {
-    position: relative;
-    z-index: 4;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    flex: 1 1 auto;
-    gap: 10px;
-    padding: 17px;
+
+/* =========================================================
+   14 — TEMPLATE BODY
+========================================================= */
+
+.templates-grid .template-card-body,
+.templates-grid .template-card-content,
+.templates-grid .template-content {
+    position: relative !important;
+
+    z-index: 5 !important;
+
+    width: 100% !important;
+
+    min-width: 0 !important;
+
+    display: flex !important;
+
+    flex-direction: column !important;
+
+    gap: 8px !important;
+
+    padding: 14px !important;
+
+    flex: 1 1 auto !important;
 }
 
-.templates-grid .template-card-actions {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 8px;
-    margin-top: auto;
-    padding-top: 14px;
-    width: 100%;
+
+.templates-grid .template-card h3,
+.templates-grid .template-name {
+    min-width: 0 !important;
+
+    margin: 0 !important;
+
+    font-size: 14px !important;
+
+    line-height: 1.4 !important;
+
+    overflow-wrap: anywhere !important;
 }
 
-.templates-grid .template-card-actions button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 40px;
-    padding: 0 12px;
-    border-radius: 12px;
-    border: 0;
-    font-size: 10px;
-    font-weight: 900;
-    white-space: nowrap;
-    width: 100%;
-    transition: transform .2s ease, box-shadow .2s ease, background .2s ease;
+
+.templates-grid .template-card p,
+.templates-grid .template-description {
+    margin: 0 !important;
+
+    font-size: 10px !important;
+
+    line-height: 1.65 !important;
+
+    overflow-wrap: anywhere !important;
 }
 
-.templates-grid .template-card-actions button:hover {
-    transform: translateY(-2px);
+
+/* =========================================================
+   15 — TEMPLATE ACTIONS
+========================================================= */
+
+.templates-grid .template-card-actions,
+.templates-grid .template-actions {
+    width: 100% !important;
+
+    display: grid !important;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr)) !important;
+
+    gap: 7px !important;
+
+    margin-top: auto !important;
+
+    padding-top: 8px !important;
 }
+
+
+.templates-grid .template-card-actions button,
+.templates-grid .template-actions button {
+    width: 100% !important;
+
+    min-width: 0 !important;
+
+    min-height: 38px !important;
+
+    padding: 0 7px !important;
+
+    display: inline-flex !important;
+
+    align-items: center !important;
+
+    justify-content: center !important;
+
+    border-radius: 10px !important;
+
+    font-size: 9.5px !important;
+
+    font-weight: 900 !important;
+
+    white-space: nowrap !important;
+}
+
 
 .templates-grid .preview-template-btn {
-    color: rgba(226, 232, 240, 0.88);
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    color: #e2e8f0 !important;
+
+    background:
+        rgba(255, 255, 255, 0.08) !important;
+
+    border:
+        1px solid rgba(255, 255, 255, 0.13) !important;
 }
 
-.templates-grid .preview-template-btn:hover {
-    background: rgba(255, 255, 255, 0.13);
-}
 
 .templates-grid .select-template-btn {
-    color: #fff;
-    background: var(--tc-gradient-purple);
-    box-shadow: 0 8px 24px rgba(124, 58, 237, 0.25);
+    color: #ffffff !important;
+
+    background:
+        linear-gradient(
+            135deg,
+            #2563eb,
+            #4f46e5,
+            #7c3aed
+        ) !important;
+
+    border: 0 !important;
+
+    box-shadow:
+        0 8px 20px rgba(79, 70, 229, 0.25) !important;
 }
 
-.templates-grid .select-template-btn:hover {
-    box-shadow: 0 12px 32px rgba(124, 58, 237, 0.38);
+
+/* =========================================================
+   16 — TABLET
+========================================================= */
+
+@media (max-width: 1100px) {
+
+    .templates-grid {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr)) !important;
+
+        gap: 16px !important;
+    }
+
 }
+
+
+/* =========================================================
+   17 — MOBILE
+   مهم: جوج كروت فالسطر
+========================================================= */
+
+@media (max-width: 720px) {
+
+    .templates-grid {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr)) !important;
+
+        gap: 12px !important;
+    }
+
+
+    .templates-grid .template-card {
+        min-height: 285px !important;
+
+        border-radius: 17px !important;
+    }
+
+
+    .templates-grid .template-card-preview,
+    .templates-grid .template-preview {
+        min-height: 190px !important;
+    }
+
+
+    .templates-grid .template-thumbnail,
+    .templates-grid .template-image,
+    .templates-grid .template-fallback-preview {
+        min-height: 190px !important;
+    }
+
+
+    .templates-grid .template-card-body,
+    .templates-grid .template-card-content,
+    .templates-grid .template-content {
+        padding: 11px !important;
+
+        gap: 6px !important;
+    }
+
+
+    .templates-grid .template-card h3,
+    .templates-grid .template-name {
+        font-size: 11.5px !important;
+
+        line-height: 1.4 !important;
+    }
+
+
+    .templates-grid .template-card p,
+    .templates-grid .template-description {
+        font-size: 8.5px !important;
+
+        line-height: 1.55 !important;
+    }
+
+
+    .templates-grid .template-card-actions,
+    .templates-grid .template-actions {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr)) !important;
+
+        gap: 5px !important;
+    }
+
+
+    .templates-grid .template-card-actions button,
+    .templates-grid .template-actions button {
+        min-height: 34px !important;
+
+        padding: 0 4px !important;
+
+        font-size: 8px !important;
+
+        border-radius: 8px !important;
+    }
+
+
+    .tc-select-menu {
+        max-height: 240px !important;
+    }
+
+}
+
+
+/* =========================================================
+   18 — SMALL MOBILE
+   حتى الشاشات الصغيرة تبقى جوج أعمدة
+========================================================= */
 
 @media (max-width: 430px) {
-    .templates-grid .template-card-actions {
-        grid-template-columns: 1fr;
+
+    .templates-grid {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr)) !important;
+
+        gap: 10px !important;
     }
+
+
+    .templates-grid .template-card {
+        min-height: 255px !important;
+
+        border-radius: 15px !important;
+    }
+
+
+    .templates-grid .template-card-preview,
+    .templates-grid .template-preview {
+        min-height: 165px !important;
+    }
+
+
+    .templates-grid .template-thumbnail,
+    .templates-grid .template-image,
+    .templates-grid .template-fallback-preview {
+        min-height: 165px !important;
+    }
+
+
+    .templates-grid .template-card-body,
+    .templates-grid .template-card-content,
+    .templates-grid .template-content {
+        padding: 9px !important;
+    }
+
+
+    .templates-grid .template-card h3,
+    .templates-grid .template-name {
+        font-size: 10.5px !important;
+    }
+
+
+    .templates-grid .template-card p,
+    .templates-grid .template-description {
+        display: -webkit-box !important;
+
+        -webkit-line-clamp: 2 !important;
+        -webkit-box-orient: vertical !important;
+
+        overflow: hidden !important;
+
+        font-size: 8px !important;
+    }
+
+
+    .templates-grid .template-card-actions,
+    .templates-grid .template-actions {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr)) !important;
+
+        gap: 4px !important;
+    }
+
+
+    .templates-grid .template-card-actions button,
+    .templates-grid .template-actions button {
+        min-height: 32px !important;
+
+        font-size: 7.5px !important;
+
+        padding: 0 3px !important;
+    }
+
+
+    .tc-select-trigger {
+        min-height: 50px !important;
+
+        padding: 0 13px !important;
+    }
+
+
+    .tc-select-label {
+        font-size: 11px !important;
+    }
+
+
+    .tc-select-option {
+        min-height: 42px !important;
+
+        font-size: 10.5px !important;
+    }
+
 }
 
+
+/* =========================================================
+   19 — EXTRA SMALL
+========================================================= */
+
+@media (max-width: 350px) {
+
+    .templates-grid {
+        gap: 8px !important;
+    }
+
+
+    .templates-grid .template-card {
+        min-height: 235px !important;
+    }
+
+
+    .templates-grid .template-card-preview,
+    .templates-grid .template-preview {
+        min-height: 150px !important;
+    }
+
+
+    .templates-grid .template-thumbnail,
+    .templates-grid .template-image,
+    .templates-grid .template-fallback-preview {
+        min-height: 150px !important;
+    }
+
+
+    .templates-grid .template-card-body,
+    .templates-grid .template-card-content,
+    .templates-grid .template-content {
+        padding: 8px !important;
+    }
+
+
+    .templates-grid .template-card-actions button,
+    .templates-grid .template-actions button {
+        font-size: 7px !important;
+
+        min-height: 30px !important;
+    }
+
+}
+
+
+/* =========================================================
+   20 — CREATE MODAL
+========================================================= */
+
+.create-modal-backdrop {
+    z-index: 7000 !important;
+
+    padding: 12px !important;
+
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+
+.create-modal-card {
+    position: relative !important;
+
+    width: min(720px, 93vw) !important;
+
+    max-width: 720px !important;
+
+    max-height: 84vh !important;
+
+    margin: auto !important;
+
+    padding: 18px 14px !important;
+
+    border-radius: 22px !important;
+
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+
+    color: #f8fafc !important;
+
+    text-align: center !important;
+
+    background:
+        linear-gradient(
+            160deg,
+            #060b1d 0%,
+            #0b122b 58%,
+            #050918 100%
+        ) !important;
+
+    border:
+        1px solid rgba(96, 165, 250, 0.28) !important;
+}
+
+
+/* =========================================================
+   21 — MODAL INTERNAL GRIDS
+========================================================= */
+
+.create-modal-card .create-premium-features,
+.create-modal-card .create-premium-summary-grid {
+    display: grid !important;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr)) !important;
+
+    gap: 8px !important;
+
+    width: 100% !important;
+}
+
+
+.create-modal-card .create-premium-summary-item:first-child {
+    grid-column: 1 / -1 !important;
+}
+
+
+.create-modal-card .create-premium-feature {
+    display: flex !important;
+
+    flex-direction: column !important;
+
+    align-items: center !important;
+    justify-content: center !important;
+
+    text-align: center !important;
+
+    gap: 4px !important;
+
+    padding: 8px 7px !important;
+
+    border-radius: 12px !important;
+
+    background:
+        rgba(11, 17, 38, 0.88) !important;
+
+    border:
+        1px solid rgba(148, 163, 184, 0.16) !important;
+
+    min-width: 0 !important;
+}
+
+
+.create-modal-card
+.create-premium-feature-content strong {
+    font-size: 10px !important;
+
+    font-weight: 800 !important;
+
+    color: #ffffff !important;
+}
+
+
+.create-modal-card
+.create-premium-feature-content span {
+    font-size: 8.5px !important;
+
+    color: #cbd5e1 !important;
+}
+
+
+/* =========================================================
+   22 — REDUCED MOTION
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .tc-select-trigger,
+    .tc-select-option,
+    .templates-grid .template-card,
+    .templates-grid .template-card-actions button {
+        transition: none !important;
+    }
+
+   }
