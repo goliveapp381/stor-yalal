@@ -93,14 +93,14 @@
                     </div>
 
                     <h1 class="hero-title">
-                        اختار القالب ديالك
-                        وبدا موقعك
+                        اختر القالب المناسب
+                        وابدأ إنشاء موقعك
                     </h1>
 
                     <p class="hero-description">
-                        اختار من القوالب الجاهزة، شوف المعاينة
-                        الحقيقية ديال الموقع، ومن بعد اختار
-                        القالب باش تبني المشروع ديالك.
+                        اختر من بين القوالب الجاهزة، واستعرض
+                        المعاينة الحقيقية للموقع، ثم اختر القالب
+                        المناسب لبدء إنشاء مشروعك.
                     </p>
 
                 </div>
@@ -109,7 +109,7 @@
                 <div class="hero-side">
 
                     <div class="hero-side-title">
-                        كيفاش تخدم؟
+                        كيف تعمل المنصة؟
                     </div>
 
 
@@ -122,11 +122,11 @@
                         <div class="hero-step-text">
 
                             <strong>
-                                سمي المشروع
+                                أدخل اسم المشروع
                             </strong>
 
                             <span>
-                                دخل الاسم اللي بغيتي للمشروع.
+                                أدخل الاسم الذي ترغب في استخدامه للمشروع.
                             </span>
 
                         </div>
@@ -143,11 +143,11 @@
                         <div class="hero-step-text">
 
                             <strong>
-                                اختار الفئة والقالب
+                                اختر الفئة والقالب
                             </strong>
 
                             <span>
-                                شوف المعاينة الحقيقية واختار القالب المناسب.
+                                استعرض المعاينة الحقيقية واختر القالب المناسب.
                             </span>
 
                         </div>
@@ -164,11 +164,11 @@
                         <div class="hero-step-text">
 
                             <strong>
-                                نشر المشروع
+                                إنشاء ونشر المشروع
                             </strong>
 
                             <span>
-                                من بعد الاختيار كمل عملية الإنشاء والنشر.
+                                بعد اختيار القالب، ابدأ عملية الإنشاء والنشر.
                             </span>
 
                         </div>
@@ -197,7 +197,7 @@
                     </h2>
 
                     <p class="section-description">
-                        دخل المعلومات الأساسية ديال المشروع.
+                        أدخل المعلومات الأساسية الخاصة بالمشروع.
                     </p>
 
                 </div>
@@ -241,7 +241,7 @@
                 >
 
                     <option value="">
-                        جاري تحميل الفئات...
+                        جارٍ تحميل الفئات...
                     </option>
 
                 </select>
@@ -274,8 +274,8 @@
                     </h2>
 
                     <p class="section-description">
-                        ضغط على "معاينة" باش يفتح الموقع الحقيقي
-                        ديال القالب فتبويب جديد، أو اختار القالب مباشرة.
+                        اضغط على «معاينة» لفتح الموقع الحقيقي للقالب
+                        في علامة تبويب جديدة، أو اختر القالب مباشرة.
                     </p>
 
                 </div>
@@ -287,7 +287,7 @@
                 id="categoryLoadingMessage"
                 class="state-message"
             >
-                جاري تحميل القوالب...
+                جارٍ تحميل القوالب...
             </div>
 
 
@@ -295,7 +295,7 @@
                 id="categoryErrorMessage"
                 class="state-message error hidden"
             >
-                وقع خطأ أثناء تحميل القوالب.
+                حدث خطأ أثناء تحميل القوالب.
             </div>
 
 
@@ -322,7 +322,7 @@
                     </h2>
 
                     <p class="section-description">
-                        ربط Netlify واختيار الفريق قبل إنشاء المشروع.
+                        اربط حساب Netlify واختر الفريق قبل إنشاء المشروع.
                     </p>
 
                 </div>
@@ -348,7 +348,7 @@
                         <span
                             id="netlifyStatusDescription"
                         >
-                            جاري التحقق من الاتصال...
+                            جارٍ التحقق من الاتصال...
                         </span>
 
                     </div>
@@ -358,7 +358,7 @@
                         id="netlifyStatusBadge"
                         class="status-badge info"
                     >
-                        جاري التحقق...
+                        جارٍ التحقق...
                     </div>
 
                 </div>
@@ -404,7 +404,7 @@
                     >
 
                         <option value="">
-                            جاري تحميل الفرق...
+                            جارٍ تحميل الفرق...
                         </option>
 
                     </select>
@@ -446,7 +446,7 @@
 
 
 <!-- =========================================================
-     CREATE MODAL
+     CREATE CONFIRMATION MODAL
 ========================================================= -->
 
 <div
@@ -486,7 +486,7 @@
                         font-size:12px;
                     "
                 >
-                    راجع المعلومات قبل البدء.
+                    يرجى مراجعة معلومات المشروع قبل بدء عملية الإنشاء.
                 </p>
 
             </div>
@@ -500,6 +500,7 @@
                     min-width:42px;
                     padding:0;
                 "
+                aria-label="إغلاق"
             >
                 ✕
             </button>
@@ -553,77 +554,110 @@
 
 
 <!-- =========================================================
-     DEPLOYMENT OVERLAY
+     PREMIUM DEPLOYMENT OVERLAY
 ========================================================= -->
 
 <div
     id="deploymentOverlay"
     class="deployment-overlay"
+    aria-hidden="true"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="deploymentTitle"
+    aria-describedby="deploymentMessage"
 >
 
     <div class="deployment-card">
 
+
+        <!-- =================================================
+             ROCKET
+        ================================================== -->
+
         <div
-            style="
-                font-size:42px;
-                margin-bottom:12px;
-            "
+            class="deployment-rocket"
+            aria-hidden="true"
         >
             🚀
         </div>
 
 
+        <!-- =================================================
+             TITLE
+        ================================================== -->
+
         <h3
             id="deploymentTitle"
-            style="
-                margin:0 0 8px;
-                font-size:20px;
-                font-weight:900;
-            "
         >
-            جاري إنشاء المشروع...
+            جارٍ إنشاء المشروع...
         </h3>
 
 
+        <!-- =================================================
+             MESSAGE
+        ================================================== -->
+
         <p
             id="deploymentMessage"
-            style="
-                margin:0;
-                color:#64748b;
-                font-size:12px;
-                line-height:1.8;
-            "
         >
-            المرجو الانتظار، لا تغلق الصفحة.
+            يرجى الانتظار، ولا تغلق هذه الصفحة.
         </p>
 
 
+        <!-- =================================================
+             STATUS LABEL
+        ================================================== -->
+
         <div
-            style="
-                margin-top:20px;
-                height:7px;
-                border-radius:999px;
-                background:#e2e8f0;
-                overflow:hidden;
-            "
+            class="deployment-status-label"
+            aria-hidden="true"
+        >
+            جارٍ تنفيذ عملية النشر
+        </div>
+
+
+        <!-- =================================================
+             PROGRESS
+        ================================================== -->
+
+        <div
+            class="deployment-progress-wrap"
         >
 
             <div
-                id="deploymentProgress"
                 style="
-                    width:10%;
-                    height:100%;
+                    height:8px;
                     border-radius:999px;
-                    background:linear-gradient(
-                        90deg,
-                        #4f46e5,
-                        #7c3aed
-                    );
-                    transition:width .4s ease;
+                    background:rgba(255,255,255,.07);
+                    overflow:hidden;
+                    position:relative;
                 "
-            ></div>
+            >
+
+                <div
+                    id="deploymentProgress"
+                    style="
+                        width:5%;
+                        height:100%;
+                        border-radius:999px;
+                        transition:width .7s cubic-bezier(.2,.8,.2,1);
+                    "
+                ></div>
+
+            </div>
 
         </div>
+
+
+        <!--
+        ملاحظة:
+
+        deployment-stages يتم إنشاؤها تلقائياً
+        بواسطة create-project-deployment.js.
+
+        لذلك لا نضعها هنا يدوياً حتى لا تتكرر.
+        -->
+
 
     </div>
 
@@ -631,7 +665,7 @@
 
 
 <!-- =========================================================
-     SSL MODAL
+     SSL PREPARATION MODAL
 ========================================================= -->
 
 <div
@@ -646,6 +680,7 @@
                 font-size:40px;
                 margin-bottom:12px;
             "
+            aria-hidden="true"
         >
             🔐
         </div>
@@ -659,7 +694,7 @@
                 font-weight:900;
             "
         >
-            جاري تجهيز SSL
+            جارٍ تجهيز SSL
         </h3>
 
 
@@ -672,7 +707,7 @@
                 line-height:1.8;
             "
         >
-            جاري تجهيز الاتصال الآمن للموقع.
+            جارٍ تجهيز الاتصال الآمن للموقع.
         </p>
 
     </div>
@@ -723,7 +758,9 @@
         if (
             window.TemplateCraftCreatePage
         ) {
+
             return;
+
         }
 
 
