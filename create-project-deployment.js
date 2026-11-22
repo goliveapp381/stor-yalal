@@ -1,1639 +1,317 @@
 'use strict';
 
-/*
-====================================================
- TEMPLATECRAFT PRO
- CREATE PROJECT - DEPLOYMENT
- PREMIUM CINEMATIC DEPLOYMENT SYSTEM
-====================================================
-
- مسؤول عن:
-
- - استقبال طلب إنشاء المشروع
- - Deployment الحقيقي عبر API
- - مراحل الإنشاء
- - Progress
- - نجاح إنشاء الموقع
- - الانتقال إلى صفحة المشاريع
-
- مهم:
- SSL لا يتم انتظاره هنا.
-
- بمجرد نجاح إنشاء / نشر الموقع في Netlify:
- → يتم إنهاء العملية
- → تغلق نافذة التجهيز
- → ينتقل المستخدم إلى صفحة المشاريع
-
- SSL يتم التحقق منه لاحقاً من صفحة المشاريع.
-
- مهم جداً:
- لا يتم تغيير API أو Backend أو Authentication.
-====================================================
-*/
-
-
-/* ==================================================
-   STATE
-================================================== */
-
 let deployStageTimer = null;
-
 let deployStageIndex = 0;
-
 let deploymentRunning = false;
-
 let publishedSiteUrl = null;
-
 let createdSiteId = null;
 
-
-/* ==================================================
-   ELEMENTS
-================================================== */
-
-const deploymentResultContainer =
-    document.getElementById('createResult');
-
-const deploymentOverlay =
-    document.getElementById('deploymentOverlay');
-
-const deploymentTitle =
-    document.getElementById('deploymentTitle');
-
-const deploymentMessage =
-    document.getElementById('deploymentMessage');
-
-const deploymentProgress =
-    document.getElementById('deploymentProgress');
-
-
-/* ==================================================
-   DEPLOYMENT STAGES
-================================================== */
+const deploymentResultContainer = document.getElementById('createResult');
+const deploymentOverlay = document.getElementById('deploymentOverlay');
+const deploymentTitle = document.getElementById('deploymentTitle');
+const deploymentMessage = document.getElementById('deploymentMessage');
+const deploymentProgress = document.getElementById('deploymentProgress');
 
 const DEPLOY_STAGES = [
-
-    {
-        id: 'create-project',
-
-        title: 'إنشاء المشروع',
-
-        message:
-            'جارٍ إنشاء المشروع وتجهيز بياناته...'
-    },
-
-    {
-        id: 'prepare-template',
-
-        title: 'تجهيز ملفات القالب',
-
-        message:
-            'جارٍ تجهيز ملفات القالب والصفحات...'
-    },
-
-    {
-        id: 'configure-site',
-
-        title: 'إعداد الموقع',
-
-        message:
-            'جارٍ تطبيق إعدادات المشروع والقالب...'
-    },
-
-    {
-        id: 'connect-settings',
-
-        title: 'ربط الإعدادات',
-
-        message:
-            'جارٍ ربط إعدادات المشروع والاستضافة...'
-    },
-
-    {
-        id: 'publish-netlify',
-
-        title: 'نشر الموقع',
-
-        message:
-            'جارٍ إنشاء ونشر الموقع على Netlify...'
-    },
-
-    {
-        id: 'complete',
-
-        title: 'إتمام الإنشاء',
-
-        message:
-            'تم إنشاء الموقع ونشره بنجاح.'
-    }
-
+    { id: 'create-project', title: 'إنشاء المشروع', message: 'جارٍ إنشاء المشروع وتجهيز بياناته...' },
+    { id: 'prepare-template', title: 'تجهيز ملفات القالب', message: 'جارٍ تجهيز ملفات القالب والصفحات...' },
+    { id: 'configure-site', title: 'إعداد الموقع', message: 'جارٍ تطبيق إعدادات المشروع والقالب...' },
+    { id: 'connect-settings', title: 'ربط الإعدادات', message: 'جارٍ ربط إعدادات المشروع والاستضافة...' },
+    { id: 'publish-netlify', title: 'نشر الموقع', message: 'جارٍ إنشاء ونشر الموقع على Netlify...' },
+    { id: 'complete', title: 'إتمام الإنشاء', message: 'تم إنشاء الموقع ونشره بنجاح.' }
 ];
 
-
-/* ==================================================
-   SAFE HTML
-================================================== */
-
 function escapeDeploymentHtml(value) {
-
     return String(value ?? '')
         .replace(/&/g, '&amp;')
         .replace(/</g, '&lt;')
         .replace(/>/g, '&gt;')
         .replace(/"/g, '&quot;')
         .replace(/'/g, '&#039;');
-
 }
-
-
-/* ==================================================
-   CREATE STAGES UI
-================================================== */
 
 function createDeploymentStages() {
+    if (!deploymentOverlay) return;
+    const card = deploymentOverlay.querySelector('.deployment-card');
+    if (!card || card.querySelector('.deployment-stages')) return;
 
-    if (!deploymentOverlay) {
+    const stages = document.createElement('div');
+    stages.className = 'deployment-stages';
+    stages.innerHTML = DEPLOY_STAGES.map((stage, index) => `
+        <div class="deployment-stage pending" data-stage-index="${index}">
+            <div class="deployment-stage-icon stage-icon">
+                <span class="stage-number">${index + 1}</span>
+                <span class="stage-check">✓</span>
+            </div>
+            <div class="deployment-stage-content stage-content">
+                <strong class="stage-title">${escapeDeploymentHtml(stage.title)}</strong>
+                <span class="stage-message">${escapeDeploymentHtml(stage.message)}</span>
+            </div>
+        </div>
+    `).join('');
 
-        console.warn(
-            '[TemplateCraft] Deployment overlay not found.'
-        );
-
-        return;
-
-    }
-
-
-    const card =
-        deploymentOverlay.querySelector(
-            '.deployment-card'
-        );
-
-
-    if (!card) {
-
-        console.warn(
-            '[TemplateCraft] .deployment-card not found.'
-        );
-
-        return;
-
-    }
-
-
-    /*
-    --------------------------------------------------
-    إذا كانت المراحل موجودة مسبقاً
-    لا نعيد إنشاءها.
-    --------------------------------------------------
-    */
-
-    let stages =
-        card.querySelector(
-            '.deployment-stages'
-        );
-
-
-    if (stages) {
-
-        return;
-
-    }
-
-
-    /*
-    --------------------------------------------------
-    إنشاء حاوية المراحل
-    --------------------------------------------------
-    */
-
-    stages =
-        document.createElement('div');
-
-    stages.className =
-        'deployment-stages';
-
-
-    /*
-    --------------------------------------------------
-    إنشاء جميع المراحل
-    --------------------------------------------------
-    */
-
-    stages.innerHTML =
-        DEPLOY_STAGES
-            .map(
-                function (stage, index) {
-
-                    return `
-                        <div
-                            class="deployment-stage pending"
-                            data-stage-index="${index}"
-                        >
-
-                            <div
-                                class="deployment-stage-icon stage-icon"
-                            >
-
-                                <span
-                                    class="stage-number"
-                                >
-                                    ${index + 1}
-                                </span>
-
-                                <span
-                                    class="stage-check"
-                                >
-                                    ✓
-                                </span>
-
-                            </div>
-
-
-                            <div
-                                class="deployment-stage-content stage-content"
-                            >
-
-                                <strong
-                                    class="stage-title"
-                                >
-                                    ${escapeDeploymentHtml(
-                                        stage.title
-                                    )}
-                                </strong>
-
-                                <span
-                                    class="stage-message"
-                                >
-                                    ${escapeDeploymentHtml(
-                                        stage.message
-                                    )}
-                                </span>
-
-                            </div>
-
-                        </div>
-                    `;
-
-                }
-            )
-            .join('');
-
-
-    /*
-    ==================================================
-    الإصلاح المهم
-    ==================================================
-
-    الخطأ السابق كان يستعمل:
-
-        deploymentProgress.parentElement
-
-    ثم يحاول:
-
-        card.insertBefore(...)
-
-    ولكن parentElement كان العنصر الداخلي
-    وليس ابناً مباشراً لـ card.
-
-    الآن نستعمل:
-
-        .deployment-progress-wrap
-
-    وهو ابن مباشر لـ .deployment-card
-    في HTML الحالي.
-
-    ==================================================
-    */
-
-    const progressWrap =
-        card.querySelector(
-            '.deployment-progress-wrap'
-        );
-
-
-    if (progressWrap) {
-
-        /*
-        نضع المراحل بعد شريط التقدم
-        */
-
-        if (progressWrap.nextSibling) {
-
-            card.insertBefore(
-                stages,
-                progressWrap.nextSibling
-            );
-
-        } else {
-
-            card.appendChild(
-                stages
-            );
-
-        }
-
+    const progressWrap = card.querySelector('.deployment-progress-wrap');
+    if (progressWrap && progressWrap.nextSibling) {
+        card.insertBefore(stages, progressWrap.nextSibling);
     } else {
-
-        /*
-        إذا لم يوجد شريط التقدم
-        نضيف المراحل في نهاية البطاقة.
-        */
-
-        card.appendChild(
-            stages
-        );
-
+        card.appendChild(stages);
     }
-
-
-    console.log(
-        '[TemplateCraft] Deployment stages created successfully.'
-    );
-
 }
 
+function updateDeploymentStage(index, state = 'active') {
+    const stages = deploymentOverlay?.querySelectorAll('.deployment-stage');
+    if (!stages) return;
 
-/* ==================================================
-   UPDATE STAGE
-================================================== */
+    stages.forEach((stage, stageIndex) => {
+        stage.classList.remove('active', 'completed', 'pending');
+        if (stageIndex < index) stage.classList.add('completed');
+        else if (stageIndex === index) stage.classList.add(state);
+        else stage.classList.add('pending');
+    });
 
-function updateDeploymentStage(
-    index,
-    state = 'active'
-) {
+    const stage = DEPLOY_STAGES[index];
+    if (!stage) return;
 
-    const stages =
-        deploymentOverlay?.querySelectorAll(
-            '.deployment-stage'
-        );
-
-
-    if (!stages) {
-
-        return;
-
-    }
-
-
-    stages.forEach(
-        function (stage, stageIndex) {
-
-            stage.classList.remove(
-                'active',
-                'completed',
-                'pending'
-            );
-
-
-            /*
-            كل مرحلة قبل الحالية = مكتملة
-            */
-
-            if (stageIndex < index) {
-
-                stage.classList.add(
-                    'completed'
-                );
-
-            }
-
-
-            /*
-            المرحلة الحالية
-            */
-
-            else if (stageIndex === index) {
-
-                stage.classList.add(
-                    state
-                );
-
-            }
-
-
-            /*
-            المراحل القادمة
-            */
-
-            else {
-
-                stage.classList.add(
-                    'pending'
-                );
-
-            }
-
-        }
-    );
-
-
-    const stage =
-        DEPLOY_STAGES[index];
-
-
-    if (!stage) {
-
-        return;
-
-    }
-
-
-    if (deploymentTitle) {
-
-        deploymentTitle.textContent =
-            stage.title;
-
-    }
-
-
-    if (deploymentMessage) {
-
-        deploymentMessage.textContent =
-            stage.message;
-
-    }
-
-
-    updateDeploymentProgress(
-        index
-    );
-
+    if (deploymentTitle) deploymentTitle.textContent = stage.title;
+    if (deploymentMessage) deploymentMessage.textContent = stage.message;
+    updateDeploymentProgress(index);
 }
-
-
-/* ==================================================
-   PROGRESS
-================================================== */
 
 function updateDeploymentProgress(index) {
-
-    if (!deploymentProgress) {
-
-        return;
-
-    }
-
-
-    const total =
-        DEPLOY_STAGES.length;
-
-
-    const percentage =
-        Math.max(
-            5,
-            Math.min(
-                100,
-                Math.round(
-                    (
-                        index /
-                        (total - 1)
-                    ) * 100
-                )
-            )
-        );
-
-
-    deploymentProgress.style.width =
-        `${percentage}%`;
-
+    if (!deploymentProgress) return;
+    const total = DEPLOY_STAGES.length;
+    const percentage = Math.max(5, Math.min(100, Math.round((index / (total - 1)) * 100)));
+    deploymentProgress.style.width = `${percentage}%`;
 }
 
-
-/* ==================================================
-   RESET DEPLOYMENT
-================================================== */
-
 function resetDeployment() {
-
-    /*
-    إيقاف أي مؤقت سابق
-    */
-
     if (deployStageTimer) {
-
-        clearInterval(
-            deployStageTimer
-        );
-
+        clearInterval(deployStageTimer);
         deployStageTimer = null;
-
     }
-
-
-    /*
-    إعادة الحالة
-    */
-
     deployStageIndex = 0;
-
     deploymentRunning = false;
-
     publishedSiteUrl = null;
-
     createdSiteId = null;
-
-
-    /*
-    إنشاء المراحل إذا لم تكن موجودة
-    */
 
     createDeploymentStages();
 
-
-    /*
-    إعادة حالة المراحل
-    */
-
-    const stages =
-        deploymentOverlay?.querySelectorAll(
-            '.deployment-stage'
-        );
-
-
+    const stages = deploymentOverlay?.querySelectorAll('.deployment-stage');
     if (stages) {
-
-        stages.forEach(
-            function (stage) {
-
-                stage.classList.remove(
-                    'active',
-                    'completed',
-                    'pending'
-                );
-
-                stage.classList.add(
-                    'pending'
-                );
-
-            }
-        );
-
+        stages.forEach((stage) => {
+            stage.classList.remove('active', 'completed', 'pending');
+            stage.classList.add('pending');
+        });
     }
 
+    const card = deploymentOverlay?.querySelector('.deployment-card');
+    if (card) card.classList.remove('deployment-success', 'deployment-error');
+    if (deploymentTitle) deploymentTitle.textContent = 'جارٍ إنشاء المشروع...';
+    if (deploymentMessage) deploymentMessage.textContent = 'يرجى الانتظار، ولا تغلق هذه الصفحة.';
+    if (deploymentProgress) deploymentProgress.style.width = '5%';
 
-    /*
-    إزالة حالات النجاح والخطأ
-    */
-
-    const card =
-        deploymentOverlay?.querySelector(
-            '.deployment-card'
-        );
-
-
-    if (card) {
-
-        card.classList.remove(
-            'deployment-success',
-            'deployment-error'
-        );
-
-    }
-
-
-    /*
-    إعادة العنوان
-    */
-
-    if (deploymentTitle) {
-
-        deploymentTitle.textContent =
-            'جارٍ إنشاء المشروع...';
-
-    }
-
-
-    /*
-    إعادة الرسالة
-    */
-
-    if (deploymentMessage) {
-
-        deploymentMessage.textContent =
-            'يرجى الانتظار، ولا تغلق هذه الصفحة.';
-
-    }
-
-
-    /*
-    إعادة شريط التقدم
-    */
-
-    if (deploymentProgress) {
-
-        deploymentProgress.style.width =
-            '5%';
-
-    }
-
-
-    /*
-    تفعيل المرحلة الأولى
-    */
-
-    updateDeploymentStage(
-        0,
-        'active'
-    );
-
+    updateDeploymentStage(0, 'active');
 }
-
-
-/* ==================================================
-   OPEN DEPLOYMENT OVERLAY
-================================================== */
 
 function openDeploymentOverlay() {
-
     resetDeployment();
-
-
-    if (!deploymentOverlay) {
-
-        return;
-
-    }
-
-
-    deploymentOverlay.classList.add(
-        'active'
-    );
-
-
-    deploymentOverlay.style.display =
-        'flex';
-
-
-    deploymentOverlay.setAttribute(
-        'aria-hidden',
-        'false'
-    );
-
-
-    /*
-    منع تمرير الصفحة خلف النافذة
-    */
-
-    document.body.classList.add(
-        'no-scroll'
-    );
-
+    if (!deploymentOverlay) return;
+    deploymentOverlay.classList.add('active');
+    deploymentOverlay.style.display = 'flex';
+    deploymentOverlay.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('no-scroll');
 }
-
-
-/* ==================================================
-   CLOSE DEPLOYMENT OVERLAY
-================================================== */
 
 function closeDeploymentOverlay() {
-
-    if (!deploymentOverlay) {
-
-        return;
-
-    }
-
-
-    deploymentOverlay.classList.remove(
-        'active'
-    );
-
-
-    deploymentOverlay.style.display =
-        'none';
-
-
-    deploymentOverlay.setAttribute(
-        'aria-hidden',
-        'true'
-    );
-
-
-    /*
-    إعادة تمرير الصفحة
-    */
-
-    document.body.classList.remove(
-        'no-scroll'
-    );
-
+    if (!deploymentOverlay) return;
+    deploymentOverlay.classList.remove('active');
+    deploymentOverlay.style.display = 'none';
+    deploymentOverlay.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('no-scroll');
 }
-
-
-/* ==================================================
-   START STAGE SIMULATION
-================================================== */
 
 function startDeploymentStages() {
-
-    /*
-    إلغاء المؤقت السابق
-    */
-
     if (deployStageTimer) {
-
-        clearInterval(
-            deployStageTimer
-        );
-
+        clearInterval(deployStageTimer);
         deployStageTimer = null;
-
     }
-
-
     deployStageIndex = 0;
+    updateDeploymentStage(0, 'active');
 
-
-    /*
-    المرحلة الأولى
-    */
-
-    updateDeploymentStage(
-        0,
-        'active'
-    );
-
-
-    /*
-    الانتقال بين المراحل بصرياً
-    */
-
-    deployStageTimer =
-        setInterval(
-            function () {
-
-                /*
-                إذا توقف النشر
-                لا نكمل المراحل.
-                */
-
-                if (!deploymentRunning) {
-
-                    return;
-
-                }
-
-
-                /*
-                لا ندخل إلى مرحلة الإتمام
-                قبل نجاح API الحقيقي.
-                */
-
-                if (
-                    deployStageIndex >= 4
-                ) {
-
-                    clearInterval(
-                        deployStageTimer
-                    );
-
-                    deployStageTimer =
-                        null;
-
-                    return;
-
-                }
-
-
-                /*
-                المرحلة التالية
-                */
-
-                deployStageIndex++;
-
-
-                updateDeploymentStage(
-                    deployStageIndex,
-                    'active'
-                );
-
-            },
-            2200
-        );
-
+    deployStageTimer = setInterval(() => {
+        if (!deploymentRunning) return;
+        if (deployStageIndex >= 4) {
+            clearInterval(deployStageTimer);
+            deployStageTimer = null;
+            return;
+        }
+        deployStageIndex++;
+        updateDeploymentStage(deployStageIndex, 'active');
+    }, 2200);
 }
-
-
-/* ==================================================
-   COMPLETE DEPLOYMENT
-================================================== */
 
 function completeDeployment() {
-
-    /*
-    إيقاف محاكاة المراحل
-    */
-
     if (deployStageTimer) {
-
-        clearInterval(
-            deployStageTimer
-        );
-
+        clearInterval(deployStageTimer);
         deployStageTimer = null;
-
     }
 
-
-    /*
-    حالة النجاح
-    */
-
-    const card =
-        deploymentOverlay?.querySelector(
-            '.deployment-card'
-        );
-
-
+    const card = deploymentOverlay?.querySelector('.deployment-card');
     if (card) {
-
-        card.classList.remove(
-            'deployment-error'
-        );
-
-        card.classList.add(
-            'deployment-success'
-        );
-
+        card.classList.remove('deployment-error');
+        card.classList.add('deployment-success');
     }
 
-
-    /*
-    جميع المراحل مكتملة
-    */
-
-    const stages =
-        deploymentOverlay?.querySelectorAll(
-            '.deployment-stage'
-        );
-
-
+    const stages = deploymentOverlay?.querySelectorAll('.deployment-stage');
     if (stages) {
-
-        stages.forEach(
-            function (stage) {
-
-                stage.classList.remove(
-                    'active',
-                    'pending'
-                );
-
-                stage.classList.add(
-                    'completed'
-                );
-
-            }
-        );
-
+        stages.forEach((stage) => {
+            stage.classList.remove('active', 'pending');
+            stage.classList.add('completed');
+        });
     }
 
-
-    /*
-    المرحلة الأخيرة
-    */
-
-    deployStageIndex =
-        DEPLOY_STAGES.length - 1;
-
-
-    /*
-    العنوان
-    */
-
-    if (deploymentTitle) {
-
-        deploymentTitle.textContent =
-            'تم إنشاء الموقع بنجاح 🎉';
-
-    }
-
-
-    /*
-    الرسالة
-    */
-
-    if (deploymentMessage) {
-
-        deploymentMessage.textContent =
-            'تم إنشاء موقعك ونشره بنجاح على Netlify.';
-
-    }
-
-
-    /*
-    التقدم 100%
-    */
-
-    if (deploymentProgress) {
-
-        deploymentProgress.style.width =
-            '100%';
-
-    }
-
+    deployStageIndex = DEPLOY_STAGES.length - 1;
+    if (deploymentTitle) deploymentTitle.textContent = 'تم إنشاء الموقع بنجاح 🎉';
+    if (deploymentMessage) deploymentMessage.textContent = 'تم إنشاء موقعك ونشره بنجاح على Netlify.';
+    if (deploymentProgress) deploymentProgress.style.width = '100%';
 }
-
-
-/* ==================================================
-   FAILED DEPLOYMENT
-================================================== */
 
 function failDeployment(message) {
-
-    /*
-    إيقاف المؤقت
-    */
-
     if (deployStageTimer) {
-
-        clearInterval(
-            deployStageTimer
-        );
-
+        clearInterval(deployStageTimer);
         deployStageTimer = null;
-
     }
-
-
     deploymentRunning = false;
 
-
-    /*
-    حالة الخطأ بصرياً
-    */
-
-    const card =
-        deploymentOverlay?.querySelector(
-            '.deployment-card'
-        );
-
-
+    const card = deploymentOverlay?.querySelector('.deployment-card');
     if (card) {
-
-        card.classList.remove(
-            'deployment-success'
-        );
-
-        card.classList.add(
-            'deployment-error'
-        );
-
+        card.classList.remove('deployment-success');
+        card.classList.add('deployment-error');
     }
 
+    if (deploymentTitle) deploymentTitle.textContent = 'تعذر إنشاء الموقع';
+    if (deploymentMessage) deploymentMessage.textContent = message || 'حدث خطأ أثناء إنشاء الموقع.';
 
-    /*
-    العنوان
-    */
-
-    if (deploymentTitle) {
-
-        deploymentTitle.textContent =
-            'تعذر إنشاء الموقع';
-
-    }
-
-
-    /*
-    الرسالة
-    */
-
-    if (deploymentMessage) {
-
-        deploymentMessage.textContent =
-            message ||
-            'حدث خطأ أثناء إنشاء الموقع.';
-
-    }
-
-
-    /*
-    إغلاق النافذة بعد لحظة قصيرة
-    */
-
-    setTimeout(
-        function () {
-
-            closeDeploymentOverlay();
-
-        },
-        1400
-    );
-
+    setTimeout(() => closeDeploymentOverlay(), 1400);
 }
-
-
-/* ==================================================
-   GET SITE DATA
-================================================== */
 
 function getDeploymentSiteData(result) {
-
-    const site =
-        result?.site ||
-        result?.data?.site ||
-        result?.data ||
-        result?.project ||
-        result ||
-        {};
-
-
+    const site = result?.site || result?.data?.site || result?.data || result?.project || result || {};
     return {
-
-        siteId:
-            site.siteId ||
-            site._id ||
-            site.id ||
-            result?.siteId ||
-            result?.id ||
-            null,
-
-
-        url:
-            site.url ||
-            site.liveUrl ||
-            site.siteUrl ||
-            site.deployUrl ||
-            result?.url ||
-            result?.liveUrl ||
-            result?.siteUrl ||
-            null,
-
-
-        netlifySiteId:
-            site.netlifySiteId ||
-            result?.netlifySiteId ||
-            null,
-
-
-        name:
-            site.siteName ||
-            site.name ||
-            result?.siteName ||
-            null
-
+        siteId: site.siteId || site._id || site.id || result?.siteId || result?.id || null,
+        url: site.url || site.liveUrl || site.siteUrl || site.deployUrl || result?.url || result?.liveUrl || result?.siteUrl || null,
+        netlifySiteId: site.netlifySiteId || result?.netlifySiteId || null,
+        name: site.siteName || site.name || result?.siteName || null
     };
-
 }
 
-
-/* ==================================================
-   GET FRONTEND AUTH TOKEN
-================================================== */
-
 function getFrontendAuthToken() {
-
     return (
         localStorage.getItem('token') ||
         localStorage.getItem('authToken') ||
         localStorage.getItem('templatecraft_token') ||
         ''
     );
-
 }
 
-
-/* ==================================================
-   HANDLE CREATE EVENT
-================================================== */
-
 async function handleCreateProject(event) {
+    if (deploymentRunning) return;
 
-    /*
-    منع إنشاء أكثر من مشروع في نفس الوقت
-    */
-
-    if (deploymentRunning) {
-
-        console.warn(
-            '[TemplateCraft] Deployment already running.'
-        );
-
-        return;
-
-    }
-
-
-    const detail =
-        event?.detail ||
-        {};
-
-
-    /*
-    اسم المشروع
-    */
-
-    const siteName =
-        String(
-            detail.siteName || ''
-        ).trim();
-
-
-    /*
-    القالب
-    */
-
-    const templateId =
-        detail.templateId ||
-        detail.template?.id ||
-        null;
-
-
-    /*
-    نوع المشروع
-    */
-
-    const projectType =
-        detail.projectType ||
-        detail.template?.projectType ||
-        detail.template?.category ||
-        '';
-
-
-    /* ================================================
-       VALIDATION
-    ================================================ */
+    const detail = event?.detail || {};
+    const siteName = String(detail.siteName || '').trim();
+    const templateId = detail.templateId || detail.template?.id || null;
+    const projectType = detail.projectType || detail.template?.projectType || detail.template?.category || '';
 
     if (!siteName) {
-
-        alert(
-            'اسم المشروع غير موجود.'
-        );
-
+        alert('اسم المشروع غير موجود.');
         return;
-
     }
-
 
     if (!templateId) {
-
-        alert(
-            'القالب غير محدد.'
-        );
-
+        alert('القالب غير محدد.');
         return;
-
     }
 
-
-    /*
-    التحقق من وجود جلسة
-    */
-
-    const token =
-        getFrontendAuthToken();
-
-
+    const token = getFrontendAuthToken();
     if (!token) {
-
-        console.warn(
-            '[TemplateCraft] No frontend auth token found.'
-        );
-
-
-        alert(
-            'انتهت جلسة الدخول. يرجى تسجيل الدخول مجدداً.'
-        );
-
-
-        localStorage.removeItem(
-            'token'
-        );
-
-        localStorage.removeItem(
-            'authToken'
-        );
-
-        localStorage.removeItem(
-            'templatecraft_token'
-        );
-
-        localStorage.removeItem(
-            'user'
-        );
-
-        localStorage.removeItem(
-            'templatecraft_user'
-        );
-
-
-        window.location.replace(
-            'login.html'
-        );
-
-
+        alert('انتهت جلسة الدخول. يرجى تسجيل الدخول مجدداً.');
+        localStorage.removeItem('token');
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('templatecraft_token');
+        localStorage.removeItem('user');
+        localStorage.removeItem('templatecraft_user');
+        window.location.replace('login.html');
         return;
-
     }
 
-
-    /* ================================================
-       API CHECK
-    ================================================ */
-
-    if (
-        typeof window.TemplateCraftAPI ===
-        'undefined' ||
-
-        typeof window.TemplateCraftAPI.deploy !==
-        'function'
-    ) {
-
-        console.error(
-            '[TemplateCraft] TemplateCraftAPI.deploy is unavailable.'
-        );
-
-
-        alert(
-            'ملف client-api.js غير متصل أو خدمة النشر غير متاحة.'
-        );
-
-
+    if (typeof window.TemplateCraftAPI === 'undefined' || typeof window.TemplateCraftAPI.deploy !== 'function') {
+        alert('ملف client-api.js غير متصل أو خدمة النشر غير متاحة.');
         return;
-
     }
-
-
-    /*
-    بدء عملية النشر الحقيقية
-    */
 
     deploymentRunning = true;
-
-
-    /*
-    فتح نافذة النشر
-    */
-
     openDeploymentOverlay();
 
-
-    /*
-    إغلاق نافذة التأكيد
-    */
-
-    const createModal =
-        document.getElementById(
-            'createModal'
-        );
-
-
+    const createModal = document.getElementById('createModal');
     if (createModal) {
-
-        createModal.classList.remove(
-            'show',
-            'active'
-        );
-
-
-        createModal.style.display =
-            'none';
-
+        createModal.classList.remove('show', 'active');
+        createModal.style.display = 'none';
     }
-
-
-    /*
-    إخفاء النتيجة القديمة
-    */
 
     if (deploymentResultContainer) {
-
-        deploymentResultContainer.classList.add(
-            'hidden'
-        );
-
+        deploymentResultContainer.classList.add('hidden');
     }
-
-
-    /*
-    تشغيل مراحل الواجهة
-    */
 
     startDeploymentStages();
 
-
     try {
+        const result = await window.TemplateCraftAPI.deploy({
+            siteName,
+            templateId,
+            variables: { projectType }
+        });
 
-        console.log(
-            '[TemplateCraft] Starting deployment:',
-            {
-                siteName,
-                templateId,
-                projectType
-            }
-        );
-
-
-        /* ============================================
-           REAL API REQUEST
-
-           POST /api/deploy
-        ============================================ */
-
-        const result =
-            await window.TemplateCraftAPI.deploy({
-
-                siteName:
-                    siteName,
-
-                templateId:
-                    templateId,
-
-                variables: {
-
-                    projectType:
-                        projectType
-
-                }
-
-            });
-
-
-        console.log(
-            '[TemplateCraft] Deployment result:',
-            result
-        );
-
-
-        /* ============================================
-           CHECK API RESULT
-        ============================================ */
-
-        if (
-            !result ||
-            result.success !== true
-        ) {
-
-            const message =
-                result?.error ||
-                result?.message ||
-                'تعذر إنشاء أو نشر الموقع.';
-
-
-            console.error(
-                '[TemplateCraft] Deployment failed:',
-                {
-                    status:
-                        result?.status,
-
-                    message,
-
-                    result
-                }
-            );
-
-
-            /*
-            Authentication error
-            */
-
-            if (
-                result?.status === 401 ||
-                result?.status === 403 ||
-
-                /token|unauthorized|غير مصرح|تسجيل الدخول|انتهت الجلسة/i.test(
-                    message
-                )
-            ) {
-
-                failDeployment(
-                    'انتهت جلسة الدخول.'
-                );
-
-
-                localStorage.removeItem(
-                    'token'
-                );
-
-                localStorage.removeItem(
-                    'authToken'
-                );
-
-                localStorage.removeItem(
-                    'templatecraft_token'
-                );
-
-                localStorage.removeItem(
-                    'user'
-                );
-
-                localStorage.removeItem(
-                    'templatecraft_user'
-                );
-
-
-                setTimeout(
-                    function () {
-
-                        window.location.replace(
-                            'login.html'
-                        );
-
-                    },
-                    1000
-                );
-
-
+        if (!result || result.success !== true) {
+            const message = result?.error || result?.message || 'تعذر إنشاء أو نشر الموقع.';
+            if (result?.status === 401 || result?.status === 403 || /token|unauthorized|غير مصرح|تسجيل الدخول|انتهت الجلسة/i.test(message)) {
+                failDeployment('انتهت جلسة الدخول.');
+                localStorage.removeItem('token');
+                localStorage.removeItem('authToken');
+                localStorage.removeItem('templatecraft_token');
+                localStorage.removeItem('user');
+                localStorage.removeItem('templatecraft_user');
+                setTimeout(() => window.location.replace('login.html'), 1000);
                 return;
-
             }
-
-
-            throw new Error(
-                message
-            );
-
+            throw new Error(message);
         }
 
-
-        /* ============================================
-           SUCCESS
-        ============================================ */
-
-        const siteData =
-            getDeploymentSiteData(
-                result
-            );
-
-
-        createdSiteId =
-            siteData.siteId;
-
-
-        publishedSiteUrl =
-            siteData.url;
-
-
-        console.log(
-            '[TemplateCraft] Site created successfully:',
-            siteData
-        );
-
-
-        /*
-        =================================================
-        لا ننتظر SSL.
-
-        نجاح /api/deploy
-        =
-        تم إنشاء ونشر الموقع بنجاح.
-
-        SSL يتم التحقق منه لاحقاً
-        من صفحة المشاريع.
-        =================================================
-        */
+        const siteData = getDeploymentSiteData(result);
+        createdSiteId = siteData.siteId;
+        publishedSiteUrl = siteData.url;
 
         completeDeployment();
-
-
-        /*
-        لحظة النجاح
-        */
-
-        await new Promise(
-            function (resolve) {
-
-                setTimeout(
-                    resolve,
-                    850
-                );
-
-            }
-        );
-
-
-        /*
-        إغلاق نافذة النشر
-        */
-
+        await new Promise((resolve) => setTimeout(resolve, 850));
         closeDeploymentOverlay();
-
-
-        /*
-        الانتقال إلى المشاريع
-        */
-
-        window.location.replace(
-            'profile.html'
-        );
-
-
+        window.location.replace('profile.html');
     } catch (error) {
-
-        console.error(
-            '[TemplateCraft] Project deployment error:',
-            error
-        );
-
-
-        failDeployment(
-            error?.message ||
-            'حدث خطأ أثناء إنشاء الموقع.'
-        );
-
-
+        failDeployment(error?.message || 'حدث خطأ أثناء إنشاء الموقع.');
     } finally {
-
         deploymentRunning = false;
-
     }
-
 }
-
-
-/* ==================================================
-   INITIALIZE DEPLOYMENT SYSTEM
-================================================== */
 
 function initializeDeploymentSystem() {
-
-    /*
-    إنشاء واجهة المراحل
-    */
-
     createDeploymentStages();
-
-
-    /*
-    منع التسجيل المكرر
-    */
-
-    if (
-        window.__templateCraftDeploymentInitialized
-    ) {
-
-        console.log(
-            '[TemplateCraft] Deployment system already initialized.'
-        );
-
-        return;
-
-    }
-
-
-    /*
-    تسجيل Listener
-    */
-
-    window.addEventListener(
-        'templatecraft:create-project',
-        handleCreateProject
-    );
-
-
-    /*
-    حفظ حالة التهيئة
-    */
-
-    window.__templateCraftDeploymentInitialized =
-        true;
-
-
-    console.log(
-        '[TemplateCraft] Deployment system initialized successfully.'
-    );
-
+    if (window.__templateCraftDeploymentInitialized) return;
+    window.addEventListener('templatecraft:create-project', handleCreateProject);
+    window.__templateCraftDeploymentInitialized = true;
 }
 
-
-/* ==================================================
-   PUBLIC API
-================================================== */
-
-window.initializeDeploymentSystem =
-    initializeDeploymentSystem;
-
-
-window.openDeploymentOverlay =
-    openDeploymentOverlay;
-
-
-window.closeDeploymentOverlay =
-    closeDeploymentOverlay;
-
-
-window.getCreatedSiteId =
-    function () {
-
-        return createdSiteId;
-
-    };
-
-
-window.getPublishedSiteUrl =
-    function () {
-
-        return publishedSiteUrl;
-
-    };
-
-
-/* ==================================================
-   AUTO INITIALIZATION
-================================================== */
+window.initializeDeploymentSystem = initializeDeploymentSystem;
+window.openDeploymentOverlay = openDeploymentOverlay;
+window.closeDeploymentOverlay = closeDeploymentOverlay;
+window.getCreatedSiteId = () => createdSiteId;
+window.getPublishedSiteUrl = () => publishedSiteUrl;
 
 initializeDeploymentSystem();
-
-
-console.log(
-    '[TemplateCraft] create-project-deployment.js loaded.'
-);
