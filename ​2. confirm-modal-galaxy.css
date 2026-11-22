@@ -1,58 +1,176 @@
 /* =========================================================
-   CONFIRM MODAL GALAXY LAYOUT — DASHBOARD DARK THEME
+   CUSTOM CATEGORY DROPDOWN + COMPACT CONFIRM MODAL
 ========================================================= */
 
+/* --- 1. قائمة الفئات الاحترافية (Custom Select) --- */
+.tc-custom-select {
+    position: relative;
+    width: 100%;
+    z-index: 30;
+}
+
+.tc-select-trigger {
+    width: 100%;
+    min-height: 50px;
+    padding: 0 16px;
+    border-radius: 15px;
+    background: linear-gradient(145deg, #0b1229, #090e21);
+    border: 1px solid rgba(96, 165, 250, 0.26);
+    color: #f8fafc;
+    font-size: 12px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    cursor: pointer;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.tc-select-trigger:hover,
+.tc-custom-select.open .tc-select-trigger {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.16);
+    background: #0e1633;
+}
+
+.tc-select-trigger-left {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+}
+
+.tc-select-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #38bdf8;
+    box-shadow: 0 0 10px #38bdf8;
+}
+
+.tc-select-arrow {
+    font-size: 11px;
+    color: #94a3b8;
+    transition: transform 0.25s ease;
+}
+
+.tc-custom-select.open .tc-select-arrow {
+    transform: rotate(180deg);
+    color: #60a5fa;
+}
+
+.tc-select-menu {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    right: 0;
+    padding: 6px;
+    border-radius: 16px;
+    background: #090f24;
+    border: 1px solid rgba(96, 165, 250, 0.28);
+    box-shadow: 0 22px 50px rgba(0, 0, 0, 0.65);
+    display: none;
+    flex-direction: column;
+    gap: 4px;
+    max-height: 240px;
+    overflow-y: auto;
+    z-index: 999;
+}
+
+.tc-custom-select.open .tc-select-menu {
+    display: flex;
+}
+
+.tc-select-option {
+    width: 100%;
+    padding: 11px 14px;
+    border-radius: 11px;
+    border: 0;
+    background: transparent;
+    color: #cbd5e1;
+    font-size: 12px;
+    font-weight: 700;
+    text-align: right;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: background 0.18s ease, color 0.18s ease;
+}
+
+.tc-select-option:hover {
+    background: rgba(59, 130, 246, 0.14);
+    color: #fff;
+}
+
+.tc-select-option.active {
+    background: linear-gradient(135deg, rgba(37, 99, 235, 0.28), rgba(99, 102, 241, 0.24));
+    color: #fff;
+    border: 1px solid rgba(96, 165, 250, 0.35);
+}
+
+/* --- 2. نافذة تأكيد إنشاء المشروع (ملمومة ومسطرة في الوسط) --- */
 .create-modal-backdrop {
     z-index: 7000 !important;
+    padding: 14px !important;
+    align-items: center !important;
+    justify-content: center !important;
 }
 
 .create-modal-card {
     position: relative !important;
-    width: min(920px, 96vw) !important;
-    max-width: 920px !important;
-    max-height: 92vh !important;
+    width: min(760px, 94vw) !important;
+    max-width: 760px !important;
+    max-height: 86vh !important;
     height: auto !important;
-    padding: 30px 24px !important;
-    border-radius: 28px !important;
+    padding: 20px 18px !important;
+    border-radius: 24px !important;
     overflow-y: auto !important;
     overflow-x: hidden !important;
     color: #f8fafc !important;
+    text-align: center !important;
     background:
-        radial-gradient(circle at 18% 15%, rgba(37, 99, 235, 0.22), transparent 36%),
-        radial-gradient(circle at 85% 20%, rgba(99, 102, 241, 0.16), transparent 34%),
-        radial-gradient(circle at 50% 85%, rgba(6, 182, 212, 0.12), transparent 40%),
-        linear-gradient(155deg, #060b1d 0%, #0b122b 55%, #050918 100%) !important;
-    border: 1px solid rgba(148, 163, 184, 0.22) !important;
-    box-shadow:
-        0 35px 100px rgba(0, 0, 0, 0.72),
-        0 0 55px rgba(37, 99, 235, 0.16) !important;
-    isolation: isolate !important;
+        radial-gradient(circle at 20% 12%, rgba(37, 99, 235, 0.22), transparent 38%),
+        radial-gradient(circle at 82% 85%, rgba(99, 102, 241, 0.16), transparent 40%),
+        linear-gradient(160deg, #060b1d 0%, #0b122b 55%, #050918 100%) !important;
+    border: 1px solid rgba(96, 165, 250, 0.25) !important;
+    box-shadow: 0 30px 90px rgba(0, 0, 0, 0.78) !important;
     scrollbar-width: thin;
     scrollbar-color: rgba(96, 165, 250, 0.35) transparent;
 }
 
-/* توسيط العنوان والوصف الفوقاني */
+/* الهيدر الفوقاني للنوافذ */
 .create-modal-card > div:first-child {
     position: relative !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
     text-align: center !important;
-    margin-bottom: 18px !important;
+    margin-bottom: 12px !important;
+    padding: 0 34px !important;
 }
 
-.create-modal-card > div:first-child > div {
-    width: 100% !important;
-    text-align: center !important;
+.create-modal-card > div:first-child h3 {
+    font-size: 16px !important;
+    margin: 0 !important;
+}
+
+.create-modal-card > div:first-child p {
+    font-size: 10.5px !important;
+    margin: 3px 0 0 !important;
 }
 
 #closeCreateModalBtn {
     position: absolute !important;
     top: 0 !important;
     left: 0 !important;
+    min-width: 32px !important;
+    min-height: 32px !important;
+    height: 32px !important;
+    border-radius: 10px !important;
+    font-size: 12px !important;
 }
 
-/* إزالة الخلفية والحدود القديمة عن #createModalContent */
 .create-modal-card #createModalContent {
     background: transparent !important;
     border: 0 !important;
@@ -61,176 +179,306 @@
     overflow: visible !important;
 }
 
-/* هيدر المحتوى الداخلي */
+/* البطاقة الترحيبية داخل النافذة */
 .create-modal-card .create-premium-header {
     display: flex !important;
     flex-direction: column !important;
     align-items: center !important;
     justify-content: center !important;
     text-align: center !important;
-    gap: 8px !important;
-    margin-bottom: 16px !important;
-    padding: 18px !important;
-    border-radius: 20px !important;
+    gap: 4px !important;
+    margin-bottom: 10px !important;
+    padding: 12px 14px !important;
+    border-radius: 16px !important;
     background: rgba(11, 17, 38, 0.78) !important;
-    border: 1px solid rgba(148, 163, 184, 0.16) !important;
+    border: 1px solid rgba(148, 163, 184, 0.15) !important;
 }
 
-.create-modal-card .create-premium-header-content,
-.create-modal-card .create-premium-header-content h4,
-.create-modal-card .create-premium-header-content p {
+.create-modal-card .create-premium-header-icon {
+    font-size: 20px !important;
+}
+
+.create-modal-card .create-premium-eyebrow {
+    font-size: 9px !important;
+    letter-spacing: 1px !important;
+    color: #60a5fa !important;
+    font-weight: 800 !important;
+}
+
+.create-modal-card .create-premium-header h4 {
+    margin: 2px 0 !important;
+    font-size: 13.5px !important;
+    font-weight: 900 !important;
     text-align: center !important;
 }
 
-/* قسم معلومات المشروع */
+.create-modal-card .create-premium-header p {
+    margin: 0 !important;
+    font-size: 10px !important;
+    line-height: 1.55 !important;
+    color: #cbd5e1 !important;
+    text-align: center !important;
+}
+
+/* معلومات المشروع: اسم المشروع فوق، والقالب والفئة جنباً إلى جنب */
 .create-modal-card .create-premium-summary {
-    margin: 14px 0 !important;
-    padding: 18px !important;
-    border-radius: 20px !important;
+    margin: 10px 0 !important;
+    padding: 12px !important;
+    border-radius: 16px !important;
     background: rgba(11, 17, 38, 0.82) !important;
-    border: 1px solid rgba(96, 165, 250, 0.24) !important;
-    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.26) !important;
+    border: 1px solid rgba(96, 165, 250, 0.22) !important;
 }
 
 .create-modal-card .create-premium-summary-title {
-    margin-bottom: 12px !important;
-    font-size: 14px !important;
+    margin-bottom: 8px !important;
+    font-size: 11.5px !important;
     font-weight: 900 !important;
     color: #fff !important;
-    text-align: right !important;
+    text-align: center !important;
 }
 
 .create-modal-card .create-premium-summary-grid {
     display: grid !important;
     grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-    gap: 12px !important;
+    gap: 8px !important;
 }
 
 .create-modal-card .create-premium-summary-item {
     display: flex !important;
     flex-direction: column !important;
-    gap: 4px !important;
-    padding: 12px 14px !important;
-    border-radius: 14px !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    gap: 2px !important;
+    padding: 8px 10px !important;
+    border-radius: 12px !important;
     background: rgba(30, 41, 59, 0.55) !important;
     border: 1px solid rgba(148, 163, 184, 0.14) !important;
-    text-align: right !important;
 }
 
 .create-modal-card .create-premium-summary-item:first-child {
     grid-column: 1 / -1 !important;
 }
 
-/* الدومين وعنوان المميزات وحالة Netlify */
-.create-modal-card .create-premium-domain,
-.create-modal-card .create-premium-section-title,
-.create-modal-card .create-premium-netlify,
-.create-modal-card .create-premium-info,
-.create-modal-card .create-premium-final {
+.create-modal-card .create-premium-summary-item span {
+    font-size: 9.5px !important;
+    color: #94a3b8 !important;
+}
+
+.create-modal-card .create-premium-summary-item strong {
+    font-size: 11px !important;
+    color: #fff !important;
+    font-weight: 800 !important;
+}
+
+/* الدومين + عنوان المميزات */
+.create-modal-card .create-premium-domain {
     display: flex !important;
-    flex-direction: row !important;
+    flex-direction: column !important;
     align-items: center !important;
-    justify-content: space-between !important;
-    gap: 12px !important;
-    margin: 12px 0 !important;
-    padding: 14px 16px !important;
-    border-radius: 18px !important;
+    justify-content: center !important;
+    text-align: center !important;
+    gap: 6px !important;
+    margin: 10px 0 !important;
+    padding: 10px 12px !important;
+    border-radius: 15px !important;
     background: rgba(11, 17, 38, 0.78) !important;
-    border: 1px solid rgba(148, 163, 184, 0.16) !important;
-    text-align: right !important;
+    border: 1px solid rgba(148, 163, 184, 0.15) !important;
+}
+
+.create-modal-card .create-premium-domain-left {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    text-align: center !important;
+    gap: 2px !important;
+}
+
+.create-modal-card .create-premium-domain-left span,
+.create-modal-card .create-premium-domain-left small {
+    font-size: 9.5px !important;
+    color: #94a3b8 !important;
+}
+
+.create-modal-card .create-premium-domain-left strong {
+    font-size: 11px !important;
+    color: #60a5fa !important;
+    direction: ltr !important;
+}
+
+.create-modal-card .create-premium-domain-badge {
+    padding: 3px 10px !important;
+    border-radius: 999px !important;
+    font-size: 9px !important;
+    font-weight: 800 !important;
+    background: rgba(16, 185, 129, 0.16) !important;
+    color: #6ee7b7 !important;
+    border: 1px solid rgba(16, 185, 129, 0.30) !important;
 }
 
 .create-modal-card .create-premium-section-title {
-    justify-content: flex-start !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    gap: 2px !important;
+    margin: 12px 0 8px !important;
+    padding: 4px !important;
     background: transparent !important;
     border: 0 !important;
-    padding: 6px 2px !important;
-    margin: 16px 0 8px !important;
 }
 
-/* شبكة الميزات: جوج ميزات في نفس السطر */
+.create-modal-card .create-premium-section-title strong {
+    display: block !important;
+    font-size: 11.5px !important;
+    color: #fff !important;
+}
+
+.create-modal-card .create-premium-section-title span {
+    display: block !important;
+    font-size: 9.5px !important;
+    color: #94a3b8 !important;
+}
+
+/* شبكة الميزات: دائماً جوج ميزات في السطر حتى في الهاتف */
 .create-modal-card .create-premium-features {
     display: grid !important;
     grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-    gap: 12px !important;
+    gap: 8px !important;
     max-height: none !important;
     overflow: visible !important;
 }
 
-/* كادر كل ميزة: أيقونة حداها النص في صف واحد */
 .create-modal-card .create-premium-feature {
     display: flex !important;
-    flex-direction: row !important;
+    flex-direction: column !important;
     align-items: center !important;
-    justify-content: flex-start !important;
-    gap: 12px !important;
-    padding: 14px 16px !important;
-    border-radius: 18px !important;
-    background: rgba(11, 17, 38, 0.84) !important;
-    border: 1px solid rgba(148, 163, 184, 0.16) !important;
-    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.24) !important;
-    transition: transform 0.22s ease, border-color 0.22s ease !important;
-}
-
-.create-modal-card .create-premium-feature:hover {
-    transform: translateY(-2px) !important;
-    border-color: rgba(96, 165, 250, 0.42) !important;
+    justify-content: center !important;
+    text-align: center !important;
+    gap: 5px !important;
+    padding: 10px 8px !important;
+    border-radius: 14px !important;
+    background: rgba(11, 17, 38, 0.85) !important;
+    border: 1px solid rgba(148, 163, 184, 0.15) !important;
 }
 
 .create-modal-card .create-premium-feature-icon {
-    flex: 0 0 auto !important;
-    width: 38px !important;
-    height: 38px !important;
+    width: 28px !important;
+    height: 28px !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-    border-radius: 12px !important;
+    border-radius: 9px !important;
     background: rgba(37, 99, 235, 0.18) !important;
-    border: 1px solid rgba(96, 165, 250, 0.28) !important;
-    font-size: 18px !important;
+    border: 1px solid rgba(96, 165, 250, 0.25) !important;
+    font-size: 13px !important;
 }
 
 .create-modal-card .create-premium-feature-content {
     display: flex !important;
     flex-direction: column !important;
-    gap: 3px !important;
-    min-width: 0 !important;
-    text-align: right !important;
+    align-items: center !important;
+    text-align: center !important;
+    gap: 2px !important;
 }
 
 .create-modal-card .create-premium-feature-content strong {
-    font-size: 12px !important;
+    font-size: 10.5px !important;
     font-weight: 800 !important;
     color: #fff !important;
+    line-height: 1.35 !important;
 }
 
 .create-modal-card .create-premium-feature-content span {
-    font-size: 10.5px !important;
-    line-height: 1.6 !important;
+    font-size: 9px !important;
+    line-height: 1.45 !important;
     color: #cbd5e1 !important;
 }
 
-@media (max-width: 720px) {
+/* حالة Netlify + ملاحظة SSL + الرسالة النهائية (ملمومة وفي الوسط) */
+.create-modal-card .create-premium-netlify,
+.create-modal-card .create-premium-info,
+.create-modal-card .create-premium-final {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    gap: 4px !important;
+    margin: 8px 0 !important;
+    padding: 10px 12px !important;
+    border-radius: 14px !important;
+    background: rgba(11, 17, 38, 0.78) !important;
+    border: 1px solid rgba(148, 163, 184, 0.15) !important;
+}
+
+.create-modal-card .create-premium-netlify strong,
+.create-modal-card .create-premium-info strong,
+.create-modal-card .create-premium-final strong {
+    display: block !important;
+    font-size: 10.5px !important;
+    color: #fff !important;
+}
+
+.create-modal-card .create-premium-netlify span,
+.create-modal-card .create-premium-info span,
+.create-modal-card .create-premium-final span {
+    display: block !important;
+    font-size: 9.5px !important;
+    line-height: 1.5 !important;
+    color: #cbd5e1 !important;
+}
+
+.create-modal-card .create-premium-netlify-status {
+    padding: 2px 9px !important;
+    border-radius: 999px !important;
+    font-size: 8.5px !important;
+    font-weight: 800 !important;
+    background: rgba(16, 185, 129, 0.16) !important;
+    color: #6ee7b7 !important;
+}
+
+/* أزرار أسفل النافذة */
+.create-modal-card > div:last-child {
+    margin-top: 12px !important;
+    gap: 8px !important;
+}
+
+.create-modal-card > div:last-child button {
+    min-height: 40px !important;
+    font-size: 11px !important;
+    border-radius: 12px !important;
+}
+
+/* تصغير إضافي للهاتف باش تجي نافذة أنيقة في الوسط */
+@media (max-width: 520px) {
     .create-modal-card {
-        width: 96vw !important;
-        padding: 22px 14px !important;
-        border-radius: 22px !important;
+        width: 92vw !important;
+        max-height: 82vh !important;
+        padding: 16px 12px !important;
+        border-radius: 20px !important;
     }
 
-    .create-modal-card .create-premium-summary-grid,
+    .create-modal-card > div:first-child h3 {
+        font-size: 14.5px !important;
+    }
+
     .create-modal-card .create-premium-features {
-        grid-template-columns: 1fr !important;
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 6px !important;
     }
 
-    .create-modal-card .create-premium-summary-item:first-child {
-        grid-column: auto !important;
+    .create-modal-card .create-premium-feature {
+        padding: 8px 6px !important;
+        border-radius: 12px !important;
     }
 
-    .create-modal-card .create-premium-domain,
-    .create-modal-card .create-premium-netlify,
-    .create-modal-card .create-premium-info,
-    .create-modal-card .create-premium-final {
-        flex-direction: column !important;
-        align-items: flex-start !important;
+    .create-modal-card .create-premium-feature-content strong {
+        font-size: 9.8px !important;
+    }
+
+    .create-modal-card .create-premium-feature-content span {
+        font-size: 8.5px !important;
     }
 }
