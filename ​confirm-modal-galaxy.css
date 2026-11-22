@@ -1,16 +1,34 @@
 /* =========================================================
    TEMPLATECRAFT PRO
-   CONFIRM MODAL + CUSTOM CATEGORY SELECT
-   + DEPLOYMENT POLISH
-   ========================================================= */
+   CONFIRM MODAL GALAXY
+   FINAL OVERRIDE EDITION
+   ---------------------------------------------------------
+   PURPOSE:
+   - Override create-project-fixes.css
+   - Balanced premium confirmation modal
+   - Desktop 2-column visual structure
+   - 3 summary cards
+   - Domain + Netlify side by side
+   - Features 4 × 2
+   - SSL + Final message side by side
+   - Premium category dropdown
+   - Deployment 3 × 2
+   - NO LOGIC CHANGES
+========================================================= */
+
+
+/* =========================================================
+   01 — VARIABLES
+========================================================= */
 
 :root {
-    --cm-bg: #070b1c;
-    --cm-bg-2: #0b1229;
-    --cm-bg-3: #101a3d;
+    --cm-bg: #050816;
+    --cm-bg-2: #080d20;
+    --cm-bg-3: #0d1530;
 
-    --cm-primary: #3b82f6;
-    --cm-primary-2: #6366f1;
+    --cm-blue: #3b82f6;
+    --cm-blue-2: #60a5fa;
+    --cm-indigo: #6366f1;
     --cm-purple: #8b5cf6;
     --cm-cyan: #06b6d4;
     --cm-green: #10b981;
@@ -21,9 +39,7 @@
     --cm-muted: #94a3b8;
 
     --cm-border: rgba(148, 163, 184, 0.16);
-    --cm-border-strong: rgba(96, 165, 250, 0.32);
-
-    --cm-glass: rgba(11, 18, 41, 0.88);
+    --cm-border-blue: rgba(96, 165, 250, 0.28);
 
     --cm-gradient:
         linear-gradient(
@@ -32,25 +48,25 @@
             #4f46e5 50%,
             #7c3aed 100%
         );
-
-    --cm-radius: 22px;
 }
 
 
 /* =========================================================
-   GLOBAL
-   ========================================================= */
+   02 — CONFIRM MODAL BACKDROP
+========================================================= */
 
 .create-modal-backdrop,
 .modal.create-modal-backdrop {
     position: fixed !important;
+
     inset: 0 !important;
 
     z-index: 7000 !important;
 
-    display: none;
-    align-items: center;
-    justify-content: center;
+    display: none !important;
+
+    align-items: center !important;
+    justify-content: center !important;
 
     padding: 24px !important;
 
@@ -59,20 +75,26 @@
 
     background:
         radial-gradient(
-            circle at 20% 15%,
-            rgba(59, 130, 246, 0.14),
+            circle at 18% 12%,
+            rgba(59, 130, 246, 0.16),
+            transparent 28%
+        ),
+        radial-gradient(
+            circle at 82% 18%,
+            rgba(124, 58, 237, 0.15),
             transparent 30%
         ),
         radial-gradient(
-            circle at 80% 20%,
-            rgba(124, 58, 237, 0.14),
-            transparent 32%
+            circle at 50% 100%,
+            rgba(6, 182, 212, 0.08),
+            transparent 35%
         ),
-        rgba(2, 5, 16, 0.92) !important;
+        rgba(2, 5, 16, 0.94) !important;
 
-    backdrop-filter: blur(22px) saturate(130%);
-    -webkit-backdrop-filter: blur(22px) saturate(130%);
+    backdrop-filter: blur(24px) saturate(135%) !important;
+    -webkit-backdrop-filter: blur(24px) saturate(135%) !important;
 }
+
 
 .create-modal-backdrop.show,
 .create-modal-backdrop.active,
@@ -83,57 +105,65 @@
 
 
 /* =========================================================
-   MAIN CONFIRMATION WINDOW
-   ========================================================= */
+   03 — MAIN MODAL
+   IMPORTANT:
+   create-project-fixes.css has width 720px !important.
+   Therefore we MUST override with !important.
+========================================================= */
 
 .create-modal-card {
-    position: relative;
+    position: relative !important;
 
-    width: min(1080px, 100%);
-    max-width: 1080px;
+    width: min(1080px, 96vw) !important;
 
-    max-height: calc(100vh - 48px);
+    max-width: 1080px !important;
 
-    margin: auto;
+    max-height: calc(100vh - 42px) !important;
 
-    padding: 28px;
+    margin: auto !important;
 
-    overflow-x: hidden;
-    overflow-y: auto;
+    padding: 28px !important;
 
-    border-radius: 30px;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
 
-    color: var(--cm-text);
+    border-radius: 30px !important;
+
+    color: var(--cm-text) !important;
+
+    text-align: right !important;
 
     background:
         radial-gradient(
-            circle at 90% 5%,
-            rgba(59, 130, 246, 0.16),
-            transparent 26%
+            circle at 92% 4%,
+            rgba(59, 130, 246, 0.17),
+            transparent 25%
         ),
         radial-gradient(
-            circle at 5% 90%,
-            rgba(139, 92, 246, 0.12),
+            circle at 4% 96%,
+            rgba(139, 92, 246, 0.13),
             transparent 28%
         ),
         linear-gradient(
             145deg,
             #0b1229 0%,
-            #080d21 48%,
-            #060a18 100%
-        );
+            #080d20 48%,
+            #050918 100%
+        ) !important;
 
-    border: 1px solid rgba(148, 163, 184, 0.20);
+    border: 1px solid rgba(148, 163, 184, 0.22) !important;
 
     box-shadow:
-        0 45px 120px rgba(0, 0, 0, 0.72),
-        0 0 70px rgba(59, 130, 246, 0.08);
+        0 45px 120px rgba(0, 0, 0, 0.78),
+        0 0 80px rgba(59, 130, 246, 0.08) !important;
 
-    isolation: isolate;
+    isolation: isolate !important;
 }
 
 
-/* glow border */
+/* =========================================================
+   04 — MODAL BORDER GLOW
+========================================================= */
 
 .create-modal-card::before {
     content: "";
@@ -148,29 +178,31 @@
 
     background:
         linear-gradient(
-            120deg,
-            rgba(59, 130, 246, 0.22),
-            transparent 28%,
+            125deg,
+            rgba(59, 130, 246, 0.25),
+            transparent 25%,
             transparent 70%,
-            rgba(139, 92, 246, 0.18)
+            rgba(139, 92, 246, 0.22)
         );
 
-    opacity: 0.8;
+    opacity: 0.9;
 
     z-index: -1;
 }
 
 
 /* =========================================================
-   HEADER
-   ========================================================= */
+   05 — TOP HEADER
+========================================================= */
 
 .create-modal-card > div:first-child {
-    position: relative;
+    position: relative !important;
 
     display: grid !important;
 
-    grid-template-columns: 1fr auto !important;
+    grid-template-columns:
+        minmax(0, 1fr)
+        auto !important;
 
     align-items: center !important;
 
@@ -178,40 +210,40 @@
 
     margin-bottom: 22px !important;
 
-    padding-bottom: 20px;
+    padding-bottom: 19px !important;
 
-    border-bottom: 1px solid rgba(148, 163, 184, 0.12);
+    border-bottom:
+        1px solid rgba(148, 163, 184, 0.13) !important;
 }
 
 
-/* title wrapper */
-
 .create-modal-card > div:first-child > div:first-child {
-    min-width: 0;
+    min-width: 0 !important;
+
+    flex: none !important;
 
     text-align: right !important;
 }
 
 
-/* title */
-
 .create-modal-card h3 {
-    color: #fff !important;
+    margin: 0 !important;
+
+    color: #ffffff !important;
 
     font-size: 24px !important;
 
     line-height: 1.4 !important;
 
     font-weight: 900 !important;
-
-    letter-spacing: -0.3px;
 }
 
 
-/* description */
-
 .create-modal-card h3 + p {
-    color: rgba(203, 213, 225, 0.68) !important;
+    margin: 6px 0 0 !important;
+
+    color:
+        rgba(203, 213, 225, 0.66) !important;
 
     font-size: 11.5px !important;
 
@@ -219,7 +251,9 @@
 }
 
 
-/* close */
+/* =========================================================
+   06 — CLOSE BUTTON
+========================================================= */
 
 #createModal #closeCreateModalBtn {
     width: 44px !important;
@@ -230,38 +264,49 @@
 
     padding: 0 !important;
 
-    border-radius: 13px !important;
-
     display: flex !important;
+
     align-items: center !important;
     justify-content: center !important;
 
-    font-size: 15px !important;
-
-    background: rgba(30, 41, 59, 0.70) !important;
-
-    border: 1px solid rgba(148, 163, 184, 0.18) !important;
+    border-radius: 13px !important;
 
     color: #cbd5e1 !important;
+
+    background:
+        rgba(30, 41, 59, 0.72) !important;
+
+    border:
+        1px solid rgba(148, 163, 184, 0.20) !important;
+
+    font-size: 15px !important;
+
+    transition:
+        transform .2s ease,
+        background .2s ease,
+        border-color .2s ease !important;
 }
 
+
 #createModal #closeCreateModalBtn:hover {
-    background: rgba(239, 68, 68, 0.14) !important;
+    transform: translateY(-2px) !important;
 
-    border-color: rgba(248, 113, 113, 0.35) !important;
+    color: #ffffff !important;
 
-    color: #fff !important;
+    background:
+        rgba(239, 68, 68, 0.14) !important;
 
-    transform: translateY(-1px);
+    border-color:
+        rgba(248, 113, 113, 0.38) !important;
 }
 
 
 /* =========================================================
-   MODAL CONTENT
-   ========================================================= */
+   07 — CONTENT CONTAINER
+========================================================= */
 
 #createModalContent {
-    position: relative;
+    position: relative !important;
 
     width: 100% !important;
 
@@ -278,800 +323,908 @@
 
 
 /* =========================================================
-   PREMIUM WRAPPER
-   ========================================================= */
+   08 — PREMIUM WRAPPER
+   IMPORTANT:
+   We use GRID instead of single vertical flex.
+========================================================= */
 
 .create-premium-wrapper {
-    width: 100%;
+    width: 100% !important;
 
-    display: flex;
+    display: grid !important;
 
-    flex-direction: column;
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr)) !important;
 
-    gap: 16px;
+    gap: 14px !important;
+
+    align-items: stretch !important;
 }
 
 
 /* =========================================================
-   PREMIUM HEADER
-   ========================================================= */
+   09 — PREMIUM HEADER
+   FULL WIDTH
+========================================================= */
 
 .create-premium-header {
-    width: 100%;
+    grid-column: 1 / -1 !important;
 
-    display: grid;
+    width: 100% !important;
 
-    grid-template-columns: 78px minmax(0, 1fr);
+    min-width: 0 !important;
 
-    align-items: center;
+    display: grid !important;
 
-    gap: 18px;
+    grid-template-columns:
+        72px
+        minmax(0, 1fr) !important;
 
-    padding: 20px;
+    align-items: center !important;
 
-    border-radius: 20px;
+    gap: 16px !important;
+
+    padding: 17px !important;
+
+    border-radius: 20px !important;
 
     background:
         linear-gradient(
             135deg,
-            rgba(37, 99, 235, 0.16),
-            rgba(79, 70, 229, 0.10)
-        );
+            rgba(37, 99, 235, 0.17),
+            rgba(79, 70, 229, 0.09)
+        ) !important;
 
-    border: 1px solid rgba(96, 165, 250, 0.20);
+    border:
+        1px solid rgba(96, 165, 250, 0.21) !important;
 }
 
 
 .create-premium-header-icon {
-    width: 78px;
-    height: 78px;
+    width: 72px !important;
+    height: 72px !important;
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: flex !important;
 
-    border-radius: 22px;
+    align-items: center !important;
+    justify-content: center !important;
 
-    font-size: 35px;
+    border-radius: 20px !important;
+
+    font-size: 32px !important;
 
     background:
         radial-gradient(
             circle,
-            rgba(59, 130, 246, 0.26),
-            rgba(59, 130, 246, 0.08)
-        );
+            rgba(59, 130, 246, 0.28),
+            rgba(59, 130, 246, 0.07)
+        ) !important;
 
-    border: 1px solid rgba(96, 165, 250, 0.25);
+    border:
+        1px solid rgba(96, 165, 250, 0.25) !important;
 
     box-shadow:
-        0 0 30px rgba(59, 130, 246, 0.16);
+        0 0 30px rgba(59, 130, 246, 0.15) !important;
 }
 
 
 .create-premium-header-content {
-    min-width: 0;
+    min-width: 0 !important;
 
-    display: flex;
-    flex-direction: column;
+    display: flex !important;
 
-    gap: 5px;
+    flex-direction: column !important;
+
+    gap: 4px !important;
 }
 
 
 .create-premium-eyebrow {
-    color: #60a5fa;
+    color: #60a5fa !important;
 
-    font-size: 9px;
+    font-size: 8px !important;
 
-    font-weight: 900;
+    font-weight: 900 !important;
 
-    letter-spacing: 1.5px;
+    letter-spacing: 1.6px !important;
 }
 
 
 .create-premium-header-content h4 {
-    margin: 0;
+    margin: 0 !important;
 
-    color: #fff;
+    color: #ffffff !important;
 
-    font-size: 19px;
+    font-size: 18px !important;
 
-    line-height: 1.5;
+    line-height: 1.5 !important;
 
-    font-weight: 900;
+    font-weight: 900 !important;
 }
 
 
 .create-premium-header-content p {
-    margin: 0;
+    margin: 0 !important;
 
-    color: rgba(203, 213, 225, 0.68);
+    color:
+        rgba(203, 213, 225, 0.66) !important;
 
-    font-size: 11px;
+    font-size: 10px !important;
 
-    line-height: 1.8;
+    line-height: 1.75 !important;
 }
 
 
 /* =========================================================
-   PROJECT SUMMARY
-   3 BALANCED BOXES
-   ========================================================= */
+   10 — SUMMARY
+   FULL WIDTH
+========================================================= */
 
 .create-premium-summary {
-    width: 100%;
+    grid-column: 1 / -1 !important;
 
-    padding: 18px;
+    width: 100% !important;
 
-    border-radius: 19px;
+    min-width: 0 !important;
 
-    background: rgba(15, 23, 42, 0.56);
+    padding: 15px !important;
 
-    border: 1px solid rgba(148, 163, 184, 0.14);
+    border-radius: 18px !important;
+
+    background:
+        rgba(15, 23, 42, 0.54) !important;
+
+    border:
+        1px solid rgba(148, 163, 184, 0.14) !important;
 }
 
 
 .create-premium-summary-title {
-    margin-bottom: 13px;
+    margin-bottom: 10px !important;
 
-    color: #fff;
+    color: #ffffff !important;
 
-    font-size: 12px;
+    font-size: 11px !important;
 
-    font-weight: 900;
+    font-weight: 900 !important;
 }
 
 
-.create-premium-summary-grid {
-    width: 100%;
+/* IMPORTANT:
+   Override the 2-column !important from fixes.css.
+*/
 
-    display: grid;
+.create-modal-card .create-premium-summary-grid {
+    width: 100% !important;
+
+    display: grid !important;
 
     grid-template-columns:
-        repeat(3, minmax(0, 1fr));
+        repeat(3, minmax(0, 1fr)) !important;
 
-    gap: 12px;
+    gap: 10px !important;
+}
+
+
+.create-modal-card .create-premium-summary-item:first-child {
+    grid-column: auto !important;
 }
 
 
 .create-premium-summary-item {
-    min-width: 0;
+    min-width: 0 !important;
 
-    min-height: 76px;
+    min-height: 68px !important;
 
-    display: flex;
+    display: flex !important;
 
-    flex-direction: column;
+    flex-direction: column !important;
 
-    justify-content: center;
+    justify-content: center !important;
 
-    gap: 6px;
+    gap: 5px !important;
 
-    padding: 13px 15px;
+    padding: 11px 13px !important;
 
-    border-radius: 15px;
+    border-radius: 14px !important;
 
     background:
         linear-gradient(
             145deg,
             rgba(30, 41, 59, 0.78),
-            rgba(15, 23, 42, 0.60)
-        );
+            rgba(15, 23, 42, 0.62)
+        ) !important;
 
-    border: 1px solid rgba(148, 163, 184, 0.13);
+    border:
+        1px solid rgba(148, 163, 184, 0.13) !important;
 }
 
 
 .create-premium-summary-item span {
-    color: #94a3b8;
+    color: #94a3b8 !important;
 
-    font-size: 9.5px;
+    font-size: 8.5px !important;
 
-    font-weight: 700;
+    font-weight: 700 !important;
 }
 
 
 .create-premium-summary-item strong {
-    color: #fff;
+    min-width: 0 !important;
 
-    font-size: 12px;
+    color: #ffffff !important;
 
-    line-height: 1.5;
+    font-size: 11px !important;
 
-    font-weight: 900;
+    line-height: 1.45 !important;
 
-    overflow-wrap: anywhere;
+    font-weight: 900 !important;
+
+    overflow-wrap: anywhere !important;
 }
 
 
 /* =========================================================
-   DOMAIN
-   ========================================================= */
+   11 — DOMAIN
+   LEFT COLUMN
+========================================================= */
 
 .create-premium-domain {
-    width: 100%;
+    grid-column: 1 !important;
 
-    display: flex;
+    width: 100% !important;
 
-    align-items: center;
+    min-width: 0 !important;
 
-    justify-content: space-between;
+    min-height: 86px !important;
 
-    gap: 16px;
+    display: flex !important;
 
-    padding: 17px 18px;
+    align-items: center !important;
 
-    border-radius: 18px;
+    justify-content: space-between !important;
+
+    gap: 12px !important;
+
+    padding: 14px 15px !important;
+
+    border-radius: 17px !important;
 
     background:
         linear-gradient(
             135deg,
             rgba(6, 182, 212, 0.10),
             rgba(37, 99, 235, 0.09)
-        );
+        ) !important;
 
-    border: 1px solid rgba(34, 211, 238, 0.18);
+    border:
+        1px solid rgba(34, 211, 238, 0.18) !important;
 }
 
 
 .create-premium-domain-left {
-    min-width: 0;
+    min-width: 0 !important;
 
-    display: flex;
+    display: flex !important;
 
-    align-items: center;
+    align-items: center !important;
 
-    gap: 13px;
+    gap: 11px !important;
 }
 
 
 .create-premium-domain-icon {
-    flex: 0 0 auto;
+    flex: 0 0 auto !important;
 
-    width: 46px;
-    height: 46px;
+    width: 42px !important;
+    height: 42px !important;
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: flex !important;
 
-    border-radius: 14px;
+    align-items: center !important;
+    justify-content: center !important;
 
-    background: rgba(6, 182, 212, 0.13);
+    border-radius: 12px !important;
 
-    border: 1px solid rgba(34, 211, 238, 0.20);
+    background:
+        rgba(6, 182, 212, 0.13) !important;
 
-    font-size: 21px;
+    border:
+        1px solid rgba(34, 211, 238, 0.20) !important;
+
+    font-size: 19px !important;
 }
 
 
 .create-premium-domain-left > div:last-child {
-    min-width: 0;
+    min-width: 0 !important;
 
-    display: flex;
+    display: flex !important;
 
-    flex-direction: column;
+    flex-direction: column !important;
 
-    gap: 3px;
+    gap: 2px !important;
 }
 
 
 .create-premium-domain-left span {
-    color: #94a3b8;
+    color: #94a3b8 !important;
 
-    font-size: 9px;
+    font-size: 8px !important;
 
-    font-weight: 700;
+    font-weight: 700 !important;
 }
 
 
 .create-premium-domain-left strong {
-    color: #67e8f9;
+    min-width: 0 !important;
 
-    font-size: 13px;
+    color: #67e8f9 !important;
 
-    line-height: 1.5;
+    font-size: 11.5px !important;
 
-    font-weight: 900;
+    line-height: 1.45 !important;
 
-    overflow-wrap: anywhere;
+    font-weight: 900 !important;
+
+    overflow-wrap: anywhere !important;
 }
 
 
 .create-premium-domain-left small {
-    color: rgba(203, 213, 225, 0.50);
+    color:
+        rgba(203, 213, 225, 0.48) !important;
 
-    font-size: 8.5px;
+    font-size: 7.5px !important;
 }
 
 
 .create-premium-domain-badge {
-    flex: 0 0 auto;
+    flex: 0 0 auto !important;
 
-    padding: 7px 13px;
+    padding: 6px 10px !important;
 
-    border-radius: 999px;
+    border-radius: 999px !important;
 
-    color: #6ee7b7;
+    color: #6ee7b7 !important;
 
-    background: rgba(16, 185, 129, 0.12);
+    background:
+        rgba(16, 185, 129, 0.12) !important;
 
-    border: 1px solid rgba(16, 185, 129, 0.24);
+    border:
+        1px solid rgba(16, 185, 129, 0.24) !important;
 
-    font-size: 9px;
+    font-size: 8px !important;
 
-    font-weight: 900;
+    font-weight: 900 !important;
 }
 
 
 /* =========================================================
-   SECTION TITLE
-   ========================================================= */
-
-.create-premium-section-title {
-    width: 100%;
-
-    display: flex;
-
-    align-items: center;
-
-    gap: 11px;
-
-    padding: 4px 2px;
-
-    color: #fff;
-}
-
-
-.create-premium-section-title > div:first-child {
-    width: 38px;
-    height: 38px;
-
-    flex: 0 0 auto;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    border-radius: 12px;
-
-    background: rgba(139, 92, 246, 0.12);
-
-    border: 1px solid rgba(139, 92, 246, 0.22);
-}
-
-
-.create-premium-section-title > div:last-child {
-    min-width: 0;
-
-    display: flex;
-
-    flex-direction: column;
-
-    gap: 2px;
-}
-
-
-.create-premium-section-title strong {
-    color: #fff;
-
-    font-size: 12px;
-
-    font-weight: 900;
-}
-
-
-.create-premium-section-title span {
-    color: #94a3b8;
-
-    font-size: 9px;
-}
-
-
-/* =========================================================
-   FEATURES
-   4 COLUMNS × 2 ROWS
-   ========================================================= */
-
-.create-premium-features {
-    width: 100%;
-
-    display: grid;
-
-    grid-template-columns:
-        repeat(4, minmax(0, 1fr));
-
-    gap: 12px;
-}
-
-
-.create-premium-feature {
-    min-width: 0;
-
-    min-height: 94px;
-
-    display: flex;
-
-    align-items: center;
-
-    gap: 11px;
-
-    padding: 13px;
-
-    border-radius: 17px;
-
-    background:
-        linear-gradient(
-            145deg,
-            rgba(15, 23, 42, 0.90),
-            rgba(10, 16, 36, 0.76)
-        );
-
-    border: 1px solid rgba(148, 163, 184, 0.14);
-
-    transition:
-        transform 0.22s ease,
-        border-color 0.22s ease,
-        background 0.22s ease,
-        box-shadow 0.22s ease;
-}
-
-
-.create-premium-feature:hover {
-    transform: translateY(-3px);
-
-    border-color: rgba(96, 165, 250, 0.32);
-
-    background:
-        linear-gradient(
-            145deg,
-            rgba(30, 41, 59, 0.92),
-            rgba(15, 23, 42, 0.84)
-        );
-
-    box-shadow:
-        0 12px 30px rgba(0, 0, 0, 0.25);
-}
-
-
-.create-premium-feature-icon {
-    flex: 0 0 auto;
-
-    width: 42px;
-    height: 42px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    border-radius: 13px;
-
-    background:
-        linear-gradient(
-            145deg,
-            rgba(59, 130, 246, 0.18),
-            rgba(139, 92, 246, 0.12)
-        );
-
-    border: 1px solid rgba(96, 165, 250, 0.18);
-
-    font-size: 18px;
-}
-
-
-.create-premium-feature-content {
-    min-width: 0;
-
-    display: flex;
-
-    flex-direction: column;
-
-    gap: 4px;
-}
-
-
-.create-premium-feature-content strong {
-    color: #f8fafc;
-
-    font-size: 10.5px;
-
-    line-height: 1.45;
-
-    font-weight: 900;
-}
-
-
-.create-premium-feature-content span {
-    color: rgba(203, 213, 225, 0.55);
-
-    font-size: 8.5px;
-
-    line-height: 1.65;
-
-    overflow-wrap: anywhere;
-}
-
-
-/* =========================================================
-   NETLIFY STATUS
-   ========================================================= */
+   12 — NETLIFY
+   RIGHT COLUMN
+========================================================= */
 
 .create-premium-netlify {
-    width: 100%;
+    grid-column: 2 !important;
 
-    min-height: 70px;
+    width: 100% !important;
 
-    display: grid;
+    min-width: 0 !important;
 
-    grid-template-columns: 46px minmax(0, 1fr) auto;
+    min-height: 86px !important;
 
-    align-items: center;
+    display: grid !important;
 
-    gap: 13px;
+    grid-template-columns:
+        42px
+        minmax(0, 1fr)
+        auto !important;
 
-    padding: 13px 15px;
+    align-items: center !important;
 
-    border-radius: 17px;
+    gap: 10px !important;
 
-    background: rgba(15, 23, 42, 0.70);
+    padding: 13px 14px !important;
 
-    border: 1px solid rgba(148, 163, 184, 0.14);
+    border-radius: 17px !important;
+
+    background:
+        rgba(15, 23, 42, 0.70) !important;
+
+    border:
+        1px solid rgba(148, 163, 184, 0.14) !important;
 }
 
 
 .create-premium-netlify.ready {
-    border-color: rgba(16, 185, 129, 0.25);
+    border-color:
+        rgba(16, 185, 129, 0.25) !important;
 
     background:
         linear-gradient(
             135deg,
             rgba(16, 185, 129, 0.10),
             rgba(15, 23, 42, 0.76)
-        );
+        ) !important;
 }
 
 
 .create-premium-netlify.not-ready {
-    border-color: rgba(245, 158, 11, 0.25);
+    border-color:
+        rgba(245, 158, 11, 0.25) !important;
 
     background:
         linear-gradient(
             135deg,
             rgba(245, 158, 11, 0.08),
             rgba(15, 23, 42, 0.76)
-        );
+        ) !important;
 }
 
 
 .create-premium-netlify-icon {
-    width: 46px;
-    height: 46px;
+    width: 42px !important;
+    height: 42px !important;
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: flex !important;
 
-    border-radius: 13px;
+    align-items: center !important;
+    justify-content: center !important;
 
-    background: rgba(16, 185, 129, 0.12);
+    border-radius: 12px !important;
 
-    font-size: 18px;
+    background:
+        rgba(16, 185, 129, 0.12) !important;
 
-    font-weight: 900;
+    font-size: 17px !important;
+
+    font-weight: 900 !important;
 }
 
 
 .create-premium-netlify-content {
-    min-width: 0;
+    min-width: 0 !important;
 
-    display: flex;
+    display: flex !important;
 
-    flex-direction: column;
+    flex-direction: column !important;
 
-    gap: 3px;
+    gap: 3px !important;
 }
 
 
 .create-premium-netlify-content strong {
-    color: #fff;
+    color: #ffffff !important;
 
-    font-size: 11px;
+    font-size: 10px !important;
 
-    font-weight: 900;
+    font-weight: 900 !important;
 }
 
 
 .create-premium-netlify-content span {
-    color: #94a3b8;
+    color: #94a3b8 !important;
 
-    font-size: 9px;
+    font-size: 8px !important;
 
-    line-height: 1.6;
+    line-height: 1.55 !important;
 }
 
 
 .create-premium-netlify-status {
-    flex: 0 0 auto;
+    flex: 0 0 auto !important;
 
-    padding: 7px 11px;
+    padding: 6px 9px !important;
 
-    border-radius: 999px;
+    border-radius: 999px !important;
 
-    color: #6ee7b7;
+    color: #6ee7b7 !important;
 
-    background: rgba(16, 185, 129, 0.12);
+    background:
+        rgba(16, 185, 129, 0.12) !important;
 
-    border: 1px solid rgba(16, 185, 129, 0.22);
+    border:
+        1px solid rgba(16, 185, 129, 0.22) !important;
 
-    font-size: 8px;
+    font-size: 7px !important;
 
-    font-weight: 900;
+    font-weight: 900 !important;
 }
 
 
 /* =========================================================
-   SSL INFO
-   ========================================================= */
+   13 — SECTION TITLE
+   FULL WIDTH
+========================================================= */
+
+.create-premium-section-title {
+    grid-column: 1 / -1 !important;
+
+    width: 100% !important;
+
+    display: flex !important;
+
+    align-items: center !important;
+
+    gap: 10px !important;
+
+    padding: 2px 2px !important;
+
+    color: #ffffff !important;
+}
+
+
+.create-premium-section-title > div:first-child {
+    width: 36px !important;
+    height: 36px !important;
+
+    flex: 0 0 auto !important;
+
+    display: flex !important;
+
+    align-items: center !important;
+    justify-content: center !important;
+
+    border-radius: 11px !important;
+
+    background:
+        rgba(139, 92, 246, 0.12) !important;
+
+    border:
+        1px solid rgba(139, 92, 246, 0.22) !important;
+}
+
+
+.create-premium-section-title > div:last-child {
+    min-width: 0 !important;
+
+    display: flex !important;
+
+    flex-direction: column !important;
+
+    gap: 2px !important;
+}
+
+
+.create-premium-section-title strong {
+    color: #ffffff !important;
+
+    font-size: 11px !important;
+
+    font-weight: 900 !important;
+}
+
+
+.create-premium-section-title span {
+    color: #94a3b8 !important;
+
+    font-size: 8px !important;
+}
+
+
+/* =========================================================
+   14 — FEATURES
+   4 × 2 DESKTOP
+========================================================= */
+
+.create-modal-card .create-premium-features {
+    grid-column: 1 / -1 !important;
+
+    width: 100% !important;
+
+    display: grid !important;
+
+    grid-template-columns:
+        repeat(4, minmax(0, 1fr)) !important;
+
+    gap: 10px !important;
+}
+
+
+.create-modal-card .create-premium-feature {
+    min-width: 0 !important;
+
+    min-height: 88px !important;
+
+    display: flex !important;
+
+    align-items: center !important;
+
+    gap: 9px !important;
+
+    padding: 11px !important;
+
+    border-radius: 15px !important;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(15, 23, 42, 0.92),
+            rgba(10, 16, 36, 0.78)
+        ) !important;
+
+    border:
+        1px solid rgba(148, 163, 184, 0.14) !important;
+
+    transition:
+        transform .2s ease,
+        border-color .2s ease,
+        background .2s ease,
+        box-shadow .2s ease !important;
+}
+
+
+.create-modal-card .create-premium-feature:hover {
+    transform: translateY(-2px) !important;
+
+    border-color:
+        rgba(96, 165, 250, 0.34) !important;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(30, 41, 59, 0.94),
+            rgba(15, 23, 42, 0.84)
+        ) !important;
+
+    box-shadow:
+        0 12px 28px rgba(0, 0, 0, 0.24) !important;
+}
+
+
+.create-premium-feature-icon {
+    flex: 0 0 auto !important;
+
+    width: 38px !important;
+    height: 38px !important;
+
+    display: flex !important;
+
+    align-items: center !important;
+    justify-content: center !important;
+
+    border-radius: 11px !important;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(59, 130, 246, 0.18),
+            rgba(139, 92, 246, 0.12)
+        ) !important;
+
+    border:
+        1px solid rgba(96, 165, 250, 0.18) !important;
+
+    font-size: 16px !important;
+}
+
+
+.create-premium-feature-content {
+    min-width: 0 !important;
+
+    display: flex !important;
+
+    flex-direction: column !important;
+
+    gap: 3px !important;
+}
+
+
+.create-modal-card .create-premium-feature-content strong {
+    color: #f8fafc !important;
+
+    font-size: 9.5px !important;
+
+    line-height: 1.4 !important;
+
+    font-weight: 900 !important;
+}
+
+
+.create-modal-card .create-premium-feature-content span {
+    color:
+        rgba(203, 213, 225, 0.54) !important;
+
+    font-size: 7.5px !important;
+
+    line-height: 1.55 !important;
+
+    overflow-wrap: anywhere !important;
+}
+
+
+/* =========================================================
+   15 — SSL INFO
+   LEFT COLUMN
+========================================================= */
 
 .create-premium-info {
-    width: 100%;
+    grid-column: 1 !important;
 
-    display: grid;
+    width: 100% !important;
 
-    grid-template-columns: 42px minmax(0, 1fr);
+    min-width: 0 !important;
 
-    align-items: center;
+    display: grid !important;
 
-    gap: 11px;
+    grid-template-columns:
+        40px
+        minmax(0, 1fr) !important;
 
-    padding: 14px 16px;
+    align-items: center !important;
 
-    border-radius: 16px;
+    gap: 10px !important;
 
-    background: rgba(59, 130, 246, 0.07);
+    padding: 12px 14px !important;
 
-    border: 1px solid rgba(96, 165, 250, 0.14);
+    border-radius: 15px !important;
+
+    background:
+        rgba(59, 130, 246, 0.07) !important;
+
+    border:
+        1px solid rgba(96, 165, 250, 0.14) !important;
 }
 
 
 .create-premium-info-icon {
-    width: 42px;
-    height: 42px;
+    width: 40px !important;
+    height: 40px !important;
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: flex !important;
 
-    border-radius: 12px;
+    align-items: center !important;
+    justify-content: center !important;
 
-    background: rgba(59, 130, 246, 0.12);
+    border-radius: 11px !important;
 
-    font-size: 17px;
+    background:
+        rgba(59, 130, 246, 0.12) !important;
+
+    font-size: 16px !important;
 }
 
 
 .create-premium-info > div:last-child {
-    min-width: 0;
+    min-width: 0 !important;
 
-    display: flex;
+    display: flex !important;
 
-    flex-direction: column;
+    flex-direction: column !important;
 
-    gap: 4px;
+    gap: 3px !important;
 }
 
 
 .create-premium-info strong {
-    color: #dbeafe;
+    color: #dbeafe !important;
 
-    font-size: 10px;
+    font-size: 9px !important;
 
-    font-weight: 900;
+    font-weight: 900 !important;
 }
 
 
 .create-premium-info span {
-    color: rgba(203, 213, 225, 0.56);
+    color:
+        rgba(203, 213, 225, 0.54) !important;
 
-    font-size: 8.5px;
+    font-size: 7.5px !important;
 
-    line-height: 1.75;
+    line-height: 1.65 !important;
 }
 
 
 /* =========================================================
-   FINAL MESSAGE
-   ========================================================= */
+   16 — FINAL MESSAGE
+   RIGHT COLUMN
+========================================================= */
 
 .create-premium-final {
-    width: 100%;
+    grid-column: 2 !important;
 
-    display: grid;
+    width: 100% !important;
 
-    grid-template-columns: 44px minmax(0, 1fr);
+    min-width: 0 !important;
 
-    align-items: center;
+    display: grid !important;
 
-    gap: 11px;
+    grid-template-columns:
+        40px
+        minmax(0, 1fr) !important;
 
-    padding: 14px 16px;
+    align-items: center !important;
 
-    border-radius: 17px;
+    gap: 10px !important;
+
+    padding: 12px 14px !important;
+
+    border-radius: 15px !important;
 
     background:
         linear-gradient(
             135deg,
             rgba(139, 92, 246, 0.12),
             rgba(59, 130, 246, 0.08)
-        );
+        ) !important;
 
-    border: 1px solid rgba(139, 92, 246, 0.20);
+    border:
+        1px solid rgba(139, 92, 246, 0.20) !important;
 }
 
 
 .create-premium-final-icon {
-    width: 44px;
-    height: 44px;
+    width: 40px !important;
+    height: 40px !important;
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: flex !important;
 
-    border-radius: 13px;
+    align-items: center !important;
+    justify-content: center !important;
 
-    background: rgba(139, 92, 246, 0.13);
+    border-radius: 11px !important;
 
-    font-size: 19px;
+    background:
+        rgba(139, 92, 246, 0.13) !important;
+
+    font-size: 17px !important;
 }
 
 
 .create-premium-final > div:last-child {
-    min-width: 0;
+    min-width: 0 !important;
 
-    display: flex;
+    display: flex !important;
 
-    flex-direction: column;
+    flex-direction: column !important;
 
-    gap: 3px;
+    gap: 3px !important;
 }
 
 
 .create-premium-final strong {
-    color: #fff;
+    color: #ffffff !important;
 
-    font-size: 10.5px;
+    font-size: 9.5px !important;
 
-    font-weight: 900;
+    font-weight: 900 !important;
 }
 
 
 .create-premium-final span {
-    color: rgba(203, 213, 225, 0.56);
+    color:
+        rgba(203, 213, 225, 0.54) !important;
 
-    font-size: 8.5px;
+    font-size: 7.5px !important;
 
-    line-height: 1.7;
+    line-height: 1.65 !important;
 }
 
 
 /* =========================================================
-   CONFIRM / CANCEL BUTTONS
-   ========================================================= */
+   17 — MODAL BUTTONS
+   FULL WIDTH
+========================================================= */
 
 #createModal .create-modal-card > div:last-child {
+    grid-column: 1 / -1 !important;
+
+    width: 100% !important;
+
     display: grid !important;
 
     grid-template-columns:
-        minmax(0, 1fr)
-        minmax(0, 1fr) !important;
+        repeat(2, minmax(0, 1fr)) !important;
 
     gap: 12px !important;
 
-    margin-top: 22px !important;
+    margin-top: 6px !important;
 
-    padding-top: 20px;
+    padding-top: 18px !important;
 
-    border-top: 1px solid rgba(148, 163, 184, 0.12);
+    border-top:
+        1px solid rgba(148, 163, 184, 0.12) !important;
 }
 
 
@@ -1079,9 +1232,395 @@
 #createModal #confirmCreateBtn {
     width: 100% !important;
 
+    min-width: 0 !important;
+
+    min-height: 50px !important;
+
+    border-radius: 14px !important;
+
+    font-size: 11px !important;
+
+    font-weight: 900 !important;
+}
+
+
+#createModal #confirmCreateBtn {
+    color: #ffffff !important;
+
+    background: var(--cm-gradient) !important;
+
+    border: 0 !important;
+
+    box-shadow:
+        0 12px 30px rgba(37, 99, 235, 0.28) !important;
+
+    transition:
+        transform .2s ease,
+        box-shadow .2s ease !important;
+}
+
+
+#createModal #confirmCreateBtn:hover:not(:disabled) {
+    transform: translateY(-2px) !important;
+
+    box-shadow:
+        0 18px 38px rgba(37, 99, 235, 0.38) !important;
+}
+
+
+#createModal #confirmCreateBtn:disabled {
+    opacity: 0.55 !important;
+
+    cursor: not-allowed !important;
+
+    transform: none !important;
+}
+
+
+#createModal #cancelCreateBtn {
+    color: #e2e8f0 !important;
+
+    background:
+        rgba(30, 41, 59, 0.78) !important;
+
+    border:
+        1px solid rgba(148, 163, 184, 0.20) !important;
+
+    transition:
+        transform .2s ease,
+        background .2s ease !important;
+}
+
+
+#createModal #cancelCreateBtn:hover {
+    transform: translateY(-2px) !important;
+
+    background:
+        rgba(51, 65, 85, 0.88) !important;
+
+    border-color:
+        rgba(96, 165, 250, 0.30) !important;
+}
+
+
+/* =========================================================
+   18 — CUSTOM CATEGORY SELECT
+========================================================= */
+
+.tc-custom-select {
+    position: relative !important;
+
+    width: 100% !important;
+
+    margin-top: 0 !important;
+
+    direction: rtl !important;
+
+    z-index: 5000 !important;
+}
+
+
+.tc-select-trigger {
+    position: relative !important;
+
+    width: 100% !important;
+
     min-height: 52px !important;
 
+    padding: 0 16px !important;
+
+    display: flex !important;
+
+    align-items: center !important;
+
+    justify-content: space-between !important;
+
+    gap: 12px !important;
+
     border-radius: 15px !important;
+
+    border:
+        1px solid rgba(96, 165, 250, 0.32) !important;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(15, 23, 55, 0.98),
+            rgba(8, 14, 35, 0.98)
+        ) !important;
+
+    color: #ffffff !important;
+
+    font-family: "Cairo", sans-serif !important;
+
+    font-size: 12px !important;
+
+    font-weight: 800 !important;
+
+    cursor: pointer !important;
+
+    outline: none !important;
+
+    box-shadow:
+        0 10px 28px rgba(0, 0, 0, 0.22),
+        inset 0 1px 0 rgba(255, 255, 255, 0.04) !important;
+
+    transition:
+        border-color .2s ease,
+        background .2s ease,
+        box-shadow .2s ease !important;
+}
+
+
+.tc-select-trigger:hover {
+    border-color:
+        rgba(96, 165, 250, 0.60) !important;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(18, 29, 66, 1),
+            rgba(9, 16, 40, 1)
+        ) !important;
+}
+
+
+.tc-custom-select.open .tc-select-trigger {
+    border-color:
+        rgba(99, 102, 241, 0.75) !important;
+
+    box-shadow:
+        0 0 0 3px rgba(99, 102, 241, 0.12),
+        0 14px 35px rgba(0, 0, 0, 0.30) !important;
+}
+
+
+.tc-select-trigger-left {
+    min-width: 0 !important;
+
+    flex: 1 1 auto !important;
+
+    display: flex !important;
+
+    align-items: center !important;
+
+    gap: 10px !important;
+}
+
+
+.tc-select-dot {
+    flex: 0 0 auto !important;
+
+    width: 8px !important;
+    height: 8px !important;
+
+    border-radius: 50% !important;
+
+    background: #60a5fa !important;
+
+    box-shadow:
+        0 0 12px rgba(96, 165, 250, 0.85) !important;
+}
+
+
+.tc-select-label {
+    min-width: 0 !important;
+
+    display: block !important;
+
+    color: #f8fafc !important;
+
+    font-size: 12px !important;
+
+    font-weight: 800 !important;
+
+    overflow: hidden !important;
+
+    text-overflow: ellipsis !important;
+
+    white-space: nowrap !important;
+}
+
+
+.tc-select-arrow {
+    flex: 0 0 auto !important;
+
+    width: 28px !important;
+
+    height: 28px !important;
+
+    display: flex !important;
+
+    align-items: center !important;
+    justify-content: center !important;
+
+    border-radius: 9px !important;
+
+    color: #bfdbfe !important;
+
+    background:
+        rgba(59, 130, 246, 0.12) !important;
+
+    font-size: 10px !important;
+
+    transition:
+        transform .2s ease,
+        background .2s ease !important;
+}
+
+
+.tc-custom-select.open .tc-select-arrow {
+    transform: rotate(180deg) !important;
+
+    background:
+        rgba(99, 102, 241, 0.20) !important;
+}
+
+
+/* =========================================================
+   19 — CATEGORY MENU
+========================================================= */
+
+.tc-select-menu {
+    position: absolute !important;
+
+    top: calc(100% + 8px) !important;
+
+    right: 0 !important;
+    left: 0 !important;
+
+    width: 100% !important;
+
+    max-height: 280px !important;
+
+    margin: 0 !important;
+
+    padding: 8px !important;
+
+    display: none !important;
+
+    flex-direction: column !important;
+
+    gap: 6px !important;
+
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+
+    direction: rtl !important;
+
+    border-radius: 17px !important;
+
+    border:
+        1px solid rgba(96, 165, 250, 0.35) !important;
+
+    background:
+        linear-gradient(
+            160deg,
+            rgba(8, 14, 34, 0.99),
+            rgba(5, 9, 25, 0.99)
+        ) !important;
+
+    box-shadow:
+        0 24px 60px rgba(0, 0, 0, 0.60),
+        0 0 35px rgba(59, 130, 246, 0.10) !important;
+
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+
+    z-index: 99999 !important;
+}
+
+
+.tc-custom-select.open .tc-select-menu {
+    display: flex !important;
+}
+
+
+/* =========================================================
+   20 — CATEGORY OPTION BOXES
+========================================================= */
+
+.tc-select-option {
+    position: relative !important;
+
+    width: 100% !important;
+
+    min-height: 44px !important;
+
+    flex: 0 0 auto !important;
+
+    display: grid !important;
+
+    grid-template-columns:
+        minmax(0, 1fr)
+        24px !important;
+
+    align-items: center !important;
+
+    gap: 8px !important;
+
+    padding: 8px 11px !important;
+
+    border-radius: 11px !important;
+
+    border:
+        1px solid rgba(148, 163, 184, 0.10) !important;
+
+    background:
+        rgba(15, 23, 42, 0.90) !important;
+
+    color: #dbeafe !important;
+
+    font-family: "Cairo", sans-serif !important;
+
+    font-size: 11px !important;
+
+    font-weight: 700 !important;
+
+    line-height: 1.4 !important;
+
+    text-align: right !important;
+
+    direction: rtl !important;
+
+    white-space: nowrap !important;
+
+    overflow: hidden !important;
+
+    cursor: pointer !important;
+
+    transition:
+        background .18s ease,
+        border-color .18s ease,
+        transform .18s ease !important;
+}
+
+
+.tc-select-option > span:first-child {
+    min-width: 0 !important;
+
+    overflow: hidden !important;
+
+    text-overflow: ellipsis !important;
+
+    white-space: nowrap !important;
+
+    text-align: right !important;
+}
+
+
+.tc-select-option > span:last-child {
+    width: 24px !important;
+    height: 24px !important;
+
+    display: flex !important;
+
+    align-items: center !important;
+    justify-content: center !important;
+
+    border-radius: 7px !important;
+
+    color: #93c5fd !important;
 
     font-size: 12px !important;
 
@@ -1089,360 +1628,76 @@
 }
 
 
-#createModal #confirmCreateBtn {
-    background: var(--cm-gradient) !important;
-
-    color: #fff !important;
-
-    border: 0 !important;
-
-    box-shadow:
-        0 12px 30px rgba(37, 99, 235, 0.28);
-}
-
-
-#createModal #confirmCreateBtn:hover:not(:disabled) {
-    transform: translateY(-2px);
-
-    box-shadow:
-        0 17px 38px rgba(37, 99, 235, 0.38);
-}
-
-
-#createModal #confirmCreateBtn:disabled {
-    opacity: 0.55;
-
-    cursor: not-allowed;
-
-    transform: none;
-}
-
-
-#createModal #cancelCreateBtn {
-    background: rgba(30, 41, 59, 0.78) !important;
-
-    color: #e2e8f0 !important;
-
-    border: 1px solid rgba(148, 163, 184, 0.20) !important;
-}
-
-
-#createModal #cancelCreateBtn:hover {
-    background: rgba(51, 65, 85, 0.88) !important;
-
-    border-color: rgba(96, 165, 250, 0.30) !important;
-}
-
-
-/* =========================================================
-   CUSTOM CATEGORY SELECT
-   المشروع: نوع المشروع
-   ========================================================= */
-
-.tc-custom-select {
-    position: relative;
-
-    width: 100%;
-
-    margin-top: 8px;
-
-    z-index: 500;
-}
-
-
-/* trigger */
-
-.tc-select-trigger {
-    position: relative;
-
-    width: 100%;
-
-    min-height: 52px;
-
-    padding: 0 15px;
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: space-between;
-
-    gap: 12px;
-
-    border-radius: 15px;
-
-    border: 1px solid rgba(148, 163, 184, 0.20);
-
-    background:
-        linear-gradient(
-            145deg,
-            #0d1530,
-            #0a1025
-        );
-
-    color: #fff;
-
-    font-family: inherit;
-
-    cursor: pointer;
-
-    transition:
-        border-color 0.2s ease,
-        background 0.2s ease,
-        box-shadow 0.2s ease,
-        transform 0.2s ease;
-}
-
-
-.tc-select-trigger:hover {
-    border-color: rgba(96, 165, 250, 0.45);
-
-    background:
-        linear-gradient(
-            145deg,
-            #111b3b,
-            #0c1430
-        );
-}
-
-
-.tc-custom-select.open .tc-select-trigger {
-    border-color: #3b82f6;
-
-    box-shadow:
-        0 0 0 3px rgba(59, 130, 246, 0.13),
-        0 10px 30px rgba(0, 0, 0, 0.22);
-}
-
-
-/* left content */
-
-.tc-select-trigger-left {
-    min-width: 0;
-
-    display: flex;
-
-    align-items: center;
-
-    gap: 10px;
-}
-
-
-/* dot */
-
-.tc-select-dot {
-    flex: 0 0 auto;
-
-    width: 9px;
-    height: 9px;
-
-    border-radius: 50%;
-
-    background: #38bdf8;
-
-    box-shadow:
-        0 0 12px rgba(56, 189, 248, 0.85);
-}
-
-
-/* selected label */
-
-.tc-select-label {
-    min-width: 0;
-
-    color: #f8fafc;
-
-    font-size: 11.5px;
-
-    font-weight: 800;
-
-    overflow: hidden;
-
-    text-overflow: ellipsis;
-
-    white-space: nowrap;
-}
-
-
-/* arrow */
-
-.tc-select-arrow {
-    flex: 0 0 auto;
-
-    color: #93c5fd;
-
-    font-size: 11px;
-
-    transition:
-        transform 0.22s ease;
-}
-
-
-.tc-custom-select.open .tc-select-arrow {
-    transform: rotate(180deg);
-}
-
-
-/* =========================================================
-   CATEGORY MENU
-   ========================================================= */
-
-.tc-select-menu {
-    position: absolute;
-
-    top: calc(100% + 8px);
-
-    right: 0;
-    left: 0;
-
-    width: 100%;
-
-    max-height: 300px;
-
-    padding: 8px;
-
-    display: none;
-
-    flex-direction: column;
-
-    gap: 6px;
-
-    overflow-y: auto;
-
-    border-radius: 17px;
-
-    background:
-        linear-gradient(
-            155deg,
-            #0c1530,
-            #080e21
-        );
-
-    border: 1px solid rgba(96, 165, 250, 0.24);
-
-    box-shadow:
-        0 25px 70px rgba(0, 0, 0, 0.58),
-        0 0 30px rgba(37, 99, 235, 0.10);
-
-    z-index: 99999;
-}
-
-
-.tc-custom-select.open .tc-select-menu {
-    display: flex;
-}
-
-
-/* every category = box */
-
-.tc-select-option {
-    width: 100%;
-
-    min-height: 44px;
-
-    flex: 0 0 auto;
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: space-between;
-
-    gap: 12px;
-
-    padding: 0 13px;
-
-    border-radius: 12px;
-
-    border: 1px solid rgba(148, 163, 184, 0.10);
-
-    background:
-        rgba(15, 23, 42, 0.82);
-
-    color: #cbd5e1;
-
-    font-family: inherit;
-
-    font-size: 10.5px;
-
-    font-weight: 800;
-
-    text-align: right;
-
-    cursor: pointer;
-
-    transition:
-        background 0.18s ease,
-        border-color 0.18s ease,
-        transform 0.18s ease,
-        color 0.18s ease;
-}
-
-
 .tc-select-option:hover {
-    transform: translateX(-2px);
+    transform: translateX(-2px) !important;
 
-    color: #fff;
+    color: #ffffff !important;
 
     background:
         linear-gradient(
             135deg,
-            rgba(37, 99, 235, 0.22),
-            rgba(79, 70, 229, 0.16)
-        );
+            rgba(37, 99, 235, 0.32),
+            rgba(79, 70, 229, 0.28)
+        ) !important;
 
-    border-color: rgba(96, 165, 250, 0.30);
+    border-color:
+        rgba(96, 165, 250, 0.35) !important;
 }
 
 
 .tc-select-option.active {
-    color: #fff;
+    color: #ffffff !important;
 
     background:
         linear-gradient(
             135deg,
-            rgba(37, 99, 235, 0.28),
-            rgba(124, 58, 237, 0.20)
-        );
+            rgba(37, 99, 235, 0.78),
+            rgba(79, 70, 229, 0.78)
+        ) !important;
 
-    border-color: rgba(96, 165, 250, 0.40);
+    border-color:
+        rgba(129, 140, 248, 0.55) !important;
 
     box-shadow:
-        inset 0 0 0 1px rgba(96, 165, 250, 0.06);
+        0 7px 18px rgba(37, 99, 235, 0.18) !important;
 }
 
 
-.tc-select-option.active span:last-child {
-    color: #60a5fa;
-
-    font-size: 13px;
-
-    font-weight: 900;
-}
-
-
-/* scrollbar */
-
-.tc-select-menu::-webkit-scrollbar {
-    width: 6px;
-}
-
-.tc-select-menu::-webkit-scrollbar-track {
-    background: transparent;
-}
-
-.tc-select-menu::-webkit-scrollbar-thumb {
-    border-radius: 999px;
-
-    background: rgba(96, 165, 250, 0.30);
+.tc-select-option.active > span:last-child {
+    color: #ffffff !important;
 }
 
 
 /* =========================================================
-   IMPORTANT:
-   section-card in create-project.css has overflow:hidden.
-   Allow the custom dropdown to escape its container.
-   ========================================================= */
+   21 — CATEGORY SCROLLBAR
+========================================================= */
+
+.tc-select-menu::-webkit-scrollbar {
+    width: 5px !important;
+}
+
+
+.tc-select-menu::-webkit-scrollbar-track {
+    background: transparent !important;
+}
+
+
+.tc-select-menu::-webkit-scrollbar-thumb {
+    background:
+        rgba(96, 165, 250, 0.35) !important;
+
+    border-radius: 999px !important;
+}
+
+
+/* =========================================================
+   22 — CATEGORY OVERFLOW FIX
+========================================================= */
+
+.section-card {
+    overflow: visible !important;
+}
+
 
 .section-card:has(.tc-custom-select) {
     overflow: visible !important;
@@ -1450,12 +1705,11 @@
 
 
 /* =========================================================
-   DEPLOYMENT WINDOW
-   3 × 2 BALANCED STAGES
-   ========================================================= */
+   23 — DEPLOYMENT WINDOW
+========================================================= */
 
 .deployment-card {
-    width: min(900px, 100%) !important;
+    width: min(900px, 94vw) !important;
 
     max-width: 900px !important;
 
@@ -1480,11 +1734,15 @@
             #070b1a
         ) !important;
 
-    border-color: rgba(148, 163, 184, 0.20) !important;
+    border-color:
+        rgba(148, 163, 184, 0.20) !important;
 }
 
 
-/* stages */
+/* =========================================================
+   24 — DEPLOYMENT STAGES
+   3 × 2
+========================================================= */
 
 .deployment-stages {
     width: 100% !important;
@@ -1503,7 +1761,7 @@
 
 
 .deployment-stage {
-    min-width: 0;
+    min-width: 0 !important;
 
     min-height: 92px !important;
 
@@ -1511,7 +1769,9 @@
 
     display: grid !important;
 
-    grid-template-columns: 34px minmax(0, 1fr) !important;
+    grid-template-columns:
+        34px
+        minmax(0, 1fr) !important;
 
     align-items: center !important;
 
@@ -1532,28 +1792,27 @@
 .deployment-stage-content {
     min-width: 0 !important;
 
-    display: flex;
+    display: flex !important;
 
-    flex-direction: column;
+    flex-direction: column !important;
 
-    gap: 3px;
+    gap: 3px !important;
 }
 
 
-.stage-title {
-    overflow-wrap: anywhere;
-}
-
-
+.stage-title,
 .stage-message {
-    overflow-wrap: anywhere;
+    overflow-wrap: anywhere !important;
 }
 
 
-/* success */
+/* =========================================================
+   25 — DEPLOYMENT SUCCESS
+========================================================= */
 
 .deployment-card.deployment-success {
-    border-color: rgba(16, 185, 129, 0.34) !important;
+    border-color:
+        rgba(16, 185, 129, 0.34) !important;
 
     box-shadow:
         0 35px 100px rgba(0, 0, 0, 0.68),
@@ -1561,10 +1820,13 @@
 }
 
 
-/* error */
+/* =========================================================
+   26 — DEPLOYMENT ERROR
+========================================================= */
 
 .deployment-card.deployment-error {
-    border-color: rgba(239, 68, 68, 0.34) !important;
+    border-color:
+        rgba(239, 68, 68, 0.34) !important;
 
     box-shadow:
         0 35px 100px rgba(0, 0, 0, 0.68),
@@ -1573,39 +1835,45 @@
 
 
 /* =========================================================
-   FOCUS
-   ========================================================= */
+   27 — FOCUS
+========================================================= */
 
 .tc-select-trigger:focus-visible,
 .tc-select-option:focus-visible,
 #createModal button:focus-visible {
-    outline: 2px solid rgba(96, 165, 250, 0.75);
+    outline:
+        2px solid rgba(96, 165, 250, 0.75) !important;
 
-    outline-offset: 2px;
+    outline-offset: 2px !important;
 }
 
 
 /* =========================================================
-   TABLET
-   ========================================================= */
+   28 — TABLET
+========================================================= */
 
 @media (max-width: 900px) {
 
     .create-modal-card {
-        width: min(760px, 100%);
+        width: min(820px, 96vw) !important;
 
-        padding: 22px;
+        max-width: 820px !important;
+
+        padding: 22px !important;
     }
 
-    .create-premium-features {
+
+    .create-modal-card .create-premium-features {
         grid-template-columns:
-            repeat(2, minmax(0, 1fr));
+            repeat(2, minmax(0, 1fr)) !important;
     }
 
-    .create-premium-summary-grid {
+
+    .create-modal-card .create-premium-summary-grid {
         grid-template-columns:
-            repeat(3, minmax(0, 1fr));
+            repeat(3, minmax(0, 1fr)) !important;
     }
+
 
     .deployment-stages {
         grid-template-columns:
@@ -1615,8 +1883,8 @@
 
 
 /* =========================================================
-   MOBILE
-   ========================================================= */
+   29 — MOBILE
+========================================================= */
 
 @media (max-width: 620px) {
 
@@ -1624,31 +1892,35 @@
     .modal.create-modal-backdrop {
         padding: 10px !important;
 
-        align-items: flex-start;
+        align-items: flex-start !important;
     }
 
 
     .create-modal-card {
-        width: 100%;
+        width: 100% !important;
 
-        max-height: calc(100vh - 20px);
+        max-width: 100% !important;
 
-        margin: auto 0;
+        max-height: calc(100vh - 20px) !important;
 
-        padding: 17px;
+        margin: auto 0 !important;
 
-        border-radius: 23px;
+        padding: 17px !important;
+
+        border-radius: 23px !important;
     }
 
 
     .create-modal-card > div:first-child {
-        grid-template-columns: 1fr auto !important;
+        grid-template-columns:
+            minmax(0, 1fr)
+            auto !important;
 
         gap: 10px !important;
 
         margin-bottom: 16px !important;
 
-        padding-bottom: 15px;
+        padding-bottom: 15px !important;
     }
 
 
@@ -1658,125 +1930,184 @@
 
 
     .create-modal-card h3 + p {
-        font-size: 10px !important;
+        font-size: 9.5px !important;
+    }
+
+
+    /* Main modal becomes one column */
+
+    .create-premium-wrapper {
+        grid-template-columns: 1fr !important;
+
+        gap: 10px !important;
+    }
+
+
+    .create-premium-header,
+    .create-premium-summary,
+    .create-premium-section-title,
+    .create-premium-features,
+    .create-premium-info,
+    .create-premium-final {
+        grid-column: 1 !important;
+    }
+
+
+    .create-premium-domain,
+    .create-premium-netlify {
+        grid-column: 1 !important;
     }
 
 
     .create-premium-header {
-        grid-template-columns: 52px minmax(0, 1fr);
+        grid-template-columns:
+            52px
+            minmax(0, 1fr) !important;
 
-        gap: 12px;
+        gap: 11px !important;
 
-        padding: 14px;
+        padding: 13px !important;
     }
 
 
     .create-premium-header-icon {
-        width: 52px;
-        height: 52px;
+        width: 52px !important;
+        height: 52px !important;
 
-        border-radius: 16px;
+        border-radius: 15px !important;
 
-        font-size: 25px;
+        font-size: 24px !important;
     }
 
 
     .create-premium-header-content h4 {
-        font-size: 14px;
+        font-size: 14px !important;
     }
 
 
     .create-premium-header-content p {
-        font-size: 9px;
+        font-size: 8.5px !important;
     }
 
 
-    .create-premium-summary-grid {
-        grid-template-columns: 1fr;
+    .create-modal-card .create-premium-summary-grid {
+        grid-template-columns:
+            1fr !important;
 
-        gap: 8px;
+        gap: 7px !important;
     }
 
 
     .create-premium-summary-item {
-        min-height: 58px;
+        min-height: 56px !important;
     }
 
 
     .create-premium-domain {
-        align-items: flex-start;
+        min-height: 80px !important;
 
-        flex-direction: column;
+        align-items: flex-start !important;
+
+        flex-direction: column !important;
     }
 
 
     .create-premium-domain-badge {
-        align-self: flex-start;
+        align-self: flex-start !important;
     }
 
 
     .create-premium-features {
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr)) !important;
 
-        gap: 8px;
+        gap: 7px !important;
     }
 
 
-    .create-premium-feature {
-        min-height: 88px;
+    .create-modal-card .create-premium-feature {
+        min-height: 82px !important;
 
-        padding: 10px;
+        padding: 9px !important;
 
-        gap: 8px;
+        gap: 7px !important;
     }
 
 
     .create-premium-feature-icon {
-        width: 34px;
-        height: 34px;
+        width: 32px !important;
+        height: 32px !important;
 
-        border-radius: 10px;
+        border-radius: 9px !important;
 
-        font-size: 15px;
+        font-size: 14px !important;
     }
 
 
-    .create-premium-feature-content strong {
-        font-size: 9px;
+    .create-modal-card .create-premium-feature-content strong {
+        font-size: 8.5px !important;
     }
 
 
-    .create-premium-feature-content span {
-        font-size: 7.5px;
+    .create-modal-card .create-premium-feature-content span {
+        font-size: 7px !important;
     }
 
 
     .create-premium-netlify {
-        grid-template-columns: 40px minmax(0, 1fr);
+        grid-template-columns:
+            40px
+            minmax(0, 1fr) !important;
+
+        min-height: 80px !important;
     }
 
 
     .create-premium-netlify-icon {
-        width: 40px;
-        height: 40px;
+        width: 40px !important;
+        height: 40px !important;
     }
 
 
     .create-premium-netlify-status {
-        grid-column: 2;
+        grid-column: 2 !important;
 
-        justify-self: start;
+        justify-self: start !important;
+    }
+
+
+    .create-premium-info,
+    .create-premium-final {
+        grid-template-columns:
+            38px
+            minmax(0, 1fr) !important;
+    }
+
+
+    .create-premium-info-icon,
+    .create-premium-final-icon {
+        width: 38px !important;
+        height: 38px !important;
     }
 
 
     #createModal .create-modal-card > div:last-child {
-        grid-template-columns: 1fr !important;
+        grid-template-columns:
+            1fr !important;
 
-        gap: 9px !important;
+        gap: 8px !important;
+
+        margin-top: 4px !important;
     }
 
 
+    /* Deployment */
+
     .deployment-card {
+        width: 100% !important;
+
+        max-width: 100% !important;
+
         padding: 25px 15px 20px !important;
 
         border-radius: 23px !important;
@@ -1784,7 +2115,8 @@
 
 
     .deployment-stages {
-        grid-template-columns: 1fr !important;
+        grid-template-columns:
+            1fr !important;
 
         gap: 8px !important;
     }
@@ -1797,45 +2129,88 @@
 
 
 /* =========================================================
-   VERY SMALL PHONES
-   ========================================================= */
+   30 — SMALL PHONES
+========================================================= */
 
 @media (max-width: 390px) {
 
-    .create-premium-features {
-        grid-template-columns: 1fr;
-    }
-
     .create-premium-header {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr !important;
 
-        text-align: center;
+        text-align: center !important;
     }
+
 
     .create-premium-header-icon {
-        margin: auto;
+        margin: auto !important;
     }
+
 
     .create-premium-header-content {
-        align-items: center;
+        align-items: center !important;
     }
 
+
+    .create-premium-features {
+        grid-template-columns:
+            1fr !important;
+    }
+
+
     .create-premium-domain-left {
-        align-items: flex-start;
+        align-items: flex-start !important;
+    }
+
+
+    .create-modal-card {
+        padding: 13px !important;
     }
 }
 
 
 /* =========================================================
-   REDUCED MOTION
-   ========================================================= */
+   31 — VERY SMALL
+========================================================= */
+
+@media (max-width: 350px) {
+
+    .create-modal-card {
+        padding: 11px !important;
+
+        border-radius: 19px !important;
+    }
+
+
+    .create-premium-wrapper {
+        gap: 8px !important;
+    }
+
+
+    .create-premium-feature {
+        min-height: 76px !important;
+    }
+
+
+    .create-premium-feature-icon {
+        width: 29px !important;
+        height: 29px !important;
+
+        font-size: 13px !important;
+    }
+}
+
+
+/* =========================================================
+   32 — REDUCED MOTION
+========================================================= */
 
 @media (prefers-reduced-motion: reduce) {
 
-    .create-premium-feature,
+    .create-modal-card *,
     .tc-select-trigger,
     .tc-select-option,
+    .create-premium-feature,
     #createModal button {
         transition: none !important;
     }
-        }
+   }
