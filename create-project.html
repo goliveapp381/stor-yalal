@@ -953,6 +953,162 @@
 </script>
 
 
+<!-- =========================================================
+     CUSTOM DARK CATEGORY DROPDOWN SYNC
+========================================================= -->
+
+<script>
+
+(function () {
+
+    'use strict';
+
+
+    const select =
+        document.getElementById('projectTypeSelect');
+
+
+    if (!select) {
+        return;
+    }
+
+
+    select.style.display = 'none';
+
+
+    const wrapper =
+        document.createElement('div');
+
+    wrapper.className =
+        'tc-custom-select';
+
+
+    const trigger =
+        document.createElement('button');
+
+    trigger.type = 'button';
+
+    trigger.className =
+        'tc-select-trigger';
+
+    trigger.innerHTML = `
+        <span class="tc-select-trigger-left">
+            <span class="tc-select-dot"></span>
+            <span class="tc-select-label">جارٍ تحميل الفئات...</span>
+        </span>
+        <span class="tc-select-arrow">▼</span>
+    `;
+
+
+    const menu =
+        document.createElement('div');
+
+    menu.className =
+        'tc-select-menu';
+
+
+    wrapper.appendChild(trigger);
+
+    wrapper.appendChild(menu);
+
+    select.parentNode.insertBefore(
+        wrapper,
+        select.nextSibling
+    );
+
+
+    const labelEl =
+        trigger.querySelector('.tc-select-label');
+
+
+    function syncOptions() {
+
+        menu.innerHTML = '';
+
+        const options =
+            Array.from(select.options);
+
+        const selectedOption =
+            options[select.selectedIndex] || options[0];
+
+
+        if (selectedOption && labelEl) {
+
+            labelEl.textContent =
+                selectedOption.textContent.trim();
+        }
+
+
+        options.forEach((opt) => {
+
+            const btn =
+                document.createElement('button');
+
+            const isActive =
+                opt.value === select.value;
+
+            btn.type = 'button';
+
+            btn.className =
+                'tc-select-option' + (isActive ? ' active' : '');
+
+            btn.innerHTML = `
+                <span>${opt.textContent.trim()}</span>
+                <span>${isActive ? '✓' : ''}</span>
+            `;
+
+            btn.addEventListener('click', () => {
+
+                select.value = opt.value;
+
+                select.dispatchEvent(
+                    new Event('change', { bubbles: true })
+                );
+
+                wrapper.classList.remove('open');
+
+                syncOptions();
+            });
+
+            menu.appendChild(btn);
+        });
+    }
+
+
+    trigger.addEventListener('click', (e) => {
+
+        e.stopPropagation();
+
+        wrapper.classList.toggle('open');
+    });
+
+
+    document.addEventListener('click', (e) => {
+
+        if (!wrapper.contains(e.target)) {
+
+            wrapper.classList.remove('open');
+        }
+    });
+
+
+    const observer =
+        new MutationObserver(syncOptions);
+
+    observer.observe(select, {
+        childList: true,
+        subtree: true
+    });
+
+    select.addEventListener('change', syncOptions);
+
+    syncOptions();
+
+})();
+
+</script>
+
+
 </body>
 
 </html>
