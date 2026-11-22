@@ -4,6 +4,7 @@
 ====================================================
  TEMPLATECRAFT PRO
  CREATE PROJECT - DEPLOYMENT
+ PREMIUM CINEMATIC DEPLOYMENT SYSTEM
 ====================================================
 
  مسؤول عن:
@@ -24,6 +25,9 @@
  → ينتقل المستخدم إلى صفحة المشاريع
 
  SSL يتم التحقق منه لاحقاً من صفحة المشاريع.
+
+ مهم جداً:
+ لا يتم تغيير API أو Backend أو Authentication.
 ====================================================
 */
 
@@ -71,38 +75,56 @@ const DEPLOY_STAGES = [
 
     {
         id: 'create-project',
+
         title: 'إنشاء المشروع',
-        message: 'جاري إنشاء المشروع وتجهيز بياناته...'
+
+        message:
+            'جارٍ إنشاء المشروع وتجهيز بياناته...'
     },
 
     {
         id: 'prepare-template',
+
         title: 'تجهيز ملفات القالب',
-        message: 'جاري تجهيز ملفات القالب والصفحات...'
+
+        message:
+            'جارٍ تجهيز ملفات القالب والصفحات...'
     },
 
     {
         id: 'configure-site',
+
         title: 'إعداد الموقع',
-        message: 'جاري تطبيق إعدادات المشروع والقالب...'
+
+        message:
+            'جارٍ تطبيق إعدادات المشروع والقالب...'
     },
 
     {
         id: 'connect-settings',
+
         title: 'ربط الإعدادات',
-        message: 'جاري ربط إعدادات المشروع والاستضافة...'
+
+        message:
+            'جارٍ ربط إعدادات المشروع والاستضافة...'
     },
 
     {
         id: 'publish-netlify',
+
         title: 'نشر الموقع',
-        message: 'جاري إنشاء ونشر الموقع على Netlify...'
+
+        message:
+            'جارٍ إنشاء ونشر الموقع على Netlify...'
     },
 
     {
         id: 'complete',
-        title: 'إتمام',
-        message: 'تم إنشاء الموقع بنجاح.'
+
+        title: 'إتمام الإنشاء',
+
+        message:
+            'تم إنشاء الموقع ونشره بنجاح.'
     }
 
 ];
@@ -131,7 +153,9 @@ function escapeDeploymentHtml(value) {
 function createDeploymentStages() {
 
     if (!deploymentOverlay) {
+
         return;
+
     }
 
 
@@ -142,11 +166,13 @@ function createDeploymentStages() {
 
 
     if (!card) {
+
         console.warn(
             '[TemplateCraft] .deployment-card not found.'
         );
 
         return;
+
     }
 
 
@@ -156,8 +182,15 @@ function createDeploymentStages() {
         );
 
 
+    /*
+    إذا كانت المراحل موجودة بالفعل
+    فلا ننشئها مرة أخرى.
+    */
+
     if (stages) {
+
         return;
+
     }
 
 
@@ -176,33 +209,44 @@ function createDeploymentStages() {
 
                     return `
                         <div
-                            class="deployment-stage"
+                            class="deployment-stage pending"
                             data-stage-index="${index}"
                         >
 
                             <div
-                                class="deployment-stage-icon"
+                                class="deployment-stage-icon stage-icon"
                             >
-                                <span class="stage-number">
+
+                                <span
+                                    class="stage-number"
+                                >
                                     ${index + 1}
                                 </span>
 
-                                <span class="stage-check">
+                                <span
+                                    class="stage-check"
+                                >
                                     ✓
                                 </span>
+
                             </div>
 
+
                             <div
-                                class="deployment-stage-content"
+                                class="deployment-stage-content stage-content"
                             >
 
-                                <strong>
+                                <strong
+                                    class="stage-title"
+                                >
                                     ${escapeDeploymentHtml(
                                         stage.title
                                     )}
                                 </strong>
 
-                                <span>
+                                <span
+                                    class="stage-message"
+                                >
                                     ${escapeDeploymentHtml(
                                         stage.message
                                     )}
@@ -217,6 +261,12 @@ function createDeploymentStages() {
             )
             .join('');
 
+
+    /*
+    --------------------------------------------------
+    إدراج المراحل قبل شريط التقدم
+    --------------------------------------------------
+    */
 
     const progressContainer =
         deploymentProgress?.parentElement;
@@ -256,7 +306,9 @@ function updateDeploymentStage(
 
 
     if (!stages) {
+
         return;
+
     }
 
 
@@ -270,19 +322,37 @@ function updateDeploymentStage(
             );
 
 
+            /*
+            كل مرحلة قبل الحالية = مكتملة
+            */
+
             if (stageIndex < index) {
 
                 stage.classList.add(
                     'completed'
                 );
 
-            } else if (stageIndex === index) {
+            }
+
+
+            /*
+            المرحلة الحالية
+            */
+
+            else if (stageIndex === index) {
 
                 stage.classList.add(
                     state
                 );
 
-            } else {
+            }
+
+
+            /*
+            المراحل القادمة
+            */
+
+            else {
 
                 stage.classList.add(
                     'pending'
@@ -299,7 +369,9 @@ function updateDeploymentStage(
 
 
     if (!stage) {
+
         return;
+
     }
 
 
@@ -319,7 +391,9 @@ function updateDeploymentStage(
     }
 
 
-    updateDeploymentProgress(index);
+    updateDeploymentProgress(
+        index
+    );
 
 }
 
@@ -331,7 +405,9 @@ function updateDeploymentStage(
 function updateDeploymentProgress(index) {
 
     if (!deploymentProgress) {
+
         return;
+
     }
 
 
@@ -361,10 +437,14 @@ function updateDeploymentProgress(index) {
 
 
 /* ==================================================
-   RESET
+   RESET DEPLOYMENT
 ================================================== */
 
 function resetDeployment() {
+
+    /*
+    إيقاف أي مؤقت سابق
+    */
 
     if (deployStageTimer) {
 
@@ -377,6 +457,10 @@ function resetDeployment() {
     }
 
 
+    /*
+    إعادة الحالة
+    */
+
     deployStageIndex = 0;
 
     deploymentRunning = false;
@@ -386,8 +470,16 @@ function resetDeployment() {
     createdSiteId = null;
 
 
+    /*
+    إنشاء المراحل
+    */
+
     createDeploymentStages();
 
+
+    /*
+    إعادة حالة المراحل
+    */
 
     const stages =
         deploymentOverlay?.querySelectorAll(
@@ -416,6 +508,62 @@ function resetDeployment() {
     }
 
 
+    /*
+    إزالة حالات النجاح والخطأ
+    */
+
+    const card =
+        deploymentOverlay?.querySelector(
+            '.deployment-card'
+        );
+
+
+    if (card) {
+
+        card.classList.remove(
+            'deployment-success',
+            'deployment-error'
+        );
+
+    }
+
+
+    /*
+    إعادة العنوان والرسالة
+    */
+
+    if (deploymentTitle) {
+
+        deploymentTitle.textContent =
+            'جارٍ إنشاء المشروع...';
+
+    }
+
+
+    if (deploymentMessage) {
+
+        deploymentMessage.textContent =
+            'يرجى الانتظار، ولا تغلق هذه الصفحة.';
+
+    }
+
+
+    /*
+    إعادة شريط التقدم
+    */
+
+    if (deploymentProgress) {
+
+        deploymentProgress.style.width =
+            '5%';
+
+    }
+
+
+    /*
+    تفعيل المرحلة الأولى
+    */
+
     updateDeploymentStage(
         0,
         'active'
@@ -425,7 +573,7 @@ function resetDeployment() {
 
 
 /* ==================================================
-   OPEN DEPLOYMENT
+   OPEN DEPLOYMENT OVERLAY
 ================================================== */
 
 function openDeploymentOverlay() {
@@ -434,7 +582,9 @@ function openDeploymentOverlay() {
 
 
     if (!deploymentOverlay) {
+
         return;
+
     }
 
 
@@ -452,17 +602,28 @@ function openDeploymentOverlay() {
         'false'
     );
 
+
+    /*
+    منع تمرير الصفحة خلف النافذة
+    */
+
+    document.body.classList.add(
+        'no-scroll'
+    );
+
 }
 
 
 /* ==================================================
-   CLOSE DEPLOYMENT
+   CLOSE DEPLOYMENT OVERLAY
 ================================================== */
 
 function closeDeploymentOverlay() {
 
     if (!deploymentOverlay) {
+
         return;
+
     }
 
 
@@ -480,6 +641,15 @@ function closeDeploymentOverlay() {
         'true'
     );
 
+
+    /*
+    إعادة تمرير الصفحة
+    */
+
+    document.body.classList.remove(
+        'no-scroll'
+    );
+
 }
 
 
@@ -489,11 +659,17 @@ function closeDeploymentOverlay() {
 
 function startDeploymentStages() {
 
+    /*
+    إلغاء المؤقت السابق
+    */
+
     if (deployStageTimer) {
 
         clearInterval(
             deployStageTimer
         );
+
+        deployStageTimer = null;
 
     }
 
@@ -501,38 +677,60 @@ function startDeploymentStages() {
     deployStageIndex = 0;
 
 
+    /*
+    المرحلة الأولى
+    */
+
     updateDeploymentStage(
         0,
         'active'
     );
 
 
+    /*
+    الانتقال بين المراحل بشكل بصري
+    */
+
     deployStageTimer =
         setInterval(
             function () {
 
+                /*
+                إذا توقف النشر
+                لا نكمل المراحل.
+                */
+
                 if (!deploymentRunning) {
+
                     return;
+
                 }
 
 
                 /*
-                لا ندخلو لمرحلة إتمام
-                حتى يرجع API بالنجاح.
+                لا ندخل إلى مرحلة الإتمام
+                قبل نجاح API الحقيقي.
                 */
 
-                if (deployStageIndex >= 4) {
+                if (
+                    deployStageIndex >= 4
+                ) {
 
                     clearInterval(
                         deployStageTimer
                     );
 
-                    deployStageTimer = null;
+                    deployStageTimer =
+                        null;
 
                     return;
 
                 }
 
+
+                /*
+                المرحلة التالية
+                */
 
                 deployStageIndex++;
 
@@ -555,6 +753,10 @@ function startDeploymentStages() {
 
 function completeDeployment() {
 
+    /*
+    إيقاف محاكاة المراحل
+    */
+
     if (deployStageTimer) {
 
         clearInterval(
@@ -565,6 +767,33 @@ function completeDeployment() {
 
     }
 
+
+    /*
+    حالة النجاح
+    */
+
+    const card =
+        deploymentOverlay?.querySelector(
+            '.deployment-card'
+        );
+
+
+    if (card) {
+
+        card.classList.remove(
+            'deployment-error'
+        );
+
+        card.classList.add(
+            'deployment-success'
+        );
+
+    }
+
+
+    /*
+    جميع المراحل مكتملة
+    */
 
     const stages =
         deploymentOverlay?.querySelectorAll(
@@ -592,9 +821,17 @@ function completeDeployment() {
     }
 
 
+    /*
+    المرحلة الأخيرة
+    */
+
     deployStageIndex =
         DEPLOY_STAGES.length - 1;
 
+
+    /*
+    العنوان
+    */
 
     if (deploymentTitle) {
 
@@ -604,13 +841,21 @@ function completeDeployment() {
     }
 
 
+    /*
+    الرسالة
+    */
+
     if (deploymentMessage) {
 
         deploymentMessage.textContent =
-            'تم إنشاء ونشر موقعك بنجاح على Netlify.';
+            'تم إنشاء موقعك ونشره بنجاح على Netlify.';
 
     }
 
+
+    /*
+    التقدم 100%
+    */
 
     if (deploymentProgress) {
 
@@ -628,6 +873,10 @@ function completeDeployment() {
 
 function failDeployment(message) {
 
+    /*
+    إيقاف المؤقت
+    */
+
     if (deployStageTimer) {
 
         clearInterval(
@@ -642,6 +891,33 @@ function failDeployment(message) {
     deploymentRunning = false;
 
 
+    /*
+    حالة الخطأ بصرياً
+    */
+
+    const card =
+        deploymentOverlay?.querySelector(
+            '.deployment-card'
+        );
+
+
+    if (card) {
+
+        card.classList.remove(
+            'deployment-success'
+        );
+
+        card.classList.add(
+            'deployment-error'
+        );
+
+    }
+
+
+    /*
+    العنوان
+    */
+
     if (deploymentTitle) {
 
         deploymentTitle.textContent =
@@ -649,6 +925,10 @@ function failDeployment(message) {
 
     }
 
+
+    /*
+    الرسالة
+    */
 
     if (deploymentMessage) {
 
@@ -658,6 +938,10 @@ function failDeployment(message) {
 
     }
 
+
+    /*
+    إغلاق النافذة بعد لحظة قصيرة
+    */
 
     setTimeout(
         function () {
@@ -696,6 +980,7 @@ function getDeploymentSiteData(result) {
             result?.id ||
             null,
 
+
         url:
             site.url ||
             site.liveUrl ||
@@ -706,10 +991,12 @@ function getDeploymentSiteData(result) {
             result?.siteUrl ||
             null,
 
+
         netlifySiteId:
             site.netlifySiteId ||
             result?.netlifySiteId ||
             null,
+
 
         name:
             site.siteName ||
@@ -723,17 +1010,17 @@ function getDeploymentSiteData(result) {
 
 
 /* ==================================================
-   GET AUTH TOKEN
+   GET FRONTEND AUTH TOKEN
 ==================================================
 
  مهم:
 
- ما نفرضوش غير token واحد هنا.
+ لا نفرض Token معيناً هنا.
 
- client-api.js هو المسؤول الحقيقي على
- Authorization.
+ client-api.js هو المسؤول الحقيقي
+ عن Authorization.
 
- هاد الجزء فقط كيتأكد أن المستخدم عنده جلسة.
+ هذا الجزء فقط يتحقق من وجود جلسة.
 ================================================== */
 
 function getFrontendAuthToken() {
@@ -754,6 +1041,10 @@ function getFrontendAuthToken() {
 
 async function handleCreateProject(event) {
 
+    /*
+    منع إنشاء أكثر من مشروع في نفس الوقت
+    */
+
     if (deploymentRunning) {
 
         console.warn(
@@ -770,17 +1061,29 @@ async function handleCreateProject(event) {
         {};
 
 
+    /*
+    اسم المشروع
+    */
+
     const siteName =
         String(
             detail.siteName || ''
         ).trim();
 
 
+    /*
+    القالب
+    */
+
     const templateId =
         detail.templateId ||
         detail.template?.id ||
         null;
 
+
+    /*
+    نوع المشروع
+    */
 
     const projectType =
         detail.projectType ||
@@ -789,9 +1092,9 @@ async function handleCreateProject(event) {
         '';
 
 
-    /* -----------------------------------------------
+    /* ================================================
        VALIDATION
-    ----------------------------------------------- */
+    ================================================ */
 
     if (!siteName) {
 
@@ -832,7 +1135,7 @@ async function handleCreateProject(event) {
 
 
         alert(
-            'انتهت جلسة الدخول. المرجو تسجيل الدخول مجدداً.'
+            'انتهت جلسة الدخول. يرجى تسجيل الدخول مجدداً.'
         );
 
 
@@ -867,13 +1170,14 @@ async function handleCreateProject(event) {
     }
 
 
-    /* -----------------------------------------------
+    /* ================================================
        API CHECK
-    ----------------------------------------------- */
+    ================================================ */
 
     if (
         typeof window.TemplateCraftAPI ===
         'undefined' ||
+
         typeof window.TemplateCraftAPI.deploy !==
         'function'
     ) {
@@ -884,7 +1188,7 @@ async function handleCreateProject(event) {
 
 
         alert(
-            'ملف client-api.js غير متصل أو API النشر غير متوفر.'
+            'ملف client-api.js غير متصل أو خدمة النشر غير متاحة.'
         );
 
 
@@ -894,24 +1198,24 @@ async function handleCreateProject(event) {
 
 
     /*
-    مهم جداً:
-
-    هنا يبدأ deployment الحقيقي.
+    ================================================
+    بدء عملية النشر الحقيقية
+    ================================================
     */
 
     deploymentRunning = true;
 
 
-    /* -----------------------------------------------
-       OPEN OVERLAY
-    ----------------------------------------------- */
+    /* ================================================
+       OPEN DEPLOYMENT OVERLAY
+    ================================================ */
 
     openDeploymentOverlay();
 
 
-    /* -----------------------------------------------
+    /* ================================================
        CLOSE CREATE MODAL
-    ----------------------------------------------- */
+    ================================================ */
 
     const createModal =
         document.getElementById(
@@ -933,9 +1237,9 @@ async function handleCreateProject(event) {
     }
 
 
-    /* -----------------------------------------------
+    /* ================================================
        HIDE OLD RESULT
-    ----------------------------------------------- */
+    ================================================ */
 
     if (deploymentResultContainer) {
 
@@ -946,9 +1250,9 @@ async function handleCreateProject(event) {
     }
 
 
-    /* -----------------------------------------------
-       START UI ANIMATION
-    ----------------------------------------------- */
+    /* ================================================
+       START VISUAL STAGES
+    ================================================ */
 
     startDeploymentStages();
 
@@ -965,7 +1269,7 @@ async function handleCreateProject(event) {
         );
 
 
-        /* ===========================================
+        /* ============================================
            REAL API REQUEST
 
            POST /api/deploy
@@ -977,7 +1281,7 @@ async function handleCreateProject(event) {
                    projectType
                }
            }
-        =========================================== */
+        ============================================ */
 
         const result =
             await window.TemplateCraftAPI.deploy({
@@ -1004,9 +1308,9 @@ async function handleCreateProject(event) {
         );
 
 
-        /* -------------------------------------------
+        /* ============================================
            CHECK API RESULT
-        ------------------------------------------- */
+        ============================================ */
 
         if (
             !result ||
@@ -1022,20 +1326,26 @@ async function handleCreateProject(event) {
             console.error(
                 '[TemplateCraft] Deployment failed:',
                 {
-                    status: result?.status,
+                    status:
+                        result?.status,
+
                     message,
+
                     result
                 }
             );
 
 
             /*
+            --------------------------------------------
             Authentication error
+            --------------------------------------------
             */
 
             if (
                 result?.status === 401 ||
                 result?.status === 403 ||
+
                 /token|unauthorized|غير مصرح|تسجيل الدخول|انتهت الجلسة/i.test(
                     message
                 )
@@ -1091,9 +1401,9 @@ async function handleCreateProject(event) {
         }
 
 
-        /* -------------------------------------------
+        /* ============================================
            SUCCESS
-        ------------------------------------------- */
+        ============================================ */
 
         const siteData =
             getDeploymentSiteData(
@@ -1117,24 +1427,25 @@ async function handleCreateProject(event) {
 
         /*
         =================================================
-        مهم:
+        مهم جداً:
 
-        ما كنستناوش SSL.
+        لا ننتظر SSL.
 
         نجاح /api/deploy
         =
-        الموقع تنشأ وتـنشر بنجاح.
+        تم إنشاء ونشر الموقع بنجاح.
 
-        SSL غادي يتعالج من بعد.
+        SSL سيتم التحقق منه لاحقاً
+        من صفحة المشاريع.
         =================================================
         */
 
         completeDeployment();
 
 
-        /* -------------------------------------------
-           SHOW SUCCESS MOMENT
-        ------------------------------------------- */
+        /* ============================================
+           SUCCESS MOMENT
+        ============================================ */
 
         await new Promise(
             function (resolve) {
@@ -1148,16 +1459,16 @@ async function handleCreateProject(event) {
         );
 
 
-        /* -------------------------------------------
-           CLOSE
-        ------------------------------------------- */
+        /* ============================================
+           CLOSE OVERLAY
+        ============================================ */
 
         closeDeploymentOverlay();
 
 
-        /* -------------------------------------------
-           PROFILE
-        ------------------------------------------- */
+        /* ============================================
+           GO TO PROFILE
+        ============================================ */
 
         window.location.replace(
             'profile.html'
@@ -1195,7 +1506,7 @@ function initializeDeploymentSystem() {
 
     /*
     --------------------------------------------------
-    أنشئ مراحل الـ UI
+    إنشاء واجهة المراحل
     --------------------------------------------------
     */
 
@@ -1232,6 +1543,12 @@ function initializeDeploymentSystem() {
         handleCreateProject
     );
 
+
+    /*
+    --------------------------------------------------
+    حفظ حالة التهيئة
+    --------------------------------------------------
+    */
 
     window.__templateCraftDeploymentInitialized =
         true;
@@ -1277,20 +1594,7 @@ window.getPublishedSiteUrl =
 
 
 /* ==================================================
-   IMPORTANT AUTO INITIALIZATION
-==================================================
-
- هادي هي النقطة اللي كانت ناقصة فملفك.
-
- create-project.js كيطلق:
-
- templatecraft:create-project
-
- خاص deployment.js يكون مسجل listener
- قبل ما المستخدم يضغط على "إنشاء الموقع".
-
- بما أن script ديال deployment كيتحمل فـ HTML،
- كنقومو بالـ initialization مباشرة هنا.
+   AUTO INITIALIZATION
 ================================================== */
 
 initializeDeploymentSystem();
