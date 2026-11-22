@@ -577,9 +577,6 @@ select#projectTypeSelect,
     opacity: 1 !important;
 }
 
-
-/* IMPORTANT — CORRECT DESCENDANT SELECTOR */
-
 .project-type-option.active .project-type-option-icon,
 .project-type-option[aria-pressed="true"] .project-type-option-icon {
     background:
@@ -1478,11 +1475,6 @@ select#projectTypeSelect,
         font-size: 14px !important;
     }
 
-
-    /* -----------------------------------------------------
-       GENERAL MOBILE CONTAINERS
-    ----------------------------------------------------- */
-
     main,
     section,
     .section-card,
@@ -1495,11 +1487,6 @@ select#projectTypeSelect,
 
         min-width: 0 !important;
     }
-
-
-    /* -----------------------------------------------------
-       MOBILE HEADINGS
-    ----------------------------------------------------- */
 
     h1 {
         max-width: 100% !important;
@@ -1539,11 +1526,6 @@ select#projectTypeSelect,
         overflow-wrap: anywhere !important;
     }
 
-
-    /* -----------------------------------------------------
-       SECTION CARD
-    ----------------------------------------------------- */
-
     .section-card {
         width: 100% !important;
 
@@ -1562,11 +1544,6 @@ select#projectTypeSelect,
         overflow: visible !important;
     }
 
-
-    /* -----------------------------------------------------
-       INPUTS
-    ----------------------------------------------------- */
-
     input,
     textarea,
     select,
@@ -1580,11 +1557,6 @@ select#projectTypeSelect,
 
         font-size: 15px !important;
     }
-
-
-    /* -----------------------------------------------------
-       CATEGORY PICKER
-    ----------------------------------------------------- */
 
     .project-type-picker {
         width: 100% !important;
@@ -1646,11 +1618,6 @@ select#projectTypeSelect,
         white-space: normal !important;
     }
 
-
-    /* =====================================================
-       CATEGORY GRID — FORCE 2 COLUMNS
-    ===================================================== */
-
     .project-type-options {
         width: 100% !important;
 
@@ -1667,11 +1634,6 @@ select#projectTypeSelect,
 
         overflow: visible !important;
     }
-
-
-    /* -----------------------------------------------------
-       CATEGORY CARD
-    ----------------------------------------------------- */
 
     .project-type-option {
         width: 100% !important;
@@ -1697,11 +1659,6 @@ select#projectTypeSelect,
         transform: none !important;
     }
 
-
-    /* -----------------------------------------------------
-       CATEGORY ICON
-    ----------------------------------------------------- */
-
     .project-type-option-icon {
         width: 35px !important;
 
@@ -1715,11 +1672,6 @@ select#projectTypeSelect,
 
         font-size: 15px !important;
     }
-
-
-    /* -----------------------------------------------------
-       CATEGORY CONTENT
-    ----------------------------------------------------- */
 
     .project-type-option-content {
         min-width: 0 !important;
@@ -1755,11 +1707,6 @@ select#projectTypeSelect,
         text-overflow: ellipsis !important;
     }
 
-
-    /* -----------------------------------------------------
-       CATEGORY CHECK
-    ----------------------------------------------------- */
-
     .project-type-option-check {
         width: 19px !important;
 
@@ -1771,11 +1718,6 @@ select#projectTypeSelect,
 
         font-size: 9px !important;
     }
-
-
-    /* =====================================================
-       TEMPLATES — MOBILE 2 COLUMNS
-    ===================================================== */
 
     .templates-grid {
         width: 100% !important;
@@ -1841,11 +1783,6 @@ select#projectTypeSelect,
 
         font-size: 10px !important;
     }
-
-
-    /* =====================================================
-       MODAL MOBILE
-    ===================================================== */
 
     .create-modal-backdrop {
         width: 100vw !important;
@@ -1918,11 +1855,6 @@ select#projectTypeSelect,
             0 16px 16px !important;
     }
 
-
-    /* -----------------------------------------------------
-       MODAL SUMMARY
-    ----------------------------------------------------- */
-
     .create-premium-summary-grid {
         width: 100% !important;
 
@@ -1937,11 +1869,6 @@ select#projectTypeSelect,
     .create-premium-summary-item:first-child {
         grid-column: 1 / -1 !important;
     }
-
-
-    /* -----------------------------------------------------
-       MODAL FEATURES
-    ----------------------------------------------------- */
 
     .create-premium-features {
         width: 100% !important;
@@ -1959,13 +1886,16 @@ select#projectTypeSelect,
 
         min-height: 85px !important;
 
-        padding: 11px !important;
+        padding: 10px 8px !important;
     }
 
+    .create-premium-feature-content strong {
+        font-size: 10px !important;
+    }
 
-    /* -----------------------------------------------------
-       NETLIFY MODAL
-    ----------------------------------------------------- */
+    .create-premium-feature-content span {
+        font-size: 8.5px !important;
+    }
 
     .create-premium-netlify {
         width: 100% !important;
@@ -2035,9 +1965,6 @@ select#projectTypeSelect,
         display: none !important;
     }
 
-
-    /* Templates */
-
     .templates-grid {
         grid-template-columns:
             repeat(2, minmax(0, 1fr)) !important;
@@ -2068,9 +1995,6 @@ select#projectTypeSelect,
         font-size: 9px !important;
     }
 
-
-    /* Modal */
-
     .create-premium-summary-grid {
         grid-template-columns:
             1fr !important;
@@ -2082,7 +2006,7 @@ select#projectTypeSelect,
 
     .create-premium-features {
         grid-template-columns:
-            1fr 1fr !important;
+            repeat(2, minmax(0, 1fr)) !important;
     }
 
     .create-modal-header {
@@ -2182,8 +2106,6 @@ select#projectTypeSelect,
 
 /* =========================================================
    36 — FINAL HARD MOBILE OVERFLOW LOCK
-   ---------------------------------------------------------
-   هذا هو الإصلاح الأساسي للمشكل اللي باين فالصورة.
 ========================================================= */
 
 @media (max-width: 720px) {
@@ -2229,9 +2151,6 @@ select#projectTypeSelect,
         min-width: 0 !important;
     }
 
-
-    /* Prevent long Arabic / English text from pushing page */
-
     h1,
     h2,
     h3,
@@ -2250,18 +2169,12 @@ select#projectTypeSelect,
         word-break: normal !important;
     }
 
-
-    /* Inputs cannot escape viewport */
-
     input,
     textarea,
     select,
     button {
         max-width: 100% !important;
     }
-
-
-    /* Keep visual category cards inside viewport */
 
     .project-type-options {
         width: 100% !important;
@@ -2274,9 +2187,6 @@ select#projectTypeSelect,
         gap: 8px !important;
     }
 
-
-    /* Keep template cards inside viewport */
-
     .templates-grid {
         width: 100% !important;
 
@@ -2285,9 +2195,6 @@ select#projectTypeSelect,
         grid-template-columns:
             repeat(2, minmax(0, 1fr)) !important;
     }
-
-
-    /* Modal can never create horizontal scroll */
 
     .create-modal-backdrop,
     .create-modal-card,
@@ -2298,4 +2205,4 @@ select#projectTypeSelect,
 
         overflow-x: hidden !important;
     }
-       }
+}
