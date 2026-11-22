@@ -1,1 +1,179 @@
+/* =========================================================
+   CONFIRM MODAL GALAXY LAYOUT (FILE 3 OF 3)
+========================================================= */
+
+.create-modal-card {
+    position: relative !important;
+    width: min(900px, 96vw) !important;
+    max-width: 900px !important;
+    max-height: none !important;
+    height: auto !important;
+    padding: 32px 28px !important;
+    border-radius: 30px !important;
+    overflow: hidden !important;
+    color: #f8fafc !important;
+    background:
+        radial-gradient(circle at 18% 15%, rgba(124, 58, 237, 0.24), transparent 36%),
+        radial-gradient(circle at 85% 20%, rgba(6, 182, 212, 0.18), transparent 34%),
+        radial-gradient(circle at 50% 85%, rgba(99, 102, 241, 0.16), transparent 40%),
+        linear-gradient(155deg, #070b1d 0%, #0d1330 55%, #060917 100%) !important;
+    border: 1px solid rgba(167, 139, 250, 0.28) !important;
+    box-shadow:
+        0 40px 120px rgba(0, 0, 0, 0.75),
+        0 0 65px rgba(124, 58, 237, 0.20) !important;
+    isolation: isolate !important;
+}
+
+/* نجوم متحركة داخل خلفية النافذة */
+.create-modal-card::before {
+    content: "" !important;
+    position: absolute !important;
+    inset: 0 !important;
+    z-index: -2 !important;
+    pointer-events: none !important;
+    background-image:
+        radial-gradient(circle, rgba(255, 255, 255, 0.92) 0 1.2px, transparent 1.8px),
+        radial-gradient(circle, rgba(196, 181, 253, 0.8) 0 1px, transparent 1.6px),
+        radial-gradient(circle, rgba(103, 232, 249, 0.75) 0 1.4px, transparent 2px) !important;
+    background-size: 150px 150px, 230px 230px, 310px 310px !important;
+    background-position: 0 0, 45px 80px, 110px 30px !important;
+    animation: confirmStarsDrift 22s linear infinite !important;
+}
+
+/* توهج ونجوم إضافية متحركة */
+.create-modal-card::after {
+    content: "" !important;
+    position: absolute !important;
+    inset: -15% !important;
+    z-index: -1 !important;
+    pointer-events: none !important;
+    background:
+        radial-gradient(circle at 25% 30%, rgba(168, 85, 247, 0.15), transparent 28%),
+        radial-gradient(circle at 78% 65%, rgba(37, 99, 235, 0.15), transparent 30%) !important;
+    animation: confirmStarsTwinkle 6s ease-in-out infinite alternate !important;
+}
+
+@keyframes confirmStarsDrift {
+    from { background-position: 0 0, 45px 80px, 110px 30px; }
+    to   { background-position: 150px 150px, -230px 230px, 310px -310px; }
+}
+
+@keyframes confirmStarsTwinkle {
+    0%   { opacity: 0.55; transform: scale(1); }
+    100% { opacity: 1;    transform: scale(1.04); }
+}
+
+/* توسيط العنوان والجمل الفوقانية داخل نافذة التأكيد */
+.create-modal-card > h2,
+.create-modal-card > h3,
+.create-modal-card > p,
+.create-modal-card .modal-header,
+.create-modal-card .confirm-header,
+.create-modal-card .modal-title,
+.create-modal-card .modal-subtitle {
+    text-align: center !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+}
+
+/* إزالة الخلفية البيضاء وحاوية السكرول الداخلية الضيقة */
+.create-modal-card > div,
+.create-modal-card .modal-body,
+.create-modal-card .confirm-content,
+.create-modal-card .confirm-summary {
+    background: transparent !important;
+    color: #f8fafc !important;
+    max-height: none !important;
+    height: auto !important;
+    overflow: visible !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+}
+
+/* قسم معلومات المشروع: القالب بجانب الفئة */
+.create-modal-card .project-info-grid,
+.create-modal-card .project-meta,
+.create-modal-card .summary-grid,
+.create-modal-card .meta-row,
+.create-modal-card .template-category-row {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 12px !important;
+    margin-bottom: 16px !important;
+}
+
+/* جعل الميزات في شبكة من عمودين: جوج ميزات في نفس السطر */
+.create-modal-card .features-list,
+.create-modal-card .project-features,
+.create-modal-card .benefits-grid,
+.create-modal-card .features-grid,
+.create-modal-card ul {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 12px !important;
+    padding: 0 !important;
+    margin: 14px 0 !important;
+    list-style: none !important;
+}
+
+/* كادر كل ميزة: أيقونة حداها الميزة في صف واحد */
+.create-modal-card .feature-item,
+.create-modal-card .feature-card,
+.create-modal-card .benefit-item,
+.create-modal-card .benefit-card,
+.create-modal-card .modal-feature,
+.create-modal-card [class*="feature"],
+.create-modal-card [class*="benefit"],
+.create-modal-card li {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 12px !important;
+    margin-bottom: 0 !important;
+    padding: 14px 16px !important;
+    border-radius: 18px !important;
+    background: rgba(15, 23, 42, 0.75) !important;
+    border: 1px solid rgba(148, 163, 184, 0.18) !important;
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.26) !important;
+    backdrop-filter: blur(10px) !important;
+    transition: transform 0.25s ease, border-color 0.25s ease !important;
+}
+
+.create-modal-card .feature-item:hover,
+.create-modal-card .feature-card:hover,
+.create-modal-card .benefit-item:hover,
+.create-modal-card .benefit-card:hover,
+.create-modal-card .modal-feature:hover,
+.create-modal-card [class*="feature"]:hover,
+.create-modal-card [class*="benefit"]:hover,
+.create-modal-card li:hover {
+    transform: translateY(-2px) !important;
+    border-color: rgba(167, 139, 250, 0.45) !important;
+}
+
+.create-modal-card * {
+    max-width: 100%;
+}
+
+@media (max-width: 720px) {
+    .create-modal-card {
+        width: 96vw !important;
+        padding: 24px 16px !important;
+        border-radius: 24px !important;
+    }
+
+    .create-modal-card .features-list,
+    .create-modal-card .project-features,
+    .create-modal-card .benefits-grid,
+    .create-modal-card .features-grid,
+    .create-modal-card .project-info-grid,
+    .create-modal-card .project-meta,
+    .create-modal-card .summary-grid,
+    .create-modal-card .meta-row,
+    .create-modal-card .template-category-row,
+    .create-modal-card ul {
+        grid-template-columns: 1fr !important;
+    }
+}
 
