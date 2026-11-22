@@ -8,10 +8,16 @@
 
  - Dynamic template loading
  - Dynamic categories
+ - Visual category boxes
  - Real template thumbnails
  - Category filtering
  - Full-page preview
  - Template selection
+
+ IMPORTANT:
+ - projectTypeSelect remains the internal source of truth
+ - Visual category boxes sync with the real select
+ - Existing template filtering logic is preserved
 ===========================================================
 */
 
@@ -37,6 +43,9 @@
 
     const projectTypeSelect =
         document.getElementById('projectTypeSelect');
+
+    const projectTypeOptions =
+        document.getElementById('projectTypeOptions');
 
     const selectedLabel =
         document.getElementById('selectedLabel');
@@ -148,6 +157,80 @@
         return String(
             projectTypeSelect.value || ''
         ).trim();
+    }
+
+
+    /* =====================================================
+       CATEGORY ICON
+    ===================================================== */
+
+    function getProjectTypeIcon(type) {
+
+        const normalized =
+            normalizeProjectType(type);
+
+        const icons = {
+
+            business: '💼',
+            businesss: '💼',
+
+            portfolio: '🎨',
+
+            ecommerce: '🛒',
+            'e-commerce': '🛒',
+            shop: '🛍️',
+            store: '🏪',
+
+            blog: '✍️',
+
+            news: '📰',
+
+            restaurant: '🍽️',
+            food: '🍔',
+
+            education: '🎓',
+            school: '🏫',
+            university: '🏛️',
+
+            agency: '🚀',
+
+            landing: '✨',
+            'landing-page': '✨',
+
+            saas: '☁️',
+
+            technology: '💻',
+            tech: '💻',
+
+            medical: '⚕️',
+            health: '❤️',
+
+            realestate: '🏠',
+            'real-estate': '🏠',
+            immobilier: '🏠',
+
+            travel: '✈️',
+            tourism: '🌍',
+
+            hotel: '🏨',
+
+            fitness: '💪',
+            gym: '🏋️',
+
+            photography: '📸',
+
+            gaming: '🎮',
+
+            personal: '👤',
+
+            community: '👥'
+        };
+
+
+        return (
+            icons[normalized] ||
+            '◈'
+        );
     }
 
 
@@ -655,6 +738,8 @@
             templateList = [];
 
 
+            renderProjectTypes();
+
             renderTemplatesError(
                 error
             );
@@ -672,6 +757,7 @@
 
     /* =====================================================
        PROJECT TYPES
+       VISUAL BOXES + HIDDEN SELECT SYNC
     ===================================================== */
 
     function renderProjectTypes() {
@@ -710,18 +796,56 @@
         );
 
 
+        /*
+        -----------------------------------------------------
+        No categories
+        -----------------------------------------------------
+        */
+
         if (!types.length) {
 
             projectTypeSelect.innerHTML =
                 '<option value="">لا توجد فئات</option>';
 
+            projectTypeSelect.value = '';
+
+
+            if (projectTypeOptions) {
+
+                projectTypeOptions.innerHTML = `
+                    <div class="project-type-empty">
+
+                        <div class="project-type-empty-icon">
+                            ◈
+                        </div>
+
+                        <div class="project-type-empty-text">
+                            لا توجد فئات متاحة حالياً
+                        </div>
+
+                    </div>
+                `;
+            }
+
             return;
         }
 
 
+        /*
+        -----------------------------------------------------
+        Save previous selection
+        -----------------------------------------------------
+        */
+
         const oldValue =
             projectTypeSelect.value;
 
+
+        /*
+        -----------------------------------------------------
+        Rebuild real select
+        -----------------------------------------------------
+        */
 
         projectTypeSelect.innerHTML =
             '<option value="">جميع الفئات</option>' +
@@ -736,6 +860,12 @@
                 )
                 .join('');
 
+
+        /*
+        -----------------------------------------------------
+        Restore previous value
+        -----------------------------------------------------
+        */
 
         const oldExists =
             types.some(
@@ -755,6 +885,232 @@
             projectTypeSelect.value =
                 '';
         }
+
+
+        /*
+        -----------------------------------------------------
+        Render visual category boxes
+        -----------------------------------------------------
+        */
+
+        if (!projectTypeOptions) {
+            return;
+        }
+
+
+        const currentValue =
+            projectTypeSelect.value;
+
+
+        projectTypeOptions.innerHTML = `
+
+            <button
+                type="button"
+                class="project-type-option ${
+                    !currentValue
+                        ? 'is-active'
+                        : ''
+                }"
+                data-project-type=""
+                aria-pressed="${
+                    !currentValue
+                }"
+            >
+
+                <span class="project-type-option-icon">
+                    ✦
+                </span>
+
+                <span class="project-type-option-content">
+
+                    <strong>
+                        جميع الفئات
+                    </strong>
+
+                    <small>
+                        عرض جميع القوالب
+                    </small>
+
+                </span>
+
+                <span class="project-type-option-check">
+                    ✓
+                </span>
+
+            </button>
+
+
+            ${
+                types
+                    .map(
+                        type => {
+
+                            const normalized =
+                                normalizeProjectType(type);
+
+                            const isActive =
+                                normalizeProjectType(
+                                    currentValue
+                                ) === normalized;
+
+
+                            const count =
+                                templateList.filter(
+                                    template =>
+                                        normalizeProjectType(
+                                            template.projectType
+                                        ) === normalized
+                                ).length;
+
+
+                            return `
+                                <button
+                                    type="button"
+                                    class="project-type-option ${
+                                        isActive
+                                            ? 'is-active'
+                                            : ''
+                                    }"
+                                    data-project-type="${escapeHtml(type)}"
+                                    aria-pressed="${isActive}"
+                                >
+
+                                    <span class="project-type-option-icon">
+                                        ${getProjectTypeIcon(type)}
+                                    </span>
+
+                                    <span class="project-type-option-content">
+
+                                        <strong>
+                                            ${escapeHtml(type)}
+                                        </strong>
+
+                                        <small>
+                                            ${count}
+                                            ${count === 1 ? 'قالب' : 'قوالب'}
+                                        </small>
+
+                                    </span>
+
+                                    <span class="project-type-option-check">
+                                        ✓
+                                    </span>
+
+                                </button>
+                            `;
+                        }
+                    )
+                    .join('')
+            }
+
+        `;
+
+
+        bindProjectTypeOptionEvents();
+    }
+
+
+    /* =====================================================
+       CATEGORY BOX EVENTS
+    ===================================================== */
+
+    function bindProjectTypeOptionEvents() {
+
+        if (!projectTypeOptions) {
+            return;
+        }
+
+
+        projectTypeOptions
+            .querySelectorAll('.project-type-option')
+            .forEach(
+                button => {
+
+                    button.addEventListener(
+                        'click',
+                        function () {
+
+                            const value =
+                                String(
+                                    this.dataset.projectType || ''
+                                ).trim();
+
+
+                            if (!projectTypeSelect) {
+                                return;
+                            }
+
+
+                            /*
+                            -------------------------------------------------
+                            Update real select
+                            -------------------------------------------------
+                            */
+
+                            projectTypeSelect.value =
+                                value;
+
+
+                            /*
+                            -------------------------------------------------
+                            Trigger the ORIGINAL category logic
+                            -------------------------------------------------
+                            */
+
+                            projectTypeSelect.dispatchEvent(
+                                new Event(
+                                    'change',
+                                    {
+                                        bubbles: true
+                                    }
+                                )
+                            );
+
+
+                            /*
+                            -------------------------------------------------
+                            Update visual active state
+                            -------------------------------------------------
+                            */
+
+                            projectTypeOptions
+                                .querySelectorAll(
+                                    '.project-type-option'
+                                )
+                                .forEach(
+                                    option => {
+
+                                        const optionValue =
+                                            String(
+                                                option.dataset.projectType || ''
+                                            ).trim();
+
+
+                                        const active =
+                                            normalizeProjectType(
+                                                optionValue
+                                            ) ===
+                                            normalizeProjectType(
+                                                value
+                                            );
+
+
+                                        option.classList.toggle(
+                                            'is-active',
+                                            active
+                                        );
+
+
+                                        option.setAttribute(
+                                            'aria-pressed',
+                                            active
+                                        );
+                                    }
+                                );
+                        }
+                    );
+                }
+            );
     }
 
 
@@ -1410,8 +1766,74 @@
                         'hidden'
                     );
                 }
+
+
+                /*
+                -------------------------------------------------
+                Keep visual category boxes synchronized
+                -------------------------------------------------
+                */
+
+                updateActiveProjectTypeOption();
             }
         );
+    }
+
+
+    /* =====================================================
+       UPDATE ACTIVE CATEGORY BOX
+    ===================================================== */
+
+    function updateActiveProjectTypeOption() {
+
+        if (
+            !projectTypeOptions ||
+            !projectTypeSelect
+        ) {
+            return;
+        }
+
+
+        const currentValue =
+            String(
+                projectTypeSelect.value || ''
+            ).trim();
+
+
+        projectTypeOptions
+            .querySelectorAll(
+                '.project-type-option'
+            )
+            .forEach(
+                option => {
+
+                    const optionValue =
+                        String(
+                            option.dataset.projectType || ''
+                        ).trim();
+
+
+                    const isActive =
+                        normalizeProjectType(
+                            optionValue
+                        ) ===
+                        normalizeProjectType(
+                            currentValue
+                        );
+
+
+                    option.classList.toggle(
+                        'is-active',
+                        isActive
+                    );
+
+
+                    option.setAttribute(
+                        'aria-pressed',
+                        isActive
+                    );
+                }
+            );
     }
 
 
