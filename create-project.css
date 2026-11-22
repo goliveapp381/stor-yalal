@@ -2,7 +2,7 @@
    TEMPLATECRAFT PRO
    CREATE PROJECT
    ULTRA CINEMATIC GALAXY UI
-   VERSION 5.0
+   VERSION 6.0
    VISUAL ONLY — NO LOGIC CHANGES
 ========================================================= */
 
@@ -78,8 +78,7 @@
     --tc-shadow-heavy:
         0 50px 140px rgba(0,0,0,.55);
 
-    --tc-radius:
-        28px;
+    --tc-radius: 28px;
 }
 
 
@@ -100,8 +99,7 @@ html {
 
     scroll-behavior: smooth;
 
-    background:
-        #030511;
+    background: #030511;
 }
 
 body {
@@ -119,8 +117,7 @@ body {
 
     color: var(--tc-text);
 
-    background:
-        #030511;
+    background: #030511;
 
     overflow-x: hidden;
 }
@@ -159,6 +156,13 @@ a {
 ========================================================= */
 
 .page-shell {
+    --tc-stars:
+        radial-gradient(
+            circle,
+            rgba(255,255,255,.82) 0 1px,
+            transparent 1.7px
+        );
+
     position: relative;
 
     width: 100%;
@@ -169,24 +173,27 @@ a {
     isolation: isolate;
 
     background:
+        var(--tc-stars),
+        var(--tc-stars),
+        var(--tc-stars),
         radial-gradient(
             ellipse at 8% 5%,
-            rgba(124,58,237,.25),
+            rgba(124,58,237,.24),
             transparent 28%
         ),
         radial-gradient(
             ellipse at 92% 8%,
-            rgba(37,99,235,.22),
+            rgba(37,99,235,.20),
             transparent 28%
         ),
         radial-gradient(
             ellipse at 50% 38%,
-            rgba(168,85,247,.09),
+            rgba(168,85,247,.08),
             transparent 35%
         ),
         radial-gradient(
             ellipse at 15% 88%,
-            rgba(6,182,212,.10),
+            rgba(6,182,212,.09),
             transparent 30%
         ),
         linear-gradient(
@@ -196,6 +203,59 @@ a {
             #090d24 65%,
             #030511 100%
         );
+
+    background-size:
+        180px 180px,
+        260px 260px,
+        330px 330px,
+        auto,
+        auto,
+        auto,
+        auto,
+        100% 100%;
+
+    background-position:
+        10px 20px,
+        80px 120px,
+        160px 50px,
+        center,
+        center,
+        center,
+        center,
+        0 0;
+
+    animation:
+        starsMove
+        32s
+        linear
+        infinite;
+}
+
+@keyframes starsMove {
+
+    from {
+        background-position:
+            10px 20px,
+            80px 120px,
+            160px 50px,
+            center,
+            center,
+            center,
+            center,
+            0 0;
+    }
+
+    to {
+        background-position:
+            190px 210px,
+            -180px 380px,
+            490px -260px,
+            center,
+            center,
+            center,
+            center,
+            0 0;
+    }
 }
 
 
@@ -217,29 +277,28 @@ a {
     background:
         radial-gradient(
             ellipse at 18% 20%,
-            rgba(124,58,237,.22),
+            rgba(124,58,237,.20),
             transparent 27%
         ),
         radial-gradient(
             ellipse at 82% 18%,
-            rgba(37,99,235,.20),
+            rgba(37,99,235,.18),
             transparent 26%
         ),
         radial-gradient(
             ellipse at 58% 70%,
-            rgba(236,72,153,.07),
+            rgba(236,72,153,.06),
             transparent 23%
         ),
         radial-gradient(
             ellipse at 18% 82%,
-            rgba(6,182,212,.10),
+            rgba(6,182,212,.08),
             transparent 25%
         );
 
-    filter:
-        blur(55px);
+    filter: blur(55px);
 
-    opacity: .95;
+    opacity: .90;
 
     animation:
         galaxyMove
@@ -285,21 +344,20 @@ a {
 
     pointer-events: none;
 
-    opacity: .20;
+    opacity: .16;
 
     background-image:
         linear-gradient(
-            rgba(139,92,246,.075) 1px,
+            rgba(139,92,246,.07) 1px,
             transparent 1px
         ),
         linear-gradient(
             90deg,
-            rgba(139,92,246,.075) 1px,
+            rgba(139,92,246,.07) 1px,
             transparent 1px
         );
 
-    background-size:
-        65px 65px;
+    background-size: 65px 65px;
 
     mask-image:
         radial-gradient(
@@ -318,69 +376,7 @@ a {
 
 
 /* =========================================================
-   06 — STARS
-========================================================= */
-
-.page-shell {
-    --tc-stars:
-        radial-gradient(
-            circle,
-            rgba(255,255,255,.85) 0 1px,
-            transparent 1.7px
-        );
-
-    background-image:
-        var(--tc-stars),
-        var(--tc-stars),
-        var(--tc-stars),
-        radial-gradient(
-            ellipse at 50% -20%,
-            #161b46 0%,
-            #080b1d 45%,
-            #030511 100%
-        );
-
-    background-size:
-        180px 180px,
-        260px 260px,
-        330px 330px,
-        100% 100%;
-
-    background-position:
-        10px 20px,
-        80px 120px,
-        160px 50px,
-        0 0;
-
-    animation:
-        starsMove
-        32s
-        linear
-        infinite;
-}
-
-@keyframes starsMove {
-
-    from {
-        background-position:
-            10px 20px,
-            80px 120px,
-            160px 50px,
-            0 0;
-    }
-
-    to {
-        background-position:
-            190px 210px,
-            -180px 380px,
-            490px -260px,
-            0 0;
-    }
-}
-
-
-/* =========================================================
-   07 — MAIN CONTAINER
+   06 — MAIN CONTAINER
 ========================================================= */
 
 .container-main {
@@ -398,7 +394,7 @@ a {
 
 
 /* =========================================================
-   08 — HEADER
+   07 — HEADER
 ========================================================= */
 
 .page-header {
@@ -439,10 +435,10 @@ a {
     background:
         linear-gradient(
             90deg,
-            transparent 0%,
-            rgba(124,58,237,.80) 35%,
-            rgba(6,182,212,.75) 65%,
-            transparent 100%
+            transparent,
+            rgba(124,58,237,.80),
+            rgba(6,182,212,.75),
+            transparent
         );
 
     opacity: .72;
@@ -459,7 +455,7 @@ a {
 
 
 /* =========================================================
-   09 — BRAND
+   08 — BRAND
 ========================================================= */
 
 .brand {
@@ -522,8 +518,7 @@ a {
     background:
         rgba(255,255,255,.18);
 
-    filter:
-        blur(8px);
+    filter: blur(8px);
 
     animation:
         logoGlow
@@ -543,8 +538,7 @@ a {
     width: 40%;
     height: 180%;
 
-    transform:
-        rotate(25deg);
+    transform: rotate(25deg);
 
     background:
         linear-gradient(
@@ -565,16 +559,12 @@ a {
 
     0%,
     100% {
-        transform:
-            scale(.80);
-
+        transform: scale(.80);
         opacity: .35;
     }
 
     50% {
-        transform:
-            scale(1.20);
-
+        transform: scale(1.20);
         opacity: .70;
     }
 }
@@ -616,7 +606,7 @@ a {
 
 
 /* =========================================================
-   10 — MAIN
+   09 — MAIN
 ========================================================= */
 
 main.container-main {
@@ -628,7 +618,7 @@ main.container-main {
 
 
 /* =========================================================
-   11 — HERO
+   10 — HERO
 ========================================================= */
 
 .hero {
@@ -651,7 +641,7 @@ main.container-main {
 
 
 /* =========================================================
-   12 — HERO CARD
+   11 — HERO CARD
 ========================================================= */
 
 .hero-card {
@@ -687,10 +677,10 @@ main.container-main {
         ),
         linear-gradient(
             135deg,
-            #090b1f 0%,
+            #090b1f,
             #17134b 38%,
             #312e81 70%,
-            #172554 100%
+            #172554
         );
 
     border:
@@ -712,8 +702,7 @@ main.container-main {
     right: -260px;
     bottom: -70px;
 
-    transform:
-        rotate(-16deg);
+    transform: rotate(-16deg);
 
     background:
         linear-gradient(
@@ -724,16 +713,13 @@ main.container-main {
             transparent
         );
 
-    filter:
-        blur(25px);
+    filter: blur(25px);
 
     animation:
         heroWave
         8s
         ease-in-out
         infinite alternate;
-
-    pointer-events: none;
 }
 
 @keyframes heroWave {
@@ -777,8 +763,6 @@ main.container-main {
         16s
         linear
         infinite;
-
-    pointer-events: none;
 }
 
 @keyframes heroOrbit {
@@ -791,7 +775,7 @@ main.container-main {
 
 
 /* =========================================================
-   13 — HERO CONTENT
+   12 — HERO CONTENT
 ========================================================= */
 
 .hero-badge {
@@ -843,8 +827,7 @@ main.container-main {
 
     border-radius: 50%;
 
-    background:
-        #a78bfa;
+    background: #a78bfa;
 
     box-shadow:
         0 0 15px #a78bfa;
@@ -917,7 +900,7 @@ main.container-main {
 
 
 /* =========================================================
-   14 — HERO SIDE
+   13 — HERO SIDE
 ========================================================= */
 
 .hero-side {
@@ -982,10 +965,7 @@ main.container-main {
             transparent 70%
         );
 
-    filter:
-        blur(15px);
-
-    pointer-events: none;
+    filter: blur(15px);
 }
 
 .hero-side-title {
@@ -1093,7 +1073,7 @@ main.container-main {
 
 
 /* =========================================================
-   15 — SECTION CARDS
+   14 — SECTION CARDS
 ========================================================= */
 
 .section-card {
@@ -1152,8 +1132,6 @@ main.container-main {
             rgba(124,58,237,.14),
             transparent 70%
         );
-
-    pointer-events: none;
 }
 
 .section-header {
@@ -1195,7 +1173,7 @@ main.container-main {
 
 
 /* =========================================================
-   16 — FIELDS
+   15 — FIELDS
 ========================================================= */
 
 .field {
@@ -1278,14 +1256,60 @@ main.container-main {
         translateY(-1px);
 }
 
+
+/* =========================================================
+   16 — CUSTOM SELECT
+========================================================= */
+
 .field-select {
     cursor: pointer;
+
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+
+    padding-left: 48px;
+
+    background-color:
+        rgba(255,255,255,.055);
+
+    background-image:
+        linear-gradient(
+            45deg,
+            transparent 50%,
+            rgba(255,255,255,.75) 50%
+        ),
+        linear-gradient(
+            135deg,
+            rgba(255,255,255,.75) 50%,
+            transparent 50%
+        );
+
+    background-position:
+        calc(100% - 22px) 23px,
+        calc(100% - 16px) 23px;
+
+    background-size:
+        6px 6px,
+        6px 6px;
+
+    background-repeat:
+        no-repeat;
+}
+
+.field-select:focus {
+    background-color:
+        rgba(255,255,255,.09);
 }
 
 .field-select option {
-    color: #111827;
+    color:
+        #f8fafc;
 
-    background: #fff;
+    background:
+        #11172f;
+
+    font-weight: 600;
 }
 
 
@@ -1337,10 +1361,12 @@ main.container-main {
     grid-template-columns:
         repeat(
             3,
-            minmax(0, 1fr)
+            minmax(0,1fr)
         );
 
-    gap: 18px;
+    gap: 20px;
+
+    align-items: stretch;
 }
 
 
@@ -1352,6 +1378,12 @@ main.container-main {
     position: relative;
 
     min-width: 0;
+
+    min-height: 0;
+
+    display: flex;
+
+    flex-direction: column;
 
     overflow: hidden;
 
@@ -1388,7 +1420,7 @@ main.container-main {
 
     position: absolute;
 
-    z-index: 3;
+    z-index: 10;
 
     top: 0;
     left: -120%;
@@ -1413,20 +1445,23 @@ main.container-main {
     pointer-events: none;
 }
 
-.template-card:hover::before {
-    left: 140%;
-}
+@media (hover: hover) {
 
-.template-card:hover {
-    transform:
-        translateY(-8px);
+    .template-card:hover::before {
+        left: 140%;
+    }
 
-    border-color:
-        rgba(139,92,246,.40);
+    .template-card:hover {
+        transform:
+            translateY(-8px);
 
-    box-shadow:
-        0 28px 70px rgba(0,0,0,.34),
-        0 0 35px rgba(124,58,237,.10);
+        border-color:
+            rgba(139,92,246,.40);
+
+        box-shadow:
+            0 28px 70px rgba(0,0,0,.34),
+            0 0 35px rgba(124,58,237,.10);
+    }
 }
 
 .template-card.selected {
@@ -1441,44 +1476,100 @@ main.container-main {
 
 
 /* =========================================================
-   20 — TEMPLATE IMAGE
+   20 — TEMPLATE PREVIEW
+   FIXED:
+   - No cropping
+   - Full image visible
+   - Desktop + mobile friendly
 ========================================================= */
 
-.template-preview,
+.template-preview {
+    position: relative;
+
+    width: 100%;
+
+    aspect-ratio: 16 / 10;
+
+    min-height: 0;
+
+    overflow: hidden;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    background:
+        radial-gradient(
+            circle at 50% 20%,
+            rgba(124,58,237,.15),
+            transparent 45%
+        ),
+        linear-gradient(
+            145deg,
+            #080d20,
+            #11172f 55%,
+            #070a18
+        );
+
+    border-bottom:
+        1px solid rgba(255,255,255,.08);
+}
+
+
+/* =========================================================
+   TEMPLATE IMAGE
+========================================================= */
+
 .template-image,
 .template-card img {
     display: block;
 
     width: 100%;
-}
 
-.template-card img {
-    height: 205px;
+    height: 100%;
 
-    object-fit: cover;
+    max-width: 100%;
+    max-height: 100%;
+
+    object-fit: contain;
+
+    object-position: center;
 
     background:
-        linear-gradient(
-            135deg,
-            #10162f,
-            #1e1b4b
-        );
+        #0b1024;
 
-    border-bottom:
-        1px solid rgba(255,255,255,.08);
+    border: 0;
 
     transition:
         transform .65s cubic-bezier(.16,1,.3,1),
         filter .4s ease;
 }
 
-.template-card:hover img {
-    transform:
-        scale(1.035);
 
-    filter:
-        saturate(1.08)
-        contrast(1.02);
+/*
+   الصورة ما تبقاش تكبر وتقطع المحتوى
+*/
+
+.template-card img {
+    flex: 0 0 auto;
+}
+
+
+/*
+   تأثير خفيف فقط عند Hover
+*/
+
+@media (hover: hover) {
+
+    .template-card:hover img {
+        transform:
+            scale(1.018);
+
+        filter:
+            saturate(1.06)
+            contrast(1.015);
+    }
 }
 
 
@@ -1489,6 +1580,14 @@ main.container-main {
 .template-card-content,
 .template-content {
     position: relative;
+
+    min-width: 0;
+
+    flex: 1 1 auto;
+
+    display: flex;
+
+    flex-direction: column;
 
     padding: 17px;
 }
@@ -1501,7 +1600,11 @@ main.container-main {
 
     font-size: 15px;
 
+    line-height: 1.5;
+
     font-weight: 900;
+
+    overflow-wrap: anywhere;
 }
 
 .template-card p,
@@ -1510,11 +1613,13 @@ main.container-main {
         6px 0 0;
 
     color:
-        rgba(203,213,225,.55);
+        rgba(203,213,225,.62);
 
     font-size: 10px;
 
     line-height: 1.8;
+
+    overflow-wrap: anywhere;
 }
 
 
@@ -1530,7 +1635,9 @@ main.container-main {
 
     gap: 8px;
 
-    margin-top: 14px;
+    margin-top: auto;
+
+    padding-top: 14px;
 }
 
 .template-actions button {
@@ -1681,8 +1788,6 @@ main.container-main {
             rgba(6,182,212,.15),
             transparent 70%
         );
-
-    pointer-events: none;
 }
 
 .netlify-status {
@@ -1862,8 +1967,7 @@ main.container-main {
 
     transform: none;
 
-    box-shadow:
-        none;
+    box-shadow: none;
 }
 
 .secondary-button {
@@ -1952,7 +2056,7 @@ main.container-main {
     position: relative;
 
     width:
-        min(560px, 100%);
+        min(560px,100%);
 
     max-height: 90vh;
 
@@ -2080,14 +2184,15 @@ main.container-main {
             rgba(124,58,237,0)
         );
 
-    filter:
-        blur(48px);
+    filter: blur(48px);
 
     animation:
         deploymentSpin
         14s
         linear
         infinite;
+
+    pointer-events: none;
 }
 
 @keyframes deploymentSpin {
@@ -2156,10 +2261,12 @@ main.container-main {
     z-index: 5;
 
     width:
-        min(790px, 100%);
+        min(790px,100%);
 
     max-height:
-        min(92vh, 850px);
+        min(92vh,850px);
+
+    min-height: 0;
 
     overflow-y: auto;
     overflow-x: hidden;
@@ -2252,6 +2359,8 @@ main.container-main {
             rgba(34,211,238,.85),
             transparent
         );
+
+    pointer-events: none;
 }
 
 .deployment-card::after {
@@ -2357,6 +2466,8 @@ main.container-main {
         4s
         linear
         infinite;
+
+    pointer-events: none;
 }
 
 .deployment-rocket::after {
@@ -2364,11 +2475,9 @@ main.container-main {
 
     opacity: .42;
 
-    animation-duration:
-        6s;
+    animation-duration: 6s;
 
-    animation-direction:
-        reverse;
+    animation-direction: reverse;
 }
 
 @keyframes rocketFloat {
@@ -2411,7 +2520,7 @@ main.container-main {
     color: #fff;
 
     font-size:
-        clamp(23px, 3vw, 34px);
+        clamp(23px,3vw,34px);
 
     line-height: 1.35;
 
@@ -2525,10 +2634,12 @@ main.container-main {
 
 .deployment-progress-wrap {
     width:
-        min(650px, 100%);
+        min(650px,100%);
 
     margin:
         22px auto 0;
+
+    min-width: 0;
 }
 
 .deployment-progress-wrap > div {
@@ -2621,7 +2732,7 @@ main.container-main {
     position: relative;
 
     width:
-        min(660px, 100%);
+        min(660px,100%);
 
     margin:
         26px auto 0;
@@ -2643,7 +2754,6 @@ main.container-main {
     position: relative;
 
     min-width: 0;
-
     min-height: 98px;
 
     padding: 13px;
@@ -2838,6 +2948,8 @@ main.container-main {
     line-height: 1.5;
 
     font-weight: 900;
+
+    overflow-wrap: anywhere;
 }
 
 .stage-message {
@@ -2849,6 +2961,8 @@ main.container-main {
     font-size: 8.5px;
 
     line-height: 1.7;
+
+    overflow-wrap: anywhere;
 }
 
 .deployment-stage.active .stage-title {
@@ -3011,7 +3125,7 @@ main.container-main {
 
 
 /* =========================================================
-   37 — FOCUS / ACCESSIBILITY
+   37 — FOCUS
 ========================================================= */
 
 button:focus-visible,
@@ -3059,9 +3173,14 @@ a:focus-visible {
             );
     }
 
+    .template-preview {
+        aspect-ratio:
+            16 / 10;
+    }
+
     .deployment-card {
         width:
-            min(720px, 100%);
+            min(720px,100%);
     }
 }
 
@@ -3143,10 +3262,43 @@ a:focus-visible {
     .templates-grid {
         grid-template-columns:
             1fr;
+
+        gap: 16px;
+    }
+
+    /*
+       مهم للهاتف:
+       الصورة كاملة، ماشي cropped
+    */
+
+    .template-preview {
+        aspect-ratio:
+            16 / 10;
+
+        min-height:
+            190px;
     }
 
     .template-card img {
-        height: 210px;
+        width: 100%;
+        height: 100%;
+
+        object-fit: contain;
+    }
+
+    .template-card-content,
+    .template-content {
+        padding: 16px;
+    }
+
+    .template-card h3,
+    .template-name {
+        font-size: 14px;
+    }
+
+    .template-card p,
+    .template-description {
+        font-size: 10px;
     }
 
     .netlify-status {
@@ -3228,7 +3380,7 @@ a:focus-visible {
         font-size: 27px;
 
         letter-spacing:
-            -0.8px;
+            -.8px;
     }
 
     .hero-card {
@@ -3239,6 +3391,23 @@ a:focus-visible {
     .section-card {
         padding:
             16px;
+    }
+
+    .field-input,
+    .field-select {
+        min-height:
+            52px;
+
+        font-size:
+            11px;
+    }
+
+    .template-preview {
+        aspect-ratio:
+            16 / 10;
+
+        min-height:
+            175px;
     }
 
     .template-actions {
@@ -3283,7 +3452,49 @@ a:focus-visible {
 
 
 /* =========================================================
-   41 — ULTRA LARGE
+   41 — VERY SMALL DEVICES
+========================================================= */
+
+@media (max-width: 360px) {
+
+    .container-main {
+        width:
+            calc(100% - 10px);
+    }
+
+    .section-card {
+        padding:
+            13px;
+    }
+
+    .template-preview {
+        min-height:
+            155px;
+    }
+
+    .template-card-content,
+    .template-content {
+        padding:
+            13px;
+    }
+
+    .template-actions button {
+        min-height:
+            38px;
+
+        font-size:
+            9px;
+    }
+
+    .field-label {
+        font-size:
+            10px;
+    }
+}
+
+
+/* =========================================================
+   42 — ULTRA LARGE
 ========================================================= */
 
 @media (min-width: 1500px) {
@@ -3309,15 +3520,15 @@ a:focus-visible {
             62px;
     }
 
-    .template-card img {
-        height:
-            230px;
+    .template-preview {
+        aspect-ratio:
+            16 / 10;
     }
 }
 
 
 /* =========================================================
-   42 — REDUCED MOTION
+   43 — ACCESSIBILITY / REDUCED MOTION
 ========================================================= */
 
 @media (prefers-reduced-motion: reduce) {
@@ -3343,8 +3554,7 @@ a:focus-visible {
 
 
 /* =========================================================
-   43 — EXTRA SAFETY
-   Prevent decorative pseudo-elements from blocking UI
+   44 — DECORATIVE SAFETY
 ========================================================= */
 
 .page-shell::before,
@@ -3367,7 +3577,7 @@ a:focus-visible {
 
 
 /* =========================================================
-   44 — HIDDEN UTILITY
+   45 — HIDDEN UTILITY
 ========================================================= */
 
 [hidden] {
