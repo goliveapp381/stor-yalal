@@ -1,6 +1,10 @@
 /* =========================================================
-   CONFIRM MODAL GALAXY LAYOUT (FILE 3 OF 3 — FIXED)
+   CONFIRM MODAL GALAXY LAYOUT — SCOPED & CLEAN (3 OF 3)
 ========================================================= */
+
+.create-modal-backdrop {
+    z-index: 7000 !important;
+}
 
 .create-modal-card {
     position: relative !important;
@@ -8,7 +12,7 @@
     max-width: 920px !important;
     max-height: 92vh !important;
     height: auto !important;
-    padding: 30px 26px !important;
+    padding: 32px 26px !important;
     border-radius: 30px !important;
     overflow-y: auto !important;
     overflow-x: hidden !important;
@@ -23,9 +27,11 @@
         0 40px 120px rgba(0, 0, 0, 0.75),
         0 0 65px rgba(124, 58, 237, 0.20) !important;
     isolation: isolate !important;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(167, 139, 250, 0.35) transparent;
 }
 
-/* نجوم متحركة في خلفية النافذة */
+/* نجوم متحركة داخل النافذة */
 .create-modal-card::before {
     content: "" !important;
     position: fixed !important;
@@ -63,10 +69,14 @@
     100% { opacity: 1;    transform: scale(1.04); }
 }
 
-/* توسيط رأس النافذة (تأكيد إنشاء المشروع + الوصف) */
+/* توسيط العنوان والوصف الفوقاني */
 .create-modal-card > div:first-child {
     position: relative !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
     text-align: center !important;
+    margin-bottom: 20px !important;
 }
 
 .create-modal-card > div:first-child > div {
@@ -74,31 +84,111 @@
     text-align: center !important;
 }
 
-/* زر الإغلاق يبقا في مكانه بدون ما يخرب التوسيط */
 #closeCreateModalBtn {
     position: absolute !important;
     top: 0 !important;
     left: 0 !important;
 }
 
-/* حاوية المحتوى الرئيسية داخل النافذة */
-#createModalContent {
-    background: rgba(15, 23, 42, 0.55) !important;
-    border: 1px solid rgba(148, 163, 184, 0.20) !important;
-    border-radius: 20px !important;
-    padding: 18px !important;
+/* إزالة الخلفية البيضاء والحدود القديمة عن #createModalContent */
+.create-modal-card #createModalContent {
+    background: transparent !important;
+    border: none !important;
+    padding: 0 !important;
     max-height: none !important;
-    height: auto !important;
     overflow: visible !important;
 }
 
-/* أي حاوية داخل المحتوى تقبل شبكة من عمودين عندما تحتوي على عناصر متعددة */
-#createModalContent > div,
-#createModalContent > ul,
-#createModalContent .grid,
-#createModalContent .flex-col,
-#createModalContent [class*="grid"],
-#createModalContent [class*="list"] {
+/* هيدر المحتوى الداخلي */
+.create-modal-card .create-premium-header {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    gap: 8px !important;
+    margin-bottom: 18px !important;
+    padding: 18px !important;
+    border-radius: 20px !important;
+    background: rgba(15, 23, 42, 0.68) !important;
+    border: 1px solid rgba(148, 163, 184, 0.18) !important;
+}
+
+.create-modal-card .create-premium-header-content,
+.create-modal-card .create-premium-header-content h4,
+.create-modal-card .create-premium-header-content p {
+    text-align: center !important;
+}
+
+/* قسم معلومات المشروع مستقل وواضح + القالب بجانب الفئة */
+.create-modal-card .create-premium-summary {
+    margin: 16px 0 !important;
+    padding: 18px !important;
+    border-radius: 20px !important;
+    background: rgba(15, 23, 42, 0.75) !important;
+    border: 1px solid rgba(167, 139, 250, 0.25) !important;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.28) !important;
+}
+
+.create-modal-card .create-premium-summary-title {
+    margin-bottom: 12px !important;
+    font-size: 14px !important;
+    font-weight: 900 !important;
+    color: #fff !important;
+    text-align: right !important;
+}
+
+.create-modal-card .create-premium-summary-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 12px !important;
+}
+
+.create-modal-card .create-premium-summary-item {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 4px !important;
+    padding: 12px 14px !important;
+    border-radius: 14px !important;
+    background: rgba(255, 255, 255, 0.04) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    text-align: right !important;
+}
+
+/* اسم المشروع ياخد سطر كامل فوق، والقالب يجي حدا الفئة فـ السطر الثاني */
+.create-modal-card .create-premium-summary-item:first-child {
+    grid-column: 1 / -1 !important;
+}
+
+/* الدومين وعنوان المميزات */
+.create-modal-card .create-premium-domain,
+.create-modal-card .create-premium-section-title,
+.create-modal-card .create-premium-netlify,
+.create-modal-card .create-premium-info,
+.create-modal-card .create-premium-final {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 12px !important;
+    margin: 14px 0 !important;
+    padding: 14px 16px !important;
+    border-radius: 18px !important;
+    background: rgba(15, 23, 42, 0.72) !important;
+    border: 1px solid rgba(148, 163, 184, 0.18) !important;
+    text-align: right !important;
+}
+
+.create-modal-card .create-premium-section-title {
+    justify-content: flex-start !important;
+    background: transparent !important;
+    border: 0 !important;
+    padding: 6px 2px !important;
+    margin: 18px 0 10px !important;
+}
+
+/* شبكة الميزات: جوج ميزات في نفس السطر */
+.create-modal-card .create-premium-features {
     display: grid !important;
     grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
     gap: 12px !important;
@@ -106,49 +196,57 @@
     overflow: visible !important;
 }
 
-/* كادر كل عنصر/ميزة: أيقونة حداها النص في نفس السطر */
-#createModalContent > div > div,
-#createModalContent > div > a,
-#createModalContent > div > li,
-#createModalContent li,
-#createModalContent [class*="feature"],
-#createModalContent [class*="benefit"],
-#createModalContent [class*="card"],
-#createModalContent [class*="item"] {
+/* كادر كل ميزة: أيقونة حداها النص في صف واحد */
+.create-modal-card .create-premium-feature {
     display: flex !important;
     flex-direction: row !important;
     align-items: center !important;
     justify-content: flex-start !important;
     gap: 12px !important;
-    min-height: 62px !important;
-    margin: 0 !important;
-    padding: 13px 16px !important;
-    border-radius: 16px !important;
+    padding: 14px 16px !important;
+    border-radius: 18px !important;
     background: rgba(15, 23, 42, 0.80) !important;
-    border: 1px solid rgba(148, 163, 184, 0.20) !important;
-    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.25) !important;
-    text-align: right !important;
+    border: 1px solid rgba(148, 163, 184, 0.18) !important;
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.25) !important;
+    transition: transform 0.25s ease, border-color 0.25s ease !important;
 }
 
-/* منع النصوص الداخلية من التكدس بشكل عمودي غريب */
-#createModalContent > div > div > div:not(:first-child),
-#createModalContent li > div {
+.create-modal-card .create-premium-feature:hover {
+    transform: translateY(-2px) !important;
+    border-color: rgba(167, 139, 250, 0.45) !important;
+}
+
+.create-modal-card .create-premium-feature-icon {
+    flex: 0 0 auto !important;
+    width: 38px !important;
+    height: 38px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border-radius: 12px !important;
+    background: rgba(124, 58, 237, 0.18) !important;
+    border: 1px solid rgba(167, 139, 250, 0.28) !important;
+    font-size: 18px !important;
+}
+
+.create-modal-card .create-premium-feature-content {
     display: flex !important;
     flex-direction: column !important;
     gap: 3px !important;
-    background: transparent !important;
-    border: 0 !important;
-    box-shadow: none !important;
-    padding: 0 !important;
-    min-height: auto !important;
+    min-width: 0 !important;
+    text-align: right !important;
 }
 
-/* الأزرار التحتية في نافذة التأكيد */
-.create-modal-card > div:last-child {
-    display: grid !important;
-    grid-template-columns: 1fr 1fr !important;
-    gap: 12px !important;
-    margin-top: 20px !important;
+.create-modal-card .create-premium-feature-content strong {
+    font-size: 12px !important;
+    font-weight: 800 !important;
+    color: #fff !important;
+}
+
+.create-modal-card .create-premium-feature-content span {
+    font-size: 10.5px !important;
+    line-height: 1.6 !important;
+    color: #cbd5e1 !important;
 }
 
 @media (max-width: 720px) {
@@ -158,12 +256,20 @@
         border-radius: 24px !important;
     }
 
-    #createModalContent > div,
-    #createModalContent > ul,
-    #createModalContent .grid,
-    #createModalContent .flex-col,
-    #createModalContent [class*="grid"],
-    #createModalContent [class*="list"] {
+    .create-modal-card .create-premium-summary-grid,
+    .create-modal-card .create-premium-features {
         grid-template-columns: 1fr !important;
+    }
+
+    .create-modal-card .create-premium-summary-item:first-child {
+        grid-column: auto !important;
+    }
+
+    .create-modal-card .create-premium-domain,
+    .create-modal-card .create-premium-netlify,
+    .create-modal-card .create-premium-info,
+    .create-modal-card .create-premium-final {
+        flex-direction: column !important;
+        align-items: flex-start !important;
     }
 }
