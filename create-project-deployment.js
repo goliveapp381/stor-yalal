@@ -58,16 +58,23 @@ function createDeploymentStages() {
     }
 }
 
+function updateDeploymentProgress(index) {
+    if (!deploymentProgress) return;
+    const total = DEPLOY_STAGES.length;
+    const percentage = Math.max(5, Math.min(100, Math.round((index / (total - 1)) * 100)));
+    deploymentProgress.style.width = `${percentage}%`;
+}
+
 function updateDeploymentStage(index, state = 'active') {
     const stages = deploymentOverlay?.querySelectorAll('.deployment-stage');
-    if (!stages) return;
-
-    stages.forEach((stage, stageIndex) => {
-        stage.classList.remove('active', 'completed', 'pending');
-        if (stageIndex < index) stage.classList.add('completed');
-        else if (stageIndex === index) stage.classList.add(state);
-        else stage.classList.add('pending');
-    });
+    if (stages) {
+        stages.forEach((stage, stageIndex) => {
+            stage.classList.remove('active', 'completed', 'pending');
+            if (stageIndex < index) stage.classList.add('completed');
+            else if (stageIndex === index) stage.classList.add(state);
+            else stage.classList.add('pending');
+        });
+    }
 
     const stage = DEPLOY_STAGES[index];
     if (!stage) return;
@@ -77,20 +84,12 @@ function updateDeploymentStage(index, state = 'active') {
     updateDeploymentProgress(index);
 }
 
-function updateDeploymentProgress(index) {
-    if (!deploymentProgress) return;
-    const total = DEPLOY_STAGES.length;
-    const percentage = Math.max(5, Math.min(100, Math.round((index / (total - 1)) * 100)));
-    deploymentProgress.style.width = `${percentage}%`;
-}
-
 function resetDeployment() {
     if (deployStageTimer) {
         clearInterval(deployStageTimer);
         deployStageTimer = null;
     }
     deployStageIndex = 0;
-    deploymentRunning = false;
     publishedSiteUrl = null;
     createdSiteId = null;
 
@@ -123,6 +122,10 @@ function openDeploymentOverlay() {
 }
 
 function closeDeploymentOverlay() {
+    if (deployStageTimer) {
+        clearInterval(deployStageTimer);
+        deployStageTimer = null;
+    }
     if (!deploymentOverlay) return;
     deploymentOverlay.classList.remove('active');
     deploymentOverlay.style.display = 'none';
@@ -214,6 +217,15 @@ function getFrontendAuthToken() {
     );
 }
 
+function clearAuthSessionAndRedirect() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('templatecraft_token');
+    localStorage.removeItem('user');
+    localStorage.removeItem('templatecraft_user');
+    window.location.replace('login.html');
+}
+
 async function handleCreateProject(event) {
     if (deploymentRunning) return;
 
@@ -235,12 +247,7 @@ async function handleCreateProject(event) {
     const token = getFrontendAuthToken();
     if (!token) {
         alert('انتهت جلسة الدخول. يرجى تسجيل الدخول مجدداً.');
-        localStorage.removeItem('token');
-        localStorage.removeItem('authToken');
-        localStorage.removeItem('templatecraft_token');
-        localStorage.removeItem('user');
-        localStorage.removeItem('templatecraft_user');
-        window.location.replace('login.html');
+        clearAuthSessionAndRedirect();
         return;
     }
 
@@ -256,6 +263,7 @@ async function handleCreateProject(event) {
     if (createModal) {
         createModal.classList.remove('show', 'active');
         createModal.style.display = 'none';
+        createModal.setAttribute('aria-hidden', 'true');
     }
 
     if (deploymentResultContainer) {
@@ -275,12 +283,7 @@ async function handleCreateProject(event) {
             const message = result?.error || result?.message || 'تعذر إنشاء أو نشر الموقع.';
             if (result?.status === 401 || result?.status === 403 || /token|unauthorized|غير مصرح|تسجيل الدخول|انتهت الجلسة/i.test(message)) {
                 failDeployment('انتهت جلسة الدخول.');
-                localStorage.removeItem('token');
-                localStorage.removeItem('authToken');
-                localStorage.removeItem('templatecraft_token');
-                localStorage.removeItem('user');
-                localStorage.removeItem('templatecraft_user');
-                setTimeout(() => window.location.replace('login.html'), 1000);
+                setTimeout(clearAuthSessionAndRedirect, 1000);
                 return;
             }
             throw new Error(message);
