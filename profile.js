@@ -13,6 +13,7 @@
  - Supports checks.netlifySite.attachedDomains
  - READY diagnostics => active domain
  - SSL ready => published
+ - Direct Netlify Make Public shortcut & guidance
 =========================================================
 */
 
@@ -23,6 +24,8 @@
     // =====================================================
 
     const DOMAIN_ROOT = 'templatecraftpro.com';
+    const NETLIFY_PUBLIC_GUIDANCE =
+        'إذا كان الموقع يظهر كـ Private على Netlify، فاضغط على الزر لتفعيل Make public ثم عد إلى هنا.';
 
     let lastSites = [];
     let diagnosticsCache = new Map();
@@ -92,7 +95,7 @@
     }
 
     // =====================================================
-    // 4. DOMAIN HELPERS
+    // 4. DOMAIN & NETLIFY DASHBOARD HELPERS
     // =====================================================
 
     function normalizeHostname(hostname) {
@@ -171,6 +174,58 @@
         }
 
         return `https://${hostname}/`;
+    }
+
+
+    function getNetlifyDashboardUrl(site, diagnostics = null) {
+
+        const checks = getSiteChecks(diagnostics);
+        const netlifySite =
+            checks.netlifySite ||
+            checks.netlify ||
+            checks.site ||
+            site?.__netlifySite ||
+            {};
+
+        const candidates = [
+            site?.adminUrl,
+            site?.admin_url,
+            netlifySite?.adminUrl,
+            netlifySite?.admin_url,
+            diagnostics?.adminUrl,
+            diagnostics?.admin_url
+        ];
+
+        for (const candidate of candidates) {
+            if (typeof candidate === 'string' && /^https?:\/\//i.test(candidate.trim())) {
+                return candidate.trim();
+            }
+        }
+
+        const netlifyProjectName = String(
+            netlifySite?.name ||
+            site?.netlifySiteName ||
+            site?.netlifyName ||
+            ''
+        ).trim();
+
+        if (netlifyProjectName) {
+            return `https://app.netlify.com/projects/${encodeURIComponent(netlifyProjectName)}/overview`;
+        }
+
+        const accountSlug = String(
+            netlifySite?.account_slug ||
+            netlifySite?.accountSlug ||
+            site?.netlifyAccountSlug ||
+            site?.accountSlug ||
+            ''
+        ).trim();
+
+        if (accountSlug) {
+            return `https://app.netlify.com/teams/${encodeURIComponent(accountSlug)}/projects`;
+        }
+
+        return 'https://app.netlify.com/';
     }
 
 
@@ -1491,6 +1546,12 @@
                 site.id
             );
 
+        const netlifyDashboardUrl =
+            getNetlifyDashboardUrl(
+                site,
+                diagnostics
+            );
+
 
         const isBusy =
             site.status === 'deleting' ||
@@ -1647,6 +1708,26 @@
                         `
                         : ''
                 }
+
+
+                <div class="mb-4 p-3.5 rounded-xl bg-slate-950/80 border border-slate-800 space-y-2.5">
+
+                    <p class="text-xs text-slate-300 leading-6">
+                        ${escapeHtml(NETLIFY_PUBLIC_GUIDANCE)}
+                    </p>
+
+                    <a
+                        href="${escapeHtml(netlifyDashboardUrl)}"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="w-full inline-flex items-center justify-center px-3.5 py-2 rounded-xl bg-teal-600/20 hover:bg-teal-600/30 text-teal-300 border border-teal-500/30 text-xs font-bold transition">
+
+                        <i class="fa-solid fa-up-right-from-square ml-1.5"></i>
+                        فتح في Netlify (Make public)
+
+                    </a>
+
+                </div>
 
 
                 <div class="space-y-3">
