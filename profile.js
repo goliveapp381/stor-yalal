@@ -56,15 +56,6 @@
             : String(value);
     }
 
-    function normalizeSlug(raw) {
-        return String(raw || '')
-            .toLowerCase()
-            .trim()
-            .replace(/[^a-z0-9-]/g, '-')
-            .replace(/-+/g, '-')
-            .replace(/^-|-$/g, '');
-    }
-
     // =====================================================
     // 3. RESPONSE HELPERS
     // =====================================================
@@ -207,14 +198,11 @@
 
         for (const candidate of explicitCandidates) {
             if (typeof candidate === 'string' && /^https?:\/\//i.test(candidate.trim())) {
-                const cleanUrl = candidate.trim();
-                if (!/\/teams\/[^/]+\/projects\/?$/i.test(cleanUrl)) {
-                    return cleanUrl;
-                }
+                return candidate.trim();
             }
         }
 
-        const directProjectSlug = String(
+        const realNetlifyName = String(
             netlifySite?.name ||
             site?.netlifySiteName ||
             site?.netlifyName ||
@@ -222,41 +210,8 @@
             ''
         ).trim();
 
-        if (directProjectSlug) {
-            return `https://app.netlify.com/projects/${encodeURIComponent(directProjectSlug)}/overview`;
-        }
-
-        const rawDomainSubdomain = String(
-            site?.customDomain ||
-            site?.domain ||
-            site?.customUrl ||
-            ''
-        )
-            .replace(/^https?:\/\//i, '')
-            .split('/')[0]
-            .split('.')[0]
-            .trim();
-
-        const normalizedSubdomain = normalizeSlug(rawDomainSubdomain);
-
-        if (normalizedSubdomain) {
-            const projectSlug = normalizedSubdomain.startsWith('templatecraft-')
-                ? normalizedSubdomain
-                : `templatecraft-${normalizedSubdomain}`;
-            return `https://app.netlify.com/projects/${encodeURIComponent(projectSlug)}/overview`;
-        }
-
-        const normalizedSiteName = normalizeSlug(
-            site?.siteName ||
-            site?.name ||
-            ''
-        );
-
-        if (normalizedSiteName) {
-            const projectSlug = normalizedSiteName.startsWith('templatecraft-')
-                ? normalizedSiteName
-                : `templatecraft-${normalizedSiteName}`;
-            return `https://app.netlify.com/projects/${encodeURIComponent(projectSlug)}/overview`;
+        if (realNetlifyName) {
+            return `https://app.netlify.com/projects/${encodeURIComponent(realNetlifyName)}/overview`;
         }
 
         const accountSlug = String(
