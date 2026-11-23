@@ -265,3 +265,127 @@ select#projectTypeSelect,
         width: 96vw;
     }
 }
+
+/* =========================================================
+   إجبار إظهار محتوى وأزرار بطاقة القالب كاملة في جميع الشاشات
+========================================================= */
+
+#templatesGrid.templates-grid {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+    width: 100% !important;
+}
+
+@media (min-width: 721px) and (max-width: 1024px) {
+    #templatesGrid.templates-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    }
+}
+
+@media (min-width: 1025px) {
+    #templatesGrid.templates-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    }
+}
+
+#templatesGrid .template-card {
+    display: flex !important;
+    flex-direction: column !important;
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+    border-radius: 18px !important;
+    background: #0b1128 !important;
+    border: 1px solid rgba(148, 163, 184, 0.22) !important;
+}
+
+#templatesGrid .template-card-preview {
+    position: relative !important;
+    width: 100% !important;
+    aspect-ratio: 16 / 10 !important;
+    height: auto !important;
+    max-height: 240px !important;
+    overflow: hidden !important;
+    border-radius: 18px 18px 0 0 !important;
+    flex-shrink: 0 !important;
+}
+
+#templatesGrid .template-card-preview img.template-thumbnail,
+#templatesGrid .template-card-preview iframe.template-fallback-preview {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    display: block !important;
+}
+
+#templatesGrid .template-card-body {
+    position: static !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 10px !important;
+    padding: 14px !important;
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    background: #0b1128 !important;
+    border-radius: 0 0 18px 18px !important;
+}
+
+#templatesGrid .template-name {
+    display: block !important;
+    margin: 0 !important;
+    font-size: 15px !important;
+    font-weight: 800 !important;
+    color: #f8fafc !important;
+    visibility: visible !important;
+}
+
+#templatesGrid .template-description {
+    display: block !important;
+    margin: 0 !important;
+    font-size: 12px !important;
+    color: #94a3b8 !important;
+    line-height: 1.6 !important;
+    visibility: visible !important;
+}
+
+#templatesGrid .template-card-actions {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 10px !important;
+    width: 100% !important;
+    margin-top: 6px !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+#templatesGrid .template-card-actions button,
+#templatesGrid .preview-template-btn,
+#templatesGrid .select-template-btn {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 100% !important;
+    min-height: 42px !important;
+    padding: 8px 12px !important;
+    border-radius: 11px !important;
+    font-size: 12px !important;
+    font-weight: 800 !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    cursor: pointer !important;
+}
+
+#templatesGrid .preview-template-btn {
+    color: #f8fafc !important;
+    background: rgba(255, 255, 255, 0.08) !important;
+    border: 1px solid rgba(148, 163, 184, 0.28) !important;
+}
+
+#templatesGrid .select-template-btn {
+    color: #ffffff !important;
+    background: linear-gradient(135deg, #7c3aed, #4f46e5) !important;
+}
