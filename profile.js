@@ -56,6 +56,15 @@
             : String(value);
     }
 
+    function normalizeSlug(raw) {
+        return String(raw || '')
+            .toLowerCase()
+            .trim()
+            .replace(/[^a-z0-9-]/g, '-')
+            .replace(/-+/g, '-')
+            .replace(/^-|-$/g, '');
+    }
+
     // =====================================================
     // 3. RESPONSE HELPERS
     // =====================================================
@@ -187,7 +196,7 @@
             site?.__netlifySite ||
             {};
 
-        const candidates = [
+        const explicitCandidates = [
             site?.adminUrl,
             site?.admin_url,
             netlifySite?.adminUrl,
@@ -196,21 +205,58 @@
             diagnostics?.admin_url
         ];
 
-        for (const candidate of candidates) {
+        for (const candidate of explicitCandidates) {
             if (typeof candidate === 'string' && /^https?:\/\//i.test(candidate.trim())) {
-                return candidate.trim();
+                const cleanUrl = candidate.trim();
+                if (!/\/teams\/[^/]+\/projects\/?$/i.test(cleanUrl)) {
+                    return cleanUrl;
+                }
             }
         }
 
-        const netlifyProjectName = String(
+        const directProjectSlug = String(
             netlifySite?.name ||
             site?.netlifySiteName ||
             site?.netlifyName ||
+            site?.netlifySlug ||
             ''
         ).trim();
 
-        if (netlifyProjectName) {
-            return `https://app.netlify.com/projects/${encodeURIComponent(netlifyProjectName)}/overview`;
+        if (directProjectSlug) {
+            return `https://app.netlify.com/projects/${encodeURIComponent(directProjectSlug)}/overview`;
+        }
+
+        const rawDomainSubdomain = String(
+            site?.customDomain ||
+            site?.domain ||
+            site?.customUrl ||
+            ''
+        )
+            .replace(/^https?:\/\//i, '')
+            .split('/')[0]
+            .split('.')[0]
+            .trim();
+
+        const normalizedSubdomain = normalizeSlug(rawDomainSubdomain);
+
+        if (normalizedSubdomain) {
+            const projectSlug = normalizedSubdomain.startsWith('templatecraft-')
+                ? normalizedSubdomain
+                : `templatecraft-${normalizedSubdomain}`;
+            return `https://app.netlify.com/projects/${encodeURIComponent(projectSlug)}/overview`;
+        }
+
+        const normalizedSiteName = normalizeSlug(
+            site?.siteName ||
+            site?.name ||
+            ''
+        );
+
+        if (normalizedSiteName) {
+            const projectSlug = normalizedSiteName.startsWith('templatecraft-')
+                ? normalizedSiteName
+                : `templatecraft-${normalizedSiteName}`;
+            return `https://app.netlify.com/projects/${encodeURIComponent(projectSlug)}/overview`;
         }
 
         const accountSlug = String(
