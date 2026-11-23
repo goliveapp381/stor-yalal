@@ -38,20 +38,13 @@
        DOM
     ===================================================== */
 
-    const templatesGrid =
-        document.getElementById('templatesGrid');
-
-    const projectTypeSelect =
-        document.getElementById('projectTypeSelect');
-
-    const projectTypeOptions =
-        document.getElementById('projectTypeOptions');
-
-    const selectedLabel =
-        document.getElementById('selectedLabel');
-
-    const resultContainer =
-        document.getElementById('createResult');
+    const templatesGrid = document.getElementById('templatesGrid');
+    const projectTypeSelect = document.getElementById('projectTypeSelect');
+    const projectTypeOptions = document.getElementById('projectTypeOptions');
+    const selectedLabel = document.getElementById('selectedLabel');
+    const resultContainer = document.getElementById('createResult');
+    const categoryLoadingMessage = document.getElementById('categoryLoadingMessage');
+    const categoryErrorMessage = document.getElementById('categoryErrorMessage');
 
 
     /* =====================================================
@@ -59,7 +52,6 @@
     ===================================================== */
 
     function getTemplateAPI() {
-
         return (
             window.TemplateCraftAPI ||
             window.templateCraftAPI ||
@@ -67,58 +59,35 @@
         );
     }
 
-
     function getApiBaseUrl() {
-
         if (
             typeof window.TEMPLATECRAFT_API_BASE_URL === 'string' &&
             window.TEMPLATECRAFT_API_BASE_URL.trim()
         ) {
-
-            return window.TEMPLATECRAFT_API_BASE_URL
-                .trim()
-                .replace(/\/+$/, '');
+            return window.TEMPLATECRAFT_API_BASE_URL.trim().replace(/\/+$/, '');
         }
-
 
         if (
             typeof window.API_BASE_URL === 'string' &&
             window.API_BASE_URL.trim()
         ) {
-
-            return window.API_BASE_URL
-                .trim()
-                .replace(/\/+$/, '');
+            return window.API_BASE_URL.trim().replace(/\/+$/, '');
         }
 
-
-        const api =
-            getTemplateAPI();
-
-
+        const api = getTemplateAPI();
         if (api) {
-
             const possibleUrls = [
                 api.BASE_URL,
                 api.baseUrl,
                 api.apiBaseUrl
             ];
 
-
             for (const url of possibleUrls) {
-
-                if (
-                    typeof url === 'string' &&
-                    url.trim()
-                ) {
-
-                    return url
-                        .trim()
-                        .replace(/\/+$/, '');
+                if (typeof url === 'string' && url.trim()) {
+                    return url.trim().replace(/\/+$/, '');
                 }
             }
         }
-
 
         return 'https://templatecraft-backend.onrender.com';
     }
@@ -129,7 +98,6 @@
     ===================================================== */
 
     function escapeHtml(value) {
-
         return String(value ?? '')
             .replace(/&/g, '&amp;')
             .replace(/</g, '&lt;')
@@ -138,25 +106,28 @@
             .replace(/'/g, '&#039;');
     }
 
-
     function normalizeProjectType(value) {
-
         return String(value || '')
             .trim()
             .toLowerCase()
             .replace(/\s+/g, '-');
     }
 
-
     function getCurrentProjectType() {
-
         if (!projectTypeSelect) {
             return '';
         }
 
-        return String(
-            projectTypeSelect.value || ''
-        ).trim();
+        return String(projectTypeSelect.value || '').trim();
+    }
+
+    function hideTopStatusMessages() {
+        if (categoryLoadingMessage) {
+            categoryLoadingMessage.classList.add('hidden');
+        }
+        if (categoryErrorMessage) {
+            categoryErrorMessage.classList.add('hidden');
+        }
     }
 
 
@@ -165,72 +136,46 @@
     ===================================================== */
 
     function getProjectTypeIcon(type) {
-
-        const normalized =
-            normalizeProjectType(type);
+        const normalized = normalizeProjectType(type);
 
         const icons = {
-
             business: '💼',
             businesss: '💼',
-
             portfolio: '🎨',
-
             ecommerce: '🛒',
             'e-commerce': '🛒',
             shop: '🛍️',
             store: '🏪',
-
             blog: '✍️',
-
             news: '📰',
-
             restaurant: '🍽️',
             food: '🍔',
-
             education: '🎓',
             school: '🏫',
             university: '🏛️',
-
             agency: '🚀',
-
             landing: '✨',
             'landing-page': '✨',
-
             saas: '☁️',
-
             technology: '💻',
             tech: '💻',
-
             medical: '⚕️',
             health: '❤️',
-
             realestate: '🏠',
             'real-estate': '🏠',
             immobilier: '🏠',
-
             travel: '✈️',
             tourism: '🌍',
-
             hotel: '🏨',
-
             fitness: '💪',
             gym: '🏋️',
-
             photography: '📸',
-
             gaming: '🎮',
-
             personal: '👤',
-
             community: '👥'
         };
 
-
-        return (
-            icons[normalized] ||
-            '◈'
-        );
+        return icons[normalized] || '◈';
     }
 
 
@@ -238,101 +183,69 @@
        NORMALIZE TEMPLATE
     ===================================================== */
 
-    function normalizeTemplate(
-        template,
-        index
-    ) {
-
+    function normalizeTemplate(template, index) {
         if (
             !template ||
             typeof template !== 'object' ||
             Array.isArray(template)
         ) {
-
             return null;
         }
 
-
-        const id =
-            String(
-                template.id ||
-                template.templateId ||
-                template.slug ||
-                ''
-            ).trim();
-
+        const id = String(
+            template.id ||
+            template.templateId ||
+            template.slug ||
+            ''
+        ).trim();
 
         if (!id) {
             return null;
         }
 
+        const projectType = String(
+            template.projectType ||
+            template.category ||
+            template.type ||
+            ''
+        ).trim();
 
-        const projectType =
-            String(
-                template.projectType ||
-                template.category ||
-                template.type ||
-                ''
-            ).trim();
+        const name = String(
+            template.name ||
+            template.title ||
+            `القالب ${index + 1}`
+        ).trim();
 
+        const description = String(
+            template.description ||
+            template.desc ||
+            'تصميم احترافي جاهز للتخصيص والنشر.'
+        ).trim();
 
-        const name =
-            String(
-                template.name ||
-                template.title ||
-                `القالب ${index + 1}`
-            ).trim();
+        const previewUrl = String(
+            template.previewUrl ||
+            template.preview ||
+            ''
+        ).trim();
 
-
-        const description =
-            String(
-                template.description ||
-                template.desc ||
-                'تصميم احترافي جاهز للتخصيص والنشر.'
-            ).trim();
-
-
-        const previewUrl =
-            String(
-                template.previewUrl ||
-                template.preview ||
-                ''
-            ).trim();
-
-
-        const thumbnail =
-            String(
-                template.thumbnail ||
-                template.thumbnailUrl ||
-                template.image ||
-                template.cover ||
-                ''
-            ).trim();
-
+        const thumbnail = String(
+            template.thumbnail ||
+            template.thumbnailUrl ||
+            template.image ||
+            template.cover ||
+            ''
+        ).trim();
 
         return {
             ...template,
-
             id,
-
             templateId: id,
-
             name,
-
-            title:
-                String(
-                    template.title || name
-                ).trim(),
-
+            title: String(template.title || name).trim(),
             description,
-
             projectType,
-
-            category:
-                projectType,
-
+            category: projectType,
             previewUrl,
-
             thumbnail
         };
     }
@@ -342,50 +255,26 @@
        FIND TEMPLATE
     ===================================================== */
 
-    function getTemplateById(
-        templateId,
-        projectType = ''
-    ) {
-
-        const id =
-            String(templateId || '').trim();
-
-
+    function getTemplateById(templateId, projectType = '') {
+        const id = String(templateId || '').trim();
         if (!id) {
             return null;
         }
 
-
-        const normalizedType =
-            normalizeProjectType(
-                projectType
-            );
-
+        const normalizedType = normalizeProjectType(projectType);
 
         return (
-            templateList.find(
-                template => {
-
-                    if (
-                        String(template.id).trim() !== id
-                    ) {
-
-                        return false;
-                    }
-
-
-                    if (!normalizedType) {
-                        return true;
-                    }
-
-
-                    return (
-                        normalizeProjectType(
-                            template.projectType
-                        ) === normalizedType
-                    );
+            templateList.find(template => {
+                if (String(template.id).trim() !== id) {
+                    return false;
                 }
-            ) || null
+
+                if (!normalizedType) {
+                    return true;
+                }
+
+                return normalizeProjectType(template.projectType) === normalizedType;
+            }) || null
         );
     }
 
@@ -395,65 +284,38 @@
     ===================================================== */
 
     function getPreviewUrl(template) {
-
         if (!template) {
             return '';
         }
 
-
-        if (
-            template.previewUrl &&
-            typeof template.previewUrl === 'string'
-        ) {
-
-            const raw =
-                template.previewUrl.trim();
-
-
-            if (
-                /^https?:\/\//i.test(raw)
-            ) {
-
+        if (template.previewUrl && typeof template.previewUrl === 'string') {
+            const raw = template.previewUrl.trim();
+            if (/^https?:\/\//i.test(raw)) {
                 return raw;
             }
-
-
-            if (
-                raw.startsWith('/')
-            ) {
-
-                return (
-                    getApiBaseUrl() +
-                    raw
-                );
+            if (raw.startsWith('/')) {
+                return getApiBaseUrl() + raw;
             }
         }
 
+        const projectType = String(
+            template.projectType ||
+            template.category ||
+            getCurrentProjectType() ||
+            ''
+        ).trim();
 
-        const projectType =
-            String(
-                template.projectType ||
-                template.category ||
-                getCurrentProjectType() ||
-                ''
-            ).trim();
-
-
-        const templateId =
-            String(
-                template.id ||
-                template.templateId ||
-                ''
-            ).trim();
-
+        const templateId = String(
+            template.id ||
+            template.templateId ||
+            ''
+        ).trim();
 
         if (!templateId) {
             return '';
         }
 
-
         if (projectType) {
-
             return (
                 getApiBaseUrl() +
                 '/api/templates/' +
@@ -463,7 +325,6 @@
                 '/preview'
             );
         }
-
 
         return (
             getApiBaseUrl() +
@@ -478,101 +339,53 @@
        ASSET URL
     ===================================================== */
 
-    function getTemplateAssetUrl(
-        template,
-        assetPath = ''
-    ) {
-
-        if (
-            !template ||
-            !assetPath
-        ) {
-
+    function getTemplateAssetUrl(template, assetPath = '') {
+        if (!template || !assetPath) {
             return '';
         }
 
-
-        const raw =
-            String(assetPath).trim();
-
-
+        const raw = String(assetPath).trim();
         if (!raw) {
             return '';
         }
-
 
         if (
             /^https?:\/\//i.test(raw) ||
             /^data:/i.test(raw) ||
             /^blob:/i.test(raw)
         ) {
-
             return raw;
         }
 
+        const baseUrl = getApiBaseUrl();
 
-        const baseUrl =
-            getApiBaseUrl();
-
-
-        if (
-            raw.startsWith('/api/')
-        ) {
-
+        if (raw.startsWith('/')) {
             return baseUrl + raw;
         }
 
+        const projectType = String(
+            template.projectType ||
+            template.category ||
+            getCurrentProjectType() ||
+            ''
+        ).trim();
 
-        if (
-            raw.startsWith('/')
-        ) {
+        const templateId = String(
+            template.id ||
+            template.templateId ||
+            ''
+        ).trim();
 
-            return baseUrl + raw;
-        }
-
-
-        const projectType =
-            String(
-                template.projectType ||
-                template.category ||
-                getCurrentProjectType() ||
-                ''
-            ).trim();
-
-
-        const templateId =
-            String(
-                template.id ||
-                template.templateId ||
-                ''
-            ).trim();
-
-
-        if (
-            !projectType ||
-            !templateId
-        ) {
-
+        if (!projectType || !templateId) {
             return '';
         }
 
-
-        const cleanPath =
-            raw
-                .replace(/^\.?\//, '')
-                .replace(/^\/+/, '');
-
-
-        const encodedPath =
-            cleanPath
-                .split('/')
-                .filter(Boolean)
-                .map(
-                    part =>
-                        encodeURIComponent(part)
-                )
-                .join('/');
-
+        const cleanPath = raw.replace(/^\.?\//, '').replace(/^\/+/, '');
+        const encodedPath = cleanPath
+            .split('/')
+            .filter(Boolean)
+            .map(part => encodeURIComponent(part))
+            .join('/');
 
         return (
             baseUrl +
@@ -591,31 +404,23 @@
     ===================================================== */
 
     function getTemplateThumbnailUrl(template) {
-
         if (!template) {
             return '';
         }
 
-
-        const thumbnail =
-            String(
-                template.thumbnail ||
-                template.thumbnailUrl ||
-                template.image ||
-                template.cover ||
-                ''
-            ).trim();
-
+        const thumbnail = String(
+            template.thumbnail ||
+            template.thumbnailUrl ||
+            template.image ||
+            template.cover ||
+            ''
+        ).trim();
 
         if (!thumbnail) {
             return '';
         }
 
-
-        return getTemplateAssetUrl(
-            template,
-            thumbnail
-        );
+        return getTemplateAssetUrl(template, thumbnail);
     }
 
 
@@ -624,23 +429,14 @@
     ===================================================== */
 
     function getFilteredTemplates() {
-
-        const projectType =
-            normalizeProjectType(
-                getCurrentProjectType()
-            );
-
+        const projectType = normalizeProjectType(getCurrentProjectType());
 
         if (!projectType) {
             return templateList;
         }
 
-
         return templateList.filter(
-            template =>
-                normalizeProjectType(
-                    template.projectType
-                ) === projectType
+            template => normalizeProjectType(template.projectType) === projectType
         );
     }
 
@@ -650,106 +446,54 @@
     ===================================================== */
 
     async function loadTemplates() {
-
         if (templatesLoading) {
             return templateList;
         }
 
-
         templatesLoading = true;
-
         setLoadingState();
 
-
         try {
-
-            const api =
-                getTemplateAPI();
-
-
-            if (
-                !api ||
-                typeof api.getTemplates !== 'function'
-            ) {
-
-                throw new Error(
-                    'TemplateCraftAPI.getTemplates() غير متوفر.'
-                );
+            const api = getTemplateAPI();
+            if (!api || typeof api.getTemplates !== 'function') {
+                throw new Error('TemplateCraftAPI.getTemplates() غير متوفر.');
             }
 
-
-            const response =
-                await api.getTemplates();
-
+            const response = await api.getTemplates();
 
             let rawTemplates = [];
-
-
-            if (
-                response &&
-                Array.isArray(response.templates)
-            ) {
-
-                rawTemplates =
-                    response.templates;
-
-            } else if (
-                Array.isArray(response)
-            ) {
-
-                rawTemplates =
-                    response;
-
-            } else if (
-                response &&
-                Array.isArray(response.data)
-            ) {
-
-                rawTemplates =
-                    response.data;
+            if (response && Array.isArray(response.templates)) {
+                rawTemplates = response.templates;
+            } else if (Array.isArray(response)) {
+                rawTemplates = response;
+            } else if (response && Array.isArray(response.data)) {
+                rawTemplates = response.data;
             }
 
-
-            templateList =
-                rawTemplates
-                    .map(normalizeTemplate)
-                    .filter(Boolean);
-
-
+            templateList = rawTemplates.map(normalizeTemplate).filter(Boolean);
             templatesLoaded = true;
 
-
+            hideTopStatusMessages();
             renderProjectTypes();
-
             renderTemplates();
 
-
             return templateList;
-
-
         } catch (error) {
-
-            console.error(
-                'Template loading error:',
-                error
-            );
-
-
+            console.error('Template loading error:', error);
             templateList = [];
 
+            if (categoryLoadingMessage) {
+                categoryLoadingMessage.classList.add('hidden');
+            }
+            if (categoryErrorMessage) {
+                categoryErrorMessage.classList.remove('hidden');
+            }
 
             renderProjectTypes();
-
-            renderTemplatesError(
-                error
-            );
-
+            renderTemplatesError(error);
 
             return [];
-
-
         } finally {
-
             templatesLoading = false;
         }
     }
@@ -761,68 +505,31 @@
     ===================================================== */
 
     function renderProjectTypes() {
-
         if (!projectTypeSelect) {
             return;
         }
 
-
         const types = [];
-
-
-        templateList.forEach(
-            template => {
-
-                const type =
-                    String(
-                        template.projectType ||
-                        template.category ||
-                        ''
-                    ).trim();
-
-
-                if (
-                    type &&
-                    !types.some(
-                        item =>
-                            normalizeProjectType(item) ===
-                            normalizeProjectType(type)
-                    )
-                ) {
-
-                    types.push(type);
-                }
+        templateList.forEach(template => {
+            const type = String(template.projectType || template.category || '').trim();
+            if (
+                type &&
+                !types.some(item => normalizeProjectType(item) === normalizeProjectType(type))
+            ) {
+                types.push(type);
             }
-        );
-
-
-        /*
-        -----------------------------------------------------
-        No categories
-        -----------------------------------------------------
-        */
+        });
 
         if (!types.length) {
-
-            projectTypeSelect.innerHTML =
-                '<option value="">لا توجد فئات</option>';
-
+            projectTypeSelect.innerHTML = '<option value="">لا توجد فئات</option>';
             projectTypeSelect.value = '';
-
+            projectTypeSelect.dispatchEvent(new Event('change', { bubbles: true }));
 
             if (projectTypeOptions) {
-
                 projectTypeOptions.innerHTML = `
                     <div class="project-type-empty">
-
-                        <div class="project-type-empty-icon">
-                            ◈
-                        </div>
-
-                        <div class="project-type-empty-text">
-                            لا توجد فئات متاحة حالياً
-                        </div>
-
+                        <div class="project-type-empty-icon">◈</div>
+                        <div class="project-type-empty-text">لا توجد فئات متاحة حالياً</div>
                     </div>
                 `;
             }
@@ -830,181 +537,68 @@
             return;
         }
 
-
-        /*
-        -----------------------------------------------------
-        Save previous selection
-        -----------------------------------------------------
-        */
-
-        const oldValue =
-            projectTypeSelect.value;
-
-
-        /*
-        -----------------------------------------------------
-        Rebuild real select
-        -----------------------------------------------------
-        */
+        const oldValue = projectTypeSelect.value;
 
         projectTypeSelect.innerHTML =
             '<option value="">جميع الفئات</option>' +
             types
-                .map(
-                    type =>
-                        `
-                        <option value="${escapeHtml(type)}">
-                            ${escapeHtml(type)}
-                        </option>
-                        `
-                )
+                .map(type => `<option value="${escapeHtml(type)}">${escapeHtml(type)}</option>`)
                 .join('');
 
+        const oldExists = types.some(
+            type => normalizeProjectType(type) === normalizeProjectType(oldValue)
+        );
 
-        /*
-        -----------------------------------------------------
-        Restore previous value
-        -----------------------------------------------------
-        */
-
-        const oldExists =
-            types.some(
-                type =>
-                    normalizeProjectType(type) ===
-                    normalizeProjectType(oldValue)
-            );
-
-
-        if (oldExists) {
-
-            projectTypeSelect.value =
-                oldValue;
-
-        } else {
-
-            projectTypeSelect.value =
-                '';
-        }
-
-
-        /*
-        -----------------------------------------------------
-        Render visual category boxes
-        -----------------------------------------------------
-        */
+        projectTypeSelect.value = oldExists ? oldValue : '';
+        projectTypeSelect.dispatchEvent(new Event('change', { bubbles: true }));
 
         if (!projectTypeOptions) {
             return;
         }
 
-
-        const currentValue =
-            projectTypeSelect.value;
-
+        const currentValue = projectTypeSelect.value;
 
         projectTypeOptions.innerHTML = `
-
             <button
                 type="button"
-                class="project-type-option ${
-                    !currentValue
-                        ? 'is-active'
-                        : ''
-                }"
+                class="project-type-option ${!currentValue ? 'is-active' : ''}"
                 data-project-type=""
-                aria-pressed="${
-                    !currentValue
-                }"
+                aria-pressed="${!currentValue}"
             >
-
-                <span class="project-type-option-icon">
-                    ✦
-                </span>
-
+                <span class="project-type-option-icon">✦</span>
                 <span class="project-type-option-content">
-
-                    <strong>
-                        جميع الفئات
-                    </strong>
-
-                    <small>
-                        عرض جميع القوالب
-                    </small>
-
+                    <strong>جميع الفئات</strong>
+                    <small>عرض جميع القوالب</small>
                 </span>
-
-                <span class="project-type-option-check">
-                    ✓
-                </span>
-
+                <span class="project-type-option-check">✓</span>
             </button>
 
+            ${types
+                .map(type => {
+                    const normalized = normalizeProjectType(type);
+                    const isActive = normalizeProjectType(currentValue) === normalized;
+                    const count = templateList.filter(
+                        template => normalizeProjectType(template.projectType) === normalized
+                    ).length;
 
-            ${
-                types
-                    .map(
-                        type => {
-
-                            const normalized =
-                                normalizeProjectType(type);
-
-                            const isActive =
-                                normalizeProjectType(
-                                    currentValue
-                                ) === normalized;
-
-
-                            const count =
-                                templateList.filter(
-                                    template =>
-                                        normalizeProjectType(
-                                            template.projectType
-                                        ) === normalized
-                                ).length;
-
-
-                            return `
-                                <button
-                                    type="button"
-                                    class="project-type-option ${
-                                        isActive
-                                            ? 'is-active'
-                                            : ''
-                                    }"
-                                    data-project-type="${escapeHtml(type)}"
-                                    aria-pressed="${isActive}"
-                                >
-
-                                    <span class="project-type-option-icon">
-                                        ${getProjectTypeIcon(type)}
-                                    </span>
-
-                                    <span class="project-type-option-content">
-
-                                        <strong>
-                                            ${escapeHtml(type)}
-                                        </strong>
-
-                                        <small>
-                                            ${count}
-                                            ${count === 1 ? 'قالب' : 'قوالب'}
-                                        </small>
-
-                                    </span>
-
-                                    <span class="project-type-option-check">
-                                        ✓
-                                    </span>
-
-                                </button>
-                            `;
-                        }
-                    )
-                    .join('')
-            }
-
+                    return `
+                        <button
+                            type="button"
+                            class="project-type-option ${isActive ? 'is-active' : ''}"
+                            data-project-type="${escapeHtml(type)}"
+                            aria-pressed="${isActive}"
+                        >
+                            <span class="project-type-option-icon">${getProjectTypeIcon(type)}</span>
+                            <span class="project-type-option-content">
+                                <strong>${escapeHtml(type)}</strong>
+                                <small>${count} ${count === 1 ? 'قالب' : 'قوالب'}</small>
+                            </span>
+                            <span class="project-type-option-check">✓</span>
+                        </button>
+                    `;
+                })
+                .join('')}
         `;
-
 
         bindProjectTypeOptionEvents();
     }
@@ -1015,184 +609,63 @@
     ===================================================== */
 
     function bindProjectTypeOptionEvents() {
-
         if (!projectTypeOptions) {
             return;
         }
 
-
-        projectTypeOptions
-            .querySelectorAll('.project-type-option')
-            .forEach(
-                button => {
-
-                    button.addEventListener(
-                        'click',
-                        function () {
-
-                            const value =
-                                String(
-                                    this.dataset.projectType || ''
-                                ).trim();
-
-
-                            if (!projectTypeSelect) {
-                                return;
-                            }
-
-
-                            /*
-                            -------------------------------------------------
-                            Update real select
-                            -------------------------------------------------
-                            */
-
-                            projectTypeSelect.value =
-                                value;
-
-
-                            /*
-                            -------------------------------------------------
-                            Trigger the ORIGINAL category logic
-                            -------------------------------------------------
-                            */
-
-                            projectTypeSelect.dispatchEvent(
-                                new Event(
-                                    'change',
-                                    {
-                                        bubbles: true
-                                    }
-                                )
-                            );
-
-
-                            /*
-                            -------------------------------------------------
-                            Update visual active state
-                            -------------------------------------------------
-                            */
-
-                            projectTypeOptions
-                                .querySelectorAll(
-                                    '.project-type-option'
-                                )
-                                .forEach(
-                                    option => {
-
-                                        const optionValue =
-                                            String(
-                                                option.dataset.projectType || ''
-                                            ).trim();
-
-
-                                        const active =
-                                            normalizeProjectType(
-                                                optionValue
-                                            ) ===
-                                            normalizeProjectType(
-                                                value
-                                            );
-
-
-                                        option.classList.toggle(
-                                            'is-active',
-                                            active
-                                        );
-
-
-                                        option.setAttribute(
-                                            'aria-pressed',
-                                            active
-                                        );
-                                    }
-                                );
-                        }
-                    );
+        projectTypeOptions.querySelectorAll('.project-type-option').forEach(button => {
+            button.addEventListener('click', function () {
+                const value = String(this.dataset.projectType || '').trim();
+                if (!projectTypeSelect) {
+                    return;
                 }
-            );
+
+                projectTypeSelect.value = value;
+                projectTypeSelect.dispatchEvent(new Event('change', { bubbles: true }));
+                updateActiveProjectTypeOption();
+            });
+        });
     }
 
 
     /* =====================================================
-       LOADING
+       LOADING & ERROR STATES
     ===================================================== */
 
     function setLoadingState() {
-
         if (!templatesGrid) {
             return;
         }
-
 
         templatesGrid.innerHTML = `
             <div class="template-state-card">
                 <div class="template-spinner"></div>
-
-                <h3>
-                    جاري تحميل القوالب...
-                </h3>
-
-                <p>
-                    يتم جلب القوالب الحقيقية من TemplateCraft Pro
-                </p>
+                <h3>جاري تحميل القوالب...</h3>
+                <p>يتم جلب القوالب الحقيقية من TemplateCraft Pro</p>
             </div>
         `;
     }
 
-
-    /* =====================================================
-       ERROR
-    ===================================================== */
-
     function renderTemplatesError(error) {
-
         if (!templatesGrid) {
             return;
         }
 
-
         templatesGrid.innerHTML = `
             <div class="template-state-card template-state-error">
-
-                <div class="template-state-icon">
-                    ⚠️
-                </div>
-
-                <h3>
-                    تعذر تحميل القوالب
-                </h3>
-
-                <p>
-                    تأكد من أن Backend شغال وأن الاتصال بـ API صحيح.
-                </p>
-
-                <button
-                    type="button"
-                    id="retryTemplatesBtn"
-                    class="secondary-button"
-                >
+                <div class="template-state-icon">⚠️</div>
+                <h3>تعذر تحميل القوالب</h3>
+                <p>تأكد من أن Backend شغال وأن الاتصال بـ API صحيح.</p>
+                <button type="button" id="retryTemplatesBtn" class="secondary-button">
                     إعادة المحاولة
                 </button>
-
             </div>
         `;
 
-
-        const retryButton =
-            document.getElementById(
-                'retryTemplatesBtn'
-            );
-
-
+        const retryButton = document.getElementById('retryTemplatesBtn');
         if (retryButton) {
-
-            retryButton.addEventListener(
-                'click',
-                loadTemplates
-            );
+            retryButton.addEventListener('click', loadTemplates);
         }
-
 
         if (error) {
             console.error(error);
@@ -1201,107 +674,50 @@
 
 
     /* =====================================================
-       RENDER
+       RENDER TEMPLATES
     ===================================================== */
 
     function renderTemplates() {
-
         if (!templatesGrid) {
             return;
         }
 
-
-        const templates =
-            getFilteredTemplates();
-
-
-        updateTemplateCount(
-            templates.length
-        );
-
+        const templates = getFilteredTemplates();
+        updateTemplateCount(templates.length);
 
         if (!templates.length) {
-
             templatesGrid.innerHTML = `
                 <div class="template-state-card">
-
-                    <div class="template-state-icon">
-                        📦
-                    </div>
-
-                    <h3>
-                        لا توجد قوالب حالياً
-                    </h3>
-
-                    <p>
-                        لا توجد قوالب متاحة في التصنيف المختار.
-                    </p>
-
+                    <div class="template-state-icon">📦</div>
+                    <h3>لا توجد قوالب حالياً</h3>
+                    <p>لا توجد قوالب متاحة في التصنيف المختار.</p>
                 </div>
             `;
-
-
             updateSelectedLabel(null);
-
             return;
         }
 
-
-        const selectedExists =
-            templates.some(
-                template =>
-                    template.id ===
-                    selectedTemplateId
-            );
-
-
+        const selectedExists = templates.some(template => template.id === selectedTemplateId);
         if (!selectedExists) {
-
             selectedTemplateId = null;
             selectedTemplateProjectType = null;
         }
 
-
-        templatesGrid.innerHTML =
-            templates
-                .map(
-                    (template, index) =>
-                        createTemplateCard(
-                            template,
-                            index
-                        )
-                )
-                .join('');
-
+        templatesGrid.innerHTML = templates
+            .map((template, index) => createTemplateCard(template, index))
+            .join('');
 
         bindTemplateCardEvents();
 
-
         updateSelectedLabel(
-            getTemplateById(
-                selectedTemplateId,
-                selectedTemplateProjectType
-            )
+            getTemplateById(selectedTemplateId, selectedTemplateProjectType)
         );
     }
 
-
-    /* =====================================================
-       COUNT
-    ===================================================== */
-
     function updateTemplateCount(count) {
-
-        const element =
-            document.getElementById(
-                'templateCount'
-            );
-
-
+        const element = document.getElementById('templateCount');
         if (element) {
-
-            element.textContent =
-                `${count} ${count === 1 ? 'قالب' : 'قوالب'}`;
+            element.textContent = `${count} ${count === 1 ? 'قالب' : 'قوالب'}`;
         }
     }
 
@@ -1310,60 +726,34 @@
        TEMPLATE CARD
     ===================================================== */
 
-    function createTemplateCard(
-        template,
-        index
-    ) {
+    function createTemplateCard(template) {
+        const isSelected = template.id === selectedTemplateId;
+        const thumbnailUrl = getTemplateThumbnailUrl(template);
+        const previewUrl = getPreviewUrl(template);
+        const category = template.projectType || template.category || 'غير مصنف';
 
-        const isSelected =
-            template.id ===
-            selectedTemplateId;
+        const imageHtml = thumbnailUrl
+            ? `
+                <img
+                    class="template-thumbnail"
+                    src="${escapeHtml(thumbnailUrl)}"
+                    alt="${escapeHtml(template.name)}"
+                    loading="lazy"
+                >
+            `
+            : '';
 
-
-        const thumbnailUrl =
-            getTemplateThumbnailUrl(
-                template
-            );
-
-
-        const previewUrl =
-            getPreviewUrl(
-                template
-            );
-
-
-        const category =
-            template.projectType ||
-            template.category ||
-            'غير مصنف';
-
-
-        const imageHtml =
-            thumbnailUrl
-                ? `
-                    <img
-                        class="template-thumbnail"
-                        src="${escapeHtml(thumbnailUrl)}"
-                        alt="${escapeHtml(template.name)}"
-                        loading="lazy"
-                    >
-                `
-                : '';
-
-
-        const iframeHtml =
-            previewUrl
-                ? `
-                    <iframe
-                        class="template-fallback-preview ${thumbnailUrl ? 'is-hidden' : ''}"
-                        src="${escapeHtml(previewUrl)}"
-                        title="${escapeHtml(template.name)}"
-                        loading="lazy"
-                        sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
-                    ></iframe>
-                `
-                : '';
-
+        const iframeHtml = previewUrl
+            ? `
+                <iframe
+                    class="template-fallback-preview ${thumbnailUrl ? 'is-hidden' : ''}"
+                    src="${escapeHtml(previewUrl)}"
+                    title="${escapeHtml(template.name)}"
+                    loading="lazy"
+                    sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
+                ></iframe>
+            `
+            : '';
 
         return `
             <article
@@ -1371,21 +761,15 @@
                 data-template-id="${escapeHtml(template.id)}"
                 data-template-project-type="${escapeHtml(template.projectType || '')}"
             >
-
                 <div class="template-card-preview">
-
                     ${imageHtml}
-
                     ${iframeHtml}
-
                     ${
                         !thumbnailUrl && !previewUrl
                             ? `
                                 <div class="template-no-preview">
                                     <div>🖼️</div>
-                                    <span>
-                                        لا توجد صورة معاينة
-                                    </span>
+                                    <span>لا توجد صورة معاينة</span>
                                 </div>
                             `
                             : ''
@@ -1399,32 +783,17 @@
 
                     ${
                         isSelected
-                            ? `
-                                <div class="template-selected-badge">
-                                    ✓ محدد
-                                </div>
-                            `
+                            ? `<div class="template-selected-badge">✓ محدد</div>`
                             : ''
                     }
 
-
                     <div class="template-card-body">
-
                         <div class="template-card-info">
-
-                            <h3 class="template-name">
-                                ${escapeHtml(template.name)}
-                            </h3>
-
-                            <p class="template-description">
-                                ${escapeHtml(template.description)}
-                            </p>
-
+                            <h3 class="template-name">${escapeHtml(template.name)}</h3>
+                            <p class="template-description">${escapeHtml(template.description)}</p>
                         </div>
 
-
                         <div class="template-card-actions">
-
                             <button
                                 type="button"
                                 class="preview-template-btn"
@@ -1434,26 +803,17 @@
                                 👁️ معاينة
                             </button>
 
-
                             <button
                                 type="button"
                                 class="select-template-btn ${isSelected ? 'is-selected' : ''}"
                                 data-template-id="${escapeHtml(template.id)}"
                                 data-template-project-type="${escapeHtml(template.projectType || '')}"
                             >
-                                ${
-                                    isSelected
-                                        ? '✓ محدد'
-                                        : 'اختيار القالب'
-                                }
+                                ${isSelected ? '✓ محدد' : 'اختيار القالب'}
                             </button>
-
                         </div>
-
                     </div>
-
                 </div>
-
             </article>
         `;
     }
@@ -1464,548 +824,222 @@
     ===================================================== */
 
     function bindTemplateCardEvents() {
-
         if (!templatesGrid) {
             return;
         }
 
+        templatesGrid.querySelectorAll('.preview-template-btn').forEach(button => {
+            button.addEventListener('click', function () {
+                openTemplatePreview(this.dataset.templateId, this.dataset.templateProjectType);
+            });
+        });
 
-        templatesGrid
-            .querySelectorAll('.preview-template-btn')
-            .forEach(
-                button => {
+        templatesGrid.querySelectorAll('.select-template-btn').forEach(button => {
+            button.addEventListener('click', function () {
+                selectTemplate(this.dataset.templateId, this.dataset.templateProjectType);
+            });
+        });
 
-                    button.addEventListener(
-                        'click',
-                        function () {
+        templatesGrid.querySelectorAll('.template-thumbnail').forEach(image => {
+            const fallback = image
+                .closest('.template-card-preview')
+                ?.querySelector('.template-fallback-preview');
 
-                            openTemplatePreview(
-                                this.dataset.templateId,
-                                this.dataset.templateProjectType
-                            );
-                        }
-                    );
-                }
-            );
-
-
-        templatesGrid
-            .querySelectorAll('.select-template-btn')
-            .forEach(
-                button => {
-
-                    button.addEventListener(
-                        'click',
-                        function () {
-
-                            selectTemplate(
-                                this.dataset.templateId,
-                                this.dataset.templateProjectType
-                            );
-                        }
-                    );
-                }
-            );
-
-
-        templatesGrid
-            .querySelectorAll('.template-thumbnail')
-            .forEach(
-                image => {
-
-                    const fallback =
-                        image
-                            .closest('.template-card-preview')
-                            ?.querySelector(
-                                '.template-fallback-preview'
-                            );
-
-
-                    if (!fallback) {
-                        return;
-                    }
-
-
-                    image.addEventListener(
-                        'error',
-                        function () {
-
-                            image.classList.add(
-                                'is-hidden'
-                            );
-
-                            fallback.classList.remove(
-                                'is-hidden'
-                            );
-                        }
-                    );
-                }
-            );
-    }
-
-
-    /* =====================================================
-       PREVIEW
-    ===================================================== */
-
-    function openTemplatePreview(
-        templateId,
-        projectType = ''
-    ) {
-
-        const template =
-            getTemplateById(
-                templateId,
-                projectType
-            );
-
-
-        if (!template) {
-
-            console.error(
-                'Template not found:',
-                templateId
-            );
-
-            return;
-        }
-
-
-        const previewUrl =
-            getPreviewUrl(
-                template
-            );
-
-
-        if (!previewUrl) {
-
-            if (
-                typeof window.showStatus ===
-                'function'
-            ) {
-
-                window.showStatus(
-                    'تعذر إنشاء رابط معاينة القالب.',
-                    'error'
-                );
+            if (!fallback) {
+                return;
             }
 
-            return;
-        }
-
-
-        window.open(
-            previewUrl,
-            '_blank',
-            'noopener,noreferrer'
-        );
+            image.addEventListener('error', function () {
+                image.classList.add('is-hidden');
+                fallback.classList.remove('is-hidden');
+            });
+        });
     }
 
 
     /* =====================================================
-       SELECT
+       PREVIEW & SELECT
     ===================================================== */
 
-    function selectTemplate(
-        templateId,
-        projectType = ''
-    ) {
+    function openTemplatePreview(templateId, projectType = '') {
+        const template = getTemplateById(templateId, projectType);
+        if (!template) {
+            console.error('Template not found:', templateId);
+            return;
+        }
 
-        const template =
-            getTemplateById(
-                templateId,
-                projectType
-            );
+        const previewUrl = getPreviewUrl(template);
+        if (!previewUrl) {
+            if (typeof window.showStatus === 'function') {
+                window.showStatus('تعذر إنشاء رابط معاينة القالب.', 'error');
+            }
+            return;
+        }
 
+        window.open(previewUrl, '_blank', 'noopener,noreferrer');
+    }
 
+    function selectTemplate(templateId, projectType = '') {
+        const template = getTemplateById(templateId, projectType);
         if (!template) {
             return;
         }
 
+        selectedTemplateId = template.id;
+        selectedTemplateProjectType = template.projectType || '';
 
-        selectedTemplateId =
-            template.id;
-
-
-        selectedTemplateProjectType =
-            template.projectType || '';
-
-
-        updateSelectedLabel(
-            template
-        );
-
-
+        updateSelectedLabel(template);
         renderTemplates();
 
-
         if (resultContainer) {
-
-            resultContainer.classList.remove(
-                'hidden'
-            );
+            resultContainer.classList.add('hidden');
         }
 
-
         window.dispatchEvent(
-            new CustomEvent(
-                'template:selected',
-                {
-                    detail: {
-                        templateId:
-                            template.id,
-
-                        projectType:
-                            template.projectType,
-
-                        template
-                    }
+            new CustomEvent('template:selected', {
+                detail: {
+                    templateId: template.id,
+                    projectType: template.projectType,
+                    template
                 }
-            )
+            })
         );
 
-
         document.dispatchEvent(
-            new CustomEvent(
-                'templateSelected',
-                {
-                    detail: {
-                        templateId:
-                            template.id,
-
-                        projectType:
-                            template.projectType,
-
-                        template
-                    }
+            new CustomEvent('templateSelected', {
+                detail: {
+                    templateId: template.id,
+                    projectType: template.projectType,
+                    template
                 }
-            )
+            })
         );
     }
 
-
-    /* =====================================================
-       SELECTED LABEL
-    ===================================================== */
-
-    function updateSelectedLabel(
-        template
-    ) {
-
+    function updateSelectedLabel(template) {
         if (!selectedLabel) {
             return;
         }
 
-
         if (!template) {
-
-            selectedLabel.textContent =
-                'لم يتم اختيار أي قالب بعد.';
-
+            selectedLabel.textContent = 'لم يتم اختيار أي قالب بعد.';
             return;
         }
 
-
-        selectedLabel.textContent =
-            `${template.name} محدد`;
+        selectedLabel.textContent = `${template.name} محدد`;
     }
 
 
     /* =====================================================
-       CATEGORY
+       CATEGORY & KEYBOARD EVENTS
     ===================================================== */
 
     function initializeCategoryEvents() {
-
         if (!projectTypeSelect) {
             return;
         }
 
+        projectTypeSelect.addEventListener('change', function () {
+            const currentTemplates = getFilteredTemplates();
 
-        projectTypeSelect.addEventListener(
-            'change',
-            function () {
-
-                const currentTemplates =
-                    getFilteredTemplates();
-
-
-                if (!currentTemplates.length) {
-
+            if (!currentTemplates.length) {
+                selectedTemplateId = null;
+                selectedTemplateProjectType = null;
+            } else {
+                const exists = currentTemplates.some(template => template.id === selectedTemplateId);
+                if (!exists) {
                     selectedTemplateId = null;
-
                     selectedTemplateProjectType = null;
-
-                } else {
-
-                    const exists =
-                        currentTemplates.some(
-                            template =>
-                                template.id ===
-                                selectedTemplateId
-                        );
-
-
-                    if (!exists) {
-
-                        selectedTemplateId =
-                            null;
-
-                        selectedTemplateProjectType =
-                            null;
-                    }
                 }
-
-
-                renderTemplates();
-
-
-                if (resultContainer) {
-
-                    resultContainer.classList.add(
-                        'hidden'
-                    );
-                }
-
-
-                /*
-                -------------------------------------------------
-                Keep visual category boxes synchronized
-                -------------------------------------------------
-                */
-
-                updateActiveProjectTypeOption();
             }
-        );
+
+            renderTemplates();
+
+            if (resultContainer) {
+                resultContainer.classList.add('hidden');
+            }
+
+            updateActiveProjectTypeOption();
+        });
     }
 
-
-    /* =====================================================
-       UPDATE ACTIVE CATEGORY BOX
-    ===================================================== */
-
     function updateActiveProjectTypeOption() {
-
-        if (
-            !projectTypeOptions ||
-            !projectTypeSelect
-        ) {
+        if (!projectTypeOptions || !projectTypeSelect) {
             return;
         }
 
+        const currentValue = String(projectTypeSelect.value || '').trim();
 
-        const currentValue =
-            String(
-                projectTypeSelect.value || ''
-            ).trim();
+        projectTypeOptions.querySelectorAll('.project-type-option').forEach(option => {
+            const optionValue = String(option.dataset.projectType || '').trim();
+            const isActive =
+                normalizeProjectType(optionValue) === normalizeProjectType(currentValue);
 
-
-        projectTypeOptions
-            .querySelectorAll(
-                '.project-type-option'
-            )
-            .forEach(
-                option => {
-
-                    const optionValue =
-                        String(
-                            option.dataset.projectType || ''
-                        ).trim();
-
-
-                    const isActive =
-                        normalizeProjectType(
-                            optionValue
-                        ) ===
-                        normalizeProjectType(
-                            currentValue
-                        );
-
-
-                    option.classList.toggle(
-                        'is-active',
-                        isActive
-                    );
-
-
-                    option.setAttribute(
-                        'aria-pressed',
-                        isActive
-                    );
-                }
-            );
+            option.classList.toggle('is-active', isActive);
+            option.setAttribute('aria-pressed', isActive);
+        });
     }
 
-
-    /* =====================================================
-       KEYBOARD
-    ===================================================== */
-
     function initializeTemplateKeyboardEvents() {
-
         if (!templatesGrid) {
             return;
         }
 
-
-        templatesGrid.addEventListener(
-            'keydown',
-            function (event) {
-
-                if (
-                    event.key !== 'Enter' &&
-                    event.key !== ' '
-                ) {
-                    return;
-                }
-
-
-                const card =
-                    event.target.closest(
-                        '.template-card'
-                    );
-
-
-                if (!card) {
-                    return;
-                }
-
-
-                const templateId =
-                    card.dataset.templateId;
-
-
-                const projectType =
-                    card.dataset.templateProjectType;
-
-
-                if (
-                    event.target.closest(
-                        '.preview-template-btn'
-                    )
-                ) {
-
-                    event.preventDefault();
-
-                    openTemplatePreview(
-                        templateId,
-                        projectType
-                    );
-
-                    return;
-                }
-
-
-                if (
-                    event.target.closest(
-                        '.select-template-btn'
-                    )
-                ) {
-
-                    event.preventDefault();
-
-                    selectTemplate(
-                        templateId,
-                        projectType
-                    );
-                }
+        templatesGrid.addEventListener('keydown', function (event) {
+            if (event.key !== 'Enter' && event.key !== ' ') {
+                return;
             }
-        );
+
+            const card = event.target.closest('.template-card');
+            if (!card) {
+                return;
+            }
+
+            const templateId = card.dataset.templateId;
+            const projectType = card.dataset.templateProjectType;
+
+            if (event.target.closest('.preview-template-btn')) {
+                event.preventDefault();
+                openTemplatePreview(templateId, projectType);
+                return;
+            }
+
+            if (event.target.closest('.select-template-btn')) {
+                event.preventDefault();
+                selectTemplate(templateId, projectType);
+            }
+        });
     }
 
 
     /* =====================================================
-       INITIALIZE
+       INITIALIZE & PUBLIC API
     ===================================================== */
 
     async function initializeTemplateSystem() {
-
         if (templateSystemInitialized) {
             return;
         }
 
-
         templateSystemInitialized = true;
-
-
         initializeCategoryEvents();
-
         initializeTemplateKeyboardEvents();
-
-
         await loadTemplates();
     }
 
+    window.initializeTemplateSystem = initializeTemplateSystem;
+    window.loadTemplateCraftTemplates = loadTemplates;
+    window.getSelectedTemplateId = () => selectedTemplateId;
+    window.getSelectedTemplateProjectType = () => selectedTemplateProjectType || '';
+    window.getSelectedTemplate = () =>
+        getTemplateById(selectedTemplateId, selectedTemplateProjectType);
+    window.getTemplatePreviewUrl = (templateId, projectType = '') => {
+        const template = getTemplateById(templateId, projectType);
+        return template ? getPreviewUrl(template) : '';
+    };
+    window.getTemplateAssetUrl = getTemplateAssetUrl;
+    window.openTemplatePreview = openTemplatePreview;
+    window.selectTemplate = selectTemplate;
 
-    /* =====================================================
-       PUBLIC API
-    ===================================================== */
-
-    window.initializeTemplateSystem =
-        initializeTemplateSystem;
-
-
-    window.loadTemplateCraftTemplates =
-        loadTemplates;
-
-
-    window.getSelectedTemplateId =
-        function () {
-
-            return selectedTemplateId;
-        };
-
-
-    window.getSelectedTemplateProjectType =
-        function () {
-
-            return selectedTemplateProjectType || '';
-        };
-
-
-    window.getSelectedTemplate =
-        function () {
-
-            return getTemplateById(
-                selectedTemplateId,
-                selectedTemplateProjectType
-            );
-        };
-
-
-    window.getTemplatePreviewUrl =
-        function (
-            templateId,
-            projectType = ''
-        ) {
-
-            const template =
-                getTemplateById(
-                    templateId,
-                    projectType
-                );
-
-
-            return template
-                ? getPreviewUrl(template)
-                : '';
-        };
-
-
-    window.getTemplateAssetUrl =
-        getTemplateAssetUrl;
-
-
-    window.openTemplatePreview =
-        openTemplatePreview;
-
-
-    window.selectTemplate =
-        selectTemplate;
-
-
-    console.log(
-        '✅ TemplateCraft Template System loaded'
-    );
-
+    console.log('✅ TemplateCraft Template System loaded');
 })();
