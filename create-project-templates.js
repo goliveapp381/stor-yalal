@@ -786,32 +786,32 @@
                             ? `<div class="template-selected-badge">✓ محدد</div>`
                             : ''
                     }
+                </div>
 
-                    <div class="template-card-body">
-                        <div class="template-card-info">
-                            <h3 class="template-name">${escapeHtml(template.name)}</h3>
-                            <p class="template-description">${escapeHtml(template.description)}</p>
-                        </div>
+                <div class="template-card-body">
+                    <div class="template-card-info">
+                        <h3 class="template-name">${escapeHtml(template.name)}</h3>
+                        <p class="template-description">${escapeHtml(template.description)}</p>
+                    </div>
 
-                        <div class="template-card-actions">
-                            <button
-                                type="button"
-                                class="preview-template-btn"
-                                data-template-id="${escapeHtml(template.id)}"
-                                data-template-project-type="${escapeHtml(template.projectType || '')}"
-                            >
-                                👁️ معاينة
-                            </button>
+                    <div class="template-card-actions">
+                        <button
+                            type="button"
+                            class="preview-template-btn"
+                            data-template-id="${escapeHtml(template.id)}"
+                            data-template-project-type="${escapeHtml(template.projectType || '')}"
+                        >
+                            👁️ معاينة
+                        </button>
 
-                            <button
-                                type="button"
-                                class="select-template-btn ${isSelected ? 'is-selected' : ''}"
-                                data-template-id="${escapeHtml(template.id)}"
-                                data-template-project-type="${escapeHtml(template.projectType || '')}"
-                            >
-                                ${isSelected ? '✓ محدد' : 'اختيار القالب'}
-                            </button>
-                        </div>
+                        <button
+                            type="button"
+                            class="select-template-btn ${isSelected ? 'is-selected' : ''}"
+                            data-template-id="${escapeHtml(template.id)}"
+                            data-template-project-type="${escapeHtml(template.projectType || '')}"
+                        >
+                            ${isSelected ? '✓ محدد' : 'اختيار القالب'}
+                        </button>
                     </div>
                 </div>
             </article>
@@ -842,7 +842,7 @@
 
         templatesGrid.querySelectorAll('.template-thumbnail').forEach(image => {
             const fallback = image
-                .closest('.template-card-preview')
+                .closest('.template-card')
                 ?.querySelector('.template-fallback-preview');
 
             if (!fallback) {
