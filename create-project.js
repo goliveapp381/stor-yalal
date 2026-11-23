@@ -46,38 +46,49 @@ let createPageState = {
     netlifyState: null
 };
 
+let isSubmittingCreate = false;
+
 
 // =====================================================
 // 3. ELEMENTS
 // =====================================================
 
-const siteNameInput =
-    document.getElementById('siteName');
-
-const createProjectBtn =
-    document.getElementById('createProjectBtn');
-
-const createModal =
-    document.getElementById('createModal');
-
-const createModalContent =
-    document.getElementById('createModalContent');
-
-const closeCreateModalBtn =
-    document.getElementById('closeCreateModalBtn');
-
-const cancelCreateBtn =
-    document.getElementById('cancelCreateBtn');
-
-const confirmCreateBtn =
-    document.getElementById('confirmCreateBtn');
-
-const createResult =
-    document.getElementById('createResult');
+const siteNameInput = document.getElementById('siteName');
+const createProjectBtn = document.getElementById('createProjectBtn');
+const createModal = document.getElementById('createModal');
+const createModalContent = document.getElementById('createModalContent');
+const closeCreateModalBtn = document.getElementById('closeCreateModalBtn');
+const cancelCreateBtn = document.getElementById('cancelCreateBtn');
+const confirmCreateBtn = document.getElementById('confirmCreateBtn');
+const createResult = document.getElementById('createResult');
 
 
 // =====================================================
-// 4. AUTH CHECK
+// 4. RESULT MESSAGE HELPER
+// =====================================================
+
+function showCreateMessage(message, type = 'error') {
+    if (!createResult) {
+        return;
+    }
+
+    createResult.classList.remove('hidden');
+    createResult.className = `state-message ${type}`;
+    createResult.textContent = message;
+}
+
+function clearCreateMessage() {
+    if (!createResult) {
+        return;
+    }
+
+    createResult.textContent = '';
+    createResult.classList.add('hidden');
+}
+
+
+// =====================================================
+// 5. AUTH CHECK
 // =====================================================
 
 function ensureAuthenticated() {
@@ -88,18 +99,13 @@ function ensureAuthenticated() {
     }
 
     console.warn('[TemplateCraft] No authenticated user found.');
-
-    if (createResult) {
-        createResult.className = 'state-message error';
-        createResult.textContent = 'خاصك تسجل الدخول أولاً قبل إنشاء المشروع.';
-    }
-
+    showCreateMessage('خاصك تسجل الدخول أولاً قبل إنشاء المشروع.', 'error');
     return false;
 }
 
 
 // =====================================================
-// 5. SAFE HTML
+// 6. SAFE HTML
 // =====================================================
 
 function escapeHtml(value) {
@@ -113,7 +119,7 @@ function escapeHtml(value) {
 
 
 // =====================================================
-// 6. CREATE DOMAIN SLUG
+// 7. CREATE DOMAIN SLUG & DOMAIN
 // =====================================================
 
 function createProjectSlug(siteName) {
@@ -133,11 +139,6 @@ function createProjectSlug(siteName) {
     return slug;
 }
 
-
-// =====================================================
-// 7. CREATE DOMAIN
-// =====================================================
-
 function createProjectDomain(siteName) {
     const slug = createProjectSlug(siteName);
     return `${slug}.templatecraftpro.com`;
@@ -145,7 +146,7 @@ function createProjectDomain(siteName) {
 
 
 // =====================================================
-// 8. TEMPLATE NAME
+// 8. TEMPLATE DISPLAY HELPERS
 // =====================================================
 
 function getTemplateDisplayName(template) {
@@ -162,11 +163,6 @@ function getTemplateDisplayName(template) {
     );
 }
 
-
-// =====================================================
-// 9. TEMPLATE CATEGORY
-// =====================================================
-
 function getTemplateCategory(template) {
     if (!template) {
         return 'غير محددة';
@@ -181,7 +177,7 @@ function getTemplateCategory(template) {
 
 
 // =====================================================
-// 10. NETLIFY STATE
+// 9. NETLIFY STATE
 // =====================================================
 
 function getNetlifyState() {
@@ -206,25 +202,16 @@ function getNetlifyState() {
     return null;
 }
 
-
-// =====================================================
-// 11. CHECK NETLIFY READY
-// =====================================================
-
 function isNetlifyReady(state) {
     if (!state) {
         return false;
     }
 
-    if (state.ready === true) {
-        return true;
-    }
-
-    if (state.connected === true) {
-        return true;
-    }
-
-    if (state.isConnected === true) {
+    if (
+        state.ready === true ||
+        state.connected === true ||
+        state.isConnected === true
+    ) {
         return true;
     }
 
@@ -240,11 +227,6 @@ function isNetlifyReady(state) {
     return false;
 }
 
-
-// =====================================================
-// 12. REFRESH NETLIFY
-// =====================================================
-
 async function refreshNetlifyState() {
     const state = getNetlifyState();
 
@@ -256,7 +238,7 @@ async function refreshNetlifyState() {
 
 
 // =====================================================
-// 13. PREMIUM FEATURE CARD
+// 10. PREMIUM FEATURE CARD
 // =====================================================
 
 function premiumFeature(icon, title, description, className = '') {
@@ -275,7 +257,7 @@ function premiumFeature(icon, title, description, className = '') {
 
 
 // =====================================================
-// 14. OPEN PREMIUM CREATE MODAL
+// 11. OPEN & CLOSE MODAL
 // =====================================================
 
 async function openCreateModal() {
@@ -294,10 +276,7 @@ async function openCreateModal() {
         : '';
 
     if (!siteName) {
-        if (createResult) {
-            createResult.className = 'state-message error';
-            createResult.textContent = 'دخل اسم المشروع أولاً.';
-        }
+        showCreateMessage('دخل اسم المشروع أولاً.', 'error');
         if (siteNameInput) {
             siteNameInput.focus();
         }
@@ -305,12 +284,12 @@ async function openCreateModal() {
     }
 
     if (!selected) {
-        if (createResult) {
-            createResult.className = 'state-message error';
-            createResult.textContent = 'اختار قالب أولاً قبل إنشاء المشروع.';
-        }
+        showCreateMessage('اختار قالب أولاً قبل إنشاء المشروع.', 'error');
         return;
     }
+
+    clearCreateMessage();
+    isSubmittingCreate = false;
 
     createPageState.siteName = siteName;
     createPageState.selectedTemplate = selected;
@@ -440,13 +419,9 @@ async function openCreateModal() {
     if (createModal) {
         createModal.classList.add('active');
         createModal.style.display = 'flex';
+        createModal.setAttribute('aria-hidden', 'false');
     }
 }
-
-
-// =====================================================
-// 15. CLOSE MODAL
-// =====================================================
 
 function closeCreateModal() {
     if (!createModal) {
@@ -455,14 +430,19 @@ function closeCreateModal() {
 
     createModal.classList.remove('active');
     createModal.style.display = 'none';
+    createModal.setAttribute('aria-hidden', 'true');
 }
 
 
 // =====================================================
-// 16. CONFIRM CREATE
+// 12. CONFIRM CREATE
 // =====================================================
 
 async function handleConfirmCreate() {
+    if (isSubmittingCreate) {
+        return;
+    }
+
     if (!ensureAuthenticated()) {
         return;
     }
@@ -481,12 +461,12 @@ async function handleConfirmCreate() {
         (siteNameInput ? siteNameInput.value.trim() : '');
 
     if (!siteName) {
-        alert('دخل اسم المشروع أولاً.');
+        showCreateMessage('دخل اسم المشروع أولاً.', 'error');
         return;
     }
 
     if (!selected) {
-        alert('اختار قالب أولاً.');
+        showCreateMessage('اختار قالب أولاً.', 'error');
         return;
     }
 
@@ -500,6 +480,8 @@ async function handleConfirmCreate() {
         }
         return;
     }
+
+    isSubmittingCreate = true;
 
     if (confirmCreateBtn) {
         confirmCreateBtn.disabled = true;
@@ -515,42 +497,38 @@ async function handleConfirmCreate() {
                 detail: {
                     siteName,
                     template: selected,
-                    templateId: selected.id,
-                    projectType: selected.projectType || selected.category,
+                    templateId: selected.id || selected.templateId,
+                    projectType: selected.projectType || selected.category || '',
                     netlify: state
                 }
             }
         )
     );
+
+    setTimeout(() => {
+        isSubmittingCreate = false;
+    }, 1000);
 }
 
 
 // =====================================================
-// 17. EVENT LISTENERS
+// 13. EVENT LISTENERS
 // =====================================================
 
 if (createProjectBtn) {
-    createProjectBtn.addEventListener('click', function () {
-        openCreateModal();
-    });
+    createProjectBtn.addEventListener('click', openCreateModal);
 }
 
 if (closeCreateModalBtn) {
-    closeCreateModalBtn.addEventListener('click', function () {
-        closeCreateModal();
-    });
+    closeCreateModalBtn.addEventListener('click', closeCreateModal);
 }
 
 if (cancelCreateBtn) {
-    cancelCreateBtn.addEventListener('click', function () {
-        closeCreateModal();
-    });
+    cancelCreateBtn.addEventListener('click', closeCreateModal);
 }
 
 if (confirmCreateBtn) {
-    confirmCreateBtn.addEventListener('click', function () {
-        handleConfirmCreate();
-    });
+    confirmCreateBtn.addEventListener('click', handleConfirmCreate);
 }
 
 if (createModal) {
@@ -573,10 +551,12 @@ document.addEventListener('keydown', function (event) {
 
 
 // =====================================================
-// 18. INITIALIZATION & GLOBAL API
+// 14. INITIALIZATION & GLOBAL API
 // =====================================================
 
 function initializeCreateProjectPage() {
+    closeCreateModal();
+
     if (!ensureAuthenticated()) {
         return;
     }
