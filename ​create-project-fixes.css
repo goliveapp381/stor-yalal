@@ -123,254 +123,136 @@ select#projectTypeSelect,
 }
 
 /* =========================================================
-   بطاقات القوالب وأزرارها (وضوح كامل وحجم مناسب)
+   شبكة القوالب: 2 في السطر في الهاتف والحاسوب + كارت كبير وأزرار واضحة
 ========================================================= */
+#templatesGrid,
+#templatesGrid.templates-grid,
 .templates-grid {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 18px;
-    width: 100%;
-    align-items: stretch;
-}
-
-.template-card {
-    display: flex;
-    flex-direction: column;
-    min-width: 0;
-    width: 100%;
-    border-radius: 20px;
-    overflow: hidden;
-    background: linear-gradient(145deg, rgba(17, 24, 52, 0.94), rgba(7, 10, 26, 0.96));
-    border: 1px solid rgba(148, 163, 184, 0.18);
-}
-
-.template-card-preview {
-    position: relative;
-    width: 100%;
-    aspect-ratio: 16 / 10;
-    overflow: hidden;
-    background: #080b18;
-    flex-shrink: 0;
-}
-
-.template-card-preview > img.template-thumbnail,
-.template-card-preview > iframe.template-fallback-preview {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-}
-
-.template-card-preview .is-hidden {
-    display: none;
-}
-
-.template-card-body {
-    position: relative;
-    z-index: 3;
-    padding: 14px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    flex: 1;
-    background: #0b1128;
-    border-top: 1px solid rgba(148, 163, 184, 0.14);
-}
-
-.template-card-info {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-}
-
-.template-name {
-    margin: 0;
-    font-size: 15px;
-    font-weight: 800;
-    color: #f8fafc;
-}
-
-.template-description {
-    margin: 0;
-    font-size: 12px;
-    color: #94a3b8;
-    line-height: 1.6;
-}
-
-.template-card-actions {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-    width: 100%;
-    margin-top: auto;
-}
-
-.template-card-actions button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    min-height: 40px;
-    padding: 8px 10px;
-    border-radius: 10px;
-    font-size: 12px;
-    font-weight: 800;
-    cursor: pointer;
-    opacity: 1;
-    visibility: visible;
-}
-
-.preview-template-btn {
-    color: #e2e8f0;
-    border: 1px solid rgba(148, 163, 184, 0.22);
-    background: rgba(255, 255, 255, 0.05);
-}
-
-.select-template-btn {
-    color: #ffffff;
-    background: linear-gradient(135deg, #7c3aed, #6366f1);
-}
-
-/* =========================================================
-   التجاوب مع الهاتف والأجهزة اللوحية
-========================================================= */
-@media (max-width: 900px) {
-    .templates-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-}
-
-@media (max-width: 720px) {
-    .templates-grid {
-        grid-template-columns: 1fr;
-        gap: 14px;
-    }
-
-    .template-card-body {
-        padding: 12px;
-    }
-
-    .template-card-actions {
-        grid-template-columns: 1fr 1fr;
-        gap: 8px;
-    }
-
-    .template-card-actions button {
-        min-height: 42px;
-        font-size: 12px;
-    }
-
-    .create-modal-card {
-        padding: 14px;
-        width: 96vw;
-    }
-}
-
-/* =========================================================
-   إجبار إظهار محتوى وأزرار بطاقة القالب كاملة في جميع الشاشات
-========================================================= */
-
-#templatesGrid.templates-grid {
     display: grid !important;
-    grid-template-columns: 1fr !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
     gap: 16px !important;
     width: 100% !important;
+    align-items: stretch !important;
 }
 
-@media (min-width: 721px) and (max-width: 1024px) {
-    #templatesGrid.templates-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-    }
-}
-
-@media (min-width: 1025px) {
-    #templatesGrid.templates-grid {
-        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-    }
-}
-
-#templatesGrid .template-card {
+#templatesGrid .template-card,
+.template-card {
     display: flex !important;
     flex-direction: column !important;
+    min-width: 0 !important;
+    width: 100% !important;
     height: auto !important;
+    min-height: 310px !important;
     max-height: none !important;
     overflow: visible !important;
-    border-radius: 18px !important;
-    background: #0b1128 !important;
-    border: 1px solid rgba(148, 163, 184, 0.22) !important;
+    border-radius: 20px !important;
+    background: linear-gradient(145deg, rgba(17, 24, 52, 0.96), rgba(7, 10, 26, 0.98)) !important;
+    border: 1px solid rgba(148, 163, 184, 0.24) !important;
 }
 
-#templatesGrid .template-card-preview {
+#templatesGrid .template-card-preview,
+.template-card-preview {
     position: relative !important;
     width: 100% !important;
     aspect-ratio: 16 / 10 !important;
-    height: auto !important;
-    max-height: 240px !important;
+    min-height: 165px !important;
+    max-height: none !important;
     overflow: hidden !important;
-    border-radius: 18px 18px 0 0 !important;
+    border-radius: 20px 20px 0 0 !important;
+    background: #080b18 !important;
     flex-shrink: 0 !important;
 }
 
-#templatesGrid .template-card-preview img.template-thumbnail,
-#templatesGrid .template-card-preview iframe.template-fallback-preview {
+#templatesGrid .template-card-preview > img.template-thumbnail,
+#templatesGrid .template-card-preview > iframe.template-fallback-preview,
+.template-card-preview > img,
+.template-card-preview > iframe {
     width: 100% !important;
     height: 100% !important;
     object-fit: cover !important;
     display: block !important;
+    border: 0 !important;
 }
 
-#templatesGrid .template-card-body {
-    position: static !important;
+#templatesGrid .template-card-preview .is-hidden,
+.template-card-preview .is-hidden {
+    display: none !important;
+}
+
+#templatesGrid .template-card-body,
+.template-card-body {
+    position: relative !important;
+    z-index: 5 !important;
     display: flex !important;
     flex-direction: column !important;
     gap: 10px !important;
     padding: 14px !important;
+    flex: 1 1 auto !important;
     height: auto !important;
+    min-height: 120px !important;
     max-height: none !important;
     overflow: visible !important;
     opacity: 1 !important;
     visibility: visible !important;
     background: #0b1128 !important;
-    border-radius: 0 0 18px 18px !important;
+    border-top: 1px solid rgba(148, 163, 184, 0.16) !important;
+    border-radius: 0 0 20px 20px !important;
 }
 
-#templatesGrid .template-name {
+#templatesGrid .template-card-info,
+.template-card-info {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 5px !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+#templatesGrid .template-name,
+.template-name {
     display: block !important;
     margin: 0 !important;
     font-size: 15px !important;
     font-weight: 800 !important;
     color: #f8fafc !important;
     visibility: visible !important;
+    opacity: 1 !important;
 }
 
-#templatesGrid .template-description {
+#templatesGrid .template-description,
+.template-description {
     display: block !important;
     margin: 0 !important;
     font-size: 12px !important;
     color: #94a3b8 !important;
     line-height: 1.6 !important;
     visibility: visible !important;
+    opacity: 1 !important;
 }
 
-#templatesGrid .template-card-actions {
+#templatesGrid .template-card-actions,
+.template-card-actions {
     display: grid !important;
     grid-template-columns: 1fr 1fr !important;
-    gap: 10px !important;
+    gap: 8px !important;
     width: 100% !important;
-    margin-top: 6px !important;
+    margin-top: auto !important;
     opacity: 1 !important;
     visibility: visible !important;
 }
 
 #templatesGrid .template-card-actions button,
 #templatesGrid .preview-template-btn,
-#templatesGrid .select-template-btn {
+#templatesGrid .select-template-btn,
+.template-card-actions button,
+.preview-template-btn,
+.select-template-btn {
     display: inline-flex !important;
     align-items: center !important;
     justify-content: center !important;
     width: 100% !important;
-    min-height: 42px !important;
-    padding: 8px 12px !important;
+    min-height: 40px !important;
+    padding: 8px 10px !important;
     border-radius: 11px !important;
     font-size: 12px !important;
     font-weight: 800 !important;
@@ -379,13 +261,76 @@ select#projectTypeSelect,
     cursor: pointer !important;
 }
 
-#templatesGrid .preview-template-btn {
+#templatesGrid .preview-template-btn,
+.preview-template-btn {
     color: #f8fafc !important;
     background: rgba(255, 255, 255, 0.08) !important;
-    border: 1px solid rgba(148, 163, 184, 0.28) !important;
+    border: 1px solid rgba(148, 163, 184, 0.30) !important;
 }
 
-#templatesGrid .select-template-btn {
+#templatesGrid .select-template-btn,
+.select-template-btn {
     color: #ffffff !important;
     background: linear-gradient(135deg, #7c3aed, #4f46e5) !important;
+}
+
+/* =========================================================
+   التجاوب في الهاتف (يبقى 2 في السطر وبحجم مريح)
+========================================================= */
+@media (max-width: 640px) {
+    #templatesGrid,
+    #templatesGrid.templates-grid,
+    .templates-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 10px !important;
+    }
+
+    #templatesGrid .template-card,
+    .template-card {
+        min-height: 270px !important;
+        border-radius: 16px !important;
+    }
+
+    #templatesGrid .template-card-preview,
+    .template-card-preview {
+        min-height: 125px !important;
+        border-radius: 16px 16px 0 0 !important;
+    }
+
+    #templatesGrid .template-card-body,
+    .template-card-body {
+        padding: 10px !important;
+        gap: 8px !important;
+        min-height: 110px !important;
+        border-radius: 0 0 16px 16px !important;
+    }
+
+    #templatesGrid .template-name,
+    .template-name {
+        font-size: 13px !important;
+    }
+
+    #templatesGrid .template-description,
+    .template-description {
+        font-size: 11px !important;
+        line-height: 1.45 !important;
+    }
+
+    #templatesGrid .template-card-actions,
+    .template-card-actions {
+        grid-template-columns: 1fr !important;
+        gap: 6px !important;
+    }
+
+    #templatesGrid .template-card-actions button,
+    .template-card-actions button {
+        min-height: 36px !important;
+        font-size: 11px !important;
+        padding: 6px 8px !important;
+    }
+
+    .create-modal-card {
+        padding: 14px;
+        width: 96vw;
+    }
 }
